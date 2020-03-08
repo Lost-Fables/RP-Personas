@@ -2,22 +2,35 @@ package net.korvic.rppersonas;
 
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
+import net.korvic.rppersonas.sql.AccountsSQL;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RPPersonas extends JavaPlugin {
 
-	public static AccountHandler handler;
+	public static final boolean DEBUGGING = false;
+
+	private AccountHandler accountHandler;
+	private AccountsSQL database;
 
 	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
-		handler = new AccountHandler(this);
-		// Get MySQL Connection
 
+		accountHandler = new AccountHandler(this);
+
+		database = new AccountsSQL(this);
 	}
 
 	@Override
 	public void onDisable() {
 		// Plugin shutdown logic
+	}
+
+	public AccountHandler getAccountHandler() {
+		return accountHandler;
+	}
+
+	public AccountsSQL getSQL() {
+		return database;
 	}
 }
