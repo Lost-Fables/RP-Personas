@@ -9,6 +9,7 @@ public final class RPPersonas extends JavaPlugin {
 
 	public static final boolean DEBUGGING = false;
 
+	private static RPPersonas instance;
 	private AccountHandler accountHandler;
 	private AccountsSQL database;
 
@@ -19,11 +20,17 @@ public final class RPPersonas extends JavaPlugin {
 		accountHandler = new AccountHandler(this);
 
 		database = new AccountsSQL(this);
+
+		instance = this;
 	}
 
 	@Override
 	public void onDisable() {
 		// Plugin shutdown logic
+	}
+
+	public static RPPersonas get() {
+		return instance;
 	}
 
 	public AccountHandler getAccountHandler() {

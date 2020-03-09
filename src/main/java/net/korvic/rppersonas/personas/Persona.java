@@ -9,7 +9,7 @@ public class Persona {
 	private String nickName;
 	private Inventory inv;
 	private boolean isAlive;
-	private int skinSlot;
+	private int activeSkinID;
 
 	/*
 	 * Store all above info.

@@ -3,28 +3,22 @@ package net.korvic.rppersonas.sql;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.*;
 import java.util.logging.Level;
 
-public class AccountsSQL {
+public class PersonaAccountsMapSQL {
 
 	public static Connection connection;
 
 	private RPPersonas plugin;
 	private String SQLTable;
-	private String SQLTableName = "rppersonas_accounts";
+	private String SQLTableName = "rppersonas_persona_account_map";
 
-	public AccountsSQL(RPPersonas plugin) {
+	public PersonaAccountsMapSQL(RPPersonas plugin) {
 		this.plugin = plugin;
 		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
-				   "    AccountID INT NOT NULL PRIMARY KEY,\n" +
-				   "    ActivePersonaID INT,\n" +
-				   "    ForumID INT,\n" +
-				   "    DiscordID TEXT,\n" +
-				   "    Playtime BIGINT NOT NULL,\n" +
-				   "    Votes SMALLINT NOT NULL\n" +
+				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
+				   "    AccountID INT NOT NULL\n" +
 				   ");";
 	}
 

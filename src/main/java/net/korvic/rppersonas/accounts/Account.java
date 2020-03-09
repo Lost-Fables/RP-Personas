@@ -8,36 +8,22 @@ import java.util.UUID;
 
 public class Account {
 	private int accountID;
-	private List<Integer> personaIDs;
-	private List<Integer> deadPersonaIDs;
-	private List<String> skinNames;
-	private Map<UUID, String> uuids; // <UUID, Username>
-
-	/*
-	 * Store all above info.
-	 * Store Forum ID as int
-	 * Store Discord IDs as String
-	 * Store Playtime as long (millis)
-	 * Store Votes as int
-	 */
+	private int activePersonaID;
 
 
 	// ACCOUNT CREATION //
 
-	protected static Account createAccount(int id, List<Integer> personaIDs, List<Integer> deadPersonaIDs, List<String> skinNames, Map<UUID, String> uuids) {
-		if (RPPersonas.handler.getAccount(id) == null) {
-			return new Account(id, personaIDs, deadPersonaIDs, skinNames, uuids);
+	protected static Account createAccount(int accountID, int activePersonaID) {
+		if (RPPersonas.get().getAccountHandler().getAccount(accountID) == null) {
+			return new Account(accountID, activePersonaID);
 		} else {
 			return null;
 		}
 	}
 
-	private Account(int accountID, List<Integer> personaIDs, List<Integer> deadPersonaIDs, List<String> skinNames, Map<UUID, String> uuids) {
+	private Account(int accountID, int activePersonaID) {
 		this.accountID = accountID;
-		this.personaIDs = personaIDs;
-		this.deadPersonaIDs = deadPersonaIDs;
-		this.skinNames = skinNames;
-		this.uuids = uuids;
+		this.activePersonaID = activePersonaID;
 	}
 
 	// GETTERS //
@@ -47,19 +33,23 @@ public class Account {
 	}
 
 	public List<Integer> getPersonaIDs() {
-		return personaIDs;
+		// Use accountID to get list of personaIDs from AccountPersonaMapping
+		return null;
 	}
 
 	public List<Integer> getDeadPersonaIDs() {
-		return deadPersonaIDs;
+		// Use getPersonaIDs then check each persona to see if dead
+		return null;
 	}
 
 	public List<String> getSkinNames() {
-		return skinNames;
+		// Use accountID to get a list of skins. Stream names to output list.
+		return null;
 	}
 
-	public Map<UUID, String> getUUIDs() {
-		return uuids;
+	public List<UUID> getUUIDs() {
+		// Use accountID to get a list of UUIDs from the UUID-Account map
+		return null;
 	}
 
 }
