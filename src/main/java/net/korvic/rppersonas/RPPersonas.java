@@ -2,8 +2,10 @@ package net.korvic.rppersonas;
 
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
-import net.korvic.rppersonas.sql.AccountsSQL;
+import net.korvic.rppersonas.sql.*;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Currency;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -11,7 +13,14 @@ public final class RPPersonas extends JavaPlugin {
 
 	private static RPPersonas instance;
 	private AccountHandler accountHandler;
-	private AccountsSQL database;
+
+	// SQL
+	private UUIDAccountMapSQL uuidAccountMap;
+	private AccountsSQL accounts;
+	private PersonaAccountsMapSQL persAccMap;
+	private PersonasSQL personas;
+	private CurrencySQL currency;
+	private SkinsSQL skins;
 
 	@Override
 	public void onEnable() {
@@ -19,7 +28,7 @@ public final class RPPersonas extends JavaPlugin {
 
 		accountHandler = new AccountHandler(this);
 
-		database = new AccountsSQL(this);
+		setupDatabases();
 
 		instance = this;
 	}
@@ -32,12 +41,23 @@ public final class RPPersonas extends JavaPlugin {
 	public static RPPersonas get() {
 		return instance;
 	}
-
 	public AccountHandler getAccountHandler() {
 		return accountHandler;
 	}
 
-	public AccountsSQL getSQL() {
-		return database;
+	private void setupDatabases() {
+		uuidAccountMap = new UUIDAccountMapSQL(this);
+		accounts = new AccountsSQL(this);
+		persAccMap = new PersonaAccountsMapSQL(this);
+		personas = new PersonasSQL(this);
+		currency = new CurrencySQL(this);
+		skins = new SkinsSQL(this);
+
+		uuidAccountMap.load();
+		accounts.load();
+		persAccMap.load();
+		personas.load();
+		currency.load();
+		skins.load();
 	}
 }
