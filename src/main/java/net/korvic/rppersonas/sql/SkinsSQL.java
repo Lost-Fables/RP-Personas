@@ -4,6 +4,10 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class SkinsSQL {
@@ -96,6 +100,38 @@ public class SkinsSQL {
 		} catch (SQLException ex) {
 			Errors.close(plugin, ex);
 		}
+	}
+
+	// Retrieves the amount of tokens a player has, as per our database.
+	public Map<Integer, String> getSkinNames(int accountID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			Map<Integer, String> result = new HashMap<>();
+			while (rs.next()) {
+				result.put(rs.getInt("SkinID"), rs.getString("Name"));
+			}
+			return result;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return null;
 	}
 
 }

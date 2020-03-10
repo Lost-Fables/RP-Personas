@@ -60,4 +60,23 @@ public final class RPPersonas extends JavaPlugin {
 		currency.load();
 		skins.load();
 	}
+
+	public UUIDAccountMapSQL getUUIDAccountMapSQL() {
+		return uuidAccountMap;
+	}
+	public AccountsSQL getAccountsSQL() {
+		return accounts;
+	}
+	public PersonaAccountsMapSQL getPersAccMapSQL() {
+		return persAccMap;
+	}
+	public PersonasSQL getPersonasSQL() {
+		return personas;
+	}
+	public CurrencySQL getCurrencySQL() {
+		return currency;
+	}
+	public SkinsSQL getSkinsSQL() {
+		return skins;
+	}
 }

@@ -2,18 +2,22 @@ package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Account {
+	private static int highestAccountID;
 	private int accountID;
 	private int activePersonaID;
+	private static RPPersonas plugin;
 
 
 	// ACCOUNT CREATION //
 
-	protected static Account createAccount(int accountID, int activePersonaID) {
+	protected static Account createFreshAccount() {
+		return new Account(highestAccountID, -1);
+	}
+
+	protected static Account createActiveAccount(int accountID, int activePersonaID) {
 		if (RPPersonas.get().getAccountHandler().getAccount(accountID) == null) {
 			return new Account(accountID, activePersonaID);
 		} else {
@@ -23,7 +27,15 @@ public class Account {
 
 	private Account(int accountID, int activePersonaID) {
 		this.accountID = accountID;
-		this.activePersonaID = activePersonaID;
+		plugin = RPPersonas.get();
+
+		if (activePersonaID > 0) {
+			this.activePersonaID = activePersonaID;
+		}
+
+		if (accountID >= highestAccountID) {
+			highestAccountID = accountID + 1;
+		}
 	}
 
 	// GETTERS //
@@ -32,24 +44,20 @@ public class Account {
 		return accountID;
 	}
 
-	public List<Integer> getPersonaIDs() {
-		// Use accountID to get list of personaIDs from AccountPersonaMapping
-		return null;
+	public List<Integer> getLivePersonaIDs() {
+		return plugin.getPersAccMapSQL().getPersonasOf(accountID, true);
 	}
 
 	public List<Integer> getDeadPersonaIDs() {
-		// Use getPersonaIDs then check each persona to see if dead
-		return null;
+		return plugin.getPersAccMapSQL().getPersonasOf(accountID, false);
 	}
 
-	public List<String> getSkinNames() {
-		// Use accountID to get a list of skins. Stream names to output list.
-		return null;
+	public Map<Integer, String> getSkinNames() {
+		return plugin.getSkinsSQL().getSkinNames(accountID);
 	}
 
 	public List<UUID> getUUIDs() {
-		// Use accountID to get a list of UUIDs from the UUID-Account map
-		return null;
+		return plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID);
 	}
 
 }

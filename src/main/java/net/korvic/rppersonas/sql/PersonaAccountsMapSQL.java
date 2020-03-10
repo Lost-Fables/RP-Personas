@@ -1,9 +1,13 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class PersonaAccountsMapSQL {
@@ -18,7 +22,8 @@ public class PersonaAccountsMapSQL {
 		this.plugin = plugin;
 		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
 				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
-				   "    AccountID INT NOT NULL\n" +
+				   "    AccountID INT NOT NULL,\n" +
+				   "    Alive TINYINT NOT NULL\n" +
 				   ");";
 	}
 
@@ -94,6 +99,42 @@ public class PersonaAccountsMapSQL {
 		} catch (SQLException ex) {
 			Errors.close(plugin, ex);
 		}
+	}
+
+	// Retrieves the amount of tokens a player has, as per our database.
+	public List<Integer> getPersonasOf(int accountID, boolean alive) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			short aliveBoolean = 0;
+			if (alive) {
+				aliveBoolean = 1;
+			}
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "' AND Alive='" + aliveBoolean + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			List<Integer> result = new ArrayList<>();
+			while (rs.next()) {
+				result.add(rs.getInt("PersonaID"));
+			}
+			return result;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return null;
 	}
 
 }
