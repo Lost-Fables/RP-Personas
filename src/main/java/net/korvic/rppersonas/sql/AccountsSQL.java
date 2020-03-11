@@ -6,6 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class AccountsSQL {
@@ -20,7 +21,7 @@ public class AccountsSQL {
 		this.plugin = plugin;
 		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
 				   "    AccountID INT NOT NULL PRIMARY KEY,\n" +
-				   "    ActivePersonaID INT,\n" +
+				   "    ActivePersonaID INT NOT NULL,\n" +
 				   "    ForumID INT,\n" +
 				   "    DiscordID TEXT,\n" +
 				   "    Playtime BIGINT NOT NULL,\n" +
@@ -100,6 +101,37 @@ public class AccountsSQL {
 		} catch (SQLException ex) {
 			Errors.close(plugin, ex);
 		}
+	}
+
+	public int getActivePersonaID(int accountID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT TOP 1 * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			int result = -1;
+			if (rs.next()) {
+				result = rs.getInt("ActivePersonaID");
+			}
+			return result;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return 0;
 	}
 
 }

@@ -25,6 +25,10 @@ public class Account {
 		}
 	}
 
+	public static void setHighestAccountID(int highestAccountID) {
+		Account.highestAccountID = highestAccountID;
+	}
+
 	private Account(int accountID, int activePersonaID) {
 		this.accountID = accountID;
 		plugin = RPPersonas.get();
@@ -34,14 +38,22 @@ public class Account {
 		}
 
 		if (accountID >= highestAccountID) {
-			highestAccountID = accountID + 1;
+			incrementTotalAccountID();
 		}
+	}
+
+	private void incrementTotalAccountID() {
+		highestAccountID++;
 	}
 
 	// GETTERS //
 
 	public int getAccountID() {
 		return accountID;
+	}
+
+	public int getActivePersonaID() {
+		return activePersonaID;
 	}
 
 	public List<Integer> getLivePersonaIDs() {

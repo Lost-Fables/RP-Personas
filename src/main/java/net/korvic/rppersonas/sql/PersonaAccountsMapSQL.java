@@ -101,6 +101,82 @@ public class PersonaAccountsMapSQL {
 		}
 	}
 
+	// Inserts a new mapping for a persona.
+	public void addMapping(int personaID, int accountID, boolean alive) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getSQLConnection();
+			byte aliveByte = (byte) 0;
+			if (alive) {
+				aliveByte = (byte) 1;
+			}
+
+			ps = conn.prepareStatement("INSERT OR REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive) VALUES(?,?,?)");
+
+			ps.setInt(1, personaID);
+			ps.setInt(2, accountID);
+			ps.setByte(3, aliveByte);
+
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+	}
+
+	// Removes a persona mapping.
+	public void removePersona(int personaID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "DELETE FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+			ps = conn.prepareStatement(stmt);
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+	}
+
+	// Removes all persona mappings for an account.
+	public void removeAccount(int accountID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "DELETE FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+			ps = conn.prepareStatement(stmt);
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+	}
+
 	// Retrieves the amount of tokens a player has, as per our database.
 	public List<Integer> getPersonasOf(int accountID, boolean alive) {
 		Connection conn = null;
@@ -110,9 +186,9 @@ public class PersonaAccountsMapSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			short aliveBoolean = 0;
+			byte aliveBoolean = (byte) 0;
 			if (alive) {
-				aliveBoolean = 1;
+				aliveBoolean = (byte) 1;
 			}
 			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "' AND Alive='" + aliveBoolean + "';";
 

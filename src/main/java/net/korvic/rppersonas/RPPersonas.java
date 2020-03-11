@@ -2,6 +2,7 @@ package net.korvic.rppersonas;
 
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
+import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,6 +14,7 @@ public final class RPPersonas extends JavaPlugin {
 
 	private static RPPersonas instance;
 	private AccountHandler accountHandler;
+	private PersonaHandler personaHandler;
 
 	// SQL
 	private UUIDAccountMapSQL uuidAccountMap;
@@ -27,6 +29,7 @@ public final class RPPersonas extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
 
 		accountHandler = new AccountHandler(this);
+		personaHandler = new PersonaHandler(this);
 
 		setupDatabases();
 
@@ -43,6 +46,9 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public AccountHandler getAccountHandler() {
 		return accountHandler;
+	}
+	public PersonaHandler getPersonaHandler() {
+		return personaHandler;
 	}
 
 	private void setupDatabases() {
