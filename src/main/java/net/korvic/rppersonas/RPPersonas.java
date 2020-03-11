@@ -31,22 +31,38 @@ public final class RPPersonas extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// Set this as itself.
-		instance = this;
+		// Get a copy of the default config if it doesn't already exist.
+		saveDefaultConfig();
 
-		// Register our Listeners
-		getServer().getPluginManager().registerEvents(new JoinQuitListener(instance), instance);
-
-		// Register our handlers
-		accountHandler = new AccountHandler(instance);
-		personaHandler = new PersonaHandler(instance);
-		unregisteredHandler = new UnregisteredHandler(instance);
-
+		boolean sqlSuccessful = true;
 		// Initiate SQL connections
-		setupDatabases();
+		try {
+			setupDatabases();
+		} catch (Exception e) {
+			sqlSuccessful = false;
+			this.getLogger().warning("FATAL: Failed to initiate SQL database. Please check your credentials.");
+			if (DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
 
-		// Build our commands
-		Commands.build(getCommand("register"), () -> new RegisterCommands(instance));
+		if (sqlSuccessful) {
+			// Set this as itself.
+			instance = this;
+
+			// Register our Listeners
+			getServer().getPluginManager().registerEvents(new JoinQuitListener(instance), instance);
+
+			// Register our handlers
+			accountHandler = new AccountHandler(instance);
+			personaHandler = new PersonaHandler(instance);
+			unregisteredHandler = new UnregisteredHandler(instance);
+
+			// Build our commands
+			Commands.build(getCommand("register"), () -> new RegisterCommands(instance));
+		} else {
+			this.onDisable();
+		}
 	}
 
 	@Override

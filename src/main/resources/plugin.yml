@@ -1,4 +1,4 @@
 name: RPPersonas
 version: ${project.version}
-main: net.korvic.rppersonas.Rppersonas
+main: net.korvic.rppersonas.RPPersonas
 api-version: 1.13
