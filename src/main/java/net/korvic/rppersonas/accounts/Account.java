@@ -12,12 +12,12 @@ public class Account {
 
 	// ACCOUNT CREATION //
 
-	protected static Account createActiveAccount(int accountID, int activePersonaID) {
-		if (RPPersonas.get().getAccountHandler().getAccount(accountID) == null) {
-			return new Account(accountID, activePersonaID);
-		} else {
-			return null;
+	protected static Account createAccount(int accountID, int activePersonaID) {
+		Account a = RPPersonas.get().getAccountHandler().getAccount(accountID);
+		if (a == null) {
+			a = new Account(accountID, activePersonaID);
 		}
+		return a;
 	}
 
 	private Account(int accountID, int activePersonaID) {
@@ -26,6 +26,8 @@ public class Account {
 
 		if (activePersonaID > 0) {
 			this.activePersonaID = activePersonaID;
+		} else {
+			plugin.getPersonaHandler().createPersona(accountID);
 		}
 	}
 

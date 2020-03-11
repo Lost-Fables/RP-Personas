@@ -14,6 +14,14 @@ public class PersonaHandler {
 		this.plugin = plugin;
 	}
 
+	public void createPersona(int accountID) {
+
+	}
+
+	public void loadPersona(int personaID) {
+
+	}
+
 	public void unloadPersonas(int accountID) {
 		List<Integer> personas = plugin.getPersAccMapSQL().getPersonasOf(accountID, true);
 		personas.addAll(plugin.getPersAccMapSQL().getPersonasOf(accountID, false));

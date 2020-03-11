@@ -11,6 +11,7 @@ public class RegisterCommands extends BaseCommand {
 
 	private RPPersonas plugin;
 	private static final String NO_CONSOLE_ACCOUNTS = ChatColor.YELLOW + "The console cannot register an account as it does not have a UUID.";
+	private static final String REGISTRATION_SUCCESSFUL = ChatColor.YELLOW + "Successfully linked your forum account!";
 
 	public RegisterCommands(RPPersonas plugin) {
 		this.plugin = plugin;
@@ -22,6 +23,7 @@ public class RegisterCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the line below.
 			plugin.getUUIDAccountMapSQL().addMapping(id, (Player) sender);
+			sender.sendMessage(REGISTRATION_SUCCESSFUL);
 		} else {
 			sender.sendMessage(NO_CONSOLE_ACCOUNTS);
 		}
