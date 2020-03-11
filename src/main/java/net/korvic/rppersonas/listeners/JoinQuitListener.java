@@ -22,9 +22,7 @@ public class JoinQuitListener implements Listener {
 		int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
 		if (account > 0) {
 			int persona = plugin.getAccountsSQL().getActivePersonaID(account);
-			if (plugin.getAccountHandler().loadAccount(account, persona) == null) {
-				plugin.getUUIDAccountMapSQL().addMapping(plugin.getAccountHandler().createAccount().getAccountID(), uuid);
-			}
+			plugin.getAccountHandler().loadAccount(account, persona);
 		} else {
 			plugin.getUnregisteredHandler().add(event.getPlayer());
 		}

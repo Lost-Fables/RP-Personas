@@ -21,12 +21,6 @@ public class AccountHandler {
 		return loadedAccounts.get(id);
 	}
 
-	public Account createAccount() {
-		Account a = Account.createFreshAccount();
-		loadedAccounts.put(a.getAccountID(), a);
-		return a;
-	}
-
 	public Account loadAccount(int accountID, int activePersonaID) {
 		Account a = Account.createActiveAccount(accountID, activePersonaID);
 		if (a != null) {

@@ -42,12 +42,9 @@ public class UUIDAccountMapSQL {
 		connection = getSQLConnection();
 		try {
 			String stmt;
-			stmt = "SELECT MAX(AccountID) FROM " + SQLTableName + ";";
+			stmt = "SELECT * FROM " + SQLTableName + ";";
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				Account.setHighestAccountID(rs.getInt("AccountID"));
-			}
 			close(ps, rs);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);

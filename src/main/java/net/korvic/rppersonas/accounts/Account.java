@@ -5,17 +5,12 @@ import net.korvic.rppersonas.RPPersonas;
 import java.util.*;
 
 public class Account {
-	private static int highestAccountID;
 	private int accountID;
 	private int activePersonaID;
 	private static RPPersonas plugin;
 
 
 	// ACCOUNT CREATION //
-
-	protected static Account createFreshAccount() {
-		return new Account(highestAccountID, -1);
-	}
 
 	protected static Account createActiveAccount(int accountID, int activePersonaID) {
 		if (RPPersonas.get().getAccountHandler().getAccount(accountID) == null) {
@@ -32,21 +27,9 @@ public class Account {
 		if (activePersonaID > 0) {
 			this.activePersonaID = activePersonaID;
 		}
-
-		if (accountID >= highestAccountID) {
-			highestAccountID = accountID + 1;
-		}
-	}
-
-	public static void setHighestAccountID(int highestAccountID) {
-		Account.highestAccountID = highestAccountID;
 	}
 
 	// GETTERS //
-
-	public static int getHighestAccountID() {
-		return highestAccountID;
-	}
 
 	public int getAccountID() {
 		return accountID;
