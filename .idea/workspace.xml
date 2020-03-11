@@ -2,14 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/UnregisteredHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/BaseCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/RegisterCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RP Personas.iml" beforeDir="false" afterPath="$PROJECT_DIR$/RP Personas.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/AccountHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/AccountHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/JoinQuitListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/JoinQuitListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/AccountsSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/AccountsSQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonaAccountsMapSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonaAccountsMapSQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/UUIDAccountMapSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/UUIDAccountMapSQL.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,7 +50,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Tythan" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Pit Autofill" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RecentsManager">
@@ -122,13 +123,14 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="919" y="386" key="#com.intellij.ide.fileTemplates.ui.ConfigureTemplatesDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1583647996964" />
-    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser" timestamp="1583610445904">
+    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser" timestamp="1583964820167">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1583610445904" />
-    <state x="3300" y="236" key="FileChooserDialogImpl" timestamp="1583613435715">
-      <screen x="2560" y="0" width="1920" height="1040" />
+    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1583964820167" />
+    <state x="987" y="318" key="FileChooserDialogImpl" timestamp="1583902423744">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
+    <state x="987" y="318" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1583902423744" />
     <state x="3300" y="236" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1583613435715" />
     <state x="781" y="341" key="SettingsEditor" timestamp="1583687697036">
       <screen x="0" y="0" width="2560" height="1400" />

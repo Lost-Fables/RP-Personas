@@ -12,7 +12,7 @@ public class JoinQuitListener implements Listener {
 
 	RPPersonas plugin;
 
-	public JoinQuitListener (RPPersonas plugin) {
+	public JoinQuitListener(RPPersonas plugin) {
 		this.plugin = plugin;
 	}
 
@@ -20,9 +20,13 @@ public class JoinQuitListener implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		UUID uuid = event.getPlayer().getUniqueId();
 		int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
-		int persona = plugin.getAccountsSQL().getActivePersonaID(account);
-		if (plugin.getAccountHandler().loadAccount(account, persona) == null) {
-			plugin.getUUIDAccountMapSQL().addMapping(plugin.getAccountHandler().createAccount().getAccountID(), uuid);
+		if (account > 0) {
+			int persona = plugin.getAccountsSQL().getActivePersonaID(account);
+			if (plugin.getAccountHandler().loadAccount(account, persona) == null) {
+				plugin.getUUIDAccountMapSQL().addMapping(plugin.getAccountHandler().createAccount().getAccountID(), uuid);
+			}
+		} else {
+			plugin.getUnregisteredHandler().add(event.getPlayer());
 		}
 	}
 

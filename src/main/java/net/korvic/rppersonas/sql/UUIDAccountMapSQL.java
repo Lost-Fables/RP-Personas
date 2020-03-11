@@ -2,6 +2,7 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.accounts.Account;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
@@ -101,7 +102,13 @@ public class UUIDAccountMapSQL {
 		}
 	}
 
-	public void addMapping(int accountID, UUID uuid) {
+	public void addMapping(int accountID, Player p) {
+		plugin.getUnregisteredHandler().remove(p);
+		addMapping(accountID, p.getUniqueId());
+		plugin.getAccountHandler().loadAccount(accountID, 0);
+	}
+
+	protected void addMapping(int accountID, UUID uuid) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {

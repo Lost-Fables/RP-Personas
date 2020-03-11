@@ -1,6 +1,8 @@
 package net.korvic.rppersonas;
 
+import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
+import net.korvic.rppersonas.commands.RegisterCommands;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.*;
@@ -13,8 +15,11 @@ public final class RPPersonas extends JavaPlugin {
 	public static final boolean DEBUGGING = false;
 
 	private static RPPersonas instance;
+
+	// Handlers
 	private AccountHandler accountHandler;
 	private PersonaHandler personaHandler;
+	private UnregisteredHandler unregisteredHandler;
 
 	// SQL
 	private UUIDAccountMapSQL uuidAccountMap;
@@ -26,14 +31,22 @@ public final class RPPersonas extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
+		// Set this as itself.
+		instance = this;
 
-		accountHandler = new AccountHandler(this);
-		personaHandler = new PersonaHandler(this);
+		// Register our Listeners
+		getServer().getPluginManager().registerEvents(new JoinQuitListener(instance), instance);
 
+		// Register our handlers
+		accountHandler = new AccountHandler(instance);
+		personaHandler = new PersonaHandler(instance);
+		unregisteredHandler = new UnregisteredHandler(instance);
+
+		// Initiate SQL connections
 		setupDatabases();
 
-		instance = this;
+		// Build our commands
+		Commands.build(getCommand("register"), () -> new RegisterCommands(instance));
 	}
 
 	@Override
@@ -50,14 +63,17 @@ public final class RPPersonas extends JavaPlugin {
 	public PersonaHandler getPersonaHandler() {
 		return personaHandler;
 	}
+	public UnregisteredHandler getUnregisteredHandler() {
+		return unregisteredHandler;
+	}
 
 	private void setupDatabases() {
-		uuidAccountMap = new UUIDAccountMapSQL(this);
-		accounts = new AccountsSQL(this);
-		persAccMap = new PersonaAccountsMapSQL(this);
-		personas = new PersonasSQL(this);
-		currency = new CurrencySQL(this);
-		skins = new SkinsSQL(this);
+		uuidAccountMap = new UUIDAccountMapSQL(instance);
+		accounts = new AccountsSQL(instance);
+		persAccMap = new PersonaAccountsMapSQL(instance);
+		personas = new PersonasSQL(instance);
+		currency = new CurrencySQL(instance);
+		skins = new SkinsSQL(instance);
 
 		uuidAccountMap.load();
 		accounts.load();
