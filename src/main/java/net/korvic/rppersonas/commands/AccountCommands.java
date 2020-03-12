@@ -17,7 +17,7 @@ public class AccountCommands extends BaseCommand {
 		this.plugin = plugin;
 	}
 
-	@Cmd(value="Send a registration message to your forum account.")
+	@Cmd(value="Send a registration message to your forum account.", permission="rppersonas.accepted")
 	public void link(CommandSender sender,
 						 @Arg(value="Forum ID", description="Your forum account ID.") int id) {
 		if (sender instanceof Player) {
