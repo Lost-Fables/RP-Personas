@@ -2,6 +2,7 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.accounts.Account;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -52,11 +53,11 @@ public class UUIDAccountMapSQL {
 	}
 
 	public Connection getSQLConnection() {
-		String host = plugin.getConfig().getString("mysql.host");
-		String port = plugin.getConfig().getString("mysql.port");
-		String database = plugin.getConfig().getString("mysql.database");
-		String user = plugin.getConfig().getString("mysql.user");
-		String password = plugin.getConfig().getString("mysql.password");
+		String host = RPPersonas.config.getString("mysql.host");
+		String port = RPPersonas.config.getString("mysql.port");
+		String database = RPPersonas.config.getString("mysql.database");
+		String user = RPPersonas.config.getString("mysql.user");
+		String password = RPPersonas.config.getString("mysql.password");
 
 		try {
 			if (connection != null && !connection.isClosed()) {

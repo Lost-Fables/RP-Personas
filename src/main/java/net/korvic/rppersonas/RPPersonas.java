@@ -6,13 +6,15 @@ import net.korvic.rppersonas.commands.RegisterCommands;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Currency;
 
 public final class RPPersonas extends JavaPlugin {
 
-	public static final boolean DEBUGGING = false;
+	public static final boolean DEBUGGING = true;
+	public static FileConfiguration config;
 
 	private static RPPersonas instance;
 
@@ -33,6 +35,7 @@ public final class RPPersonas extends JavaPlugin {
 	public void onEnable() {
 		// Get a copy of the default config if it doesn't already exist.
 		saveDefaultConfig();
+		config = getConfig();
 
 		boolean sqlSuccessful = true;
 		// Initiate SQL connections
@@ -40,7 +43,7 @@ public final class RPPersonas extends JavaPlugin {
 			setupDatabases();
 		} catch (Exception e) {
 			sqlSuccessful = false;
-			this.getLogger().warning("FATAL: Failed to initiate SQL database. Please check your credentials.");
+			this.getLogger().severe("FATAL: Failed to initiate SQL database. Please check your credentials.");
 			if (DEBUGGING) {
 				e.printStackTrace();
 			}

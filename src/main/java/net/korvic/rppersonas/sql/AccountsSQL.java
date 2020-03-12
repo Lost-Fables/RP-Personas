@@ -56,11 +56,11 @@ public class AccountsSQL {
 	}
 
 	public Connection getSQLConnection() {
-		String host = plugin.getConfig().getString("mysql.host");
-		String port = plugin.getConfig().getString("mysql.port");
-		String database = plugin.getConfig().getString("mysql.database");
-		String user = plugin.getConfig().getString("mysql.user");
-		String password = plugin.getConfig().getString("mysql.password");
+		String host = RPPersonas.config.getString("mysql.host");
+		String port = RPPersonas.config.getString("mysql.port");
+		String database = RPPersonas.config.getString("mysql.database");
+		String user = RPPersonas.config.getString("mysql.user");
+		String password = RPPersonas.config.getString("mysql.password");
 
 		try {
 			if (connection != null && !connection.isClosed()) {
