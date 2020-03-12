@@ -3,15 +3,14 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AccountCommands extends BaseCommand {
 
 	private RPPersonas plugin;
-	private static final String NO_CONSOLE_ACCOUNTS = ChatColor.YELLOW + "The console cannot register an account as it does not have a UUID.";
-	private static final String REGISTRATION_SUCCESSFUL = ChatColor.YELLOW + "Successfully linked your forum account!";
+	private static final String NO_CONSOLE_ACCOUNTS = RPPersonas.PREFIX + "The console cannot register an account as it does not have a UUID.";
+	private static final String REGISTRATION_SUCCESSFUL = RPPersonas.PREFIX + "Successfully linked your forum account!";
 
 	public AccountCommands(RPPersonas plugin) {
 		this.plugin = plugin;

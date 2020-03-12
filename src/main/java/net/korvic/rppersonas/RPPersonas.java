@@ -6,11 +6,14 @@ import net.korvic.rppersonas.commands.AccountCommands;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.*;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RPPersonas extends JavaPlugin {
 
+	public static final String PREFIX = ChatColor.YELLOW + "";
+	public static final String ALT_COLOR = ChatColor.WHITE + "";
 	public static final boolean DEBUGGING = true;
 	public static FileConfiguration config;
 
@@ -50,7 +53,6 @@ public final class RPPersonas extends JavaPlugin {
 		}
 
 		if (sqlSuccessful) {
-
 			// Register our Listeners
 			getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
 
