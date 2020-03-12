@@ -18,13 +18,15 @@ public class JoinQuitListener implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
-		UUID uuid = event.getPlayer().getUniqueId();
-		int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
-		if (account > 0) {
-			int persona = plugin.getAccountsSQL().getActivePersonaID(account);
-			plugin.getAccountHandler().loadAccount(account, persona);
-		} else {
-			plugin.getUnregisteredHandler().add(event.getPlayer());
+		if (event.getPlayer().hasPermission("rppersonas.accepted")) {
+			UUID uuid = event.getPlayer().getUniqueId();
+			int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
+			if (account > 0) {
+				int persona = plugin.getAccountsSQL().getActivePersonaID(account);
+				plugin.getAccountHandler().loadAccount(account, persona);
+			} else {
+				plugin.getUnregisteredHandler().add(event.getPlayer());
+			}
 		}
 	}
 

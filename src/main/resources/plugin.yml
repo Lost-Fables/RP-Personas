@@ -7,3 +7,7 @@ commands:
   account:
     command: /<command>
     description: "Link your Minecraft and forum accounts."
+permissions:
+  rppersonas.accepted:
+    default: op
+    description: "Differentiate users who've been accepted via greylist application."
