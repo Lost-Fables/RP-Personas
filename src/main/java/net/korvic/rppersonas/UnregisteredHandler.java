@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UnregisteredHandler {
 
-	private static final String REGISTER_REMINDER = ChatColor.YELLOW + "Please register your forum account with " + ChatColor.WHITE + "/register Forum_ID" + ChatColor.YELLOW + "!\n" +
+	private static final String REGISTER_REMINDER = ChatColor.YELLOW + "Please register your forum account with " + ChatColor.WHITE + "/account link Forum_ID" + ChatColor.YELLOW + "!\n" +
 													ChatColor.YELLOW + "If you need help, please use " + ChatColor.WHITE + "/request new" + ChatColor.YELLOW + " and someone will swing by to give you a hand.";
 	private RPPersonas plugin;
 	private BukkitRunnable runnable;

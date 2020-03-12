@@ -111,7 +111,7 @@ public class UUIDAccountMapSQL {
 		PreparedStatement ps = null;
 		try {
 			conn = getSQLConnection();
-			ps = conn.prepareStatement("INSERT OR REPLACE INTO " + SQLTableName + " (UUID,AccountID) VALUES(?,?)");
+			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (UUID,AccountID) VALUES(?,?)");
 			ps.setString(1, uuid.toString());
 			ps.setInt(2, accountID);
 			ps.executeUpdate();
@@ -167,7 +167,7 @@ public class UUIDAccountMapSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT TOP 1 * FROM " + SQLTableName + " WHERE UUID='" + uuid.toString() + "';";
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE UUID='" + uuid.toString() + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -175,6 +175,9 @@ public class UUIDAccountMapSQL {
 			int result = -1;
 			if (rs.next()) {
 				result = rs.getInt("AccountID");
+			}
+			if (rs.next()) {
+				plugin.getLogger().warning("Found duplicate accounts for UUID: " + uuid.toString());
 			}
 			return result;
 		} catch (SQLException ex) {
