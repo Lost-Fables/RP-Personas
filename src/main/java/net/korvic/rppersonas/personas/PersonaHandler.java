@@ -93,7 +93,7 @@ public class PersonaHandler {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PREFIX + ChatColor.BOLD + "   ► Welcome to Forgotten Fables! ◄   " +
+			return RPPersonas.PREFIX + ChatColor.BOLD + "   ► Welcome to Lost Fables! ◄   " +
 				   DIVIDER +
 				   RPPersonas.ALT_COLOR + "Let's get you started with the " + ChatColor.BOLD + "persona" + RPPersonas.ALT_COLOR + " you'll be playing. For the following questions, simply type a reply in chat, or use the buttons to select your answers." + ChatColor.RESET;
 		}
