@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RPPersonas extends JavaPlugin {
 
-	public static final String PREFIX = ChatColor.YELLOW + "";
+	public static final String PREFIX = ChatColor.DARK_AQUA + "";
 	public static final String ALT_COLOR = ChatColor.WHITE + "";
 	public static final boolean DEBUGGING = true;
 	public static FileConfiguration config;

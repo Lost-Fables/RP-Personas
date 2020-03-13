@@ -85,7 +85,7 @@ public class PersonaHandler {
 	//// Creation Dialog Prompts ////
 
 	private static final String SPACE = "  ";
-	private static final String DIVIDER = "\n" + RPPersonas.ALT_COLOR + "===================================================\n" + ChatColor.RESET;
+	private static final String DIVIDER = "\n" + RPPersonas.ALT_COLOR + "================================\n" + ChatColor.RESET;
 	private static final String NOTE = RPPersonas.ALT_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Intro //
@@ -115,7 +115,7 @@ public class PersonaHandler {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			return RPPersonas.PREFIX + "Type in the name for your persona now." +
-				   NOTE + RPPersonas.PREFIX + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).";
+				   NOTE + RPPersonas.PREFIX + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
 		}
 
 		@Override
