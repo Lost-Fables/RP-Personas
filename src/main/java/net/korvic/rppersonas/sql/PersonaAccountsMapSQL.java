@@ -44,9 +44,12 @@ public class PersonaAccountsMapSQL {
 		connection = getSQLConnection();
 		try {
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + ";";
+			stmt = "SELECT MAX(PersonaID) FROM " + SQLTableName + ";";
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				plugin.getPersonaHandler().updateHighestPersonaID(rs.getInt("PersonaID"));
+			}
 			close(ps, rs);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);

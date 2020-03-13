@@ -1,13 +1,24 @@
 package net.korvic.rppersonas.personas;
 
 public enum PersonaGender {
-	MALE(1),
-	FEMALE(2),
-	OTHER(0);
+	MALE(1, "Male"),
+	FEMALE(2, "Female"),
+	OTHER(0, "Other");
 
-	public final int id;
+	private final int id;
+	private final String name;
 
-	PersonaGender(int id) {
+	PersonaGender(int id, String name) {
 		this.id = id;
+		this.name = name;
 	}
+
+	public int getID() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 }

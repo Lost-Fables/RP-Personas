@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -12,22 +13,22 @@ public class Account {
 
 	// ACCOUNT CREATION //
 
-	protected static Account createAccount(int accountID, int activePersonaID) {
+	protected static Account createAccount(Player p, int accountID, int activePersonaID) {
 		Account a = RPPersonas.get().getAccountHandler().getAccount(accountID);
 		if (a == null) {
-			a = new Account(accountID, activePersonaID);
+			a = new Account(p, accountID, activePersonaID);
 		}
 		return a;
 	}
 
-	private Account(int accountID, int activePersonaID) {
+	private Account(Player p, int accountID, int activePersonaID) {
 		this.accountID = accountID;
 		plugin = RPPersonas.get();
 
 		if (activePersonaID > 0) {
 			this.activePersonaID = activePersonaID;
 		} else {
-			plugin.getPersonaHandler().createPersona(accountID);
+			plugin.getPersonaHandler().createPersona(p, accountID);
 		}
 	}
 

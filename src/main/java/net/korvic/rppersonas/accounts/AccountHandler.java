@@ -8,7 +8,7 @@ import java.util.Map;
 public class AccountHandler {
 
 	private RPPersonas plugin;
-	private Map<Integer, Account> loadedAccounts;
+	private Map<Integer, Account> loadedAccounts; // accountID , account
 
 	private static final String MULTIPLE_ACCOUNTS_WARN = "Found multiple accounts with the ID ";
 
@@ -17,8 +17,8 @@ public class AccountHandler {
 		loadedAccounts = new HashMap<>();
 	}
 
-	public Account getAccount(int id) {
-		return loadedAccounts.get(id);
+	public Account getAccount(int accountID) {
+		return loadedAccounts.get(accountID);
 	}
 
 	public Account loadAccount(int accountID, int activePersonaID) {
@@ -29,8 +29,8 @@ public class AccountHandler {
 		return a;
 	}
 
-	public void unloadAccount(int id) {
-		loadedAccounts.remove(id);
+	public void unloadAccount(int accountID) {
+		loadedAccounts.remove(accountID);
 	}
 
 }
