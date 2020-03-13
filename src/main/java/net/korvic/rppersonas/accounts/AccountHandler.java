@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +22,8 @@ public class AccountHandler {
 		return loadedAccounts.get(accountID);
 	}
 
-	public Account loadAccount(int accountID, int activePersonaID) {
-		Account a = Account.createAccount(accountID, activePersonaID);
+	public Account loadAccount(Player p, int accountID, int activePersonaID) {
+		Account a = Account.createAccount(p, accountID, activePersonaID);
 		if (!loadedAccounts.containsValue(a)) {
 			loadedAccounts.put(a.getAccountID(), a);
 		}

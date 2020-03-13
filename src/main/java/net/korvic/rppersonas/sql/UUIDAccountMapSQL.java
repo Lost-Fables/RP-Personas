@@ -103,7 +103,7 @@ public class UUIDAccountMapSQL {
 	public void addMapping(int accountID, Player p) {
 		plugin.getUnregisteredHandler().remove(p);
 		addMapping(accountID, p.getUniqueId());
-		plugin.getAccountHandler().loadAccount(accountID, 0);
+		plugin.getAccountHandler().loadAccount(p, accountID, 0);
 	}
 
 	protected void addMapping(int accountID, UUID uuid) {
