@@ -1,15 +1,23 @@
 package net.korvic.rppersonas.personas;
 
-import org.bukkit.inventory.Inventory;
-
 public class Persona {
 	private int personaID;
 	private int accountID;
 	private String prefix;
 	private String nickName;
-	private Inventory inv;
+	private PersonaInventory inv;
 	private boolean isAlive;
 	private int activeSkinID;
+
+	public Persona(int personaID, int accountID, String prefix, String nickName, String personaInvData, boolean isAlive, int activeSkinID) {
+		this.personaID = personaID;
+		this.accountID = accountID;
+		this.prefix = prefix;
+		this.nickName = nickName;
+		this.inv = new PersonaInventory(personaInvData);
+		this.isAlive = isAlive;
+		this.activeSkinID = activeSkinID;
+	}
 
 	/*
 	 * Store all above info.

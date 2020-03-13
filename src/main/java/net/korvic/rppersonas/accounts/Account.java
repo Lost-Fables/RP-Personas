@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.PersonaHandler;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -28,7 +29,7 @@ public class Account {
 		if (activePersonaID > 0) {
 			this.activePersonaID = activePersonaID;
 		} else {
-			plugin.getPersonaHandler().createFirstPersona(p, accountID);
+			PersonaHandler.createPersona(p, accountID, true);
 		}
 	}
 
