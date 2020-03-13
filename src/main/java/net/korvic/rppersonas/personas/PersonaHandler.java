@@ -84,21 +84,22 @@ public class PersonaHandler {
 
 	//// Creation Dialog Prompts ////
 
-	private static final String DIVIDER = RPPersonas.PREFIX + "\n===================================================\n" + ChatColor.RESET;
+	private static final String SPACE = "  ";
+	private static final String DIVIDER = RPPersonas.ALT_COLOR + "\n===================================================\n" + ChatColor.RESET;
 	private static final String NOTE = RPPersonas.ALT_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Intro //
 	private static class StartingPrompt extends MessagePrompt {
 
 		@Override
-		public String getPromptText(ConversationContext arg0) {
+		public String getPromptText(ConversationContext context) {
 			return RPPersonas.PREFIX + ChatColor.BOLD + "   ► Welcome to Forgotten Fables! ◄   " +
 				   DIVIDER +
 				   RPPersonas.ALT_COLOR + "Let's get you started with the " + ChatColor.BOLD + "persona" + RPPersonas.ALT_COLOR + " you'll be playing. For the following questions, simply type a reply in chat, or use the buttons to select your answers." + ChatColor.RESET;
 		}
 
 		@Override
-		protected Prompt getNextPrompt(ConversationContext arg0) {
+		protected Prompt getNextPrompt(ConversationContext context) {
 			return new PersonaNamePrompt(false);
 		}
 	}
@@ -114,7 +115,7 @@ public class PersonaHandler {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			return RPPersonas.PREFIX + "Type in the name for your persona now." +
-				   NOTE + RPPersonas.PREFIX + "A name is limited to letters(A-z), spaces, and dashes(-).";
+				   NOTE + RPPersonas.PREFIX + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).";
 		}
 
 		@Override
@@ -145,14 +146,15 @@ public class PersonaHandler {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent();
+			BaseComponent confirmation = new TextComponent(RPPersonas.PREFIX + "You have entered " + RPPersonas.ALT_COLOR + name + RPPersonas.PREFIX + " as your character name. Is this correct?\n" +
+														   DIVIDER);
+
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
-			confirmation.addExtra(" ");
+			confirmation.addExtra(SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!"));
 
 			p.spigot().sendMessage(confirmation);
-			return RPPersonas.PREFIX + "You have entered " + RPPersonas.ALT_COLOR + name + RPPersonas.PREFIX + " as your character name. Is this correct?\n" +
-				   DIVIDER;
+			return "";
 		}
 
 		@Override
@@ -182,19 +184,19 @@ public class PersonaHandler {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent races = new TextComponent();
+			BaseComponent races = new TextComponent(RPPersonas.PREFIX + "Pick your main race: " + DIVIDER);
 
 			for (PersonaRace race : PersonaRace.values()) {
 				if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
 					races.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to see subraces"));
-					races.addExtra("  ");
+					races.addExtra(SPACE);
 				}
 			}
 
 			MessageUtil.addNewlines(races);
 			p.spigot().sendMessage(races);
 
-			return RPPersonas.PREFIX + "Pick your main race: " + DIVIDER;
+			return "";
 		}
 
 
@@ -231,18 +233,19 @@ public class PersonaHandler {
 			if (race != null) {
 				Player p = (Player) context.getForWhom();
 
-				BaseComponent subraces = new TextComponent(MessageUtil.CommandButton("Back", "Back", "Click to return to main races"));
+				BaseComponent subraces = new TextComponent(RPPersonas.PREFIX + "Pick your subrace: " + DIVIDER +
+														   MessageUtil.CommandButton("Back", "Back", "Click to return to main races") + SPACE);
 
 				for (PersonaSubRace race : this.race.getSubRaces()) {
 					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
 						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace"));
-						subraces.addExtra("  ");
+						subraces.addExtra(SPACE);
 					}
 				}
 
 				MessageUtil.addNewlines(subraces);
 				p.spigot().sendMessage(subraces);
-				return RPPersonas.PREFIX + "Pick your subrace: " + DIVIDER;
+				return "";
 			}
 			return ChatColor.DARK_RED + "Error: " + ChatColor.RED + "Main Race not found. Please contact a technician.";
 		}
@@ -273,18 +276,16 @@ public class PersonaHandler {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent genders = new TextComponent();
-			genders.setColor(ChatColor.YELLOW.asBungee());
-
+			BaseComponent genders = new TextComponent(RPPersonas.PREFIX + "Please select the Gender of your Persona." +
+													  DIVIDER);
 
 			for (PersonaGender g : PersonaGender.values()) {
 				genders.addExtra(MessageUtil.CommandButton(g.getName(), g.getName(), "Click to select"));
-				genders.addExtra("  ");
+				genders.addExtra(SPACE);
 			}
 
 			p.spigot().sendMessage(genders);
-			return RPPersonas.PREFIX + "Please select the Gender of your Persona." +
-				   DIVIDER;
+			return "";
 		}
 
 		@Override
@@ -305,19 +306,20 @@ public class PersonaHandler {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent();
+			BaseComponent confirmation = new TextComponent(RPPersonas.PREFIX + "Let's review your persona details..." + RPPersonas.ALT_COLOR +
+														   "\nName: " + context.getSessionData("name") +
+														   "\nRace: " + context.getSessionData("race") +
+														   "\nGender: " + context.getSessionData("gender") + RPPersonas.PREFIX +
+														   "\nDoes everything look to be in order?" +
+														   DIVIDER);
+
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select"));
-			confirmation.addExtra(" ");
+			confirmation.addExtra(SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select"));
 
 			p.spigot().sendMessage(confirmation);
 
-			return RPPersonas.PREFIX + "Let's review your persona details..." +
-				   DIVIDER + RPPersonas.ALT_COLOR +
-				   "Name: " + context.getSessionData("name") +
-				   "\nRace: " + context.getSessionData("race") +
-				   "\nGender: " + context.getSessionData("gender") + RPPersonas.PREFIX +
-				   "\nDoes everything look to be in order?";
+			return "";
 		}
 
 		@Override
@@ -340,18 +342,15 @@ public class PersonaHandler {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent options = new TextComponent();
-			options.setColor(ChatColor.YELLOW.asBungee());
-
-
+			BaseComponent options = new TextComponent(RPPersonas.PREFIX + "Which part is wrong?" +
+													  DIVIDER);
 			for (String s : SECTION) {
 				options.addExtra(MessageUtil.CommandButton(s, s, "Click to select"));
-				options.addExtra("  ");
+				options.addExtra(SPACE);
 			}
 
 			p.spigot().sendMessage(options);
-			return RPPersonas.PREFIX + "Which part is wrong?" +
-				   DIVIDER;
+			return "";
 		}
 
 		@Override
