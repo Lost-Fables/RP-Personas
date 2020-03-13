@@ -200,15 +200,8 @@ public class PersonaHandler {
 
 		@Override
 		protected boolean isInputValid(ConversationContext context, String input) {
-			try {
-				PersonaRace race = PersonaRace.valueOf(input);
-				return true;
-			} catch (Exception e) {
-				if (RPPersonas.DEBUGGING) {
-					e.printStackTrace();
-				}
-				return false;
-			}
+			PersonaRace race = PersonaRace.getByName(input);
+			return race != null;
 		}
 
 		@Override
@@ -224,7 +217,7 @@ public class PersonaHandler {
 
 		private PickSubracePrompt(String string, boolean returnToEnd){
 			try {
-				this.race = PersonaRace.valueOf(string);
+				this.race = PersonaRace.getByName(string);
 				this.returnToEnd = returnToEnd;
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
@@ -257,16 +250,8 @@ public class PersonaHandler {
 		@Override
 		protected boolean isInputValid(ConversationContext context, String input) {
 			if ("back".equalsIgnoreCase(input)) return true;
-
-			try {
-				PersonaSubRace subrace = PersonaSubRace.valueOf(input);
-				return true;
-			} catch (Exception e) {
-				if (RPPersonas.DEBUGGING) {
-					e.printStackTrace();
-				}
-				return false;
-			}
+			PersonaSubRace subrace = PersonaSubRace.getByName(input);
+			return subrace != null;
 		}
 
 		@Override
@@ -304,15 +289,8 @@ public class PersonaHandler {
 
 		@Override
 		protected boolean isInputValid(ConversationContext context, String input) {
-			try {
-				PersonaGender gender = PersonaGender.valueOf(input);
-				return true;
-			} catch (Exception e) {
-				if (RPPersonas.DEBUGGING) {
-					e.printStackTrace();
-				}
-				return false;
-			}
+			PersonaGender gender = PersonaGender.getByName(input);
+			return gender != null;
 		}
 
 		@Override

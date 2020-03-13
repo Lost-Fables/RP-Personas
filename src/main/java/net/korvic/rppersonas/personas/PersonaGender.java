@@ -21,4 +21,13 @@ public enum PersonaGender {
 		return name;
 	}
 
+	public static PersonaGender getByName(String name) {
+		for (PersonaGender gender : values()) {
+			if (gender.getName().equalsIgnoreCase(name)) {
+				return gender;
+			}
+		}
+		return null;
+	}
+
 }

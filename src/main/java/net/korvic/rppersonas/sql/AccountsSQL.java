@@ -111,7 +111,7 @@ public class AccountsSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT TOP 1 * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();

@@ -21,4 +21,13 @@ public enum PersonaRace {
 	public PersonaSubRace[] getSubRaces() {
 		return subRaceList;
 	}
+
+	public static PersonaRace getByName(String name) {
+		for (PersonaRace race : values()) {
+			if (race.getName().equalsIgnoreCase(name)) {
+				return race;
+			}
+		}
+		return null;
+	}
 }
