@@ -28,7 +28,7 @@ public class Account {
 		if (activePersonaID > 0) {
 			this.activePersonaID = activePersonaID;
 		} else {
-			plugin.getPersonaHandler().createPersona(p, accountID);
+			plugin.getPersonaHandler().createFirstPersona(p, accountID);
 		}
 	}
 
