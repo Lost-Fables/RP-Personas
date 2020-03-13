@@ -63,7 +63,7 @@ public class UUIDAccountMapSQL {
 			if (connection != null && !connection.isClosed()) {
 				return connection;
 			}
-			String url = "jdbc:mysql://" + host + ":" + port + "/" + database;
+			String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false";
 			return DriverManager.getConnection(url, user, password);
 		} catch (SQLException ex) {
 			if (RPPersonas.DEBUGGING) {

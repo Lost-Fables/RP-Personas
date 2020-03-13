@@ -85,7 +85,7 @@ public class PersonaHandler {
 	//// Creation Dialog Prompts ////
 
 	private static final String SPACE = "  ";
-	private static final String DIVIDER = RPPersonas.ALT_COLOR + "\n===================================================\n" + ChatColor.RESET;
+	private static final String DIVIDER = "\n" + RPPersonas.ALT_COLOR + "===================================================\n" + ChatColor.RESET;
 	private static final String NOTE = RPPersonas.ALT_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Intro //
@@ -233,8 +233,8 @@ public class PersonaHandler {
 			if (race != null) {
 				Player p = (Player) context.getForWhom();
 
-				BaseComponent subraces = new TextComponent(RPPersonas.PREFIX + "Pick your subrace: " + DIVIDER +
-														   MessageUtil.CommandButton("Back", "Back", "Click to return to main races") + SPACE);
+				BaseComponent subraces = new TextComponent(RPPersonas.PREFIX + "Pick your subrace: " + DIVIDER);
+				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races") + SPACE);
 
 				for (PersonaSubRace race : this.race.getSubRaces()) {
 					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
