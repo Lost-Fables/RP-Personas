@@ -146,7 +146,7 @@ public class PersonaHandler {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PREFIX + "You have entered " + RPPersonas.ALT_COLOR + name + RPPersonas.PREFIX + " as your character name. Is this correct?\n" +
+			BaseComponent confirmation = new TextComponent(RPPersonas.PREFIX + "You have entered " + RPPersonas.ALT_COLOR + name + RPPersonas.PREFIX + " as your character name. Is this correct?" +
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
@@ -193,9 +193,7 @@ public class PersonaHandler {
 				}
 			}
 
-			MessageUtil.addNewlines(races);
 			p.spigot().sendMessage(races);
-
 			return "";
 		}
 
@@ -234,7 +232,8 @@ public class PersonaHandler {
 				Player p = (Player) context.getForWhom();
 
 				BaseComponent subraces = new TextComponent(RPPersonas.PREFIX + "Pick your subrace: " + DIVIDER);
-				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races") + SPACE);
+				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races"));
+				subraces.addExtra(SPACE);
 
 				for (PersonaSubRace race : this.race.getSubRaces()) {
 					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
@@ -243,7 +242,6 @@ public class PersonaHandler {
 					}
 				}
 
-				MessageUtil.addNewlines(subraces);
 				p.spigot().sendMessage(subraces);
 				return "";
 			}
@@ -318,7 +316,6 @@ public class PersonaHandler {
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select"));
 
 			p.spigot().sendMessage(confirmation);
-
 			return "";
 		}
 
