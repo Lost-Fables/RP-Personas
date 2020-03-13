@@ -7,6 +7,8 @@ import net.md_5.bungee.api.chat.*;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ public class PersonaHandler {
 	}
 
 	public void createFirstPersona(Player p, int accountID) {
+		blindPlayer(p);
 		Map<Object, Object> data = Maps.newHashMap();
 		data.put("slot", 0);
 		data.put("first", new Object());
@@ -48,6 +51,7 @@ public class PersonaHandler {
 	}
 
 	public void createPersona(Player p, int accountID) {
+		blindPlayer(p);
 		Map<Object, Object> data = Maps.newHashMap();
 		data.put("slot", 0);
 		data.put("first", new Object());
@@ -80,6 +84,16 @@ public class PersonaHandler {
 
 	public void unloadPersona(int personaID) {
 		loadedPersonas.remove(personaID);
+	}
+
+	private void blindPlayer(Player p) {
+		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100000, 255));
+		p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100000, 255));
+	}
+
+	private void clearBlindness(Player p) {
+		p.removePotionEffect(PotionEffectType.SLOW);
+		p.removePotionEffect(PotionEffectType.BLINDNESS);
 	}
 
 	//// Creation Dialog Prompts ////

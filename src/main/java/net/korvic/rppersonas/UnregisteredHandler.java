@@ -1,8 +1,6 @@
 package net.korvic.rppersonas;
 
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -31,16 +29,11 @@ public class UnregisteredHandler {
 
 	public void add(Player p) {
 		players.add(p);
-		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100000, 10));
-		p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 100000, 10));
 		ping(p);
 	}
 
 	public void remove(Player p) {
 		players.remove(p);
-		for (PotionEffect pe : p.getActivePotionEffects()) {
-			p.removePotionEffect(pe.getType());
-		}
 	}
 
 	public void pingUnregistered() {
