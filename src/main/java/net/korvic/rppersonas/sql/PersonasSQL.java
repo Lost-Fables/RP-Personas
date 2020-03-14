@@ -25,10 +25,10 @@ public class PersonasSQL {
 				   "    Gender TEXT NOT NULL,\n" +
 				   "    Age BIGINT NOT NULL,\n" +
 				   "    Race TEXT NOT NULL,\n" +
-				   "    Inventory TEXT NOT NULL,\n" +
 				   "    Lives TINYINT NOT NULL,\n" +
 				   "    Playtime BIGINT NOT NULL,\n" +
 
+				   "    Inventory TEXT,\n" +
 				   "    NickName TEXT,\n" +
 				   "    Prefix TEXT,\n" +
 				   "    ActiveSkinID INT,\n" +
@@ -130,10 +130,12 @@ public class PersonasSQL {
 			ps.setString(5, (String) data.get("gender"));
 			ps.setLong(6, (Long) data.get("age"));
 			ps.setString(7, (String) data.get("race"));
-			ps.setString(8, (String) data.get("inventory"));
 			ps.setInt(9, (int) data.get("lives"));
 			ps.setLong(10, (long) data.get("playtime"));
 
+			if (data.containsKey("inventory")) {
+				ps.setString(8, (String) data.get("inventory"));
+			}
 			if (data.containsKey("nickname")) {
 				ps.setString(11, (String) data.get("nickname"));
 			}

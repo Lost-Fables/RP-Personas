@@ -16,7 +16,7 @@ public class PersonaHandler {
 	private static RPPersonas plugin;
 	private Map<Integer, Persona> loadedPersonas = new HashMap<>(); // personaID, persona
 	private Map<Player, Integer> playerObjectToID = new HashMap<>(); // player, personaID
-	private static int highestPersonaID = 0;
+	private static int highestPersonaID = 1;
 
 	public PersonaHandler(RPPersonas plugin) {
 		PersonaHandler.plugin = plugin;
@@ -96,8 +96,10 @@ public class PersonaHandler {
 		}
 
 		if (data.containsKey("fresh")) {
-			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
+			data.put("personaid", personaID);
 			plugin.getPersonasSQL().register(data);
+
+			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
 			plugin.getAccountHandler().getAccount(accountID).swapPersonaTo(personaID);
 		}
 		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
