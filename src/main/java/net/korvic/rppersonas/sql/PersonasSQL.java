@@ -199,7 +199,7 @@ public class PersonasSQL {
 				output.put("race", rs.getString("Race"));
 				output.put("gender", rs.getString("Gender"));
 
-				if (rs.getString("Description").length() > 0) {
+				if (rs.getString("Description") != null && rs.getString("Description").length() > 0) {
 					output.put("description", rs.getString("Description"));
 				}
 			}
