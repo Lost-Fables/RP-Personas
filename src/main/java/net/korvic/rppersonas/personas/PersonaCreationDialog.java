@@ -269,7 +269,7 @@ public class PersonaCreationDialog {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
-				context.setSessionData("age", age);
+				context.setSessionData("age", getBornMillis(age));
 				if (returnToEnd) {
 					return new PersonaConfirmPrompt();
 				} else {
@@ -278,6 +278,10 @@ public class PersonaCreationDialog {
 			} else {
 				return new PersonaAgePrompt(returnToEnd);
 			}
+		}
+
+		private long getBornMillis(int age) {
+			return (long) age;
 		}
 	}
 
