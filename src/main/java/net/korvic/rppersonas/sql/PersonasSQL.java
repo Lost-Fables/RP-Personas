@@ -168,7 +168,7 @@ public class PersonasSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT Max(PersonaID) FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+			stmt = "SELECT NickName, Name, Age, Race, Gender, Description, PersonaID FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();

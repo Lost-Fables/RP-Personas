@@ -45,7 +45,7 @@ public class PersonaAccountsMapSQL {
 		connection = getSQLConnection();
 		try {
 			String stmt;
-			stmt = "SELECT MAX(PersonaID) FROM " + SQLTableName + ";";
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQLTableName + ");";
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {

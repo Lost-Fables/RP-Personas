@@ -17,6 +17,7 @@ public class Persona {
 	private int activeSkinID;
 
 	public Persona(RPPersonas plugin, int personaID, int accountID, String prefix, String nickName, String personaInvData, boolean isAlive, int activeSkinID) {
+		this.plugin = plugin;
 		this.personaID = personaID;
 		this.accountID = accountID;
 		this.prefix = prefix;
@@ -48,13 +49,4 @@ public class Persona {
 		return output;
 	}
 
-	/*
-	 * Store all above info.
-	 * Store official name, pull as nickName if there is no nickName
-	 * Store desc as String
-	 * Store Deaths and Revives as int
-	 * Store Money and Bank as truncated Float to 2 decimals
-	 * Store Playtime as long (milliseconds)
-	 * Store Gender as int referring to PersonaGender
-	 */
 }
