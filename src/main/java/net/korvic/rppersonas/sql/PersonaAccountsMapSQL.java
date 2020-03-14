@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.PersonaHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -48,7 +49,7 @@ public class PersonaAccountsMapSQL {
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				plugin.getPersonaHandler().updateHighestPersonaID(rs.getInt("PersonaID"));
+				PersonaHandler.updateHighestPersonaID(rs.getInt("PersonaID"));
 			}
 			close(ps, rs);
 		} catch (SQLException ex) {
@@ -115,7 +116,7 @@ public class PersonaAccountsMapSQL {
 				aliveByte = (byte) 1;
 			}
 
-			ps = conn.prepareStatement("INSERT OR REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive) VALUES(?,?,?)");
+			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive) VALUES(?,?,?)");
 
 			ps.setInt(1, personaID);
 			ps.setInt(2, accountID);

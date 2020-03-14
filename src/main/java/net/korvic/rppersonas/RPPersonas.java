@@ -27,7 +27,7 @@ public final class RPPersonas extends JavaPlugin {
 	// SQL
 	private UUIDAccountMapSQL uuidAccountMap;
 	private AccountsSQL accounts;
-	private PersonaAccountsMapSQL persAccMap;
+	private PersonaAccountsMapSQL personaAccountMap;
 	private PersonasSQL personas;
 	private CurrencySQL currency;
 	private SkinsSQL skins;
@@ -89,14 +89,14 @@ public final class RPPersonas extends JavaPlugin {
 	private void setupDatabases() {
 		uuidAccountMap = new UUIDAccountMapSQL(this);
 		accounts = new AccountsSQL(this);
-		persAccMap = new PersonaAccountsMapSQL(this);
+		personaAccountMap = new PersonaAccountsMapSQL(this);
 		personas = new PersonasSQL(this);
 		currency = new CurrencySQL(this);
 		skins = new SkinsSQL(this);
 
 		uuidAccountMap.load();
 		accounts.load();
-		persAccMap.load();
+		personaAccountMap.load();
 		personas.load();
 		currency.load();
 		skins.load();
@@ -108,8 +108,8 @@ public final class RPPersonas extends JavaPlugin {
 	public AccountsSQL getAccountsSQL() {
 		return accounts;
 	}
-	public PersonaAccountsMapSQL getPersAccMapSQL() {
-		return persAccMap;
+	public PersonaAccountsMapSQL getPersonaAccountMapSQL() {
+		return personaAccountMap;
 	}
 	public PersonasSQL getPersonasSQL() {
 		return personas;

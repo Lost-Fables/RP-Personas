@@ -44,11 +44,11 @@ public class Account {
 	}
 
 	public List<Integer> getLivePersonaIDs() {
-		return plugin.getPersAccMapSQL().getPersonasOf(accountID, true);
+		return plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true);
 	}
 
 	public List<Integer> getDeadPersonaIDs() {
-		return plugin.getPersAccMapSQL().getPersonasOf(accountID, false);
+		return plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false);
 	}
 
 	public Map<Integer, String> getSkinNames() {

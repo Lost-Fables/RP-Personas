@@ -35,6 +35,8 @@ public class PersonaHandler {
 		String title = null;
 		data.put("accountid", accountID);
 		data.put("alive", new Object());
+		data.put("lives", 3);
+		data.put("playtime", 0L);
 
 		if (first) {
 			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
@@ -86,10 +88,16 @@ public class PersonaHandler {
 			activeSkinID = (int) data.get("skinid");
 		}
 
+		boolean isAlive = false;
+		if (data.containsKey("alive")) {
+			isAlive = true;
+		}
+
 		if (data.containsKey("fresh")) {
+			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
 			plugin.getPersonasSQL().register(data);
 		}
-		Persona persona = new Persona(personaID, accountID, prefix, nickName, personaInvData, data.containsKey("alive"), activeSkinID);
+		Persona persona = new Persona(personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
 	}
 
 	// CHECKING //
@@ -99,8 +107,8 @@ public class PersonaHandler {
 
 	// UNLOADING //
 	public void unloadPersonas(int accountID) {
-		List<Integer> personas = plugin.getPersAccMapSQL().getPersonasOf(accountID, true);
-		personas.addAll(plugin.getPersAccMapSQL().getPersonasOf(accountID, false));
+		List<Integer> personas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true);
+		personas.addAll(plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false));
 		for (int i : personas) {
 			unloadPersona(i);
 		}

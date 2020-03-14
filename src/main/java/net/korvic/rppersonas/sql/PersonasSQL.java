@@ -4,6 +4,7 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class PersonasSQL {
@@ -20,14 +21,14 @@ public class PersonasSQL {
 				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 				   "    Alive TINYINT NOT NULL,\n" +
 				   "    Name TEXT NOT NULL,\n" +
-				   "    Gender TINYINT NOT NULL,\n" +
+				   "    Gender TEXT NOT NULL,\n" +
 				   "    Inventory TEXT NOT NULL,\n" +
 				   "    Lives TINYINT NOT NULL,\n" +
 				   "    Playtime BIGINT NOT NULL,\n" +
 
 				   "    NickName TEXT,\n" +
 				   "    Prefix TEXT,\n" +
-				   "    ActiveSkinID TINYINT,\n" +
+				   "    ActiveSkinID INT,\n" +
 				   "    Description TEXT\n" +
 				   ");";
 	}
@@ -103,6 +104,54 @@ public class PersonasSQL {
 				rs.close();
 		} catch (SQLException ex) {
 			Errors.close(plugin, ex);
+		}
+	}
+
+	// Inserts a new mapping for a persona.
+	public void register(Map<Object, Object> data) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getSQLConnection();
+			byte aliveByte = (byte) 0;
+			if (data.containsKey("alive")) {
+				aliveByte = (byte) 1;
+			}
+
+			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive,Name,Gender,Inventory,Lives,Playtime,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+
+			ps.setInt(1, (int) data.get("personaid"));
+			ps.setInt(2, (int) data.get("accountid"));
+			ps.setByte(3, aliveByte);
+			ps.setString(4, (String) data.get("name"));
+			ps.setString(5, (String) data.get("gender"));
+			ps.setString(6, (String) data.get("inventory"));
+			ps.setInt(7, (int) data.get("lives"));
+			ps.setLong(8, (long) data.get("playtime"));
+
+			if (data.containsKey("nickname")) {
+				ps.setString(9, (String) data.get("nickname"));
+			}
+			if (data.containsKey("prefix")) {
+				ps.setString(10, (String) data.get("prefix"));
+			}
+			if (data.containsKey("skinid")) {
+				ps.setInt(11, (int) data.get("skinid"));
+			}
+			if (data.containsKey("description")) {
+				ps.setString(12, (String) data.get("description"));
+			}
+
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
 		}
 	}
 
