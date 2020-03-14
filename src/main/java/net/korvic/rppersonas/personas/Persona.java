@@ -30,8 +30,8 @@ public class Persona {
 	public Map<String, Object> getDeepInfo() {
 		Map<String, Object> output = new HashMap<>();
 
-		output.put("personaID", personaID);
-		output.put("accountID", accountID);
+		output.put("personaid", personaID);
+		output.put("accountid", accountID);
 		output.put("prefix", prefix);
 		output.put("nickname", nickName);
 		output.put("inventory", inv);
@@ -44,7 +44,7 @@ public class Persona {
 	public Map<String, Object> getBasicInfo() {
 		Map<String, Object> output = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
-		output.put("personaID", personaID);
+		output.put("personaid", personaID);
 
 		return output;
 	}
