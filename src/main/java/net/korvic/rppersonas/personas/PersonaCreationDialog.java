@@ -281,6 +281,7 @@ public class PersonaCreationDialog {
 		}
 
 		private long getBornMillis(int age) {
+			// TODO - Convert to an age in millis to keep track of the year the persona was born.
 			return (long) age;
 		}
 	}
