@@ -190,13 +190,100 @@ public class PersonaCreationDialog {
 			if (returnToEnd) {
 				return new PersonaConfirmPrompt();
 			} else {
-				return new PickGenderPrompt();
+				return new PersonaAgePrompt(false);
+			}
+		}
+	}
+
+	// Age //
+	protected static class PersonaAgePrompt extends ValidatingPrompt {
+		private boolean returnToEnd;
+		private int age = 1;
+
+		public PersonaAgePrompt(boolean returnToEnd) {
+			this.returnToEnd = returnToEnd;
+		}
+
+		@Override
+		public String getPromptText(ConversationContext context) {
+			return RPPersonas.PREFIX + "Type in the age of your persona now." +
+				   NOTE + RPPersonas.PREFIX + "This is measured in Ages, not Eras. Enter the number only.\n";
+		}
+
+		@Override
+		protected boolean isInputValid(ConversationContext context, String input) {
+			Player p = (Player) context.getForWhom();
+
+			if (input.startsWith("/")) return false;
+			if (input.matches(".*[^0-9].*")) return false;
+
+			age = Integer.parseInt(input);
+
+			return (p.hasPermission("rppersonas.ignoreage") || withinRaceLimits(age, (String) context.getSessionData("race")));
+		}
+
+		@Override
+		public Prompt acceptValidatedInput(ConversationContext context, String input) {
+			((Player) context.getForWhom()).resetTitle();
+			return new ConfirmAgePrompt(age, returnToEnd);
+		}
+
+		private boolean withinRaceLimits(int age, String race) {
+			boolean output = false;
+			try {
+				PersonaSubRace subRace = PersonaSubRace.getByName(race);
+				output = (age < subRace.getMaxAge());
+			} catch (Exception e) {
+				RPPersonas.get().getLogger().severe("Player managed to reach age selection with invalid subrace: " + race);
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
+			}
+			return output;
+		}
+	}
+
+	// Confirm Age //
+	private static class ConfirmAgePrompt extends BooleanPrompt {
+		private int age;
+		private boolean returnToEnd;
+
+		public ConfirmAgePrompt(int input, boolean returnToEnd) {
+			this.age = input;
+			this.returnToEnd = returnToEnd;
+		}
+
+		@Override
+		public String getPromptText(ConversationContext context) {
+			Player p = (Player) context.getForWhom();
+			BaseComponent confirmation = new TextComponent(RPPersonas.PREFIX + "You have entered " + RPPersonas.ALT_COLOR + age + RPPersonas.PREFIX + " as your character age (" + age/4 + " Eras). Is this correct?" +
+														   DIVIDER);
+
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
+			confirmation.addExtra(BUTTON_SPACE);
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!"));
+
+			p.spigot().sendMessage(confirmation);
+			return "";
+		}
+
+		@Override
+		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
+			if (input) {
+				context.setSessionData("age", age);
+				if (returnToEnd) {
+					return new PersonaConfirmPrompt();
+				} else {
+					return new PersonaGenderPrompt();
+				}
+			} else {
+				return new PersonaAgePrompt(returnToEnd);
 			}
 		}
 	}
 
 	// Gender //
-	private static class PickGenderPrompt extends FixedSetPrompt {
+	private static class PersonaGenderPrompt extends FixedSetPrompt {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
@@ -235,6 +322,7 @@ public class PersonaCreationDialog {
 			BaseComponent confirmation = new TextComponent(RPPersonas.PREFIX + "Let's review your persona details..." + RPPersonas.ALT_COLOR +
 														   "\nName: " + context.getSessionData("name") +
 														   "\nRace: " + context.getSessionData("race") +
+														   "\nAge: " + context.getSessionData("age") + " Ages; (" + (((int) context.getSessionData("age"))/4) + " Eras)" +
 														   "\nGender: " + context.getSessionData("gender") + RPPersonas.PREFIX +
 														   "\nDoes everything look to be in order?" +
 														   DIVIDER);
@@ -261,7 +349,7 @@ public class PersonaCreationDialog {
 	// Gender //
 	private static class ReturnUpPrompt extends FixedSetPrompt {
 
-		private static String[] SECTION = new String[]{ "Name", "Race", "Gender", "Done" };
+		private static String[] SECTION = new String[]{ "Name", "Race", "Age", "Gender", "Done" };
 
 		@Override
 		public String getPromptText(ConversationContext context) {
@@ -294,8 +382,10 @@ public class PersonaCreationDialog {
 				return new PersonaNamePrompt(true);
 			} else if (input.equalsIgnoreCase("Race")) {
 				return new PersonaRacePrompt(true);
+			} else if (input.equalsIgnoreCase("Age")) {
+				return new PersonaAgePrompt(true);
 			} else if (input.equalsIgnoreCase("Gender")) {
-				return new PickGenderPrompt();
+				return new PersonaGenderPrompt();
 			} else if (input.equalsIgnoreCase("Done")) {
 				return registerPersona(context);
 			} else {

@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaCreationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaCreationDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaSubRace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaSubRace.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
