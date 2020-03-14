@@ -289,7 +289,6 @@ public class PersonaCreationDialog {
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
-			PersonaHandler.clearBlindness((Player) context.getForWhom());
 			if (input.equalsIgnoreCase("Name")) {
 				return new PersonaNamePrompt(true);
 			} else if (input.equalsIgnoreCase("Race")) {
@@ -306,8 +305,9 @@ public class PersonaCreationDialog {
 
 	private static Prompt registerPersona(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
-		p.sendMessage(RPPersonas.PREFIX + ChatColor.BOLD + "Registering your persona now!");
+		p.spigot().sendMessage(new TextComponent(RPPersonas.PREFIX + ChatColor.BOLD + "Registering your persona now!"));
 		PersonaHandler.registerPersona(context.getAllSessionData(), p);
+		PersonaHandler.clearBlindness(p);
 
 		return Prompt.END_OF_CONVERSATION;
 	}
