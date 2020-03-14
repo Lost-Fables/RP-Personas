@@ -59,4 +59,11 @@ public class Account {
 		return plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID);
 	}
 
+	// SWAPPING //
+
+	public void swapPersonaTo(int personaID) {
+		plugin.getPersonaHandler().unloadPersona(activePersonaID);
+		this.activePersonaID = personaID;
+	}
+
 }

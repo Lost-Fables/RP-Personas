@@ -96,8 +96,10 @@ public class PersonaHandler {
 		if (data.containsKey("fresh")) {
 			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
 			plugin.getPersonasSQL().register(data);
+			plugin.getAccountHandler().getAccount(accountID).swapPersonaTo(personaID);
 		}
 		Persona persona = new Persona(personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
+		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
 	}
 
 	// CHECKING //
