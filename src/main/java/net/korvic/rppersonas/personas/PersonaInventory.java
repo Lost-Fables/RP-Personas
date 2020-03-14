@@ -3,11 +3,12 @@ package net.korvic.rppersonas.personas;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaInventory {
 
-	private List<ItemStack> inventory;
+	private List<ItemStack> inventory = new ArrayList<>();
 
 	public PersonaInventory(String inventoryData) {
 		updateInventoryContents(inventoryData);
@@ -18,7 +19,9 @@ public class PersonaInventory {
 	}
 
 	public void updateInventoryContents(String inventoryData) {
-		updateInventoryContents(InventoryUtil.deserializeItems(inventoryData));
+		if (inventoryData != null) {
+			updateInventoryContents(InventoryUtil.deserializeItems(inventoryData));
+		}
 	}
 
 	public void updateInventoryContents(List<ItemStack> inventory) {

@@ -289,6 +289,7 @@ public class PersonaCreationDialog {
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
+			PersonaHandler.clearBlindness((Player) context.getForWhom());
 			if (input.equalsIgnoreCase("Name")) {
 				return new PersonaNamePrompt(true);
 			} else if (input.equalsIgnoreCase("Race")) {

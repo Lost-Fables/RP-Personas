@@ -18,15 +18,6 @@ public class PersonaCommands extends BaseCommand {
 		this.plugin = plugin;
 	}
 
-	@Cmd(value="Get info on one's persona.", permission="rppersonas.accepted")
-	public void invoke (CommandSender sender) {
-		if (sender instanceof Player) {
-			sender.sendMessage(formatPersonaBasicInfo((Player) sender));
-		} else {
-			sender.sendMessage(NO_CONSOLE);
-		}
-	}
-
 	@Cmd(value="Get the information on someone else's persona.", permission="rppersonas.accepted")
 	public void info(CommandSender sender,
 					 @Arg(value="Player", description="The player who's info you wish to see.") Player player) {

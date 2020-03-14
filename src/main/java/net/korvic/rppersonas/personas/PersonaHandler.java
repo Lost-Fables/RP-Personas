@@ -14,8 +14,8 @@ import java.util.Map;
 public class PersonaHandler {
 
 	private static RPPersonas plugin;
-	private Map<Integer, Persona> loadedPersonas; // personaID, persona
-	private Map<Player, Integer> playerObjectToID; // player, personaID
+	private Map<Integer, Persona> loadedPersonas = new HashMap<>(); // personaID, persona
+	private Map<Player, Integer> playerObjectToID = new HashMap<>(); // player, personaID
 	private static int highestPersonaID = 0;
 
 	public PersonaHandler(RPPersonas plugin) {
@@ -99,7 +99,7 @@ public class PersonaHandler {
 			plugin.getPersonasSQL().register(data);
 			plugin.getAccountHandler().getAccount(accountID).swapPersonaTo(personaID);
 		}
-		Persona persona = new Persona(personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
+		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
 		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
 		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
 	}
@@ -127,12 +127,12 @@ public class PersonaHandler {
 	}
 
 	// EFFECTS //
-	private static void blindPlayer(Player p) {
+	public static void blindPlayer(Player p) {
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100000, 255));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100000, 255));
 	}
 
-	private void clearBlindness(Player p) {
+	public static void clearBlindness(Player p) {
 		p.removePotionEffect(PotionEffectType.SLOW);
 		p.removePotionEffect(PotionEffectType.BLINDNESS);
 	}
