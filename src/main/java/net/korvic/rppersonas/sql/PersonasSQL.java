@@ -4,6 +4,7 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -22,6 +23,8 @@ public class PersonasSQL {
 				   "    Alive TINYINT NOT NULL,\n" +
 				   "    Name TEXT NOT NULL,\n" +
 				   "    Gender TEXT NOT NULL,\n" +
+				   "    Age BIGINT NOT NULL,\n" +
+				   "    Race TEXT NOT NULL,\n" +
 				   "    Inventory TEXT NOT NULL,\n" +
 				   "    Lives TINYINT NOT NULL,\n" +
 				   "    Playtime BIGINT NOT NULL,\n" +
@@ -118,28 +121,30 @@ public class PersonasSQL {
 				aliveByte = (byte) 1;
 			}
 
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive,Name,Gender,Inventory,Lives,Playtime,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive,Name,Gender,Age,Race,Inventory,Lives,Playtime,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 			ps.setInt(1, (int) data.get("personaid"));
 			ps.setInt(2, (int) data.get("accountid"));
 			ps.setByte(3, aliveByte);
 			ps.setString(4, (String) data.get("name"));
 			ps.setString(5, (String) data.get("gender"));
-			ps.setString(6, (String) data.get("inventory"));
-			ps.setInt(7, (int) data.get("lives"));
-			ps.setLong(8, (long) data.get("playtime"));
+			ps.setLong(6, (Long) data.get("age"));
+			ps.setString(7, (String) data.get("race"));
+			ps.setString(8, (String) data.get("inventory"));
+			ps.setInt(9, (int) data.get("lives"));
+			ps.setLong(10, (long) data.get("playtime"));
 
 			if (data.containsKey("nickname")) {
-				ps.setString(9, (String) data.get("nickname"));
+				ps.setString(11, (String) data.get("nickname"));
 			}
 			if (data.containsKey("prefix")) {
-				ps.setString(10, (String) data.get("prefix"));
+				ps.setString(12, (String) data.get("prefix"));
 			}
 			if (data.containsKey("skinid")) {
-				ps.setInt(11, (int) data.get("skinid"));
+				ps.setInt(13, (int) data.get("skinid"));
 			}
 			if (data.containsKey("description")) {
-				ps.setString(12, (String) data.get("description"));
+				ps.setString(14, (String) data.get("description"));
 			}
 
 			ps.executeUpdate();
@@ -153,6 +158,49 @@ public class PersonasSQL {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
 			}
 		}
+	}
+
+	public Map<String, Object> getBasicPersonaInfo(int personaID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT Max(PersonaID) FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			Map<String, Object> output = new HashMap<>();
+
+			if (rs.next()) {
+				if (rs.getString("NickName").length() > 0) {
+					output.put("nickname", rs.getString("NickName"));
+				}
+				output.put("name", rs.getString("Name"));
+				output.put("age", rs.getLong("Age")); // TODO - Grab actual age.
+				output.put("race", rs.getString("Race"));
+				output.put("gender", rs.getString("Gender"));
+
+				if (rs.getString("Description").length() > 0) {
+					output.put("description", rs.getString("Description"));
+				}
+			}
+
+			return output;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return null;
 	}
 
 }

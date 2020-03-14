@@ -14,7 +14,8 @@ import java.util.Map;
 public class PersonaHandler {
 
 	private static RPPersonas plugin;
-	private Map<Integer, Persona> loadedPersonas; // personaID , persona
+	private Map<Integer, Persona> loadedPersonas; // personaID, persona
+	private Map<Player, Integer> playerObjectToID; // player, personaID
 	private static int highestPersonaID = 0;
 
 	public PersonaHandler(RPPersonas plugin) {
@@ -57,7 +58,7 @@ public class PersonaHandler {
 		factory.buildConversation(p).begin();
 	}
 
-	public static void registerPersona(Map<Object, Object> data) {
+	public static void registerPersona(Map<Object, Object> data, Player p) {
 		int personaID = highestPersonaID;
 		if (data.containsKey("personaid")) {
 			personaID = (int) data.get("personaid");
@@ -99,10 +100,15 @@ public class PersonaHandler {
 			plugin.getAccountHandler().getAccount(accountID).swapPersonaTo(personaID);
 		}
 		Persona persona = new Persona(personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
+		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
 		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
 	}
 
 	// CHECKING //
+	public Persona getPersona(Player p) {
+		return getPersona(playerObjectToID.get(p));
+	}
+
 	public Persona getPersona(int personaID) {
 		return loadedPersonas.get(personaID);
 	}

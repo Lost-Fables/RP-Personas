@@ -3,6 +3,7 @@ package net.korvic.rppersonas;
 import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
+import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.*;
@@ -63,6 +64,7 @@ public final class RPPersonas extends JavaPlugin {
 
 			// Build our commands
 			Commands.build(getCommand("account"), () -> new AccountCommands(this));
+			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
 		} else {
 			this.onDisable();
 		}

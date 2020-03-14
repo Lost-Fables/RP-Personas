@@ -7,6 +7,9 @@ commands:
   account:
     command: /<command>
     description: "Link your Minecraft and forum accounts."
+  persona:
+    command: /<command>
+    description: "Check, set, and update persona info."
 permissions:
   rppersonas.accepted:
     default: op

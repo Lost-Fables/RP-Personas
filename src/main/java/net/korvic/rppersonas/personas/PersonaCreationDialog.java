@@ -11,8 +11,8 @@ import org.bukkit.entity.Player;
 public class PersonaCreationDialog {
 	//// Creation Dialog Prompts ////
 
-	private static final String SPACE = "  ";
-	private static final String DIVIDER = "\n" + RPPersonas.ALT_COLOR + "================================\n" + ChatColor.RESET;
+	public static final String BUTTON_SPACE = "  ";
+	public static final String DIVIDER = "\n" + RPPersonas.ALT_COLOR + "================================\n" + ChatColor.RESET;
 	private static final String NOTE = RPPersonas.ALT_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Intro //
@@ -77,7 +77,7 @@ public class PersonaCreationDialog {
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
-			confirmation.addExtra(SPACE);
+			confirmation.addExtra(BUTTON_SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!"));
 
 			p.spigot().sendMessage(confirmation);
@@ -116,7 +116,7 @@ public class PersonaCreationDialog {
 			for (PersonaRace race : PersonaRace.values()) {
 				if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
 					races.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to see subraces"));
-					races.addExtra(SPACE);
+					races.addExtra(BUTTON_SPACE);
 				}
 			}
 
@@ -160,12 +160,12 @@ public class PersonaCreationDialog {
 
 				BaseComponent subraces = new TextComponent(RPPersonas.PREFIX + "Pick your subrace: " + DIVIDER);
 				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races"));
-				subraces.addExtra(SPACE);
+				subraces.addExtra(BUTTON_SPACE);
 
 				for (PersonaSubRace race : this.race.getSubRaces()) {
 					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
 						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace"));
-						subraces.addExtra(SPACE);
+						subraces.addExtra(BUTTON_SPACE);
 					}
 				}
 
@@ -206,7 +206,7 @@ public class PersonaCreationDialog {
 
 			for (PersonaGender g : PersonaGender.values()) {
 				genders.addExtra(MessageUtil.CommandButton(g.getName(), g.getName(), "Click to select"));
-				genders.addExtra(SPACE);
+				genders.addExtra(BUTTON_SPACE);
 			}
 
 			p.spigot().sendMessage(genders);
@@ -239,7 +239,7 @@ public class PersonaCreationDialog {
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select"));
-			confirmation.addExtra(SPACE);
+			confirmation.addExtra(BUTTON_SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select"));
 
 			p.spigot().sendMessage(confirmation);
@@ -270,7 +270,7 @@ public class PersonaCreationDialog {
 													  DIVIDER);
 			for (String s : SECTION) {
 				options.addExtra(MessageUtil.CommandButton(s, s, "Click to select"));
-				options.addExtra(SPACE);
+				options.addExtra(BUTTON_SPACE);
 			}
 
 			p.spigot().sendMessage(options);
@@ -306,7 +306,7 @@ public class PersonaCreationDialog {
 	private static Prompt registerPersona(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
 		p.sendMessage(RPPersonas.PREFIX + ChatColor.BOLD + "Registering your persona now!");
-		PersonaHandler.registerPersona(context.getAllSessionData());
+		PersonaHandler.registerPersona(context.getAllSessionData(), p);
 
 		return Prompt.END_OF_CONVERSATION;
 	}
