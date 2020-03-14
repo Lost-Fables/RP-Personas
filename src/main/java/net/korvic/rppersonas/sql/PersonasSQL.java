@@ -128,7 +128,7 @@ public class PersonasSQL {
 			ps.setByte(3, aliveByte);
 			ps.setString(4, (String) data.get("name"));
 			ps.setString(5, (String) data.get("gender"));
-			ps.setLong(6, (Long) data.get("age"));
+			ps.setLong(6, (long) data.get("age"));
 			ps.setString(7, (String) data.get("race"));
 			ps.setInt(9, (int) data.get("lives"));
 			ps.setLong(10, (long) data.get("playtime"));

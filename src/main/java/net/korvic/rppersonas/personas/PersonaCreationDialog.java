@@ -224,7 +224,6 @@ public class PersonaCreationDialog {
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
-			((Player) context.getForWhom()).resetTitle();
 			return new ConfirmAgePrompt(age, returnToEnd);
 		}
 
