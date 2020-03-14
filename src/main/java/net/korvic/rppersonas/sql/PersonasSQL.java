@@ -121,32 +121,45 @@ public class PersonasSQL {
 				aliveByte = (byte) 1;
 			}
 
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive,Name,Gender,Age,Race,Inventory,Lives,Playtime,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 			ps.setInt(1, (int) data.get("personaid"));
-			ps.setInt(2, (int) data.get("accountid"));
-			ps.setByte(3, aliveByte);
-			ps.setString(4, (String) data.get("name"));
-			ps.setString(5, (String) data.get("gender"));
-			ps.setLong(6, (long) data.get("age"));
-			ps.setString(7, (String) data.get("race"));
-			ps.setInt(9, (int) data.get("lives"));
-			ps.setLong(10, (long) data.get("playtime"));
+			ps.setByte(2, aliveByte);
+			ps.setString(3, (String) data.get("name"));
+			ps.setString(4, (String) data.get("gender"));
+			ps.setLong(5, (long) data.get("age"));
+			ps.setString(6, (String) data.get("race"));
+			ps.setInt(7, (int) data.get("lives"));
+			ps.setLong(8, (long) data.get("playtime"));
 
 			if (data.containsKey("inventory")) {
-				ps.setString(8, (String) data.get("inventory"));
+				ps.setString(9, (String) data.get("inventory"));
+			} else {
+				ps.setString(9, null);
 			}
+
 			if (data.containsKey("nickname")) {
-				ps.setString(11, (String) data.get("nickname"));
+				ps.setString(10, (String) data.get("nickname"));
+			} else {
+				ps.setString(10, null);
 			}
+
 			if (data.containsKey("prefix")) {
-				ps.setString(12, (String) data.get("prefix"));
+				ps.setString(11, (String) data.get("prefix"));
+			} else {
+				ps.setString(11, null);
 			}
+
 			if (data.containsKey("skinid")) {
-				ps.setInt(13, (int) data.get("skinid"));
+				ps.setInt(12, (int) data.get("skinid"));
+			} else {
+				ps.setInt(12, -1);
 			}
+
 			if (data.containsKey("description")) {
-				ps.setString(14, (String) data.get("description"));
+				ps.setString(13, (String) data.get("description"));
+			} else {
+				ps.setString(13, null);
 			}
 
 			ps.executeUpdate();
@@ -178,7 +191,7 @@ public class PersonasSQL {
 			Map<String, Object> output = new HashMap<>();
 
 			if (rs.next()) {
-				if (rs.getString("NickName").length() > 0) {
+				if (rs.getString("NickName") != null && rs.getString("NickName").length() > 0) {
 					output.put("nickname", rs.getString("NickName"));
 				}
 				output.put("name", rs.getString("Name"));

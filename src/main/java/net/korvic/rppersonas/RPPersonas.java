@@ -16,6 +16,7 @@ public final class RPPersonas extends JavaPlugin {
 	public static final String PREFIX = ChatColor.DARK_AQUA + "";
 	public static final String ALT_COLOR = ChatColor.WHITE + "";
 	public static final boolean DEBUGGING = true;
+	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
 	public static FileConfiguration config;
 
 	private static RPPersonas instance;
