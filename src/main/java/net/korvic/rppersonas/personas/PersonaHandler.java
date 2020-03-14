@@ -38,6 +38,7 @@ public class PersonaHandler {
 		data.put("alive", new Object());
 		data.put("lives", 3);
 		data.put("playtime", 0L);
+		data.put("fresh", new Object());
 
 		if (first) {
 			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
