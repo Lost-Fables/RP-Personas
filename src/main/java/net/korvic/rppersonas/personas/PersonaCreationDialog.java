@@ -52,7 +52,7 @@ public class PersonaCreationDialog {
 			Player p = (Player) context.getForWhom();
 
 			if (input.startsWith("/")) return false;
-			if (input.matches(".*[^A-Za-zÀ-ÿ \\-'\"].*")) return false;
+			if (input.matches(".*[^A-Za-zÀ-ÿ \\-'\"].*") || input.matches("\b[^A-Z ].*?\b")) return false;
 			return ( (p.hasPermission("rppersonas.longname") && input.length() <= 64) || input.length() <= 32);
 		}
 
@@ -144,6 +144,7 @@ public class PersonaCreationDialog {
 	private static class PickSubracePrompt extends ValidatingPrompt {
 		private PersonaRace race = null;
 		private boolean returnToEnd;
+		private String correctedOutput = null;
 
 		private PickSubracePrompt(String string, boolean returnToEnd){
 			try {
@@ -182,13 +183,18 @@ public class PersonaCreationDialog {
 		protected boolean isInputValid(ConversationContext context, String input) {
 			if ("back".equalsIgnoreCase(input)) return true;
 			PersonaSubRace subrace = PersonaSubRace.getByName(input);
-			return subrace != null;
+			if (subrace != null) {
+				correctedOutput = subrace.getName();
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, String input) {
 			if ("back".equalsIgnoreCase(input)) return new PersonaRacePrompt(returnToEnd);
-			context.setSessionData("race", input);
+			context.setSessionData("race", correctedOutput);
 			if (returnToEnd) {
 				return new PersonaConfirmPrompt();
 			} else {
@@ -291,6 +297,7 @@ public class PersonaCreationDialog {
 
 	// Gender //
 	private static class PersonaGenderPrompt extends FixedSetPrompt {
+		private String correctedOutput = null;
 
 		@Override
 		public String getPromptText(ConversationContext context) {
@@ -311,12 +318,17 @@ public class PersonaCreationDialog {
 		@Override
 		protected boolean isInputValid(ConversationContext context, String input) {
 			PersonaGender gender = PersonaGender.getByName(input);
-			return gender != null;
+			if (gender != null) {
+				correctedOutput = gender.getName();
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
-			context.setSessionData("gender", input);
+			context.setSessionData("gender", correctedOutput);
 			return new PersonaConfirmPrompt();
 		}
 	}
