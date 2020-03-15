@@ -25,7 +25,7 @@ public class PersonaCommands extends BaseCommand {
 	}
 
 	private String formatPersonaBasicInfo(Player p) {
-		Map<String, Object> data = plugin.getPersonaHandler().getPersona(p).getBasicInfo();
+		Map<String, Object> data = plugin.getPersonaHandler().getLoadedPersona(p).getBasicInfo();
 
 		String output = PersonaCreationDialog.DIVIDER +
 						RPPersonas.PREFIX + "Persona ID: " + RPPersonas.ALT_COLOR + data.get("personaid") + "\n";

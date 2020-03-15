@@ -25,7 +25,7 @@ public class PersonasSQL {
 				   "    Gender TEXT NOT NULL,\n" +
 				   "    Age BIGINT NOT NULL,\n" +
 				   "    Race TEXT NOT NULL,\n" +
-				   "    Lives TINYINT NOT NULL,\n" +
+				   "    Lives INT NOT NULL,\n" +
 				   "    Playtime BIGINT NOT NULL,\n" +
 
 				   "    Inventory TEXT,\n" +
@@ -201,6 +201,48 @@ public class PersonasSQL {
 
 				if (rs.getString("Description") != null && rs.getString("Description").length() > 0) {
 					output.put("description", rs.getString("Description"));
+				}
+			}
+
+			return output;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return null;
+	}
+
+	public Map<String, Object> getLoadingInfo(int personaID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT Prefix, NickName, Name, Inventory, ActiveSkinID, Alive FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			Map<String, Object> output = new HashMap<>();
+
+			if (rs.next()) {
+				if (rs.getString("NickName") != null && rs.getString("NickName").length() > 0) {
+					output.put("nickname", rs.getString("NickName"));
+				}
+				output.put("name", rs.getString("Name"));
+				output.put("inventory", rs.getString("Inventory"));
+				output.put("skinid", rs.getInt("ActiveSkinID"));
+
+				if (rs.getShort("Alive") > 0) {
+					output.put("alive", new Object());
 				}
 			}
 

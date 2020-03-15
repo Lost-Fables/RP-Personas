@@ -26,8 +26,14 @@ public class Account {
 		this.accountID = accountID;
 		plugin = RPPersonas.get();
 
+		Map<Object, Object> accountData = new HashMap<>();
+		accountData.put("accountid", accountID);
+		accountData.put("personaid", activePersonaID);
+		plugin.getAccountsSQL().register(accountData);
+
 		if (activePersonaID > 0) {
 			this.activePersonaID = activePersonaID;
+			plugin.getPersonaHandler().loadPersona(p, accountID, activePersonaID);
 		} else {
 			PersonaHandler.createPersona(p, accountID, true);
 		}
@@ -64,6 +70,7 @@ public class Account {
 	public void swapPersonaTo(int personaID) {
 		plugin.getPersonaHandler().unloadPersona(activePersonaID);
 		this.activePersonaID = personaID;
+		plugin.getAccountsSQL().updateActivePersona(accountID, personaID);
 	}
 
 }

@@ -59,6 +59,16 @@ public class PersonaHandler {
 		factory.buildConversation(p).begin();
 	}
 
+	public void loadPersona(Player p, int accountID, int personaID) {
+		Map<Object, Object> personaData = new HashMap<>();
+		personaData.put("personaid", personaID);
+		personaData.put("accountid", accountID);
+
+		Map<String, Object> loadingInfo = plugin.getPersonasSQL().getLoadingInfo(personaID);
+		personaData.putAll(loadingInfo);
+		registerPersona(personaData, p);
+	}
+
 	public static void registerPersona(Map<Object, Object> data, Player p) {
 		int personaID = highestPersonaID;
 		if (data.containsKey("personaid")) {
@@ -108,11 +118,11 @@ public class PersonaHandler {
 	}
 
 	// CHECKING //
-	public Persona getPersona(Player p) {
-		return getPersona(playerObjectToID.get(p));
+	public Persona getLoadedPersona(Player p) {
+		return getLoadedPersona(playerObjectToID.get(p));
 	}
 
-	public Persona getPersona(int personaID) {
+	public Persona getLoadedPersona(int personaID) {
 		return loadedPersonas.get(personaID);
 	}
 
