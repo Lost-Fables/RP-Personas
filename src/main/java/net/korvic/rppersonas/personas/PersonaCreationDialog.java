@@ -8,6 +8,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class PersonaCreationDialog {
 	//// Creation Dialog Prompts ////
 
@@ -51,8 +54,17 @@ public class PersonaCreationDialog {
 		protected boolean isInputValid(ConversationContext context, String input) {
 			Player p = (Player) context.getForWhom();
 
-			if (input.startsWith("/")) return false;
-			if (input.matches(".*[^A-Za-zÀ-ÿ \\-'\"].*") || input.matches("\b[^A-Z ].*?\b")) return false;
+			if (input.startsWith("/")) {
+				return false;
+			}
+
+			final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?|\\b[^A-Z ].*?\\b";
+			final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+			final Matcher matcher = pattern.matcher(input);
+			if (matcher.find()) {
+				return false;
+			}
+
 			return ( (p.hasPermission("rppersonas.longname") && input.length() <= 64) || input.length() <= 32);
 		}
 
