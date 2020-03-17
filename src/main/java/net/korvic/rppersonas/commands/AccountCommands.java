@@ -19,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 
@@ -65,7 +66,7 @@ public class AccountCommands extends BaseCommand {
 			}
 
 			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
-			buildMainMenu(accountID, p).openSession(p);
+			buildMainMenu(accountID).openSession(p);
 
 		} else {
 			msg(PLAYER_ONLY);
@@ -81,12 +82,12 @@ public class AccountCommands extends BaseCommand {
 
 	private static final String NO_PLAYTIME = "Nothing yet!";
 
-	private Menu buildMainMenu(int accountID, Player p) {
+	private Menu buildMainMenu(int accountID) {
 		ArrayList<Icon> icons = new ArrayList<>();
 		icons.add(getStatisticsIcon(accountID));
 		icons.add(getDiscordIcon(accountID));
-		/*icons.add(getSkinsIcon(accountID));
-		icons.add(getSkinsIcon(accountID, p));*/
+		icons.add(getSkinsIcon(accountID));
+		icons.add(getPersonasIcon(accountID));
 
 		return Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
 	}
@@ -150,6 +151,53 @@ public class AccountCommands extends BaseCommand {
 				TextComponent message = new TextComponent(RPPersonas.PREFIX + ChatColor.BOLD + "→ Click here to open Discord! ←");
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/MnCMWGR"));
 				menuAction.getPlayer().sendMessage(message);
+			}
+		};
+	}
+
+	private Icon getSkinsIcon(int accountID) {
+		return new Button() {
+			@Override
+			public ItemStack getItemStack(MenuAgent menuAgent) {
+				ItemStack item = ItemUtil.getSkullFromTexture(SKINS_HEAD);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Saved Skins");
+
+				ArrayList<String> lore = new ArrayList<>();
+				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Browse and Manage your stored skins.");
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+				return item;
+			}
+
+			@Override
+			public void click(MenuAction menuAction) {
+				menuAction.getPlayer().sendMessage("Open skins menu...");
+			}
+		};
+	}
+
+	private Icon getPersonasIcon(int accountID) {
+		return new Button() {
+			@Override
+			public ItemStack getItemStack(MenuAgent menuAgent) {
+				ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+				SkullMeta meta = (SkullMeta) item.getItemMeta();
+				meta.setOwningPlayer(menuAgent.getPlayer());
+				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Personas");
+
+				ArrayList<String> lore = new ArrayList<>();
+				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Browse and Manage your Personas.");
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+				return item;
+			}
+
+			@Override
+			public void click(MenuAction menuAction) {
+				menuAction.getPlayer().sendMessage("Open personas menu...");
 			}
 		};
 	}
