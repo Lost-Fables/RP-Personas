@@ -103,6 +103,38 @@ public class AccountsSQL {
 		}
 	}
 
+	// Checks if this account is already registered.
+	public boolean isRegistered(int accountID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			boolean result = false;
+			if (rs.next()) {
+				result = true;
+			}
+			return result;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return false;
+	}
+
 	// Inserts a new mapping for an account.
 	public void register(Map<Object, Object> data) {
 		Connection conn = null;
@@ -152,6 +184,7 @@ public class AccountsSQL {
 			ps.setString(3, getDiscordInfo(accountID));
 			ps.setLong(4, getPlaytime(accountID));
 			ps.setShort(5, getVotes(accountID));
+			//TODO Clean this up?
 
 			ps.executeUpdate();
 		} catch (SQLException ex) {

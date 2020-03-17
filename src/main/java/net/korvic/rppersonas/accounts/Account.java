@@ -26,10 +26,12 @@ public class Account {
 		this.accountID = accountID;
 		plugin = RPPersonas.get();
 
-		Map<Object, Object> accountData = new HashMap<>();
-		accountData.put("accountid", accountID);
-		accountData.put("personaid", activePersonaID);
-		plugin.getAccountsSQL().register(accountData);
+		if (!plugin.getAccountsSQL().isRegistered(accountID)) {
+			Map<Object, Object> accountData = new HashMap<>();
+			accountData.put("accountid", accountID);
+			accountData.put("personaid", activePersonaID);
+			plugin.getAccountsSQL().register(accountData);
+		}
 
 		if (activePersonaID > 0) {
 			this.activePersonaID = activePersonaID;
