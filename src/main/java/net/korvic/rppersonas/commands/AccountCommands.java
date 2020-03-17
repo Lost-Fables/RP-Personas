@@ -29,6 +29,7 @@ public class AccountCommands extends BaseCommand {
 	private static final String PLAYER_ONLY = RPPersonas.PREFIX + "This command only works for players!";
 	private static final String FORUM_LINK_SUCCESS = RPPersonas.PREFIX + "Successfully linked your forum account!";
 	private static final String ALREADY_REGISTERED = RPPersonas.PREFIX + "Your account is already linked!";
+	private static final String FORUM_LINK_REQUIRED = RPPersonas.PREFIX + "You need to link your account with " + RPPersonas.ALT_COLOR + "/account link FORUM_ID " + RPPersonas.PREFIX + "to use that.";
 
 	public AccountCommands(RPPersonas plugin) {
 		this.plugin = plugin;
@@ -61,13 +62,12 @@ public class AccountCommands extends BaseCommand {
 	public void menu(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			if (RPPersonas.DEBUGGING) {
-				msg(RPPersonas.PREFIX + "Opening Menu...");
-			}
-
 			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
-			buildMainMenu(accountID).openSession(p);
-
+			if (accountID > 0) {
+				buildMainMenu(accountID).openSession(p);
+			} else {
+				msg(FORUM_LINK_REQUIRED);
+			}
 		} else {
 			msg(PLAYER_ONLY);
 		}
