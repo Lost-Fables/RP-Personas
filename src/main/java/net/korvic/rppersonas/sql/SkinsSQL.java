@@ -134,4 +134,36 @@ public class SkinsSQL {
 		return null;
 	}
 
+	public String getTexture(int skinID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT Texture FROM " + SQLTableName + " WHERE SkinID='" + skinID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			String output = null;
+			if (rs.next()) {
+				output = rs.getString("Texture");
+			}
+
+			return output;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return null;
+	}
+
 }

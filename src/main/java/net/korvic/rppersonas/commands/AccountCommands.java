@@ -3,6 +3,7 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.bukkit.menu.Menu;
 import co.lotc.core.bukkit.menu.MenuAction;
 import co.lotc.core.bukkit.menu.MenuAgent;
+import co.lotc.core.bukkit.menu.MenuUtil;
 import co.lotc.core.bukkit.menu.icon.Button;
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.menu.icon.Slot;
@@ -12,6 +13,7 @@ import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.PersonasSQL;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -24,6 +26,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class AccountCommands extends BaseCommand {
 
@@ -66,7 +70,7 @@ public class AccountCommands extends BaseCommand {
 			Player p = (Player) sender;
 			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
 			if (accountID > 0) {
-				buildMainMenu(accountID).openSession(p);
+				new AccountMenu().buildMainMenu(accountID).openSession(p);
 			} else {
 				msg(FORUM_LINK_REQUIRED);
 			}
@@ -75,133 +79,227 @@ public class AccountCommands extends BaseCommand {
 		}
 	}
 
+	private class AccountMenu {
+		// MENUS //
 
-	// MENUS //
+		private static final String STAT_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmM3ZDM1YzdmNWMyODQ5ZDFlMjM4OTZlYmFiMjQ0ZDM0ZWYwZGFmZWRkODkxOTc0OTQ2MWI3ZDE1Y2MxZjA0In19fQ==";
+		private static final String DISCORD_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNiMTgzYjE0OGI5YjRlMmIxNTgzMzRhZmYzYjViYjZjMmMyZGJiYzRkNjdmNzZhN2JlODU2Njg3YTJiNjIzIn19fQ";
+		private static final String SKINS_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjI3NGUxNjA1MjMzNDI1MDkxZjdiMjgzN2E0YmI4ZjRjODA0ZGFjODBkYjllNGY1OTlmNTM1YzAzYWZhYjBmOCJ9fX0=";
+		private static final String NO_SET_SKIN = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTM1OWQ5MTI3NzI0MmZjMDFjMzA5YWNjYjg3YjUzM2YxOTI5YmUxNzZlY2JhMmNkZTYzYmY2MzVlMDVlNjk5YiJ9fX0=";
+		private static final String DEAD_PERSONA = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYyNGVkNjg3NTMwNGZhNGExZjBjNzg1YjJjYjZhNmE3MjU2M2U5ZjNlMjRlYTU1ZTE4MTc4NDUyMTE5YWE2NiJ9fX0=";
 
-	private static final String STAT_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmM3ZDM1YzdmNWMyODQ5ZDFlMjM4OTZlYmFiMjQ0ZDM0ZWYwZGFmZWRkODkxOTc0OTQ2MWI3ZDE1Y2MxZjA0In19fQ==";
-	private static final String DISCORD_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNiMTgzYjE0OGI5YjRlMmIxNTgzMzRhZmYzYjViYjZjMmMyZGJiYzRkNjdmNzZhN2JlODU2Njg3YTJiNjIzIn19fQ";
-	private static final String SKINS_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjI3NGUxNjA1MjMzNDI1MDkxZjdiMjgzN2E0YmI4ZjRjODA0ZGFjODBkYjllNGY1OTlmNTM1YzAzYWZhYjBmOCJ9fX0=";
+		private static final String NO_PLAYTIME = "Nothing yet!";
 
-	private static final String NO_PLAYTIME = "Nothing yet!";
+		private Menu homeMenu = null;
 
-	private Menu buildMainMenu(int accountID) {
-		ArrayList<Icon> icons = new ArrayList<>();
-		icons.add(getStatisticsIcon(accountID));
-		icons.add(getDiscordIcon(accountID));
-		icons.add(getSkinsIcon(accountID));
-		icons.add(getPersonasIcon(accountID));
+		private Menu buildMainMenu(int accountID) {
+			ArrayList<Icon> icons = new ArrayList<>();
+			icons.add(getStatisticsIcon(accountID));
+			icons.add(getDiscordIcon(accountID));
+			icons.add(getSkinsIcon(accountID));
+			icons.add(getPersonasIcon(accountID));
 
-		return Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
-	}
+			homeMenu = Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
+			return homeMenu;
+		}
 
-	private Icon getStatisticsIcon(int accountID) {
-		return new Button() {
-			@Override
-			public ItemStack getItemStack(MenuAgent menuAgent) {
-				ItemStack item = ItemUtil.getSkullFromTexture(STAT_HEAD);
-				ItemMeta meta = item.getItemMeta();
-				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Stats");
+		private Icon getStatisticsIcon(int accountID) {
+			return new Button() {
+				@Override
+				public ItemStack getItemStack(MenuAgent menuAgent) {
+					ItemStack item = ItemUtil.getSkullFromTexture(STAT_HEAD);
+					ItemMeta meta = item.getItemMeta();
+					meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Stats");
 
-				ArrayList<String> lore = new ArrayList<>();
-				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Votes: " + ChatColor.RESET + RPPersonas.ALT_COLOR + plugin.getAccountsSQL().getVotes(accountID));
+					ArrayList<String> lore = new ArrayList<>();
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Votes: " + ChatColor.RESET + RPPersonas.ALT_COLOR + plugin.getAccountsSQL().getVotes(accountID));
 
-				long timeSpent = plugin.getAccountsSQL().getPlaytime(accountID);
+					long timeSpent = plugin.getAccountsSQL().getPlaytime(accountID);
 
-				String playtime;
-				if (timeSpent > 0) {
-					playtime = TimeUtil.printBrief(timeSpent).toPlainText();
-				} else {
-					playtime = NO_PLAYTIME;
+					String playtime;
+					if (timeSpent > 0) {
+						playtime = TimeUtil.printBrief(timeSpent).toPlainText();
+					} else {
+						playtime = NO_PLAYTIME;
+					}
+
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Playtime: " + ChatColor.RESET + RPPersonas.ALT_COLOR + playtime);
+
+					meta.setLore(lore);
+					item.setItemMeta(meta);
+					return item;
 				}
 
-				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Playtime: " + ChatColor.RESET + RPPersonas.ALT_COLOR + playtime);
+				@Override
+				public void click(MenuAction menuAction) {
+				}
+			};
+		}
 
-				meta.setLore(lore);
-				item.setItemMeta(meta);
-				return item;
-			}
+		private Icon getDiscordIcon(int accountID) {
+			return new Button() {
+				@Override
+				public ItemStack getItemStack(MenuAgent menuAgent) {
+					ItemStack item = ItemUtil.getSkullFromTexture(DISCORD_HEAD);
+					ItemMeta meta = item.getItemMeta();
+					meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Discord");
 
-			@Override
-			public void click(MenuAction menuAction) {
-			}
-		};
-	}
+					ArrayList<String> lore = new ArrayList<>();
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click here to get a discord link.");
 
-	private Icon getDiscordIcon(int accountID) {
-		return new Button() {
-			@Override
-			public ItemStack getItemStack(MenuAgent menuAgent) {
-				ItemStack item = ItemUtil.getSkullFromTexture(DISCORD_HEAD);
-				ItemMeta meta = item.getItemMeta();
-				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Discord");
+					String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
+					if (discordTag != null && discordTag.length() > 0) {
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Linked To: " + ChatColor.RESET + RPPersonas.ALT_COLOR + discordTag);
+					}
 
-				ArrayList<String> lore = new ArrayList<>();
-				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click here to get a discord link.");
-
-				String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
-				if (discordTag != null && discordTag.length() > 0) {
-					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Linked To: " + ChatColor.RESET + RPPersonas.ALT_COLOR + discordTag);
+					meta.setLore(lore);
+					item.setItemMeta(meta);
+					return item;
 				}
 
-				meta.setLore(lore);
-				item.setItemMeta(meta);
-				return item;
+				@Override
+				public void click(MenuAction menuAction) {
+					TextComponent message = new TextComponent(RPPersonas.PREFIX + ChatColor.BOLD + "→ Click here to open Discord! ←");
+					message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/MnCMWGR"));
+					message.setHoverEvent(MessageUtil.hoverEvent("Click!"));
+					menuAction.getPlayer().sendMessage(message);
+				}
+			};
+		}
+
+		private Icon getSkinsIcon(int accountID) {
+			return new Button() {
+				@Override
+				public ItemStack getItemStack(MenuAgent menuAgent) {
+					ItemStack item = ItemUtil.getSkullFromTexture(SKINS_HEAD);
+					ItemMeta meta = item.getItemMeta();
+					meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Saved Skins");
+
+					ArrayList<String> lore = new ArrayList<>();
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Browse and Manage your stored skins.");
+
+					meta.setLore(lore);
+					item.setItemMeta(meta);
+					return item;
+				}
+
+				@Override
+				public void click(MenuAction menuAction) {
+					menuAction.getPlayer().sendMessage("Open skins menu...");
+				}
+			};
+		}
+
+		private Icon getPersonasIcon(int accountID) {
+			return new Button() {
+				@Override
+				public ItemStack getItemStack(MenuAgent menuAgent) {
+					ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+					SkullMeta meta = (SkullMeta) item.getItemMeta();
+					meta.setOwningPlayer(menuAgent.getPlayer());
+					meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Personas");
+
+					ArrayList<String> lore = new ArrayList<>();
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Browse and Manage your Personas.");
+
+					meta.setLore(lore);
+					item.setItemMeta(meta);
+					return item;
+				}
+
+				@Override
+				public void click(MenuAction menuAction) {
+					getPersonasListMenu(accountID).get(0).openSession(menuAction.getPlayer());
+				}
+			};
+		}
+
+		private List<Menu> getPersonasListMenu(int accountID) {
+			ArrayList<Icon> icons = new ArrayList<>();
+
+			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true)) {
+				icons.add(new Button() {
+					@Override
+					public ItemStack getItemStack(MenuAgent menuAgent) {
+						int skinID = plugin.getPersonasSQL().getActiveSkinID(personaID);
+						Map<String, Object> data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
+						ItemStack item;
+						if (skinID > 0) {
+							item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(skinID));
+						} else {
+							item = ItemUtil.getSkullFromTexture(NO_SET_SKIN);
+						}
+
+						ItemMeta meta = item.getItemMeta();
+						String currentName;
+						if (data.containsKey("nickname")) {
+							currentName = (String) data.get("nickname");
+						} else {
+							currentName = (String) data.get("name");
+						}
+						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + currentName);
+
+						ArrayList<String> lore = new ArrayList<>();
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Persona ID: " + ChatColor.RESET + RPPersonas.ALT_COLOR + personaID);
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Name: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("name"));
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Age: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("age"));
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Race: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("race"));
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Gender: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("gender"));
+
+						meta.setLore(lore);
+						item.setItemMeta(meta);
+						return item;
+					}
+
+					@Override
+					public void click(MenuAction menuAction) {
+						menuAction.getPlayer().sendMessage("Opening Persona...");
+					}
+				});
 			}
 
-			@Override
-			public void click(MenuAction menuAction) {
-				TextComponent message = new TextComponent(RPPersonas.PREFIX + ChatColor.BOLD + "→ Click here to open Discord! ←");
-				message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/MnCMWGR"));
-				message.setHoverEvent(MessageUtil.hoverEvent("Click!"));
-				menuAction.getPlayer().sendMessage(message);
-			}
-		};
-	}
+			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false)) {
+				icons.add(new Button() {
+					@Override
+					public ItemStack getItemStack(MenuAgent menuAgent) {
+						int skinID = plugin.getPersonasSQL().getActiveSkinID(personaID);
+						Map<String, Object> data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
+						ItemStack item;
+						if (skinID > 0) {
+							item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(skinID));
+						} else {
+							item = ItemUtil.getSkullFromTexture(DEAD_PERSONA);
+						}
 
-	private Icon getSkinsIcon(int accountID) {
-		return new Button() {
-			@Override
-			public ItemStack getItemStack(MenuAgent menuAgent) {
-				ItemStack item = ItemUtil.getSkullFromTexture(SKINS_HEAD);
-				ItemMeta meta = item.getItemMeta();
-				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Saved Skins");
+						ItemMeta meta = item.getItemMeta();
+						String currentName;
+						if (data.containsKey("nickname")) {
+							currentName = (String) data.get("nickname");
+						} else {
+							currentName = (String) data.get("name");
+						}
+						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + currentName + "(Dead)");
 
-				ArrayList<String> lore = new ArrayList<>();
-				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Browse and Manage your stored skins.");
+						ArrayList<String> lore = new ArrayList<>();
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Persona ID: " + ChatColor.RESET + RPPersonas.ALT_COLOR + personaID);
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Name: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("name"));
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Age: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("age"));
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Race: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("race"));
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Gender: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("gender"));
 
-				meta.setLore(lore);
-				item.setItemMeta(meta);
-				return item;
-			}
+						meta.setLore(lore);
+						item.setItemMeta(meta);
+						return item;
+					}
 
-			@Override
-			public void click(MenuAction menuAction) {
-				menuAction.getPlayer().sendMessage("Open skins menu...");
-			}
-		};
-	}
-
-	private Icon getPersonasIcon(int accountID) {
-		return new Button() {
-			@Override
-			public ItemStack getItemStack(MenuAgent menuAgent) {
-				ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-				SkullMeta meta = (SkullMeta) item.getItemMeta();
-				meta.setOwningPlayer(menuAgent.getPlayer());
-				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Personas");
-
-				ArrayList<String> lore = new ArrayList<>();
-				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Browse and Manage your Personas.");
-
-				meta.setLore(lore);
-				item.setItemMeta(meta);
-				return item;
+					@Override
+					public void click(MenuAction menuAction) {
+						menuAction.getPlayer().sendMessage("Opening Persona...");
+					}
+				});
 			}
 
-			@Override
-			public void click(MenuAction menuAction) {
-				menuAction.getPlayer().sendMessage("Open personas menu...");
-			}
-		};
+			return MenuUtil.createMultiPageMenu(homeMenu, ChatColor.BOLD + "Personas", icons);
+		}
 	}
 }
