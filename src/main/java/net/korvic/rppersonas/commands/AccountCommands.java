@@ -9,9 +9,11 @@ import co.lotc.core.bukkit.menu.icon.Slot;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
+import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -150,6 +152,7 @@ public class AccountCommands extends BaseCommand {
 			public void click(MenuAction menuAction) {
 				TextComponent message = new TextComponent(RPPersonas.PREFIX + ChatColor.BOLD + "→ Click here to open Discord! ←");
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/MnCMWGR"));
+				message.setHoverEvent(MessageUtil.hoverEvent("Click!"));
 				menuAction.getPlayer().sendMessage(message);
 			}
 		};
