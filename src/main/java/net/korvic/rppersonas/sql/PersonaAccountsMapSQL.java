@@ -181,7 +181,7 @@ public class PersonaAccountsMapSQL {
 		}
 	}
 
-	// Retrieves the amount of tokens a player has, as per our database.
+	// Retrieves a list of persona IDs for a given account.
 	public List<Integer> getPersonasOf(int accountID, boolean alive) {
 		Connection conn = null;
 		PreparedStatement ps = null;

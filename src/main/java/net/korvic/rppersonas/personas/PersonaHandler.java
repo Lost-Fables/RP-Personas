@@ -110,7 +110,7 @@ public class PersonaHandler {
 			plugin.getPersonasSQL().register(data);
 
 			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
-			plugin.getAccountHandler().getAccount(accountID).swapPersonaTo(personaID);
+			plugin.getAccountHandler().getAccount(accountID).swapToPersona(personaID);
 		}
 		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
 		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);

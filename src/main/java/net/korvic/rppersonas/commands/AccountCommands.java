@@ -1,16 +1,33 @@
 package net.korvic.rppersonas.commands;
 
+import co.lotc.core.bukkit.menu.Menu;
+import co.lotc.core.bukkit.menu.MenuAction;
+import co.lotc.core.bukkit.menu.MenuAgent;
+import co.lotc.core.bukkit.menu.icon.Button;
+import co.lotc.core.bukkit.menu.icon.Icon;
+import co.lotc.core.bukkit.menu.icon.Slot;
+import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
+import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
 
 public class AccountCommands extends BaseCommand {
 
 	private RPPersonas plugin;
-	private static final String NO_CONSOLE_ACCOUNTS = RPPersonas.PREFIX + "The console cannot register an account as it does not have a UUID.";
-	private static final String REGISTRATION_SUCCESSFUL = RPPersonas.PREFIX + "Successfully linked your forum account!";
+	private static final String PLAYER_ONLY = RPPersonas.PREFIX + "This command only works for players!";
+	private static final String FORUM_LINK_SUCCESS = RPPersonas.PREFIX + "Successfully linked your forum account!";
+	private static final String ALREADY_REGISTERED = RPPersonas.PREFIX + "Your account is already linked!";
 
 	public AccountCommands(RPPersonas plugin) {
 		this.plugin = plugin;
@@ -20,11 +37,16 @@ public class AccountCommands extends BaseCommand {
 	public void link(CommandSender sender,
 						 @Arg(value="Forum ID", description="Your forum account ID.") int id) {
 		if (sender instanceof Player) {
-			//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the line below.
-			plugin.getUUIDAccountMapSQL().addMapping(id, (Player) sender);
-			sender.sendMessage(REGISTRATION_SUCCESSFUL);
+			Player p = (Player) sender;
+			if (plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()) <= 0) {
+				//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the lines below.
+				plugin.getUUIDAccountMapSQL().addMapping(id, p);
+				msg(FORUM_LINK_SUCCESS);
+			} else {
+				msg(ALREADY_REGISTERED);
+			}
 		} else {
-			sender.sendMessage(NO_CONSOLE_ACCOUNTS);
+			msg(PLAYER_ONLY);
 		}
 	}
 
@@ -32,5 +54,103 @@ public class AccountCommands extends BaseCommand {
 	public void other(@Arg(value="The Player", description="The player you're helping register.") Player p,
 					  @Arg(value="Forum ID", description="The forum ID of the other player.") int id) {
 		link((CommandSender) p, id);
+	}
+
+	@Cmd(value="Open a menu to manage your account.", permission="rppersonas.use")
+	public void menu(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			if (RPPersonas.DEBUGGING) {
+				msg(RPPersonas.PREFIX + "Opening Menu...");
+			}
+
+			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
+			buildMainMenu(accountID, p).openSession(p);
+
+		} else {
+			msg(PLAYER_ONLY);
+		}
+	}
+
+
+	// MENUS //
+
+	private static final String STAT_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmM3ZDM1YzdmNWMyODQ5ZDFlMjM4OTZlYmFiMjQ0ZDM0ZWYwZGFmZWRkODkxOTc0OTQ2MWI3ZDE1Y2MxZjA0In19fQ==";
+	private static final String DISCORD_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNiMTgzYjE0OGI5YjRlMmIxNTgzMzRhZmYzYjViYjZjMmMyZGJiYzRkNjdmNzZhN2JlODU2Njg3YTJiNjIzIn19fQ";
+	private static final String SKINS_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjI3NGUxNjA1MjMzNDI1MDkxZjdiMjgzN2E0YmI4ZjRjODA0ZGFjODBkYjllNGY1OTlmNTM1YzAzYWZhYjBmOCJ9fX0=";
+
+	private static final String NO_PLAYTIME = "Nothing yet!";
+
+	private Menu buildMainMenu(int accountID, Player p) {
+		ArrayList<Icon> icons = new ArrayList<>();
+		icons.add(getStatisticsIcon(accountID));
+		icons.add(getDiscordIcon(accountID));
+		/*icons.add(getSkinsIcon(accountID));
+		icons.add(getSkinsIcon(accountID, p));*/
+
+		return Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
+	}
+
+	private Icon getStatisticsIcon(int accountID) {
+		return new Button() {
+			@Override
+			public ItemStack getItemStack(MenuAgent menuAgent) {
+				ItemStack item = ItemUtil.getSkullFromTexture(STAT_HEAD);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Stats");
+
+				ArrayList<String> lore = new ArrayList<>();
+				lore.add(RPPersonas.ALT_COLOR + "Votes: " + ChatColor.ITALIC + plugin.getAccountsSQL().getVotes(accountID));
+
+				long timeSpent = plugin.getAccountsSQL().getPlaytime(accountID);
+
+				String playtime;
+				if (timeSpent > 0) {
+					playtime = TimeUtil.printBrief(timeSpent).toPlainText();
+				} else {
+					playtime = NO_PLAYTIME;
+				}
+
+				lore.add(RPPersonas.ALT_COLOR + "Playtime: " + ChatColor.ITALIC + playtime);
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+				return item;
+			}
+
+			@Override
+			public void click(MenuAction menuAction) {
+			}
+		};
+	}
+
+	private Icon getDiscordIcon(int accountID) {
+		return new Button() {
+			@Override
+			public ItemStack getItemStack(MenuAgent menuAgent) {
+				ItemStack item = ItemUtil.getSkullFromTexture(DISCORD_HEAD);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Discord");
+
+				ArrayList<String> lore = new ArrayList<>();
+				lore.add(RPPersonas.ALT_COLOR + "Click me for a discord invite!");
+
+				String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
+				if (discordTag != null && discordTag.length() > 0) {
+					lore.add(RPPersonas.ALT_COLOR + "Linked To: " + ChatColor.ITALIC + discordTag);
+				}
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+				return item;
+			}
+
+			@Override
+			public void click(MenuAction menuAction) {
+				TextComponent message = new TextComponent("Click here to join the Discord!");
+				message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/MnCMWGR"));
+				menuAction.getPlayer().sendMessage(message);
+			}
+		};
 	}
 }

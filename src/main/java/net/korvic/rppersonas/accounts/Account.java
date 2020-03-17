@@ -67,7 +67,13 @@ public class Account {
 
 	// SWAPPING //
 
-	public void swapPersonaTo(int personaID) {
+	public void swapToPersonaIfOwned(int personaID, boolean alive) {
+		if (plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, alive).contains(personaID)) {
+			swapToPersona(personaID);
+		}
+	}
+
+	public void swapToPersona(int personaID) {
 		plugin.getPersonaHandler().unloadPersona(activePersonaID);
 		this.activePersonaID = personaID;
 		plugin.getAccountsSQL().updateActivePersona(accountID, personaID);
