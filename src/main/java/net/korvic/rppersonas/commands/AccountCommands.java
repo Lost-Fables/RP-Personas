@@ -100,7 +100,7 @@ public class AccountCommands extends BaseCommand {
 				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Stats");
 
 				ArrayList<String> lore = new ArrayList<>();
-				lore.add(RPPersonas.ALT_COLOR + "Votes: " + ChatColor.ITALIC + plugin.getAccountsSQL().getVotes(accountID));
+				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Votes: " + ChatColor.RESET + RPPersonas.ALT_COLOR + plugin.getAccountsSQL().getVotes(accountID));
 
 				long timeSpent = plugin.getAccountsSQL().getPlaytime(accountID);
 
@@ -111,7 +111,7 @@ public class AccountCommands extends BaseCommand {
 					playtime = NO_PLAYTIME;
 				}
 
-				lore.add(RPPersonas.ALT_COLOR + "Playtime: " + ChatColor.ITALIC + playtime);
+				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Playtime: " + ChatColor.RESET + RPPersonas.ALT_COLOR + playtime);
 
 				meta.setLore(lore);
 				item.setItemMeta(meta);
@@ -133,11 +133,11 @@ public class AccountCommands extends BaseCommand {
 				meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Discord");
 
 				ArrayList<String> lore = new ArrayList<>();
-				lore.add(RPPersonas.PREFIX + ChatColor.BOLD + "→ Click here to open Discord! ←");
+				lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click here to get a discord link.");
 
 				String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
 				if (discordTag != null && discordTag.length() > 0) {
-					lore.add(RPPersonas.ALT_COLOR + "Linked To: " + ChatColor.ITALIC + discordTag);
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Linked To: " + ChatColor.RESET + RPPersonas.ALT_COLOR + discordTag);
 				}
 
 				meta.setLore(lore);
@@ -147,7 +147,7 @@ public class AccountCommands extends BaseCommand {
 
 			@Override
 			public void click(MenuAction menuAction) {
-				TextComponent message = new TextComponent("Click here to join the Discord!");
+				TextComponent message = new TextComponent(RPPersonas.PREFIX + ChatColor.BOLD + "→ Click here to open Discord! ←");
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/MnCMWGR"));
 				menuAction.getPlayer().sendMessage(message);
 			}
