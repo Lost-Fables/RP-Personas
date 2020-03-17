@@ -145,7 +145,7 @@ public class AccountCommands extends BaseCommand {
 					meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Discord");
 
 					ArrayList<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click here to get a discord link.");
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click here to get a discord invite.");
 
 					String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
 					if (discordTag != null && discordTag.length() > 0) {
