@@ -8,11 +8,13 @@ import co.lotc.core.bukkit.menu.icon.Button;
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.menu.icon.Slot;
 import co.lotc.core.bukkit.util.ItemUtil;
+import co.lotc.core.bukkit.util.PermissionsUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -85,8 +87,8 @@ public class AccountCommands extends BaseCommand {
 		private static final String STAT_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmM3ZDM1YzdmNWMyODQ5ZDFlMjM4OTZlYmFiMjQ0ZDM0ZWYwZGFmZWRkODkxOTc0OTQ2MWI3ZDE1Y2MxZjA0In19fQ==";
 		private static final String DISCORD_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNiMTgzYjE0OGI5YjRlMmIxNTgzMzRhZmYzYjViYjZjMmMyZGJiYzRkNjdmNzZhN2JlODU2Njg3YTJiNjIzIn19fQ";
 		private static final String SKINS_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjI3NGUxNjA1MjMzNDI1MDkxZjdiMjgzN2E0YmI4ZjRjODA0ZGFjODBkYjllNGY1OTlmNTM1YzAzYWZhYjBmOCJ9fX0=";
-		private static final String NO_SET_SKIN = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTM1OWQ5MTI3NzI0MmZjMDFjMzA5YWNjYjg3YjUzM2YxOTI5YmUxNzZlY2JhMmNkZTYzYmY2MzVlMDVlNjk5YiJ9fX0=";
 		private static final String DEAD_PERSONA = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYyNGVkNjg3NTMwNGZhNGExZjBjNzg1YjJjYjZhNmE3MjU2M2U5ZjNlMjRlYTU1ZTE4MTc4NDUyMTE5YWE2NiJ9fX0=";
+		private static final String UNUSED_PERSONA = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjI5MjY1Y2M1ZjEwMzg0OTQzODJlNjQ2N2FkOGQ3YzlhMjI1NzNlYzM2MzYyYmQ0OTE5MmZkNDM0YjUxYzkyIn19fQ==";
 
 		private static final String NO_PLAYTIME = "Nothing yet!";
 
@@ -249,13 +251,15 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					getPersonasListMenu(accountID).get(0).openSession(menuAction.getPlayer());
+					int maxPersonas = PermissionsUtil.getMaxPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots", RPPersonas.DEFAULT_PERSONAS);
+					getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
 				}
 			};
 		}
 
-		private List<Menu> getPersonasListMenu(int accountID) {
+		private List<Menu> getPersonasListMenu(int accountID, int maxPersonas) {
 			ArrayList<Icon> icons = new ArrayList<>();
+			int currentPersonaCount = 0;
 
 			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true)) {
 				icons.add(new Button() {
@@ -267,7 +271,7 @@ public class AccountCommands extends BaseCommand {
 						if (skinID > 0) {
 							item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(skinID));
 						} else {
-							item = ItemUtil.getSkullFromTexture(NO_SET_SKIN);
+							item = new ItemStack(Material.PLAYER_HEAD);
 						}
 
 						ItemMeta meta = item.getItemMeta();
@@ -297,6 +301,7 @@ public class AccountCommands extends BaseCommand {
 						menuAction.getPlayer().sendMessage("Opening Persona...");
 					}
 				});
+				currentPersonaCount++;
 			}
 
 			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false)) {
@@ -337,6 +342,30 @@ public class AccountCommands extends BaseCommand {
 					public void click(MenuAction menuAction) {
 						//TODO - Swap to persona or delete persona
 						menuAction.getPlayer().sendMessage("Opening Persona...");
+					}
+				});
+				currentPersonaCount++;
+			}
+
+			if (currentPersonaCount < maxPersonas) {
+				icons.add(new Button() {
+					@Override
+					public ItemStack getItemStack(MenuAgent menuAgent) {
+						ItemStack item = ItemUtil.getSkullFromTexture(UNUSED_PERSONA);
+						ItemMeta meta = item.getItemMeta();
+
+						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Unused Persona");
+						ArrayList<String> lore = new ArrayList<>();
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click here to make a new persona!");
+
+						meta.setLore(lore);
+						return item;
+					}
+
+					@Override
+					public void click(MenuAction menuAction) {
+						menuAction.getPlayer().closeInventory();
+						PersonaHandler.createPersona(menuAction.getPlayer(), accountID, false);
 					}
 				});
 			}
