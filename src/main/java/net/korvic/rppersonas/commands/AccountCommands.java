@@ -206,7 +206,12 @@ public class AccountCommands extends BaseCommand {
 					public ItemStack getItemStack(MenuAgent menuAgent) {
 						ItemStack item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(id));
 						ItemMeta meta = item.getItemMeta();
+
 						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + data.get(id));
+						ArrayList<String> lore = new ArrayList<>();
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click to use this skin.");
+
+						meta.setLore(lore);
 						item.setItemMeta(meta);
 						return item;
 					}
