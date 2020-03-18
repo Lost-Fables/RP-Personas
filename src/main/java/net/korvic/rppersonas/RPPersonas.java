@@ -29,6 +29,7 @@ public final class RPPersonas extends JavaPlugin {
 	private UnregisteredHandler unregisteredHandler;
 
 	// SQL
+	private SaveQueue saveQueue;
 	private UUIDAccountMapSQL uuidAccountMap;
 	private AccountsSQL accounts;
 	private PersonaAccountsMapSQL personaAccountMap;
@@ -105,6 +106,8 @@ public final class RPPersonas extends JavaPlugin {
 		personas.load();
 		currency.load();
 		skins.load();
+
+		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
 	}
 
 	public UUIDAccountMapSQL getUUIDAccountMapSQL() {
@@ -124,5 +127,8 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public SkinsSQL getSkinsSQL() {
 		return skins;
+	}
+	public SaveQueue getSaveQueue() {
+		return saveQueue;
 	}
 }

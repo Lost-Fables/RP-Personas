@@ -35,7 +35,7 @@ public class JoinQuitListener implements Listener {
 		UUID uuid = event.getPlayer().getUniqueId();
 		int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
 		plugin.getAccountHandler().unloadAccount(account);
-		plugin.getPersonaHandler().unloadPersonas(account);
+		plugin.getPersonaHandler().unloadPersonas(account, event.getPlayer());
 	}
 
 }

@@ -1,6 +1,17 @@
+# MySQL database connection.
 mysql:
   host: localhost
   port: 3306
   user: root
   password: minecraft
   database: Minecraft
+
+# Auto-Save timer.
+saving:
+  # Balance ticks and amount so you can spread out the auto-save load over multiple ticks rather than all at once.
+  # The amount of ticks between each attempt at saving. (20 ticks = 1 second)
+  ticks: 20
+  amount: 2
+
+  # If this percentage of the total queue is bigger than the amount set above, then it will run more. 0 to disable.
+  percent: 0

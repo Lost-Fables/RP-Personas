@@ -126,16 +126,24 @@ public class PersonaHandler {
 	}
 
 	// UNLOADING //
-	public void unloadPersonas(int accountID) {
+	public void unloadPersonas(int accountID, Player p) {
 		List<Integer> personas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true);
 		personas.addAll(plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false));
 		for (int i : personas) {
-			unloadPersona(i);
+			if (loadedPersonas.containsKey(i)) {
+				loadedPersonas.get(i).queueSave(p);
+				if (playerObjectToID.values().toArray().length > 1) {
+					playerObjectToID.remove(p);
+				} else {
+					unloadPersona(i, p);
+				}
+			}
 		}
 	}
 
-	public void unloadPersona(int personaID) {
+	public void unloadPersona(int personaID, Player p) {
 		loadedPersonas.remove(personaID);
+		playerObjectToID.remove(p);
 	}
 
 	// EFFECTS //

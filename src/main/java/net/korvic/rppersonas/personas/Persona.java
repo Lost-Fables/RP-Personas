@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.personas;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,5 +53,9 @@ public class Persona {
 	public void updateSkin(int skinID) {
 		this.activeSkinID = skinID;
 		//TODO - Update player's model to have new skin.
+	}
+
+	public void queueSave(Player p) {
+
 	}
 }
