@@ -228,6 +228,30 @@ public class AccountCommands extends BaseCommand {
 				});
 			}
 
+			icons.add(new Button() {
+				@Override
+				public ItemStack getItemStack(MenuAgent menuAgent) {
+					ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+					SkullMeta meta = (SkullMeta) item.getItemMeta();
+					meta.setOwningPlayer(menuAgent.getPlayer());
+					meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + "Default Skin");
+
+					ArrayList<String> lore = new ArrayList<>();
+					lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click to reset to your default Minecraft skin.");
+
+					meta.setLore(lore);
+					item.setItemMeta(meta);
+					return item;
+				}
+
+				@Override
+				public void click(MenuAction menuAction) {
+					int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
+					plugin.getPersonaHandler().updateActiveSkin(personaID, 0);
+					menuAction.getPlayer().sendMessage(RPPersonas.PREFIX + "Persona skin reset!");
+				}
+			});
+
 			return MenuUtil.createMultiPageMenu(homeMenu, ChatColor.BOLD + "Stored Skins", icons);
 		}
 
