@@ -49,4 +49,8 @@ public class Persona {
 		return output;
 	}
 
+	public void updateSkin(int skinID) {
+		this.activeSkinID = skinID;
+		//TODO - Update player's model to have new skin.
+	}
 }

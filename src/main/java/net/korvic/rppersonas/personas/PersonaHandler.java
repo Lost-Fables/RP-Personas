@@ -151,11 +151,18 @@ public class PersonaHandler {
 	}
 
 	// FACTORY //
-
 	private static ConversationFactory getFreshFactory() {
 		return new ConversationFactory(plugin)
 				.thatExcludesNonPlayersWithMessage("Console does not participate in dialogues.")
 				.withModality(true);
 	}
 
+	// UPDATE //
+	public void updateActiveSkin(int personaID, int skinID) {
+		if (loadedPersonas.containsKey(personaID)) {
+			loadedPersonas.get(personaID).updateSkin(skinID);
+		}
+
+		plugin.getPersonasSQL().updateActiveSkinID(personaID, skinID);
+	}
 }

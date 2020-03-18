@@ -103,6 +103,8 @@ public class AccountCommands extends BaseCommand {
 			return homeMenu;
 		}
 
+
+		// STATS //
 		private Icon getStatisticsIcon(int accountID) {
 			return new Button() {
 				@Override
@@ -136,6 +138,8 @@ public class AccountCommands extends BaseCommand {
 			};
 		}
 
+
+		// DISCORD //
 		private Icon getDiscordIcon(int accountID) {
 			return new Button() {
 				@Override
@@ -167,6 +171,8 @@ public class AccountCommands extends BaseCommand {
 			};
 		}
 
+
+		// SKINS //
 		private Icon getSkinsIcon(int accountID) {
 			return new Button() {
 				@Override
@@ -185,11 +191,40 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					menuAction.getPlayer().sendMessage("Open skins menu...");
+					getSkinsListMenu(accountID).get(0).openSession(menuAction.getPlayer());
 				}
 			};
 		}
 
+		private List<Menu> getSkinsListMenu(int accountID) {
+			Map<Integer, String> data = plugin.getSkinsSQL().getSkinNames(accountID);
+
+			ArrayList<Icon> icons = new ArrayList<>();
+			for (int id : data.keySet()) {
+				icons.add(new Button() {
+					@Override
+					public ItemStack getItemStack(MenuAgent menuAgent) {
+						ItemStack item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(id));
+						ItemMeta meta = item.getItemMeta();
+						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + data.get(id));
+						item.setItemMeta(meta);
+						return item;
+					}
+
+					@Override
+					public void click(MenuAction menuAction) {
+						int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
+						plugin.getPersonaHandler().updateActiveSkin(personaID, id);
+						menuAction.getPlayer().sendMessage(RPPersonas.PREFIX + "Persona skin updated!");
+					}
+				});
+			}
+
+			return MenuUtil.createMultiPageMenu(homeMenu, ChatColor.BOLD + "Stored Skins", icons);
+		}
+
+
+		// PERSONAS //
 		private Icon getPersonasIcon(int accountID) {
 			return new Button() {
 				@Override
@@ -253,6 +288,7 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
+						//TODO - Swap to persona or delete persona
 						menuAction.getPlayer().sendMessage("Opening Persona...");
 					}
 				});
@@ -294,6 +330,7 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
+						//TODO - Swap to persona or delete persona
 						menuAction.getPlayer().sendMessage("Opening Persona...");
 					}
 				});
