@@ -33,7 +33,7 @@ public class PersonaHandler {
 		blindPlayer(p);
 
 		Map<Object, Object> data = new HashMap<>();
-		String title = null;
+		String title = "";
 		data.put("accountid", accountID);
 		data.put("alive", new Object());
 		data.put("lives", 3);
