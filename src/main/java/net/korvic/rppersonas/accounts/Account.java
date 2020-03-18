@@ -69,16 +69,17 @@ public class Account {
 
 	// SWAPPING //
 
-	public void swapToPersonaIfOwned(int personaID, boolean alive) {
+	public void swapToPersonaIfOwned(Player p, int personaID, boolean alive) {
 		if (plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, alive).contains(personaID)) {
-			swapToPersona(personaID);
+			swapToPersona(p, personaID);
 		}
 	}
 
-	public void swapToPersona(int personaID) {
+	public void swapToPersona(Player p, int personaID) {
 		plugin.getPersonaHandler().unloadPersona(activePersonaID);
 		this.activePersonaID = personaID;
 		plugin.getAccountsSQL().updateActivePersona(accountID, personaID);
+		plugin.getPersonaHandler().loadPersona(p, accountID, personaID);
 	}
 
 }

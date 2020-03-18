@@ -23,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -263,6 +264,8 @@ public class AccountCommands extends BaseCommand {
 
 			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true)) {
 				icons.add(new Button() {
+					private String currentName;
+
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
 						int skinID = plugin.getPersonasSQL().getActiveSkinID(personaID);
@@ -275,7 +278,6 @@ public class AccountCommands extends BaseCommand {
 						}
 
 						ItemMeta meta = item.getItemMeta();
-						String currentName;
 						if (data.containsKey("nickname")) {
 							currentName = (String) data.get("nickname");
 						} else {
@@ -284,6 +286,8 @@ public class AccountCommands extends BaseCommand {
 						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + currentName);
 
 						ArrayList<String> lore = new ArrayList<>();
+						lore.add(RPPersonas.ALT_COLOR + "Left Click to use, Right Click to delete.");
+						lore.add("");
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Persona ID: " + ChatColor.RESET + RPPersonas.ALT_COLOR + personaID);
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Name: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("name"));
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Age: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("age"));
@@ -297,8 +301,14 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
-						//TODO - Swap to persona or delete persona
-						menuAction.getPlayer().sendMessage("Opening Persona...");
+						ClickType click = menuAction.getClick();
+						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
+							menuAction.getPlayer().closeInventory();
+							plugin.getAccountHandler().getAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID);
+							menuAction.getPlayer().sendMessage(RPPersonas.PREFIX + "You are now playing as " + RPPersonas.ALT_COLOR + currentName + RPPersonas.PREFIX + ".");
+						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
+							menuAction.getPlayer().sendMessage("Deleting Persona...");
+						}
 					}
 				});
 				currentPersonaCount++;
@@ -327,6 +337,8 @@ public class AccountCommands extends BaseCommand {
 						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + currentName + "(Dead)");
 
 						ArrayList<String> lore = new ArrayList<>();
+						lore.add(RPPersonas.ALT_COLOR + "Left Click to request ressurection, Right Click to delete.");
+						lore.add("");
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Persona ID: " + ChatColor.RESET + RPPersonas.ALT_COLOR + personaID);
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Name: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("name"));
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Age: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("age"));
@@ -340,7 +352,7 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
-						//TODO - Swap to persona or delete persona
+						//TODO - Rez App or delete persona
 						menuAction.getPlayer().sendMessage("Opening Persona...");
 					}
 				});

@@ -25,22 +25,26 @@ public class PersonaCommands extends BaseCommand {
 	}
 
 	private String formatPersonaBasicInfo(Player p) {
-		Map<String, Object> data = plugin.getPersonaHandler().getLoadedPersona(p).getBasicInfo();
+		if (plugin.getPersonaHandler().getLoadedPersona(p) != null) {
+			Map<String, Object> data = plugin.getPersonaHandler().getLoadedPersona(p).getBasicInfo();
 
-		String output = PersonaCreationDialog.DIVIDER +
-						RPPersonas.PREFIX + "Persona ID: " + RPPersonas.ALT_COLOR + data.get("personaid") + "\n";
-		if (data.containsKey("nickname")) {
-			output += RPPersonas.PREFIX + "Nickname: " + RPPersonas.ALT_COLOR + data.get("nickname") + "\n";
-		}
-		output += RPPersonas.PREFIX + "Name: " + RPPersonas.ALT_COLOR + data.get("name") + "\n" +
-				  RPPersonas.PREFIX + "Age: " + RPPersonas.ALT_COLOR + data.get("age") + "\n" +
-				  RPPersonas.PREFIX + "Race: " + RPPersonas.ALT_COLOR + data.get("race") + "\n" +
-				  RPPersonas.PREFIX + "Gender: " + RPPersonas.ALT_COLOR + data.get("gender") + "\n";
-		if (data.containsKey("description")) {
-			output += RPPersonas.PREFIX + "Description: " + RPPersonas.ALT_COLOR + data.get("description") + "\n";
-		}
-		output += PersonaCreationDialog.DIVIDER;
+			String output = PersonaCreationDialog.DIVIDER +
+							RPPersonas.PREFIX + "Persona ID: " + RPPersonas.ALT_COLOR + data.get("personaid") + "\n";
+			if (data.containsKey("nickname")) {
+				output += RPPersonas.PREFIX + "Nickname: " + RPPersonas.ALT_COLOR + data.get("nickname") + "\n";
+			}
+			output += RPPersonas.PREFIX + "Name: " + RPPersonas.ALT_COLOR + data.get("name") + "\n" +
+					  RPPersonas.PREFIX + "Age: " + RPPersonas.ALT_COLOR + data.get("age") + "\n" +
+					  RPPersonas.PREFIX + "Race: " + RPPersonas.ALT_COLOR + data.get("race") + "\n" +
+					  RPPersonas.PREFIX + "Gender: " + RPPersonas.ALT_COLOR + data.get("gender") + "\n";
+			if (data.containsKey("description")) {
+				output += RPPersonas.PREFIX + "Description: " + RPPersonas.ALT_COLOR + data.get("description") + "\n";
+			}
+			output += PersonaCreationDialog.DIVIDER;
 
-		return output;
+			return output;
+		}
+
+		return "Unable to find loaded persona for the given player.";
 	}
 }

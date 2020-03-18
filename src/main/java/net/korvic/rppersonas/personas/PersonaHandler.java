@@ -63,9 +63,8 @@ public class PersonaHandler {
 		Map<Object, Object> personaData = new HashMap<>();
 		personaData.put("personaid", personaID);
 		personaData.put("accountid", accountID);
+		personaData.putAll(plugin.getPersonasSQL().getLoadingInfo(personaID));
 
-		Map<String, Object> loadingInfo = plugin.getPersonasSQL().getLoadingInfo(personaID);
-		personaData.putAll(loadingInfo);
 		registerPersona(personaData, p);
 	}
 
@@ -110,7 +109,7 @@ public class PersonaHandler {
 			plugin.getPersonasSQL().register(data);
 
 			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
-			plugin.getAccountHandler().getAccount(accountID).swapToPersona(personaID);
+			plugin.getAccountHandler().getAccount(accountID).swapToPersona(p, personaID);
 		}
 		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
 		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
