@@ -111,68 +111,126 @@ public class PersonasSQL {
 	}
 
 	// Inserts a new mapping for a persona.
-	public void register(Map<Object, Object> data) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		try {
-			conn = getSQLConnection();
-			byte aliveByte = (byte) 0;
-			if (data.containsKey("alive")) {
-				aliveByte = (byte) 1;
-			}
-
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-			ps.setInt(1, (int) data.get("personaid"));
-			ps.setByte(2, aliveByte);
-			ps.setString(3, (String) data.get("name"));
-			ps.setString(4, (String) data.get("gender"));
-			ps.setLong(5, (long) data.get("age"));
-			ps.setString(6, (String) data.get("race"));
-			ps.setInt(7, (int) data.get("lives"));
-			ps.setLong(8, (long) data.get("playtime"));
-
-			if (data.containsKey("inventory")) {
-				ps.setString(9, (String) data.get("inventory"));
-			} else {
-				ps.setString(9, null);
-			}
-
-			if (data.containsKey("nickname")) {
-				ps.setString(10, (String) data.get("nickname"));
-			} else {
-				ps.setString(10, null);
-			}
-
-			if (data.containsKey("prefix")) {
-				ps.setString(11, (String) data.get("prefix"));
-			} else {
-				ps.setString(11, null);
-			}
-
-			if (data.containsKey("skinid")) {
-				ps.setInt(12, (int) data.get("skinid"));
-			} else {
-				ps.setInt(12, -1);
-			}
-
-			if (data.containsKey("description")) {
-				ps.setString(13, (String) data.get("description"));
-			} else {
-				ps.setString(13, null);
-			}
-
-			ps.executeUpdate();
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
+	public void registerOrUpdate(Map<Object, Object> data) {
+		if (data.containsKey("personaid")) {
+			PreparedStatement ps = null;
 			try {
-				if (ps != null)
-					ps.close();
+				ps = getSaveStatement(data);
+				ps.executeUpdate();
 			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+			} finally {
+				try {
+					if (ps != null)
+						ps.close();
+				} catch (SQLException ex) {
+					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+				}
 			}
 		}
+	}
+
+	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+		Connection conn = null;
+		PreparedStatement grabStatement = null;
+		PreparedStatement replaceStatement = null;
+		conn = getSQLConnection();
+
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE PersonaID='" + data.get("personaid") + "'");
+		ResultSet result = grabStatement.executeQuery();
+		boolean resultPresent = result.next();
+
+		conn = getSQLConnection();
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+		replaceStatement.setInt(1, (int) data.get("personaid"));
+
+		byte aliveByte = (byte) 0;
+		if (data.containsKey("alive")) {
+			aliveByte = (byte) 1;
+		}
+		replaceStatement.setByte(2, aliveByte);
+
+		if (data.containsKey("name")) {
+			replaceStatement.setString(3, (String) data.get("name"));
+		} else {
+			replaceStatement.setString(3, result.getString("Name"));
+		}
+
+		if (data.containsKey("gender")) {
+			replaceStatement.setString(4, (String) data.get("gender"));
+		} else {
+			replaceStatement.setString(4, result.getString("Gender"));
+		}
+
+		if (data.containsKey("age")) {
+			replaceStatement.setLong(5, (long) data.get("age"));
+		} else {
+			replaceStatement.setLong(5, result.getLong("Age"));
+		}
+
+		if (data.containsKey("race")) {
+			replaceStatement.setString(6, (String) data.get("race"));
+		} else {
+			replaceStatement.setString(6, result.getString("Race"));
+		}
+
+		if (data.containsKey("lives")) {
+			replaceStatement.setInt(7, (int) data.get("lives"));
+		} else {
+			replaceStatement.setInt(7, result.getInt("Lives"));
+		}
+
+		if (data.containsKey("playtime")) {
+			replaceStatement.setLong(8, (long) data.get("playtime"));
+		} else {
+			replaceStatement.setLong(8, result.getLong("Playtime"));
+		}
+
+
+
+		if (data.containsKey("inventory")) {
+			replaceStatement.setString(9, (String) data.get("inventory"));
+		} else if (resultPresent) {
+			replaceStatement.setString(9, result.getString("Inventory"));
+		} else {
+			replaceStatement.setString(9, null);
+		}
+
+		if (data.containsKey("nickname")) {
+			replaceStatement.setString(10, (String) data.get("nickname"));
+		} else if (resultPresent) {
+			replaceStatement.setString(10, result.getString("NickName"));
+		} else {
+			replaceStatement.setString(10, null);
+		}
+
+		if (data.containsKey("prefix")) {
+			replaceStatement.setString(11, (String) data.get("prefix"));
+		} else if (resultPresent) {
+			replaceStatement.setString(11, result.getString("Prefix"));
+		} else {
+			replaceStatement.setString(11, null);
+		}
+
+		if (data.containsKey("skinid")) {
+			replaceStatement.setInt(12, (int) data.get("skinid"));
+		} else if (resultPresent) {
+			replaceStatement.setInt(12, result.getInt("ActiveSkinID"));
+		} else {
+			replaceStatement.setInt(12, 0);
+		}
+
+		if (data.containsKey("description")) {
+			replaceStatement.setString(13, (String) data.get("description"));
+		} else if (resultPresent) {
+			replaceStatement.setString(13, result.getString("Description"));
+		} else {
+			replaceStatement.setString(13, null);
+		}
+
+		grabStatement.close();
+		return replaceStatement;
 	}
 
 	public Map<String, Object> getBasicPersonaInfo(int personaID) {
@@ -513,65 +571,5 @@ public class PersonasSQL {
 			}
 		}
 		return null;
-	}
-
-	public void updateActiveSkinID(int personaID, int skinID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		try {
-			conn = getSQLConnection();
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-			Map<String, Object> data = getFullInfo(personaID);
-			byte aliveByte = (byte) 0;
-			if (data.containsKey("alive")) {
-				aliveByte = (byte) 1;
-			}
-			ps.setInt(1, personaID);
-			ps.setByte(2, aliveByte);
-			ps.setString(3, (String) data.get("name"));
-			ps.setString(4, (String) data.get("gender"));
-			ps.setLong(5, (long) data.get("age"));
-			ps.setString(6, (String) data.get("race"));
-			ps.setInt(7, (int) data.get("lives"));
-			ps.setLong(8, (long) data.get("playtime"));
-
-			String inventory = null;
-			if (data.containsKey("inventory")) {
-				inventory = (String) data.get("inventory");
-			}
-			ps.setString(9, inventory);
-
-			String nickname = null;
-			if (data.containsKey("nickname")) {
-				nickname = (String) data.get("nickname");
-			}
-			ps.setString(10, nickname);
-
-			String prefix = null;
-			if (data.containsKey("prefix")) {
-				prefix = (String) data.get("prefix");
-			}
-			ps.setString(11, prefix);
-
-			ps.setInt(12, skinID);
-
-			String description = null;
-			if (data.containsKey("description")) {
-				description = (String) data.get("description");
-			}
-			ps.setString(13, description);
-
-			ps.executeUpdate();
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
 	}
 }

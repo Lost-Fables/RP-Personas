@@ -1,8 +1,10 @@
 package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -76,10 +78,18 @@ public class Account {
 	}
 
 	public void swapToPersona(Player p, int personaID) {
-		plugin.getPersonaHandler().unloadPersona(activePersonaID);
+		plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
+		plugin.getPersonaHandler().unloadPersona(activePersonaID, p);
 		this.activePersonaID = personaID;
 		plugin.getAccountsSQL().updateActivePersona(accountID, personaID);
-		plugin.getPersonaHandler().loadPersona(p, accountID, personaID);
+
+		Persona pers = plugin.getPersonaHandler().loadPersona(p, accountID, personaID);
+		ItemStack[] items = pers.getInventory();
+		if (items != null) {
+			p.getInventory().setContents(items);
+		} else {
+			p.getInventory().clear();
+		}
 	}
 
 }

@@ -59,16 +59,16 @@ public class PersonaHandler {
 		factory.buildConversation(p).begin();
 	}
 
-	public void loadPersona(Player p, int accountID, int personaID) {
+	public Persona loadPersona(Player p, int accountID, int personaID) {
 		Map<Object, Object> personaData = new HashMap<>();
 		personaData.put("personaid", personaID);
 		personaData.put("accountid", accountID);
 		personaData.putAll(plugin.getPersonasSQL().getLoadingInfo(personaID));
 
-		registerPersona(personaData, p);
+		return registerPersona(personaData, p);
 	}
 
-	public static void registerPersona(Map<Object, Object> data, Player p) {
+	public static Persona registerPersona(Map<Object, Object> data, Player p) {
 		int personaID = highestPersonaID;
 		if (data.containsKey("personaid")) {
 			personaID = (int) data.get("personaid");
@@ -106,7 +106,7 @@ public class PersonaHandler {
 
 		if (data.containsKey("fresh")) {
 			data.put("personaid", personaID);
-			plugin.getPersonasSQL().register(data);
+			plugin.getPersonasSQL().registerOrUpdate(data);
 
 			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
 			plugin.getAccountHandler().getAccount(accountID).swapToPersona(p, personaID);
@@ -114,6 +114,8 @@ public class PersonaHandler {
 		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
 		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
 		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
+
+		return persona;
 	}
 
 	// CHECKING //
@@ -170,6 +172,16 @@ public class PersonaHandler {
 			loadedPersonas.get(personaID).updateSkin(skinID);
 		}
 
-		plugin.getPersonasSQL().updateActiveSkinID(personaID, skinID);
+		Map<Object, Object> map = new HashMap<>();
+		map.put("personaid", personaID);
+		map.put("skinid", skinID);
+		plugin.getPersonasSQL().registerOrUpdate(map);
+	}
+
+	public void queueSavingAll() {
+		for (Player p : playerObjectToID.keySet()) {
+			Persona pers = loadedPersonas.get(playerObjectToID.get(p));
+			pers.queueSave(p);
+		}
 	}
 }

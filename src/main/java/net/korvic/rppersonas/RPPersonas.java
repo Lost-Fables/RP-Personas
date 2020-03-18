@@ -10,6 +10,7 @@ import net.korvic.rppersonas.sql.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -58,6 +59,15 @@ public final class RPPersonas extends JavaPlugin {
 		}
 
 		if (sqlSuccessful) {
+			// Start Auto-Save every 30 mins
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					personaHandler.queueSavingAll();
+					//accountHandler.queueSavingAll();
+				}
+			}.runTaskTimerAsynchronously(this, 0, 36000);
+
 			// Register our Listeners
 			getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
 
