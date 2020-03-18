@@ -359,6 +359,7 @@ public class AccountCommands extends BaseCommand {
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Click here to make a new persona!");
 
 						meta.setLore(lore);
+						item.setItemMeta(meta);
 						return item;
 					}
 
