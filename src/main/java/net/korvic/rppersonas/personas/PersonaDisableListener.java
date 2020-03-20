@@ -1,18 +1,21 @@
 package net.korvic.rppersonas.personas;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PersonaDisableListener implements Listener {
 
@@ -23,10 +26,10 @@ public class PersonaDisableListener implements Listener {
 	}
 
 	// Effects & Public Methods
-	private static List<Player> blindedPlayers = new ArrayList<>();
+	private static Map<Player, Location> blindedPlayers = new HashMap<>();
 
 	public static void disablePlayer(Player p) {
-		blindedPlayers.add(p);
+		blindedPlayers.put(p, p.getLocation());
 		blindPlayer(p);
 	}
 
@@ -53,29 +56,47 @@ public class PersonaDisableListener implements Listener {
 	// Events to listen to.
 	@EventHandler
 	public void openInventory(InventoryOpenEvent e) {
-		if (blindedPlayers.contains((Player) e.getPlayer())) {
+		if (blindedPlayers.containsKey((Player) e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void touchAnyInventory(InventoryInteractEvent e) {
-		if (blindedPlayers.contains((Player) e.getWhoClicked())) {
+		if (blindedPlayers.containsKey((Player) e.getWhoClicked())) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void dropItem(PlayerDropItemEvent e) {
-		if (blindedPlayers.contains(e.getPlayer())) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(false);
 		}
 	}
 
 	@EventHandler
 	public void swapItem(PlayerSwapHandItemsEvent e) {
-		if (blindedPlayers.contains(e.getPlayer())) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
+
+	@EventHandler
+	public void jump(PlayerJumpEvent e) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
+			e.setCancelled(true);
+			e.getPlayer().teleportAsync(blindedPlayers.get(e.getPlayer()));
+		}
+	}
+
+	@EventHandler
+	public void movement(PlayerMoveEvent e) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
+			e.setCancelled(true);
+			e.getPlayer().teleportAsync(blindedPlayers.get(e.getPlayer()));
+		}
+	}
+
+
 }
