@@ -30,7 +30,7 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
-		blindPlayer(p);
+		PersonaDisableListener.disablePlayer(p);
 
 		Map<Object, Object> data = new HashMap<>();
 		String title = "";
@@ -151,17 +151,6 @@ public class PersonaHandler {
 	public void unloadPersona(int personaID, Player p) {
 		loadedPersonas.remove(personaID);
 		playerObjectToID.remove(p);
-	}
-
-	// EFFECTS //
-	public static void blindPlayer(Player p) {
-		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100000, 255));
-		p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100000, 255));
-	}
-
-	public static void clearBlindness(Player p) {
-		p.removePotionEffect(PotionEffectType.SLOW);
-		p.removePotionEffect(PotionEffectType.BLINDNESS);
 	}
 
 	// FACTORY //
