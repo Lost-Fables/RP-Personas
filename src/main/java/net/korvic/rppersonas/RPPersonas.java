@@ -7,10 +7,14 @@ import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Objects;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -38,6 +42,9 @@ public final class RPPersonas extends JavaPlugin {
 	private CurrencySQL currency;
 	private SkinsSQL skins;
 
+	// Default Location
+	private Location spawnLocation;
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -59,6 +66,9 @@ public final class RPPersonas extends JavaPlugin {
 		}
 
 		if (sqlSuccessful) {
+			// Load data from our configs.
+			loadFromConfig();
+
 			// Start Auto-Save every 30 mins
 			new BukkitRunnable() {
 				@Override
@@ -89,19 +99,6 @@ public final class RPPersonas extends JavaPlugin {
 		// Plugin shutdown logic
 	}
 
-	public static RPPersonas get() {
-		return instance;
-	}
-	public AccountHandler getAccountHandler() {
-		return accountHandler;
-	}
-	public PersonaHandler getPersonaHandler() {
-		return personaHandler;
-	}
-	public UnregisteredHandler getUnregisteredHandler() {
-		return unregisteredHandler;
-	}
-
 	private void setupDatabases() {
 		uuidAccountMap = new UUIDAccountMapSQL(this);
 		accounts = new AccountsSQL(this);
@@ -116,8 +113,46 @@ public final class RPPersonas extends JavaPlugin {
 		personas.load();
 		currency.load();
 		skins.load();
+	}
 
+	private void loadFromConfig() {
 		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
+		String world = config.getString("spawn.world");
+		if (world != null && Bukkit.getWorld(world) != null) {
+			String facing = config.getString("spawn.facing");
+			if (facing != null) {
+				spawnLocation = new Location(Bukkit.getWorld(world), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), getYawFromFacing(facing), 0);
+			}
+		}
+	}
+
+	private float getYawFromFacing(String facing) {
+		float output = 0;
+		if (facing.equalsIgnoreCase("west")) {
+			output = 90;
+		} else if (facing.equalsIgnoreCase("north")) {
+			output = 180;
+		} else if (facing.equalsIgnoreCase("east")) {
+			output = -90;
+		}
+		return output;
+	}
+
+	public static RPPersonas get() {
+		return instance;
+	}
+	public AccountHandler getAccountHandler() {
+		return accountHandler;
+	}
+	public PersonaHandler getPersonaHandler() {
+		return personaHandler;
+	}
+	public UnregisteredHandler getUnregisteredHandler() {
+		return unregisteredHandler;
+	}
+
+	public Location getSpawnLocation() {
+		return spawnLocation;
 	}
 
 	public UUIDAccountMapSQL getUUIDAccountMapSQL() {

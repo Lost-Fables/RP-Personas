@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
@@ -27,6 +29,11 @@ public class PersonasSQL {
 				   "    Race TEXT NOT NULL,\n" +
 				   "    Lives INT NOT NULL,\n" +
 				   "    Playtime BIGINT NOT NULL,\n" +
+
+				   "    LocationWorld TEXT NOT NULL,\n" +
+				   "    LocationX DOUBLE NOT NULL,\n" +
+				   "    LocationY DOUBLE NOT NULL,\n" +
+				   "    LocationZ DOUBLE NOT NULL,\n" +
 
 				   "    Inventory TEXT,\n" +
 				   "    NickName TEXT,\n" +
@@ -141,8 +148,10 @@ public class PersonasSQL {
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
+
+		// Required
 		replaceStatement.setInt(1, (int) data.get("personaid"));
 
 		byte aliveByte = (byte) 0;
@@ -188,45 +197,60 @@ public class PersonasSQL {
 		}
 
 
-
-		if (data.containsKey("inventory")) {
-			replaceStatement.setString(9, (String) data.get("inventory"));
-		} else if (resultPresent) {
-			replaceStatement.setString(9, result.getString("Inventory"));
+		// Location
+		if (data.containsKey("location")) {
+			Location loc = (Location) data.get("location");
+			replaceStatement.setString(9, loc.getWorld().getName());
+			replaceStatement.setDouble(10, loc.getX());
+			replaceStatement.setDouble(11, loc.getY());
+			replaceStatement.setDouble(12, loc.getZ());
 		} else {
-			replaceStatement.setString(9, null);
+			replaceStatement.setString(9, result.getString("LocationWorld"));
+			replaceStatement.setDouble(10, result.getDouble("LocationX"));
+			replaceStatement.setDouble(11, result.getDouble("LocationY"));
+			replaceStatement.setDouble(12, result.getDouble("LocationZ"));
+		}
+
+
+		// Optional
+		if (data.containsKey("inventory")) {
+			replaceStatement.setString(13, (String) data.get("inventory"));
+		} else if (resultPresent) {
+			replaceStatement.setString(13, result.getString("Inventory"));
+		} else {
+			replaceStatement.setString(13, null);
 		}
 
 		if (data.containsKey("nickname")) {
-			replaceStatement.setString(10, (String) data.get("nickname"));
+			replaceStatement.setString(14, (String) data.get("nickname"));
 		} else if (resultPresent) {
-			replaceStatement.setString(10, result.getString("NickName"));
+			replaceStatement.setString(14, result.getString("NickName"));
 		} else {
-			replaceStatement.setString(10, null);
+			replaceStatement.setString(14, null);
 		}
 
 		if (data.containsKey("prefix")) {
-			replaceStatement.setString(11, (String) data.get("prefix"));
+			replaceStatement.setString(15, (String) data.get("prefix"));
 		} else if (resultPresent) {
-			replaceStatement.setString(11, result.getString("Prefix"));
+			replaceStatement.setString(15, result.getString("Prefix"));
 		} else {
-			replaceStatement.setString(11, null);
+			replaceStatement.setString(15, null);
 		}
 
 		if (data.containsKey("skinid")) {
-			replaceStatement.setInt(12, (int) data.get("skinid"));
+			replaceStatement.setInt(16, (int) data.get("skinid"));
 		} else if (resultPresent) {
-			replaceStatement.setInt(12, result.getInt("ActiveSkinID"));
+			replaceStatement.setInt(16, result.getInt("ActiveSkinID"));
 		} else {
-			replaceStatement.setInt(12, 0);
+			replaceStatement.setInt(16, 0);
 		}
 
 		if (data.containsKey("description")) {
-			replaceStatement.setString(13, (String) data.get("description"));
+			replaceStatement.setString(17, (String) data.get("description"));
 		} else if (resultPresent) {
-			replaceStatement.setString(13, result.getString("Description"));
+			replaceStatement.setString(17, result.getString("Description"));
 		} else {
-			replaceStatement.setString(13, null);
+			replaceStatement.setString(17, null);
 		}
 
 		grabStatement.close();
@@ -572,4 +596,41 @@ public class PersonasSQL {
 		}
 		return null;
 	}
+
+	public Location getLocation(int personaID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT LocationWorld,LocationX,LocationY,LocationZ FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			Location output = null;
+
+			if (rs.next()) {
+				String world = rs.getString("LocationWorld");
+				if (world != null && Bukkit.getWorld(world) != null) {
+					output = new Location(Bukkit.getWorld(world), rs.getDouble("LocationX"), rs.getDouble("LocationY"), rs.getDouble("LocationZ"));
+				}
+			}
+
+			return output;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return null;
+	}
+
 }

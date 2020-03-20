@@ -39,6 +39,7 @@ public class PersonaHandler {
 		data.put("lives", 3);
 		data.put("playtime", 0L);
 		data.put("fresh", new Object());
+		data.put("location", plugin.getSpawnLocation());
 
 		if (first) {
 			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
@@ -120,11 +121,15 @@ public class PersonaHandler {
 
 	// CHECKING //
 	public Persona getLoadedPersona(Player p) {
-		return getLoadedPersona(playerObjectToID.get(p));
+		if (playerObjectToID.containsKey(p)) {
+			return getLoadedPersona(playerObjectToID.get(p));
+		} else {
+			return null;
+		}
 	}
 
 	public Persona getLoadedPersona(int personaID) {
-		return loadedPersonas.get(personaID);
+		return loadedPersonas.getOrDefault(personaID, null);
 	}
 
 	// UNLOADING //

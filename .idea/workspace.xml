@@ -7,8 +7,8 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/Account.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/Persona.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/Persona.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaInventory.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonasSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonasSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,9 +153,9 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1022" y="318" key="refactoring.ChangeSignatureDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584527296616" />
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1584521849080">
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1584702950058">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584521849080" />
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584702950058" />
   </component>
 </project>

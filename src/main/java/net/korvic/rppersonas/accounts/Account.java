@@ -78,8 +78,10 @@ public class Account {
 	}
 
 	public void swapToPersona(Player p, int personaID) {
-		plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
-		plugin.getPersonaHandler().unloadPersona(activePersonaID, p);
+		if (plugin.getPersonaHandler().getLoadedPersona(p) != null) {
+			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
+			plugin.getPersonaHandler().unloadPersona(activePersonaID, p);
+		}
 		this.activePersonaID = personaID;
 		plugin.getAccountsSQL().updateActivePersona(accountID, personaID);
 
@@ -90,6 +92,7 @@ public class Account {
 		} else {
 			p.getInventory().clear();
 		}
+		p.teleportAsync(plugin.getPersonasSQL().getLocation(personaID));
 	}
 
 }

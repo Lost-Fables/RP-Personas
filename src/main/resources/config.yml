@@ -15,3 +15,11 @@ saving:
 
   # If this percentage of the total queue is bigger than the amount set above, then it will run more. 0 to disable.
   percent: 0
+
+# Default Spawn once a persona is completed.
+spawn:
+  facing: south
+  world: world
+  x: 0
+  y: 64
+  z: 0

@@ -75,7 +75,9 @@ public class Persona {
 	public void queueSave(Player p) {
 		this.inventory = InventoryUtil.serializeItems(p.getInventory());
 		try {
-			PreparedStatement ps = plugin.getPersonasSQL().getSaveStatement(getDeepInfo());
+			Map<Object, Object> data = getDeepInfo();
+			data.put("location", p.getLocation());
+			PreparedStatement ps = plugin.getPersonasSQL().getSaveStatement(data);
 			plugin.getSaveQueue().addToQueue(ps);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
