@@ -40,12 +40,14 @@ public class PersonaDisableListener implements Listener {
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100000, 255, false, false, false));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100000, 255, false, false, false));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 255, false, false, false));
+		p.setInvulnerable(true);
 	}
 
 	private static void clearBlindness(Player p) {
 		p.removePotionEffect(PotionEffectType.SLOW);
 		p.removePotionEffect(PotionEffectType.BLINDNESS);
 		p.removePotionEffect(PotionEffectType.INVISIBILITY);
+		p.setInvulnerable(false);
 	}
 
 	// Events to listen to.
