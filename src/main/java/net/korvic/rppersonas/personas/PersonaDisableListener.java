@@ -6,12 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -101,6 +101,34 @@ public class PersonaDisableListener implements Listener {
 					e.getPlayer().teleportAsync(blindedPlayers.get(e.getPlayer()));
 				}
 			}.runTaskLater(plugin, 10);
+		}
+	}
+
+	@EventHandler
+	public void itemPickUp(PlayerAttemptPickupItemEvent e) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void breakBlock(BlockBreakEvent e) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void placeBlock(BlockPlaceEvent e) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void interaction(PlayerInteractEvent e) {
+		if (blindedPlayers.containsKey(e.getPlayer())) {
+			e.setCancelled(true);
 		}
 	}
 
