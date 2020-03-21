@@ -35,11 +35,11 @@ public class JoinQuitListener implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		Player p = event.getPlayer();
-		PersonaDisableListener.enablePlayer(p);
 		UUID uuid = event.getPlayer().getUniqueId();
 		int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
 		plugin.getAccountHandler().unloadAccount(account);
 		plugin.getPersonaHandler().unloadPersonas(account, event.getPlayer());
+		PersonaDisableListener.enablePlayer(p);
 	}
 
 }
