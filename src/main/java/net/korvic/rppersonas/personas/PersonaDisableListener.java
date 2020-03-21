@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.personas;
 
+import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Location;
@@ -31,8 +32,8 @@ public class PersonaDisableListener implements Listener {
 	// Effects & Public Methods
 	private static Map<Player, Location> blindedPlayers = new HashMap<>();
 
-	public static boolean isPlayerDisabled(Player p) {
-		return blindedPlayers.containsKey(p);
+	public static boolean isPlayerEnabled(Player p) {
+		return !blindedPlayers.containsKey(p);
 	}
 
 	public static void disablePlayer(Player p) {
@@ -40,11 +41,19 @@ public class PersonaDisableListener implements Listener {
 	}
 
 	public static void disablePlayer(Player p, Location loc) {
+		disablePlayer(p, loc, null);
+	}
+
+	public static void disablePlayer(Player p, Location loc, Title title) {
 		blindedPlayers.put(p, loc);
 		blindPlayer(p);
+		if (title != null) {
+			p.sendTitle(title);
+		}
 	}
 
 	public static void enablePlayer(Player p) {
+		p.hideTitle();
 		clearBlindness(p);
 		blindedPlayers.remove(p);
 	}

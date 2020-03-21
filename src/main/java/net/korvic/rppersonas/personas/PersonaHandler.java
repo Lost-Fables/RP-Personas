@@ -2,14 +2,13 @@ package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
+import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +33,19 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
-		PersonaDisableListener.disablePlayer(p, plugin.getSpawnLocation());
-
-		String title = "";
+		String welcomeText = "";
 		if (first) {
-			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
+			welcomeText = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
 		} else {
 			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
 		}
+		Title title = new Title(welcomeText,
+								RPPersonas.ALT_COLOR + "Type your Persona's name to continue.",
+								20, 60*20, 20);
+
+		PersonaDisableListener.disablePlayer(p, plugin.getSpawnLocation(), title);
+		p.teleportAsync(plugin.getSpawnLocation());
+		p.getInventory().clear();
 
 		Map<Object, Object> data = new HashMap<>();
 		data.put("accountid", accountID);
@@ -50,13 +54,6 @@ public class PersonaHandler {
 		data.put("playtime", 0L);
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
-
-		p.teleportAsync(plugin.getSpawnLocation());
-		p.getInventory().clear();
-
-		p.sendTitle(title,
-					RPPersonas.ALT_COLOR + "Type your Persona's name to continue.",
-					20, 60*20, 20);
 
 		ConversationFactory factory = getFreshFactory();
 		factory.withInitialSessionData(data);
@@ -162,7 +159,7 @@ public class PersonaHandler {
 		personas.addAll(plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false));
 		for (int i : personas) {
 			if (loadedPersonas.containsKey(i)) {
-				if (!PersonaDisableListener.isPlayerDisabled(p)) {
+				if (PersonaDisableListener.isPlayerEnabled(p)) {
 					loadedPersonas.get(i).queueSave(p);
 				}
 				if (playerObjectToID.values().toArray().length > 1) {
@@ -200,7 +197,7 @@ public class PersonaHandler {
 
 	public void queueSavingAll() {
 		for (Player p : playerObjectToID.keySet()) {
-			if (!PersonaDisableListener.isPlayerDisabled(p)) {
+			if (PersonaDisableListener.isPlayerEnabled(p)) {
 				loadedPersonas.get(playerObjectToID.get(p)).queueSave(p);
 			}
 		}
