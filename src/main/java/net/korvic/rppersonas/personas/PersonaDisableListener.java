@@ -31,7 +31,9 @@ public class PersonaDisableListener implements Listener {
 	// Effects & Public Methods
 	private static Map<Player, Location> blindedPlayers = new HashMap<>();
 
-
+	public static boolean isPlayerDisabled(Player p) {
+		return blindedPlayers.containsKey(p);
+	}
 
 	public static void disablePlayer(Player p) {
 		disablePlayer(p, p.getLocation());

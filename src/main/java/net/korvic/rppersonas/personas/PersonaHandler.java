@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.bukkit.util.LocationUtil;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,6 +34,8 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
+		PersonaDisableListener.disablePlayer(p, plugin.getSpawnLocation());
+
 		String title = "";
 		if (first) {
 			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
@@ -48,7 +51,6 @@ public class PersonaHandler {
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
 
-		PersonaDisableListener.disablePlayer(p, plugin.getSpawnLocation());
 		p.teleportAsync(plugin.getSpawnLocation());
 		p.getInventory().clear();
 
@@ -128,7 +130,10 @@ public class PersonaHandler {
 		}
 
 		if (data.containsKey("location")) {
-			p.teleportAsync((Location) data.get("location"));
+			Location loc = (Location) data.get("location");
+			if (!LocationUtil.isClose(p, loc, 1.0D)) {
+				p.teleport(loc);
+			}
 		}
 
 		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
@@ -157,7 +162,9 @@ public class PersonaHandler {
 		personas.addAll(plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false));
 		for (int i : personas) {
 			if (loadedPersonas.containsKey(i)) {
-				loadedPersonas.get(i).queueSave(p);
+				if (!PersonaDisableListener.isPlayerDisabled(p)) {
+					loadedPersonas.get(i).queueSave(p);
+				}
 				if (playerObjectToID.values().toArray().length > 1) {
 					playerObjectToID.remove(p);
 				} else {
