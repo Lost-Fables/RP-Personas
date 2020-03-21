@@ -71,17 +71,24 @@ public class AccountCommands extends BaseCommand {
 	@Cmd(value="Send a registration message to your forum account.", permission="rppersonas.accepted")
 	public void discordlink(CommandSender sender,
 							@Arg(value="DiscordID#0000", description="Your personal Discord ID.") @Default(value="") String discordID) {
-		if (discordID.length() <= 0) {
-			msg(DISCORD_UNLINKED_SUCCESS);
-		} else if (sender instanceof Player) {
+		if (sender instanceof Player) {
 			//TODO - Hook into Discord bot to send a message to them to confirm the link.
+
+			if (discordID.length() <= 0) {
+				discordID = null;
+			}
 
 			Map<Object, Object> data = new HashMap<>();
 			data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(((Player) sender).getUniqueId()));
 			data.put("discordid", discordID);
 
 			plugin.getAccountsSQL().registerOrUpdate(data);
-			msg(DISCORD_LINK_SUCCESS);
+
+			if (discordID != null) {
+				msg(DISCORD_LINK_SUCCESS);
+			} else {
+				msg(DISCORD_UNLINKED_SUCCESS);
+			}
 		} else {
 			msg(PLAYER_ONLY);
 		}
