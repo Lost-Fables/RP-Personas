@@ -200,8 +200,9 @@ public class PersonaHandler {
 
 	public void queueSavingAll() {
 		for (Player p : playerObjectToID.keySet()) {
-			Persona pers = loadedPersonas.get(playerObjectToID.get(p));
-			pers.queueSave(p);
+			if (!PersonaDisableListener.isPlayerDisabled(p)) {
+				loadedPersonas.get(playerObjectToID.get(p)).queueSave(p);
+			}
 		}
 	}
 }
