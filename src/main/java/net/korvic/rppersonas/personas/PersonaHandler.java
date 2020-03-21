@@ -1,9 +1,11 @@
 package net.korvic.rppersonas.personas;
 
+import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -45,7 +47,7 @@ public class PersonaHandler {
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
 
-		PersonaDisableListener.disablePlayer(p);
+		PersonaDisableListener.disablePlayer(p, plugin.getSpawnLocation());
 		p.teleportAsync(plugin.getSpawnLocation());
 		p.getInventory().clear();
 
@@ -97,6 +99,13 @@ public class PersonaHandler {
 		String personaInvData = null;
 		if (data.containsKey("inventory")) {
 			personaInvData = (String) data.get("inventory");
+
+			List<ItemStack> items = InventoryUtil.deserializeItems(personaInvData);
+			ItemStack[] arrayItems = new ItemStack[items.size()];
+			for (int i = 0; i < arrayItems.length; i++) {
+				arrayItems[i] = items.get(i);
+			}
+			p.getInventory().setContents(arrayItems);
 		}
 
 		int activeSkinID = 0;

@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -30,8 +31,14 @@ public class PersonaDisableListener implements Listener {
 	// Effects & Public Methods
 	private static Map<Player, Location> blindedPlayers = new HashMap<>();
 
+
+
 	public static void disablePlayer(Player p) {
-		blindedPlayers.put(p, p.getLocation());
+		disablePlayer(p, p.getLocation());
+	}
+
+	public static void disablePlayer(Player p, Location loc) {
+		blindedPlayers.put(p, loc);
 		blindPlayer(p);
 	}
 
@@ -105,8 +112,9 @@ public class PersonaDisableListener implements Listener {
 	}
 
 	@EventHandler
-	public void itemPickUp(PlayerAttemptPickupItemEvent e) {
-		if (blindedPlayers.containsKey(e.getPlayer())) {
+	public void itemPickUp(EntityPickupItemEvent e) {
+		if (e.getEntity() instanceof Player &&
+			blindedPlayers.containsKey((Player) e.getEntity())) {
 			e.setCancelled(true);
 		}
 	}
