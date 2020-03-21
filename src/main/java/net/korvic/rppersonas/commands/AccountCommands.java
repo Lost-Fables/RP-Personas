@@ -10,6 +10,7 @@ import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PermissionsUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
+import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
@@ -36,6 +37,7 @@ public class AccountCommands extends BaseCommand {
 	private static final String PLAYER_ONLY = RPPersonas.PREFIX + "This command only works for players!";
 	private static final String FORUM_LINK_SUCCESS = RPPersonas.PREFIX + "Successfully linked your forum account!";
 	private static final String DISCORD_LINK_SUCCESS = RPPersonas.PREFIX + "Successfully linked your Discord account!";
+	private static final String DISCORD_UNLINKED_SUCCESS = RPPersonas.PREFIX + "Successfully removed the Discord link on your account.";
 	private static final String ALREADY_REGISTERED = RPPersonas.PREFIX + "Your account is already linked!";
 	private static final String FORUM_LINK_REQUIRED = RPPersonas.PREFIX + "You need to link your account with " + RPPersonas.ALT_COLOR + "/account link FORUM_ID " + RPPersonas.PREFIX + "to use that.";
 
@@ -68,8 +70,10 @@ public class AccountCommands extends BaseCommand {
 
 	@Cmd(value="Send a registration message to your forum account.", permission="rppersonas.accepted")
 	public void discordlink(CommandSender sender,
-							@Arg(value="DiscordID#0000", description="Your personal Discord ID.") String discordID) {
-		if (sender instanceof Player) {
+							@Arg(value="DiscordID#0000", description="Your personal Discord ID.") @Default(value="") String discordID) {
+		if (discordID.length() <= 0) {
+			msg(DISCORD_UNLINKED_SUCCESS);
+		} else if (sender instanceof Player) {
 			//TODO - Hook into Discord bot to send a message to them to confirm the link.
 
 			Map<Object, Object> data = new HashMap<>();
@@ -173,6 +177,8 @@ public class AccountCommands extends BaseCommand {
 					String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
 					if (discordTag != null && discordTag.length() > 0) {
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Linked To: " + ChatColor.RESET + RPPersonas.ALT_COLOR + discordTag);
+					} else {
+						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Use /account discordlink to link your discord.");
 					}
 
 					meta.setLore(lore);
