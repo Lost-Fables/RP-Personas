@@ -30,8 +30,6 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
-		PersonaDisableListener.disablePlayer(p);
-
 		String title = "";
 		if (first) {
 			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
@@ -47,6 +45,7 @@ public class PersonaHandler {
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
 
+		PersonaDisableListener.disablePlayer(p);
 		p.teleportAsync(plugin.getSpawnLocation());
 		p.getInventory().clear();
 
