@@ -308,7 +308,7 @@ public class PersonasSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT Prefix, NickName, Name, Inventory, ActiveSkinID, Alive FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+			stmt = "SELECT Prefix, NickName, Name, Inventory, LocationWorld, LocationX, LocationY, LocationZ, ActiveSkinID, Alive FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -325,6 +325,11 @@ public class PersonasSQL {
 
 				if (rs.getShort("Alive") > 0) {
 					output.put("alive", new Object());
+				}
+
+				String world = rs.getString("LocationWorld");
+				if (world != null && Bukkit.getWorld(world) != null) {
+					output.put("location", new Location(Bukkit.getWorld(world), rs.getDouble("LocationX"), rs.getDouble("LocationY"), rs.getDouble("LocationZ")));
 				}
 			}
 

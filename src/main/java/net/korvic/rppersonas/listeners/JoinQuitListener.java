@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.listeners;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.PersonaDisableListener;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -32,6 +34,8 @@ public class JoinQuitListener implements Listener {
 
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
+		Player p = event.getPlayer();
+		PersonaDisableListener.enablePlayer(p);
 		UUID uuid = event.getPlayer().getUniqueId();
 		int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
 		plugin.getAccountHandler().unloadAccount(account);

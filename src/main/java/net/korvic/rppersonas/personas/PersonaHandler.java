@@ -3,6 +3,7 @@ package net.korvic.rppersonas.personas;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -125,6 +126,11 @@ public class PersonaHandler {
 			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
 			plugin.getAccountHandler().getAccount(accountID).swapToPersona(p, personaID, saveCurrentPersona);
 		}
+
+		if (data.containsKey("location")) {
+			p.teleportAsync((Location) data.get("location"));
+		}
+
 		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
 		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
 		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
