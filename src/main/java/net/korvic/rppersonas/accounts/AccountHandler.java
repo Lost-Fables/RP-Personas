@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.PersonaGender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -18,8 +19,17 @@ public class AccountHandler {
 		loadedAccounts = new HashMap<>();
 	}
 
-	public Account getAccount(int accountID) {
+	public Account getLoadedAccount(int accountID) {
 		return loadedAccounts.get(accountID);
+	}
+
+	public int getActivePersona(int accountID) {
+		Account account = getLoadedAccount(accountID);
+		if (account != null) {
+			return account.getActivePersonaID();
+		} else {
+			return plugin.getAccountsSQL().getActivePersonaID(accountID);
+		}
 	}
 
 	public Account loadAccount(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
@@ -33,5 +43,4 @@ public class AccountHandler {
 	public void unloadAccount(int accountID) {
 		loadedAccounts.remove(accountID);
 	}
-
 }

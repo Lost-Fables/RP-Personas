@@ -123,7 +123,7 @@ public class PersonaHandler {
 			plugin.getPersonasSQL().registerOrUpdate(data);
 
 			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
-			plugin.getAccountHandler().getAccount(accountID).swapToPersona(p, personaID, saveCurrentPersona);
+			plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(p, personaID, saveCurrentPersona);
 		}
 
 		if (data.containsKey("location")) {

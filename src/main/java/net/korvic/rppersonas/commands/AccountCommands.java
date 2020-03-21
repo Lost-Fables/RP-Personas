@@ -6,7 +6,6 @@ import co.lotc.core.bukkit.menu.MenuAgent;
 import co.lotc.core.bukkit.menu.MenuUtil;
 import co.lotc.core.bukkit.menu.icon.Button;
 import co.lotc.core.bukkit.menu.icon.Icon;
-import co.lotc.core.bukkit.menu.icon.Slot;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PermissionsUtil;
 import co.lotc.core.command.annotate.Arg;
@@ -15,9 +14,7 @@ import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.sql.PersonasSQL;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +35,7 @@ public class AccountCommands extends BaseCommand {
 	private RPPersonas plugin;
 	private static final String PLAYER_ONLY = RPPersonas.PREFIX + "This command only works for players!";
 	private static final String FORUM_LINK_SUCCESS = RPPersonas.PREFIX + "Successfully linked your forum account!";
+	private static final String DISCORD_LINK_SUCCESS = RPPersonas.PREFIX + "Successfully linked your Discord account!";
 	private static final String ALREADY_REGISTERED = RPPersonas.PREFIX + "Your account is already linked!";
 	private static final String FORUM_LINK_REQUIRED = RPPersonas.PREFIX + "You need to link your account with " + RPPersonas.ALT_COLOR + "/account link FORUM_ID " + RPPersonas.PREFIX + "to use that.";
 
@@ -45,13 +44,13 @@ public class AccountCommands extends BaseCommand {
 	}
 
 	@Cmd(value="Send a registration message to your forum account.", permission="rppersonas.accepted")
-	public void link(CommandSender sender,
-						 @Arg(value="Forum ID", description="Your forum account ID.") int id) {
+	public void forumlink(CommandSender sender,
+						 @Arg(value="Forum ID", description="Your forum account ID.") int forumID) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			if (plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()) <= 0) {
 				//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the lines below.
-				plugin.getUUIDAccountMapSQL().addMapping(id, p);
+				plugin.getUUIDAccountMapSQL().addMapping(forumID, p);
 				msg(FORUM_LINK_SUCCESS);
 			} else {
 				msg(ALREADY_REGISTERED);
@@ -62,12 +61,29 @@ public class AccountCommands extends BaseCommand {
 	}
 
 	@Cmd(value="Start the register process for someone else.", permission="rppersonas.helper")
-	public void other(@Arg(value="The Player", description="The player you're helping register.") Player p,
-					  @Arg(value="Forum ID", description="The forum ID of the other player.") int id) {
-		link((CommandSender) p, id);
+	public void forumlinkother(@Arg(value="The Player", description="The player you're helping register.") Player p,
+							   @Arg(value="Forum ID", description="The forum ID of the other player.") int forumID) {
+		forumlink((CommandSender) p, forumID);
 	}
 
-	@Cmd(value="Open a menu to manage your account.", permission="rppersonas.use")
+	@Cmd(value="Send a registration message to your forum account.", permission="rppersonas.accepted")
+	public void discordlink(CommandSender sender,
+							@Arg(value="DiscordID#0000", description="Your personal Discord ID.") String discordID) {
+		if (sender instanceof Player) {
+			//TODO - Hook into Discord bot to send a message to them to confirm the link.
+
+			Map<Object, Object> data = new HashMap<>();
+			data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(((Player) sender).getUniqueId()));
+			data.put("discordid", discordID);
+
+			plugin.getAccountsSQL().registerOrUpdate(data);
+			msg(DISCORD_LINK_SUCCESS);
+		} else {
+			msg(PLAYER_ONLY);
+		}
+	}
+
+	@Cmd(value="Open a menu to manage your account.", permission="rppersonas.accepted")
 	public void menu(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -285,6 +301,7 @@ public class AccountCommands extends BaseCommand {
 		private List<Menu> getPersonasListMenu(int accountID, int maxPersonas) {
 			ArrayList<Icon> icons = new ArrayList<>();
 			int currentPersonaCount = 0;
+			int currentPersonaID = plugin.getAccountHandler().getActivePersona(accountID);
 
 			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true)) {
 				icons.add(new Button() {
@@ -310,7 +327,11 @@ public class AccountCommands extends BaseCommand {
 						meta.setDisplayName(RPPersonas.PREFIX + ChatColor.BOLD + currentName);
 
 						ArrayList<String> lore = new ArrayList<>();
-						lore.add(RPPersonas.ALT_COLOR + "Left Click to use, Right Click to delete.");
+						if (personaID == currentPersonaID) {
+							lore.add(RPPersonas.ALT_COLOR + "Current Persona! Right Click to delete.");
+						} else {
+							lore.add(RPPersonas.ALT_COLOR + "Left Click to use, Right Click to delete.");
+						}
 						lore.add("");
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Persona ID: " + ChatColor.RESET + RPPersonas.ALT_COLOR + personaID);
 						lore.add(RPPersonas.ALT_COLOR + ChatColor.ITALIC + "Name: " + ChatColor.RESET + RPPersonas.ALT_COLOR + data.get("name"));
@@ -326,12 +347,13 @@ public class AccountCommands extends BaseCommand {
 					@Override
 					public void click(MenuAction menuAction) {
 						ClickType click = menuAction.getClick();
-						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
+						if (personaID != currentPersonaID && (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) ) {
 							menuAction.getPlayer().closeInventory();
-							plugin.getAccountHandler().getAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID, true);
+							plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID, true);
 							menuAction.getPlayer().sendMessage(RPPersonas.PREFIX + "You are now playing as " + RPPersonas.ALT_COLOR + currentName + RPPersonas.PREFIX + ".");
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().sendMessage("Deleting Persona...");
+							// TODO - Delete persona & force creation if there's no others left.
 						}
 					}
 				});

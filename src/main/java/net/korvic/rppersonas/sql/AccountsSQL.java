@@ -135,68 +135,69 @@ public class AccountsSQL {
 		return false;
 	}
 
-	// Inserts a new mapping for an account.
-	public void register(Map<Object, Object> data) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		try {
-			conn = getSQLConnection();
-			byte aliveByte = (byte) 0;
-			if (data.containsKey("alive")) {
-				aliveByte = (byte) 1;
-			}
-
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,ActivePersonaID,DiscordID,Playtime,Votes) VALUES(?,?,?,?,?)");
-
-
-			ps.setInt(1, (int) data.get("accountid"));
-			ps.setInt(2, (int) data.get("personaid"));
-			if (data.containsKey("discordid")) {
-				ps.setString(3, (String) data.get("discordid"));
-			} else {
-				ps.setString(3, null);
-			}
-			ps.setLong(4, 0L);
-			ps.setShort(5, (short) 0);
-
-			ps.executeUpdate();
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
+	// Updates or Inserts a new mapping for an account.
+	public void registerOrUpdate(Map<Object, Object> data) {
+		if (data.containsKey("accountid")) {
+			PreparedStatement ps = null;
 			try {
-				if (ps != null)
-					ps.close();
+				ps = getSaveStatement(data);
+				ps.executeUpdate();
 			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+			} finally {
+				try {
+					if (ps != null)
+						ps.close();
+				} catch (SQLException ex) {
+					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+				}
 			}
 		}
 	}
 
-	// Replaces the persona ID for a given account.
-	public void updateActivePersona(int accountID, int personaID) {
+	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
 		Connection conn = null;
-		PreparedStatement ps = null;
-		try {
-			conn = getSQLConnection();
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,ActivePersonaID,DiscordID,Playtime,Votes) VALUES(?,?,?,?,?)");
-			ps.setInt(1, accountID);
-			ps.setInt(2, personaID);
-			ps.setString(3, getDiscordInfo(accountID));
-			ps.setLong(4, getPlaytime(accountID));
-			ps.setShort(5, getVotes(accountID));
-			//TODO Clean this up?
+		PreparedStatement grabStatement = null;
+		PreparedStatement replaceStatement = null;
+		conn = getSQLConnection();
 
-			ps.executeUpdate();
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + data.get("accountid") + "'");
+		ResultSet result = grabStatement.executeQuery();
+		boolean resultPresent = result.next();
+
+		conn = getSQLConnection();
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,ActivePersonaID,DiscordID,Playtime,Votes) VALUES(?,?,?,?,?)");
+
+
+		// Required
+		replaceStatement.setInt(1, (int) data.get("accountid"));
+
+		if (data.containsKey("activepersonaid")) {
+			replaceStatement.setInt(2, (int) data.get("activepersonaid"));
+		} else {
+			replaceStatement.setInt(2, result.getInt("ActivePersonaID"));
 		}
+
+		if (data.containsKey("discordid")) {
+			replaceStatement.setString(3, (String) data.get("discordid"));
+		} else {
+			replaceStatement.setString(3, result.getString("DiscordID"));
+		}
+
+		if (data.containsKey("playtime")) {
+			replaceStatement.setLong(4, (long) data.get("playtime"));
+		} else {
+			replaceStatement.setLong(4, result.getLong("Playtime"));
+		}
+
+		if (data.containsKey("votes")) {
+			replaceStatement.setShort(5, (short) data.get("votes"));
+		} else {
+			replaceStatement.setShort(5, result.getShort("Votes"));
+		}
+
+		grabStatement.close();
+		return replaceStatement;
 	}
 
 	public int getActivePersonaID(int accountID) {

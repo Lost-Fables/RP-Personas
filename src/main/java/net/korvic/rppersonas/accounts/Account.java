@@ -17,7 +17,7 @@ public class Account {
 	// ACCOUNT CREATION //
 
 	protected static Account createAccount(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
-		Account a = RPPersonas.get().getAccountHandler().getAccount(accountID);
+		Account a = RPPersonas.get().getAccountHandler().getLoadedAccount(accountID);
 		if (a == null) {
 			a = new Account(p, accountID, activePersonaID, saveCurrentPersona);
 		}
@@ -32,7 +32,7 @@ public class Account {
 			Map<Object, Object> accountData = new HashMap<>();
 			accountData.put("accountid", accountID);
 			accountData.put("personaid", activePersonaID);
-			plugin.getAccountsSQL().register(accountData);
+			plugin.getAccountsSQL().registerOrUpdate(accountData);
 		}
 
 		if (activePersonaID > 0) {
@@ -85,7 +85,10 @@ public class Account {
 			plugin.getPersonaHandler().unloadPersona(activePersonaID, p);
 		}
 		this.activePersonaID = personaID;
-		plugin.getAccountsSQL().updateActivePersona(accountID, personaID);
+		Map<Object, Object> data = new HashMap<>();
+		data.put("accountid", accountID);
+		data.put("activepersonaid", personaID);
+		plugin.getAccountsSQL().registerOrUpdate(data);
 
 		Persona pers = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
 		ItemStack[] items = pers.getInventory();
