@@ -74,17 +74,18 @@ public class AccountCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			//TODO - Hook into Discord bot to send a message to them to confirm the link.
 
-			if (discordID.length() <= 0) {
-				discordID = null;
+			String discordOutput = null;
+			if (discordID.length() > 0) {
+				discordOutput = discordID;
 			}
 
 			Map<Object, Object> data = new HashMap<>();
 			data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(((Player) sender).getUniqueId()));
-			data.put("discordid", discordID);
+			data.put("discordid", discordOutput);
 
 			plugin.getAccountsSQL().registerOrUpdate(data);
 
-			if (discordID != null) {
+			if (discordOutput != null) {
 				msg(DISCORD_LINK_SUCCESS);
 			} else {
 				msg(DISCORD_UNLINKED_SUCCESS);
