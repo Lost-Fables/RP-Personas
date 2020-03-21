@@ -328,7 +328,7 @@ public class AccountCommands extends BaseCommand {
 						ClickType click = menuAction.getClick();
 						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
 							menuAction.getPlayer().closeInventory();
-							plugin.getAccountHandler().getAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID);
+							plugin.getAccountHandler().getAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID, true);
 							menuAction.getPlayer().sendMessage(RPPersonas.PREFIX + "You are now playing as " + RPPersonas.ALT_COLOR + currentName + RPPersonas.PREFIX + ".");
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().sendMessage("Deleting Persona...");

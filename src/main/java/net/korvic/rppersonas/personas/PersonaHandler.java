@@ -32,8 +32,14 @@ public class PersonaHandler {
 	public static void createPersona(Player p, int accountID, boolean first) {
 		PersonaDisableListener.disablePlayer(p);
 
-		Map<Object, Object> data = new HashMap<>();
 		String title = "";
+		if (first) {
+			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
+		} else {
+			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
+		}
+
+		Map<Object, Object> data = new HashMap<>();
 		data.put("accountid", accountID);
 		data.put("alive", new Object());
 		data.put("lives", 3);
@@ -41,9 +47,8 @@ public class PersonaHandler {
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
 
-		if (first) {
-			title = RPPersonas.PREFIX + ChatColor.BOLD + "Welcome!";
-		}
+		p.teleportAsync(plugin.getSpawnLocation());
+		p.getInventory().clear();
 
 		p.sendTitle(title,
 					RPPersonas.ALT_COLOR + "Type your Persona's name to continue.",
@@ -60,16 +65,16 @@ public class PersonaHandler {
 		factory.buildConversation(p).begin();
 	}
 
-	public Persona loadPersona(Player p, int accountID, int personaID) {
+	public Persona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
 		Map<Object, Object> personaData = new HashMap<>();
 		personaData.put("personaid", personaID);
 		personaData.put("accountid", accountID);
 		personaData.putAll(plugin.getPersonasSQL().getLoadingInfo(personaID));
 
-		return registerPersona(personaData, p);
+		return registerPersona(personaData, p, saveCurrentPersona);
 	}
 
-	public static Persona registerPersona(Map<Object, Object> data, Player p) {
+	public static Persona registerPersona(Map<Object, Object> data, Player p, boolean saveCurrentPersona) {
 		int personaID = highestPersonaID;
 		if (data.containsKey("personaid")) {
 			personaID = (int) data.get("personaid");
@@ -110,7 +115,7 @@ public class PersonaHandler {
 			plugin.getPersonasSQL().registerOrUpdate(data);
 
 			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
-			plugin.getAccountHandler().getAccount(accountID).swapToPersona(p, personaID);
+			plugin.getAccountHandler().getAccount(accountID).swapToPersona(p, personaID, saveCurrentPersona);
 		}
 		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
 		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);

@@ -428,7 +428,7 @@ public class PersonaCreationDialog {
 	private static Prompt registerPersona(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PREFIX + ChatColor.BOLD + "Registering your persona now!"));
-		PersonaHandler.registerPersona(context.getAllSessionData(), p);
+		PersonaHandler.registerPersona(context.getAllSessionData(), p, false);
 		PersonaDisableListener.enablePlayer(p);
 
 		return Prompt.END_OF_CONVERSATION;

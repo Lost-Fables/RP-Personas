@@ -22,8 +22,8 @@ public class AccountHandler {
 		return loadedAccounts.get(accountID);
 	}
 
-	public Account loadAccount(Player p, int accountID, int activePersonaID) {
-		Account a = Account.createAccount(p, accountID, activePersonaID);
+	public Account loadAccount(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
+		Account a = Account.createAccount(p, accountID, activePersonaID, saveCurrentPersona);
 		if (!loadedAccounts.containsValue(a)) {
 			loadedAccounts.put(a.getAccountID(), a);
 		}
