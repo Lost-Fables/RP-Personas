@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -13,6 +14,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,9 +71,16 @@ public class PersonaDisableListener implements Listener {
 	}
 
 	@EventHandler
+	public void clickAnyInventory(InventoryClickEvent e) {
+		if (blindedPlayers.containsKey((Player) e.getWhoClicked())) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
 	public void dropItem(PlayerDropItemEvent e) {
 		if (blindedPlayers.containsKey(e.getPlayer())) {
-			e.setCancelled(false);
+			e.setCancelled(true);
 		}
 	}
 
@@ -86,17 +95,13 @@ public class PersonaDisableListener implements Listener {
 	public void jump(PlayerJumpEvent e) {
 		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(true);
-			e.getPlayer().teleportAsync(blindedPlayers.get(e.getPlayer()));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					e.getPlayer().teleportAsync(blindedPlayers.get(e.getPlayer()));
+				}
+			}.runTaskLater(plugin, 10);
 		}
 	}
-
-	@EventHandler
-	public void movement(PlayerMoveEvent e) {
-		if (blindedPlayers.containsKey(e.getPlayer())) {
-			e.setCancelled(true);
-			e.getPlayer().teleportAsync(blindedPlayers.get(e.getPlayer()));
-		}
-	}
-
 
 }
