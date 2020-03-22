@@ -4,6 +4,7 @@ import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
+import net.korvic.rppersonas.listeners.InspectListener;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
@@ -83,6 +84,7 @@ public final class RPPersonas extends JavaPlugin {
 			// Register our Listeners
 			getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
 			getServer().getPluginManager().registerEvents(new PersonaDisableListener(this), this);
+			getServer().getPluginManager().registerEvents(new InspectListener(this), this);
 
 			// Register our handlers
 			accountHandler = new AccountHandler(this);
