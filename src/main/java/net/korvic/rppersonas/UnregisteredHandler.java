@@ -2,15 +2,14 @@ package net.korvic.rppersonas;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UnregisteredHandler {
 
-	private static final String REGISTER_REMINDER = RPPersonas.PREFIX + "Please register your forum account with " + RPPersonas.ALT_COLOR + "/account link Forum_ID" + RPPersonas.PREFIX + "!\n" +
-													RPPersonas.PREFIX + "If you need help, please use " + RPPersonas.ALT_COLOR + "/request new" + RPPersonas.PREFIX + " and someone will swing by to give you a hand.";
+	private static final String REGISTER_REMINDER = RPPersonas.PRIMARY_COLOR + "Please register your forum account with " + RPPersonas.SECONDARY_COLOR + "/account link Forum_ID" + RPPersonas.PRIMARY_COLOR + "!\n" +
+													RPPersonas.PRIMARY_COLOR + "If you need help, please use " + RPPersonas.SECONDARY_COLOR + "/request new" + RPPersonas.PRIMARY_COLOR + " and someone will swing by to give you a hand.";
 	private RPPersonas plugin;
 	private BukkitRunnable runnable;
 

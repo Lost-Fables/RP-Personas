@@ -20,7 +20,7 @@ public class JoinQuitListener implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
-		if (event.getPlayer().hasPermission("rppersonas.accepted")) {
+		if (event.getPlayer().hasPermission("rppersonas.link")) {
 			UUID uuid = event.getPlayer().getUniqueId();
 			int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
 			if (account > 0) {

@@ -76,7 +76,7 @@ public class SaveQueue {
 				}
 			}
 
-			plugin.getLogger().info(RPPersonas.PREFIX + "Saved " + RPPersonas.ALT_COLOR + amountThisRun + " row(s) " + RPPersonas.PREFIX + "in " + RPPersonas.ALT_COLOR + (System.currentTimeMillis() - startMillis) + "ms");
+			plugin.getLogger().info(RPPersonas.PRIMARY_COLOR + "Saved " + RPPersonas.SECONDARY_COLOR + amountThisRun + " row(s) " + RPPersonas.PRIMARY_COLOR + "in " + RPPersonas.SECONDARY_COLOR + (System.currentTimeMillis() - startMillis) + "ms");
 		}
 	}
 

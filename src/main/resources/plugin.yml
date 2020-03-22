@@ -6,7 +6,7 @@ depend: [Tythan]
 commands:
   account:
     command: /<command>
-    description: "Link your Minecraft and forum accounts."
+    description: "Account link, menus, and other management options."
   persona:
     command: /<command>
     description: "Check, set, and update persona info."
@@ -14,3 +14,6 @@ permissions:
   rppersonas.accepted:
     default: op
     description: "Differentiate users who've been accepted via greylist application."
+  rppersonas.link:
+    default: true
+    description: "Allow the user to link their Forum and Discord IDs."

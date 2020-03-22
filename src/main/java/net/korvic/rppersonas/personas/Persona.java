@@ -32,7 +32,7 @@ public class Persona {
 		this.activeSkinID = activeSkinID;
 	}
 
-	public Map<Object, Object> getDeepInfo() {
+	public Map<Object, Object> getLoadedInfo() {
 		Map<Object, Object> output = new HashMap<>();
 
 		output.put("accountid", accountID);
@@ -50,6 +50,26 @@ public class Persona {
 		Map<String, Object> output = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
 		output.put("personaid", personaID);
+
+		return output;
+	}
+
+	public String getFormattedBasicInfo() {
+		Map<String, Object> data = getBasicInfo();
+
+		String output = PersonaCreationDialog.DIVIDER +
+						RPPersonas.PRIMARY_COLOR + "Persona ID: " + RPPersonas.SECONDARY_COLOR + data.get("personaid") + "\n";
+		if (data.containsKey("nickname")) {
+			output += RPPersonas.PRIMARY_COLOR + "Nickname: " + RPPersonas.SECONDARY_COLOR + data.get("nickname") + "\n";
+		}
+		output += RPPersonas.PRIMARY_COLOR + "Name: " + RPPersonas.SECONDARY_COLOR + data.get("name") + "\n" +
+				  RPPersonas.PRIMARY_COLOR + "Age: " + RPPersonas.SECONDARY_COLOR + data.get("age") + "\n" +
+				  RPPersonas.PRIMARY_COLOR + "Race: " + RPPersonas.SECONDARY_COLOR + data.get("race") + "\n" +
+				  RPPersonas.PRIMARY_COLOR + "Gender: " + RPPersonas.SECONDARY_COLOR + data.get("gender") + "\n";
+		if (data.containsKey("description")) {
+			output += RPPersonas.PRIMARY_COLOR + "Description: " + RPPersonas.SECONDARY_COLOR + data.get("description") + "\n";
+		}
+		output += PersonaCreationDialog.DIVIDER;
 
 		return output;
 	}
@@ -75,7 +95,7 @@ public class Persona {
 	public void queueSave(Player p) {
 		this.inventory = InventoryUtil.serializeItems(p.getInventory());
 		try {
-			Map<Object, Object> data = getDeepInfo();
+			Map<Object, Object> data = getLoadedInfo();
 			data.put("location", p.getLocation());
 			PreparedStatement ps = plugin.getPersonasSQL().getSaveStatement(data);
 			plugin.getSaveQueue().addToQueue(ps);

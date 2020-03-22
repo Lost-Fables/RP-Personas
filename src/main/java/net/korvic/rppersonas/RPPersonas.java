@@ -19,8 +19,9 @@ import java.util.Objects;
 
 public final class RPPersonas extends JavaPlugin {
 
-	public static final String PREFIX = ChatColor.DARK_AQUA + "";
-	public static final String ALT_COLOR = ChatColor.WHITE + "";
+	public static final String PRIMARY_COLOR = ChatColor.DARK_AQUA + "";
+	public static final String SECONDARY_COLOR = ChatColor.WHITE + "";
+	public static final String TERTIARY_COLOR = ChatColor.GRAY + "";
 	public static final boolean DEBUGGING = true;
 	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
 	public static final int DEFAULT_PERSONAS = 2;
