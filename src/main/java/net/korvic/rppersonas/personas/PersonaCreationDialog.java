@@ -275,7 +275,7 @@ public class PersonaCreationDialog {
 			Player p = (Player) context.getForWhom();
 			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + age + " Ages " +
 														   RPPersonas.PRIMARY_COLOR + "for your persona (" + RPPersonas.SECONDARY_COLOR + age / 4 + " Eras" +
-														   RPPersonas.PRIMARY_COLOR + "). Is this correct?" + RPPersonas.SECONDARY_COLOR +
+														   RPPersonas.PRIMARY_COLOR + "). Is this correct?\n" + RPPersonas.SECONDARY_COLOR +
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
