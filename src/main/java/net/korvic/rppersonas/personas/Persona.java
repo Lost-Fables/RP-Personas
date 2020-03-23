@@ -111,20 +111,22 @@ public class Persona {
 	}
 
 	// SET //
-	public void setNickName(String name) {
+	public void setNickName(Player p, String name) {
 		if (name.length() > 0) {
 			this.nickName = name;
 		} else {
 			this.nickName = (String) getBasicInfo().get("name");
 		}
+		queueSave(p);
 	}
 
-	public void setPrefix(String prefix) {
+	public void setPrefix(Player p, String prefix) {
 		if (prefix.length() > 0) {
 			this.prefix = prefix;
 		} else {
 			this.prefix = null;
 		}
+		queueSave(p);
 	}
 
 	public String addToDescription(Player p, String[] description) {
@@ -148,14 +150,14 @@ public class Persona {
 		return desc.toString();
 	}
 
-	public void setSkin(int skinID) {
-		this.activeSkinID = skinID;
-		//TODO - Update player's model to have new skin.
-	}
-
 	public void clearDescription(Player p) {
 		Map<Object, Object> data = new HashMap<>();
 		data.put("description", null);
 		queueSave(p, data);
+	}
+
+	public void setSkin(int skinID) {
+		this.activeSkinID = skinID;
+		//TODO - Update player's model to have new skin.
 	}
 }

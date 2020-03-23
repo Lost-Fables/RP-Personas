@@ -65,7 +65,7 @@ public class PersonaCreationDialog {
 				return false;
 			}
 
-			return ( (p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && input.length() <= 64) || input.length() <= 32);
+			return (p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && input.length() <= 64) || input.length() <= 32;
 		}
 
 		@Override
