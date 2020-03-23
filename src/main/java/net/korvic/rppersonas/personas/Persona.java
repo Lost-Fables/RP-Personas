@@ -32,6 +32,7 @@ public class Persona {
 		this.activeSkinID = activeSkinID;
 	}
 
+	// GET //
 	public Map<Object, Object> getLoadedInfo() {
 		Map<Object, Object> output = new HashMap<>();
 
@@ -87,22 +88,74 @@ public class Persona {
 		}
 	}
 
-	public void updateSkin(int skinID) {
-		this.activeSkinID = skinID;
-		//TODO - Update player's model to have new skin.
+	// SAVE //
+	public void queueSave(Player p) {
+		queueSave(p, null);
 	}
 
-	public void queueSave(Player p) {
+	public void queueSave(Player p, Map<Object, Object> data) {
 		this.inventory = InventoryUtil.serializeItems(p.getInventory());
 		try {
-			Map<Object, Object> data = getLoadedInfo();
-			data.put("location", p.getLocation());
-			PreparedStatement ps = plugin.getPersonasSQL().getSaveStatement(data);
+			Map<Object, Object> newData = getLoadedInfo();
+			if (data != null) {
+				newData.putAll(data);
+			}
+			newData.put("location", p.getLocation());
+			PreparedStatement ps = plugin.getPersonasSQL().getSaveStatement(newData);
 			plugin.getSaveQueue().addToQueue(ps);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	// SET //
+	public void setNickName(String name) {
+		if (name.length() > 0) {
+			this.nickName = name;
+		} else {
+			this.nickName = (String) getBasicInfo().get("name");
+		}
+	}
+
+	public void setPrefix(String prefix) {
+		if (prefix.length() > 0) {
+			this.prefix = prefix;
+		} else {
+			this.prefix = null;
+		}
+	}
+
+	public String addToDescription(Player p, String[] description) {
+		Map<String, Object> data = getBasicInfo();
+		StringBuilder desc = new StringBuilder();
+		if (data.containsKey("description")) {
+			desc.append((String) data.get("description"));
+		}
+
+		for (String s : description) {
+			if (desc.length() > 0) {
+				desc.append(" ");
+			}
+			desc.append(s);
+		}
+
+		Map<Object, Object> newData = new HashMap<>();
+		newData.put("description", desc.toString());
+
+		queueSave(p, newData);
+		return desc.toString();
+	}
+
+	public void setSkin(int skinID) {
+		this.activeSkinID = skinID;
+		//TODO - Update player's model to have new skin.
+	}
+
+	public void clearDescription(Player p) {
+		Map<Object, Object> data = new HashMap<>();
+		data.put("description", null);
+		queueSave(p, data);
 	}
 }

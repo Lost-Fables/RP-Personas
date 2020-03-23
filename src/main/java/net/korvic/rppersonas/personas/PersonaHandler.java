@@ -195,7 +195,7 @@ public class PersonaHandler {
 	// UPDATE //
 	public void updateActiveSkin(int personaID, int skinID) {
 		if (loadedPersonas.containsKey(personaID)) {
-			loadedPersonas.get(personaID).updateSkin(skinID);
+			loadedPersonas.get(personaID).setSkin(skinID);
 		}
 
 		Map<Object, Object> map = new HashMap<>();
