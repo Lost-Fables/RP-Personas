@@ -174,26 +174,34 @@ public class AccountsSQL {
 
 		if (data.containsKey("activepersonaid")) {
 			replaceStatement.setInt(2, (int) data.get("activepersonaid"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setInt(2, result.getInt("ActivePersonaID"));
+		} else {
+			replaceStatement.setInt(2, 0);
 		}
 
 		if (data.containsKey("discordid")) {
 			replaceStatement.setString(3, (String) data.get("discordid"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setString(3, result.getString("DiscordID"));
+		} else {
+			replaceStatement.setString(3, null);
 		}
 
 		if (data.containsKey("playtime")) {
 			replaceStatement.setLong(4, (long) data.get("playtime"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setLong(4, result.getLong("Playtime"));
+		} else {
+			replaceStatement.setLong(4, 0);
 		}
 
 		if (data.containsKey("votes")) {
 			replaceStatement.setShort(5, (short) data.get("votes"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setShort(5, result.getShort("Votes"));
+		} else {
+			replaceStatement.setShort(5, (short) 0);
 		}
 
 		grabStatement.close();

@@ -33,6 +33,10 @@ public class Persona {
 	}
 
 	// GET //
+	public String getCurrentName() {
+		return nickName;
+	}
+
 	public Map<Object, Object> getLoadedInfo() {
 		Map<Object, Object> output = new HashMap<>();
 

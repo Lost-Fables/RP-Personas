@@ -1,9 +1,12 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class CurrencySQL {
@@ -18,8 +21,8 @@ public class CurrencySQL {
 		this.plugin = plugin;
 		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
 				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
-				   "    Money INT NOT NULL,\n" +
-				   "    Bank INT NOT NULL\n" +
+				   "    Money REAL NOT NULL,\n" +
+				   "    Bank REAL NOT NULL\n" +
 				   ");";
 	}
 
@@ -95,6 +98,101 @@ public class CurrencySQL {
 		} catch (SQLException ex) {
 			Errors.close(plugin, ex);
 		}
+	}
+
+	public Map<Object, Object> getData(int personaID) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			Map<Object, Object> output = new HashMap<>();
+
+			if (rs.next()) {
+				if (rs.getString("NickName") != null && rs.getString("NickName").length() > 0) {
+					output.put("nickname", rs.getString("NickName"));
+				}
+				output.put("name", rs.getString("Name"));
+				output.put("age", rs.getLong("Age")); // TODO - Grab actual age.
+				output.put("race", rs.getString("Race"));
+				output.put("gender", rs.getString("Gender"));
+
+				if (rs.getString("Description") != null && rs.getString("Description").length() > 0) {
+					output.put("description", rs.getString("Description"));
+				}
+			}
+
+			return output;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return null;
+	}
+
+	public void setData(Map<Object, Object> data) {
+		if (data.containsKey("personaid")) {
+			PreparedStatement ps = null;
+			try {
+				ps = getSaveStatement(data);
+				ps.executeUpdate();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+			} finally {
+				try {
+					if (ps != null)
+						ps.close();
+				} catch (SQLException ex) {
+					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+				}
+			}
+		}
+	}
+
+	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+		Connection conn = null;
+		PreparedStatement grabStatement = null;
+		PreparedStatement replaceStatement = null;
+		conn = getSQLConnection();
+
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE PersonaID='" + data.get("personaid") + "'");
+		ResultSet result = grabStatement.executeQuery();
+		boolean resultPresent = result.next();
+
+		conn = getSQLConnection();
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Money,Bank) VALUES(?,?,?)");
+
+
+		// Required
+		replaceStatement.setInt(1, (int) data.get("personaid"));
+
+		if (data.containsKey("money")) {
+			replaceStatement.setFloat(2, (float) data.get("money"));
+		} else {
+			replaceStatement.setFloat(2, result.getFloat("money"));
+		}
+
+		if (data.containsKey("bank")) {
+			replaceStatement.setFloat(3, (float) data.get("bank"));
+		} else {
+			replaceStatement.setFloat(3, result.getFloat("bank"));
+		}
+
+		grabStatement.close();
+		return replaceStatement;
 	}
 
 }
