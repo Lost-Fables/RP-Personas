@@ -181,12 +181,12 @@ public class AccountCommands extends BaseCommand {
 
 					ArrayList<String> lore = new ArrayList<>();
 					lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click here to get a discord invite.");
+					lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Use /account discordlink to link your discord.");
 
 					String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
 					if (discordTag != null && discordTag.length() > 0) {
+						lore.add("");
 						lore.add(RPPersonas.SECONDARY_COLOR + "Linked To: " + RPPersonas.TERTIARY_COLOR + discordTag);
-					} else {
-						lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Use /account discordlink to link your discord.");
 					}
 
 					meta.setLore(lore);
@@ -347,9 +347,9 @@ public class AccountCommands extends BaseCommand {
 							lore.add(RPPersonas.SECONDARY_COLOR + "Left Click to use, Right Click to delete.");
 						}
 						lore.add("");
-						lore.add(RPPersonas.SECONDARY_COLOR + "Persona ID: " + RPPersonas.TERTIARY_COLOR + personaID);
+						lore.add(RPPersonas.SECONDARY_COLOR + "Persona ID: " + RPPersonas.TERTIARY_COLOR + String.format("%06d", personaID));
 						lore.add(RPPersonas.SECONDARY_COLOR + "Name: "       + RPPersonas.TERTIARY_COLOR + data.get("name"));
-						lore.add(RPPersonas.SECONDARY_COLOR + "Age: "        + RPPersonas.TERTIARY_COLOR + data.get("age"));
+						lore.add(RPPersonas.SECONDARY_COLOR + "Age: "        + RPPersonas.TERTIARY_COLOR + RPPersonas.getRelativeTimeString((long) data.get("age")));
 						lore.add(RPPersonas.SECONDARY_COLOR + "Race: "       + RPPersonas.TERTIARY_COLOR + data.get("race"));
 						lore.add(RPPersonas.SECONDARY_COLOR + "Gender: "     + RPPersonas.TERTIARY_COLOR + data.get("gender"));
 
@@ -399,9 +399,9 @@ public class AccountCommands extends BaseCommand {
 						ArrayList<String> lore = new ArrayList<>();
 						lore.add(RPPersonas.SECONDARY_COLOR + "Left Click to request ressurection, Right Click to delete.");
 						lore.add("");
-						lore.add(RPPersonas.SECONDARY_COLOR + "Persona ID: " + RPPersonas.TERTIARY_COLOR + personaID);
+						lore.add(RPPersonas.SECONDARY_COLOR + "Persona ID: " + RPPersonas.TERTIARY_COLOR + String.format("%06d", personaID));
 						lore.add(RPPersonas.SECONDARY_COLOR + "Name: "       + RPPersonas.TERTIARY_COLOR + data.get("name"));
-						lore.add(RPPersonas.SECONDARY_COLOR + "Age: "        + RPPersonas.TERTIARY_COLOR + data.get("age"));
+						lore.add(RPPersonas.SECONDARY_COLOR + "Age: "        + RPPersonas.TERTIARY_COLOR + RPPersonas.getRelativeTimeString((long) data.get("age")));
 						lore.add(RPPersonas.SECONDARY_COLOR + "Race: "       + RPPersonas.TERTIARY_COLOR + data.get("race"));
 						lore.add(RPPersonas.SECONDARY_COLOR + "Gender: "     + RPPersonas.TERTIARY_COLOR + data.get("gender"));
 

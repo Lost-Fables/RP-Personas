@@ -20,6 +20,7 @@ import java.util.Objects;
 
 public final class RPPersonas extends JavaPlugin {
 
+	// CONSTANTS //
 	public static final String PRIMARY_COLOR = ChatColor.DARK_AQUA + "";
 	public static final String SECONDARY_COLOR = ChatColor.WHITE + "";
 	public static final String TERTIARY_COLOR = ChatColor.GRAY + "";
@@ -27,6 +28,9 @@ public final class RPPersonas extends JavaPlugin {
 	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
 	public static final int DEFAULT_PERSONAS = 2;
 	public static final String PERMISSION_START = "rppersonas";
+	public static final long DAY_IN_MILLIS = 1000L * 60 * 60 * 24;
+	public static final long MONTH_IN_MILLIS = DAY_IN_MILLIS * 30;
+	public static final long YEAR_IN_MILLIS = DAY_IN_MILLIS * 365;
 
 	public static FileConfiguration config;
 	private static RPPersonas instance;
@@ -99,11 +103,7 @@ public final class RPPersonas extends JavaPlugin {
 		}
 	}
 
-	@Override
-	public void onDisable() {
-		// Plugin shutdown logic
-	}
-
+	// SQL //
 	private void setupDatabases() {
 		uuidAccountMap = new UUIDAccountMapSQL(this);
 		accounts = new AccountsSQL(this);
@@ -120,6 +120,7 @@ public final class RPPersonas extends JavaPlugin {
 		skins.load();
 	}
 
+	// CONFIG //
 	private void loadFromConfig() {
 		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
 		String world = config.getString("spawn.world");
@@ -131,6 +132,7 @@ public final class RPPersonas extends JavaPlugin {
 		}
 	}
 
+	// GET //
 	private float getYawFromFacing(String facing) {
 		float output = 0;
 		if (facing.equalsIgnoreCase("west")) {
@@ -180,5 +182,27 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public SaveQueue getSaveQueue() {
 		return saveQueue;
+	}
+
+	// TIME //
+	public static long getCurrentTime() {
+		return (BASE_LONG_VALUE + System.currentTimeMillis());
+	}
+
+	public static long getMillisFromAge(int ages) {
+		return (getCurrentTime() - (ages * 3 * MONTH_IN_MILLIS));
+	}
+	public static long getMillisFromEra(int eras) {
+		return (getCurrentTime() - (eras * YEAR_IN_MILLIS));
+	}
+
+	public static int getRelativeAges(long millis) {
+		return (int) (((getCurrentTime() - millis) / MONTH_IN_MILLIS) / 3);
+	}
+	public static int getRelativeEras(long millis) {
+		return (int) ((getCurrentTime() - millis) / YEAR_IN_MILLIS);
+	}
+	public static String getRelativeTimeString(long millis) {
+		return (getRelativeAges(millis) + " Ages; (" + getRelativeEras(millis) + " Eras)");
 	}
 }

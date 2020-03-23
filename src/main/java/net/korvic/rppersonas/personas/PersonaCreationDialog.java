@@ -18,8 +18,6 @@ public class PersonaCreationDialog {
 	public static final String DIVIDER = RPPersonas.SECONDARY_COLOR + "================================\n" + ChatColor.RESET;
 	private static final String NOTE = RPPersonas.SECONDARY_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
-	public static final long MONTH_IN_MILLIS = 1000L * 60 * 60 * 24 * 30;
-
 	// Intro //
 	protected static class StartingPrompt extends MessagePrompt {
 
@@ -289,8 +287,7 @@ public class PersonaCreationDialog {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
-				context.setSessionData("visualage", age);
-				context.setSessionData("age", getBornMillis(age));
+				context.setSessionData("age", RPPersonas.getMillisFromAge(age));
 				if (returnToEnd) {
 					return new PersonaConfirmPrompt();
 				} else {
@@ -299,11 +296,6 @@ public class PersonaCreationDialog {
 			} else {
 				return new PersonaAgePrompt(returnToEnd);
 			}
-		}
-
-		private long getBornMillis(int age) {
-			// TODO - Make year conversion method.
-			return (RPPersonas.BASE_LONG_VALUE + System.currentTimeMillis()) - (age * 3 * MONTH_IN_MILLIS);
 		}
 	}
 
@@ -353,7 +345,7 @@ public class PersonaCreationDialog {
 			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "Let's review your persona details..." + RPPersonas.SECONDARY_COLOR +
 														   "\nName: " + context.getSessionData("name") +
 														   "\nRace: " + context.getSessionData("race") +
-														   "\nAge: " + context.getSessionData("visualage") + " Ages; (" + (((int) context.getSessionData("visualage"))/4) + " Eras)" +
+														   "\nAge: " + RPPersonas.getRelativeTimeString((long) context.getSessionData("age")) +
 														   "\nGender: " + context.getSessionData("gender") + RPPersonas.PRIMARY_COLOR +
 														   "\nDoes everything look to be in order?\n" +
 														   DIVIDER);
