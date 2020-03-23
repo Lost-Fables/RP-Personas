@@ -3,7 +3,6 @@ package net.korvic.rppersonas.personas;
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import net.korvic.rppersonas.RPPersonas;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,7 +56,7 @@ public class PersonaDisableListener implements Listener {
 	}
 
 	public static void enableAll() {
-		for (Player p : Bukkit.getOnlinePlayers()) {
+		for (Player p : blindedPlayers.keySet()) {
 			enablePlayer(p);
 		}
 	}
