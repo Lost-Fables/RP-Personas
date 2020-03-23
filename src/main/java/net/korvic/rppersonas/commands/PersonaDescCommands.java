@@ -20,7 +20,7 @@ public class PersonaDescCommands extends BaseCommand {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			String newDesc = pers.addToDescription(p, text);
-			msg(RPPersonas.PRIMARY_COLOR + "Your persona's description is now:\n" + RPPersonas.SECONDARY_COLOR + newDesc);
+			msg(RPPersonas.PRIMARY_COLOR + "Your persona's description is now:\n " + RPPersonas.SECONDARY_COLOR + newDesc);
 		} else {
 			msg(RPPersonas.PRIMARY_COLOR + PersonaCommands.NO_CONSOLE);
 		}
