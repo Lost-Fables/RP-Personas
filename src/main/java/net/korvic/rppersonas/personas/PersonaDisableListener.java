@@ -3,6 +3,7 @@ package net.korvic.rppersonas.personas;
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,6 +44,10 @@ public class PersonaDisableListener implements Listener {
 		disablePlayer(p, loc, null);
 	}
 
+	public static void disablePlayer(Player p, Title title) {
+		disablePlayer(p, p.getLocation(), title);
+	}
+
 	public static void disablePlayer(Player p, Location loc, Title title) {
 		blindedPlayers.put(p, loc);
 		blindPlayer(p);
@@ -51,16 +56,16 @@ public class PersonaDisableListener implements Listener {
 		}
 	}
 
+	public static void enableAll() {
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			enablePlayer(p);
+		}
+	}
+
 	public static void enablePlayer(Player p) {
 		p.hideTitle();
 		clearBlindness(p);
 		blindedPlayers.remove(p);
-	}
-
-	public static void enableAll() {
-		for (Player p : blindedPlayers.keySet()) {
-			enablePlayer(p);
-		}
 	}
 
 	// EFFECTS //

@@ -344,12 +344,12 @@ public class PersonaCreationDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "Let's review your persona details..." +
-														   RPPersonas.PRIMARY_COLOR + "\nName: " +   RPPersonas.SECONDARY_COLOR + context.getSessionData("name") +
-														   RPPersonas.PRIMARY_COLOR + "\nRace: " +   RPPersonas.SECONDARY_COLOR + context.getSessionData("race") +
-														   RPPersonas.PRIMARY_COLOR + "\nAge: " +    RPPersonas.SECONDARY_COLOR + RPPersonas.getRelativeTimeString((long) context.getSessionData("age")) +
-														   RPPersonas.PRIMARY_COLOR + "\nGender: " + RPPersonas.SECONDARY_COLOR + context.getSessionData("gender") + RPPersonas.PRIMARY_COLOR +
-														   RPPersonas.PRIMARY_COLOR + "\nDoes everything look to be in order?\n" +
+			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "Let's review your persona details...\n" +
+														   RPPersonas.PRIMARY_COLOR + "Name: " +   RPPersonas.SECONDARY_COLOR + context.getSessionData("name") + "\n" +
+														   RPPersonas.PRIMARY_COLOR + "Race: " +   RPPersonas.SECONDARY_COLOR + context.getSessionData("race") + "\n" +
+														   RPPersonas.PRIMARY_COLOR + "Age: " +    RPPersonas.SECONDARY_COLOR + RPPersonas.getRelativeTimeString((long) context.getSessionData("age")) + "\n" +
+														   RPPersonas.PRIMARY_COLOR + "Gender: " + RPPersonas.SECONDARY_COLOR + context.getSessionData("gender") + "\n" +
+														   RPPersonas.PRIMARY_COLOR + "Does everything look to be in order?\n" +
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select"));
