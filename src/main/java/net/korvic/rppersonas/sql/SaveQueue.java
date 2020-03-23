@@ -62,24 +62,26 @@ public class SaveQueue {
 			}
 
 			for (int i = 0; i < amountThisRun; i++) {
-				PreparedStatement ps = queue.get(i);
-				try {
-					queue.remove(ps);
-					if (ps != null) {
-						ps.executeUpdate();
-					}
-				} catch (Exception e) {
-					if (RPPersonas.DEBUGGING) {
-						e.printStackTrace();
-					}
-				} finally {
+				if (queue.size() > 0) {
+					PreparedStatement ps = queue.get(0);
 					try {
+						queue.remove(ps);
 						if (ps != null) {
-							ps.close();
+							ps.executeUpdate();
 						}
 					} catch (Exception e) {
 						if (RPPersonas.DEBUGGING) {
 							e.printStackTrace();
+						}
+					} finally {
+						try {
+							if (ps != null) {
+								ps.close();
+							}
+						} catch (Exception e) {
+							if (RPPersonas.DEBUGGING) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
