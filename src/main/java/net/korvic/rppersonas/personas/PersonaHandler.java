@@ -100,12 +100,16 @@ public class PersonaHandler {
 		if (data.containsKey("inventory")) {
 			personaInvData = (String) data.get("inventory");
 
-			List<ItemStack> items = InventoryUtil.deserializeItems(personaInvData);
-			ItemStack[] arrayItems = new ItemStack[items.size()];
-			for (int i = 0; i < arrayItems.length; i++) {
-				arrayItems[i] = items.get(i);
+			if (personaInvData != null) {
+				List<ItemStack> items = InventoryUtil.deserializeItems(personaInvData);
+				ItemStack[] arrayItems = new ItemStack[items.size()];
+				for (int i = 0; i < arrayItems.length; i++) {
+					arrayItems[i] = items.get(i);
+				}
+				p.getInventory().setContents(arrayItems);
+			} else {
+				p.getInventory().clear();
 			}
-			p.getInventory().setContents(arrayItems);
 		}
 
 		int activeSkinID = 0;
