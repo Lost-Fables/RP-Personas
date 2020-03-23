@@ -24,12 +24,11 @@ import java.util.Map;
 public class PersonaDisableListener implements Listener {
 
 	private RPPersonas plugin;
-
 	public PersonaDisableListener(RPPersonas plugin) {
 		this.plugin = plugin;
 	}
 
-	// Effects & Public Methods
+	// STATIC //
 	private static Map<Player, Location> blindedPlayers = new HashMap<>();
 
 	public static boolean isPlayerEnabled(Player p) {
@@ -56,6 +55,12 @@ public class PersonaDisableListener implements Listener {
 		p.hideTitle();
 		clearBlindness(p);
 		blindedPlayers.remove(p);
+	}
+
+	public static void enableAll() {
+		for (Player p : blindedPlayers.keySet()) {
+			enablePlayer(p);
+		}
 	}
 
 	// EFFECTS //
