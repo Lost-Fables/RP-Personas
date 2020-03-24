@@ -116,17 +116,9 @@ public class CurrencySQL {
 			Map<Object, Object> output = new HashMap<>();
 
 			if (rs.next()) {
-				if (rs.getString("NickName") != null && rs.getString("NickName").length() > 0) {
-					output.put("nickname", rs.getString("NickName"));
-				}
-				output.put("name", rs.getString("Name"));
-				output.put("age", rs.getLong("Age")); // TODO - Grab actual age.
-				output.put("race", rs.getString("Race"));
-				output.put("gender", rs.getString("Gender"));
-
-				if (rs.getString("Description") != null && rs.getString("Description").length() > 0) {
-					output.put("description", rs.getString("Description"));
-				}
+				output.put("personaid", personaID);
+				output.put("money", rs.getFloat("Money"));
+				output.put("bank", rs.getFloat("Bank"));
 			}
 
 			return output;
@@ -181,14 +173,18 @@ public class CurrencySQL {
 
 		if (data.containsKey("money")) {
 			replaceStatement.setFloat(2, (float) data.get("money"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setFloat(2, result.getFloat("money"));
+		} else {
+			replaceStatement.setFloat(2, 0);
 		}
 
 		if (data.containsKey("bank")) {
 			replaceStatement.setFloat(3, (float) data.get("bank"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setFloat(3, result.getFloat("bank"));
+		} else {
+			replaceStatement.setFloat(3, 0);
 		}
 
 		grabStatement.close();
