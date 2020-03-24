@@ -104,8 +104,8 @@ public final class RPPersonas extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		PersonaDisableListener.enableAll();
 		saveQueue.completeAllSaves();
+		PersonaDisableListener.enableAll();
 	}
 
 	// SQL //
