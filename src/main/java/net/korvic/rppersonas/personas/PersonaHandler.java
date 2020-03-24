@@ -160,9 +160,9 @@ public class PersonaHandler {
 	public String getPersonaInfo(Player player) {
 		Persona pers = getLoadedPersona(player);
 		if (pers != null) {
-			return RPPersonas.TERTIARY_COLOR + player.getName() + "\n" + pers.getFormattedBasicInfo();
+			return RPPersonas.TERTIARY_COLOR + player.getName() + "'s active persona.\n" + pers.getFormattedBasicInfo();
 		} else {
-			return "Unable to find loaded persona for the given player.";
+			return RPPersonas.PRIMARY_COLOR + "Unable to find loaded persona for the given player.";
 		}
 	}
 
