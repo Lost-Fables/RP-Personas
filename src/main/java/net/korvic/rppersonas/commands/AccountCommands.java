@@ -118,7 +118,7 @@ public class AccountCommands extends BaseCommand {
 		private static final String DISCORD_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNiMTgzYjE0OGI5YjRlMmIxNTgzMzRhZmYzYjViYjZjMmMyZGJiYzRkNjdmNzZhN2JlODU2Njg3YTJiNjIzIn19fQ";
 		private static final String SKINS_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjI3NGUxNjA1MjMzNDI1MDkxZjdiMjgzN2E0YmI4ZjRjODA0ZGFjODBkYjllNGY1OTlmNTM1YzAzYWZhYjBmOCJ9fX0=";
 		private static final String DEAD_PERSONA = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYyNGVkNjg3NTMwNGZhNGExZjBjNzg1YjJjYjZhNmE3MjU2M2U5ZjNlMjRlYTU1ZTE4MTc4NDUyMTE5YWE2NiJ9fX0=";
-		private static final String UNUSED_PERSONA = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjI5MjY1Y2M1ZjEwMzg0OTQzODJlNjQ2N2FkOGQ3YzlhMjI1NzNlYzM2MzYyYmQ0OTE5MmZkNDM0YjUxYzkyIn19fQ==";
+		private static final String UNUSED_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjI5MjY1Y2M1ZjEwMzg0OTQzODJlNjQ2N2FkOGQ3YzlhMjI1NzNlYzM2MzYyYmQ0OTE5MmZkNDM0YjUxYzkyIn19fQ==";
 
 		private static final String NO_PLAYTIME = "Nothing yet!";
 
@@ -225,13 +225,15 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					getSkinsListMenu(accountID).get(0).openSession(menuAction.getPlayer());
+					int maxSkins = PermissionsUtil.getMaxPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots", RPPersonas.DEFAULT_PERSONAS);
+					getSkinsListMenu(accountID, maxSkins).get(0).openSession(menuAction.getPlayer());
 				}
 			};
 		}
 
-		private List<Menu> getSkinsListMenu(int accountID) {
+		private List<Menu> getSkinsListMenu(int accountID, int maxSkins) {
 			Map<Integer, String> data = plugin.getSkinsSQL().getSkinNames(accountID);
+			int currentSkinCount = 0;
 
 			ArrayList<Icon> icons = new ArrayList<>();
 			for (int id : data.keySet()) {
@@ -255,6 +257,32 @@ public class AccountCommands extends BaseCommand {
 						int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
 						plugin.getPersonaHandler().updateActiveSkin(personaID, id);
 						menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_COLOR + "Persona skin updated!");
+					}
+				});
+				currentSkinCount++;
+			}
+
+			if (currentSkinCount < maxSkins) {
+				int finalCurrentPersonaCount = currentSkinCount;
+				icons.add(new Button() {
+					@Override
+					public ItemStack getItemStack(MenuAgent menuAgent) {
+						ItemStack item = ItemUtil.getSkullFromTexture(UNUSED_HEAD);
+						ItemMeta meta = item.getItemMeta();
+
+						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unused Skins (" + (maxSkins - finalCurrentPersonaCount) + ")");
+						ArrayList<String> lore = new ArrayList<>();
+						lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click here to save your current skin to your account.");
+
+						meta.setLore(lore);
+						item.setItemMeta(meta);
+						return item;
+					}
+
+					@Override
+					public void click(MenuAction menuAction) {
+						// TODO - Save skin to player's account
+						menuAction.getPlayer().sendMessage("Saving skin...");
 					}
 				});
 			}
@@ -425,7 +453,7 @@ public class AccountCommands extends BaseCommand {
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						ItemStack item = ItemUtil.getSkullFromTexture(UNUSED_PERSONA);
+						ItemStack item = ItemUtil.getSkullFromTexture(UNUSED_HEAD);
 						ItemMeta meta = item.getItemMeta();
 
 						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unused Personas (" + (maxPersonas - finalCurrentPersonaCount) + ")");
