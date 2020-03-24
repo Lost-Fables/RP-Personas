@@ -91,4 +91,31 @@ public class SaveQueue {
 		}
 	}
 
+	public void completeAllSaves() {
+		runnable.cancel();
+		long startMillis = System.currentTimeMillis();
+		for (PreparedStatement ps : queue) {
+			try {
+				if (ps != null) {
+					ps.executeUpdate();
+				}
+			} catch (Exception e) {
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
+			} finally {
+				try {
+					if (ps != null) {
+						ps.close();
+					}
+				} catch (Exception e) {
+					if (RPPersonas.DEBUGGING) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		plugin.getLogger().info(RPPersonas.PRIMARY_COLOR + "Saved " + RPPersonas.SECONDARY_COLOR + queue.size() + " row(s) " + RPPersonas.PRIMARY_COLOR + "in " + RPPersonas.SECONDARY_COLOR + (System.currentTimeMillis() - startMillis) + "ms");
+	}
 }
