@@ -174,7 +174,7 @@ public class CurrencySQL {
 		if (data.containsKey("money")) {
 			replaceStatement.setFloat(2, (float) data.get("money"));
 		} else if (resultPresent) {
-			replaceStatement.setFloat(2, result.getFloat("money"));
+			replaceStatement.setFloat(2, result.getFloat("Money"));
 		} else {
 			replaceStatement.setFloat(2, 0);
 		}
@@ -182,7 +182,7 @@ public class CurrencySQL {
 		if (data.containsKey("bank")) {
 			replaceStatement.setFloat(3, (float) data.get("bank"));
 		} else if (resultPresent) {
-			replaceStatement.setFloat(3, result.getFloat("bank"));
+			replaceStatement.setFloat(3, result.getFloat("Bank"));
 		} else {
 			replaceStatement.setFloat(3, 0);
 		}

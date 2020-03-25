@@ -17,6 +17,7 @@ public class SkinsSQL {
 	private RPPersonas plugin;
 	private String SQLTable;
 	private String SQLTableName = "rppersonas_saved_skins";
+	private int highestSkinID = 1;
 
 	public SkinsSQL(RPPersonas plugin) {
 		this.plugin = plugin;
@@ -45,12 +46,21 @@ public class SkinsSQL {
 		connection = getSQLConnection();
 		try {
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + ";";
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE SkinID=(SELECT MAX(SkinID) FROM " + SQLTableName + ");";
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				updateHighestSkinID(rs.getInt("SkinID"));
+			}
 			close(ps, rs);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+	}
+
+	private void updateHighestSkinID(int skinID) {
+		if (skinID >= highestSkinID) {
+			highestSkinID = skinID + 1;
 		}
 	}
 
@@ -166,4 +176,73 @@ public class SkinsSQL {
 		return null;
 	}
 
+	public void addSkin(int accountID, String texture, String name) {
+		if (texture != null && accountID > 0) {
+			PreparedStatement ps = null;
+			Map<Object, Object> data = new HashMap<>();
+			data.put("texture", texture);
+			data.put("name", name);
+			data.put("accountid", accountID);
+			data.put("skinid", highestSkinID);
+			updateHighestSkinID(highestSkinID);
+			try {
+				ps = getSaveStatement(data);
+				ps.executeUpdate();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+			} finally {
+				try {
+					if (ps != null)
+						ps.close();
+				} catch (SQLException ex) {
+					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+				}
+			}
+		}
+	}
+
+	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+		Connection conn = null;
+		PreparedStatement grabStatement = null;
+		PreparedStatement replaceStatement = null;
+		conn = getSQLConnection();
+
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE SkinID='" + data.get("skinid") + "'");
+		ResultSet result = grabStatement.executeQuery();
+		boolean resultPresent = result.next();
+
+		conn = getSQLConnection();
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (SkinID,AccountID,Name,Texture) VALUES(?,?,?,?)");
+
+
+		// Required
+		replaceStatement.setInt(1, (int) data.get("skinid"));
+
+		if (data.containsKey("accountid")) {
+			replaceStatement.setInt(2, (int) data.get("accountid"));
+		} else if (resultPresent) {
+			replaceStatement.setInt(2, result.getInt("AccountID"));
+		} else {
+			replaceStatement.setInt(2, 0);
+		}
+
+		if (data.containsKey("name")) {
+			replaceStatement.setString(3, (String) data.get("name"));
+		} else if (resultPresent) {
+			replaceStatement.setString(3, result.getString("Name"));
+		} else {
+			replaceStatement.setString(3, null);
+		}
+
+		if (data.containsKey("texture")) {
+			replaceStatement.setString(3, (String) data.get("texture"));
+		} else if (resultPresent) {
+			replaceStatement.setString(3, result.getString("Texture"));
+		} else {
+			replaceStatement.setString(3, null);
+		}
+
+		grabStatement.close();
+		return replaceStatement;
+	}
 }

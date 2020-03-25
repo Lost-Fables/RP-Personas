@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/SkinNameDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AccountCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AccountCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/CurrencySQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/CurrencySQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/SkinsSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/SkinsSQL.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +53,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="net.korvic.rppersonas.commands" />
       <recent name="net.korvic.rppersonas.personas" />
       <recent name="net.korvic.rppersonas.sql" />
     </key>
@@ -132,6 +136,10 @@
     </state>
     <state x="987" y="318" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1583902423744" />
     <state x="3300" y="236" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1583613435715" />
+    <state x="860" y="442" key="IDE.errors.dialog" timestamp="1585087372653">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="860" y="442" key="IDE.errors.dialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1585087372653" />
     <state x="1298" y="356" key="SettingsEditor" timestamp="1584142058356">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>

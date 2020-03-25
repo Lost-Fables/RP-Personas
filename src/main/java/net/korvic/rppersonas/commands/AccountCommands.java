@@ -12,6 +12,7 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
+import co.lotc.core.util.MojangCommunicator;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
@@ -20,6 +21,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -281,8 +283,23 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
-						// TODO - Save skin to player's account
-						menuAction.getPlayer().sendMessage("Saving skin...");
+						String texture = null;
+						try {
+							texture = MojangCommunicator.requestSkin(menuAction.getPlayer().getUniqueId()).get("texture").getAsString();
+						} catch (Exception e) {
+							if (RPPersonas.DEBUGGING) {
+								e.printStackTrace();
+							}
+						}
+
+						Map<Object, Object> data = new HashMap<>();
+						data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(menuAction.getPlayer().getUniqueId()));
+
+
+						ConversationFactory factory = getFreshFactory();
+						factory.withInitialSessionData(data);
+						factory.withFirstPrompt(new SkinNameDialog.PersonaNamePrompt(false));
+						factory.buildConversation(menuAction.getPlayer());
 					}
 				});
 			}
@@ -475,5 +492,12 @@ public class AccountCommands extends BaseCommand {
 
 			return MenuUtil.createMultiPageMenu(homeMenu, ChatColor.BOLD + "Personas", icons);
 		}
+	}
+
+	// FACTORY //
+	private ConversationFactory getFreshFactory() {
+		return new ConversationFactory(plugin)
+				.thatExcludesNonPlayersWithMessage("Console does not participate in dialogues.")
+				.withModality(true);
 	}
 }
