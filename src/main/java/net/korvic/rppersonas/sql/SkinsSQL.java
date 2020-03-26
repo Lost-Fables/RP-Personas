@@ -235,11 +235,11 @@ public class SkinsSQL {
 		}
 
 		if (data.containsKey("texture")) {
-			replaceStatement.setString(3, (String) data.get("texture"));
+			replaceStatement.setString(4, (String) data.get("texture"));
 		} else if (resultPresent) {
-			replaceStatement.setString(3, result.getString("Texture"));
+			replaceStatement.setString(4, result.getString("Texture"));
 		} else {
-			replaceStatement.setString(3, null);
+			replaceStatement.setString(4, null);
 		}
 
 		grabStatement.close();

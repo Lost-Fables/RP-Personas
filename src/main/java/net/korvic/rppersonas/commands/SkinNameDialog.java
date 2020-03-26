@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.commands;
 
 import co.lotc.core.util.MessageUtil;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.*;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -9,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,16 +22,11 @@ public class SkinNameDialog {
 	private static final String NOTE = RPPersonas.SECONDARY_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Persona Name //
-	protected static class PersonaNamePrompt extends ValidatingPrompt {
-		private boolean returnToEnd;
-
-		public PersonaNamePrompt(boolean returnToEnd) {
-			this.returnToEnd = returnToEnd;
-		}
+	protected static class SkinNamePrompt extends ValidatingPrompt {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PRIMARY_COLOR + "Type in the name for your persona now." +
+			return RPPersonas.PRIMARY_COLOR + "Type in a name for this skin now." +
 				   NOTE + RPPersonas.PRIMARY_COLOR + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
 		}
 
@@ -54,24 +51,22 @@ public class SkinNameDialog {
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			((Player) context.getForWhom()).hideTitle();
-			return new ConfirmNamePrompt(input, returnToEnd);
+			return new ConfirmNamePrompt(input);
 		}
 	}
 
 	// Confirm Persona Name //
 	private static class ConfirmNamePrompt extends BooleanPrompt {
 		private String name;
-		private boolean returnToEnd;
 
-		public ConfirmNamePrompt(String input, boolean returnToEnd) {
+		public ConfirmNamePrompt(String input) {
 			this.name = input;
-			this.returnToEnd = returnToEnd;
 		}
 
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + name + RPPersonas.PRIMARY_COLOR + " as your character name. Is this correct?\n" +
+			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + name + RPPersonas.PRIMARY_COLOR + " for the skin name. Is this correct?\n" +
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
@@ -86,23 +81,35 @@ public class SkinNameDialog {
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
 				context.setSessionData("name", name);
-				if (returnToEnd) {
-					//return new PersonaConfirmPrompt();
-				} else {
-					//return new PersonaRacePrompt(false);
-				}
+				registerSkin(context);
 			} else {
-				return new PersonaNamePrompt(returnToEnd);
+				return new SkinNamePrompt();
 			}
 			return null;
 		}
 	}
 
-	private static Prompt registerPersona(ConversationContext context) {
+	private static Prompt registerSkin(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
-		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Registering your persona now!"));
-		PersonaHandler.registerPersona(context.getAllSessionData(), p, false);
-		PersonaDisableListener.enablePlayer(p);
+		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Adding your skin now..."));
+
+		int accountID = RPPersonas.get().getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
+		String texture = null;
+		String name = (String) context.getAllSessionData().get("name");
+
+		for (ProfileProperty property : p.getPlayerProfile().getProperties()) {
+			if (property.getName().equalsIgnoreCase("textures")) {
+				texture = property.getValue();
+				break;
+			}
+		}
+
+		if (accountID > 0 && texture != null && name.length() > 0) {
+			RPPersonas.get().getSkinsSQL().addSkin(accountID, texture, name);
+			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Successfully added your skin to your account."));
+		} else {
+			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unable to add a skin to your account."));
+		}
 
 		return Prompt.END_OF_CONVERSATION;
 	}

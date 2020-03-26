@@ -283,23 +283,16 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
-						String texture = null;
-						try {
-							texture = MojangCommunicator.requestSkin(menuAction.getPlayer().getUniqueId()).get("texture").getAsString();
-						} catch (Exception e) {
-							if (RPPersonas.DEBUGGING) {
-								e.printStackTrace();
-							}
-						}
+						Player p = menuAction.getPlayer();
+						p.closeInventory();
 
 						Map<Object, Object> data = new HashMap<>();
-						data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(menuAction.getPlayer().getUniqueId()));
-
+						data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()));
 
 						ConversationFactory factory = getFreshFactory();
 						factory.withInitialSessionData(data);
-						factory.withFirstPrompt(new SkinNameDialog.PersonaNamePrompt(false));
-						factory.buildConversation(menuAction.getPlayer());
+						factory.withFirstPrompt(new SkinNameDialog.SkinNamePrompt());
+						factory.buildConversation(p).begin();
 					}
 				});
 			}
