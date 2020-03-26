@@ -162,6 +162,9 @@ public class Persona {
 
 	public void setSkin(int skinID) {
 		this.activeSkinID = skinID;
-		//TODO - Update player's model to have new skin.
+	}
+
+	public void updateModel(Player p) {
+		p.set
 	}
 }

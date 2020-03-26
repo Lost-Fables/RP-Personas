@@ -1,7 +1,9 @@
 package net.korvic.rppersonas.commands;
 
 import co.lotc.core.util.MessageUtil;
+import co.lotc.core.util.MojangCommunicator;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.gson.JsonObject;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.*;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -94,8 +96,16 @@ public class SkinNameDialog {
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Adding your skin now..."));
 
 		int accountID = RPPersonas.get().getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
-		String texture = null;
 		String name = (String) context.getAllSessionData().get("name");
+		String texture = null;
+
+		try {
+			texture = MojangCommunicator.requestSkinValue(p.getUniqueId());
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
 
 		for (ProfileProperty property : p.getPlayerProfile().getProperties()) {
 			if (property.getName().equalsIgnoreCase("textures")) {

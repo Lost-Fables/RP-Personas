@@ -12,7 +12,6 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
-import co.lotc.core.util.MojangCommunicator;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
@@ -120,7 +119,7 @@ public class AccountCommands extends BaseCommand {
 		private static final String DISCORD_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNiMTgzYjE0OGI5YjRlMmIxNTgzMzRhZmYzYjViYjZjMmMyZGJiYzRkNjdmNzZhN2JlODU2Njg3YTJiNjIzIn19fQ";
 		private static final String SKINS_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjI3NGUxNjA1MjMzNDI1MDkxZjdiMjgzN2E0YmI4ZjRjODA0ZGFjODBkYjllNGY1OTlmNTM1YzAzYWZhYjBmOCJ9fX0=";
 		private static final String DEAD_PERSONA = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYyNGVkNjg3NTMwNGZhNGExZjBjNzg1YjJjYjZhNmE3MjU2M2U5ZjNlMjRlYTU1ZTE4MTc4NDUyMTE5YWE2NiJ9fX0=";
-		private static final String UNUSED_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjI5MjY1Y2M1ZjEwMzg0OTQzODJlNjQ2N2FkOGQ3YzlhMjI1NzNlYzM2MzYyYmQ0OTE5MmZkNDM0YjUxYzkyIn19fQ==";
+		private static final String GRAY_STEVE = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjI5MjY1Y2M1ZjEwMzg0OTQzODJlNjQ2N2FkOGQ3YzlhMjI1NzNlYzM2MzYyYmQ0OTE5MmZkNDM0YjUxYzkyIn19fQ==";
 
 		private static final String NO_PLAYTIME = "Nothing yet!";
 
@@ -269,7 +268,7 @@ public class AccountCommands extends BaseCommand {
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						ItemStack item = ItemUtil.getSkullFromTexture(UNUSED_HEAD);
+						ItemStack item = ItemUtil.getSkullFromTexture(GRAY_STEVE);
 						ItemMeta meta = item.getItemMeta();
 
 						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unused Skins (" + (maxSkins - finalCurrentPersonaCount) + ")");
@@ -301,8 +300,7 @@ public class AccountCommands extends BaseCommand {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
 					ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-					SkullMeta meta = (SkullMeta) item.getItemMeta();
-					meta.setOwningPlayer(menuAgent.getPlayer());
+					ItemMeta meta = item.getItemMeta();
 					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Default Skin");
 
 					ArrayList<String> lore = new ArrayList<>();
@@ -463,7 +461,7 @@ public class AccountCommands extends BaseCommand {
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						ItemStack item = ItemUtil.getSkullFromTexture(UNUSED_HEAD);
+						ItemStack item = ItemUtil.getSkullFromTexture(GRAY_STEVE);
 						ItemMeta meta = item.getItemMeta();
 
 						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unused Personas (" + (maxPersonas - finalCurrentPersonaCount) + ")");
