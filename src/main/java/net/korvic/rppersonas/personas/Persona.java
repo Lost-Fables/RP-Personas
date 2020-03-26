@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,8 +35,23 @@ public class Persona {
 	}
 
 	// GET //
-	public String getCurrentName() {
+	public int getPersonaID() {
+		return personaID;
+	}
+	public int getAccountID() {
+		return accountID;
+	}
+	public String getPrefix() {
+		return prefix;
+	}
+	public String getNickName() {
 		return nickName;
+	}
+	public boolean isAlive() {
+		return isAlive;
+	}
+	public int getActiveSkinID() {
+		return activeSkinID;
 	}
 
 	public Map<Object, Object> getLoadedInfo() {
@@ -165,6 +182,20 @@ public class Persona {
 	}
 
 	public void updateModel(Player p) {
-		p.set
+		PlayerProfile profile = p.getPlayerProfile();
+
+		ProfileProperty skinProperty = null;
+		for (ProfileProperty property : profile.getProperties()) {
+			if (property.getName().equalsIgnoreCase("textures")) {
+				skinProperty = property;
+				break;
+			}
+		}
+
+		if (skinProperty != null) {
+			skinProperty = new ProfileProperty(skinProperty.getName(), plugin.getSkinsSQL().getTexture(activeSkinID), skinProperty.getSignature());
+			profile.setProperty(skinProperty);
+			p.setPlayerProfile(profile);
+		}
 	}
 }
