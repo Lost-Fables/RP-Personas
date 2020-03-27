@@ -1,13 +1,19 @@
 package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.common.collect.Multimap;
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +27,7 @@ public class Persona {
 	private String nickName;
 	private String inventory;
 	private boolean isAlive;
-	private int activeSkinID;
+	private PersonaSkin activeSkin;
 
 	public Persona(RPPersonas plugin, int personaID, int accountID, String prefix, String nickName, String personaInvData, boolean isAlive, int activeSkinID) {
 		this.plugin = plugin;
@@ -179,23 +185,5 @@ public class Persona {
 
 	public void setSkin(int skinID) {
 		this.activeSkinID = skinID;
-	}
-
-	public void updateModel(Player p) {
-		PlayerProfile profile = p.getPlayerProfile();
-
-		ProfileProperty skinProperty = null;
-		for (ProfileProperty property : profile.getProperties()) {
-			if (property.getName().equalsIgnoreCase("textures")) {
-				skinProperty = property;
-				break;
-			}
-		}
-
-		if (skinProperty != null) {
-			skinProperty = new ProfileProperty(skinProperty.getName(), plugin.getSkinsSQL().getTexture(activeSkinID), skinProperty.getSignature());
-			profile.setProperty(skinProperty);
-			p.setPlayerProfile(profile);
-		}
 	}
 }

@@ -8,6 +8,7 @@ import net.korvic.rppersonas.listeners.InspectListener;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
+import net.korvic.rppersonas.personas.PersonaSkinListener;
 import net.korvic.rppersonas.sql.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -88,6 +89,9 @@ public final class RPPersonas extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
 			getServer().getPluginManager().registerEvents(new PersonaDisableListener(this), this);
 			getServer().getPluginManager().registerEvents(new InspectListener(this), this);
+
+			// Packet Listener for skins
+			PersonaSkinListener.listen();
 
 			// Register our handlers
 			accountHandler = new AccountHandler(this);

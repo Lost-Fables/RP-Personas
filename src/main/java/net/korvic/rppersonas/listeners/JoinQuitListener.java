@@ -27,7 +27,6 @@ public class JoinQuitListener implements Listener {
 			if (account > 0) {
 				int persona = plugin.getAccountsSQL().getActivePersonaID(account);
 				plugin.getAccountHandler().loadAccount(p, account, persona, false);
-				plugin.getPersonaHandler().getLoadedPersona(p).updateModel(p);
 			} else {
 				plugin.getUnregisteredHandler().add(p);
 			}
