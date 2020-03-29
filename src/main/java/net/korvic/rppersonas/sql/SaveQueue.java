@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.listeners.JoinQuitListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;
@@ -98,6 +99,7 @@ public class SaveQueue {
 		long startMillis = System.currentTimeMillis();
 
 		plugin.getPersonaHandler().queueSavingAll();
+		JoinQuitListener.refreshAllAccountPlaytime();
 
 		for (PreparedStatement ps : queue) {
 			try {
