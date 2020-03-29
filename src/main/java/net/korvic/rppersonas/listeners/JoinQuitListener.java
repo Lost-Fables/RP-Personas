@@ -65,6 +65,7 @@ public class JoinQuitListener implements Listener {
 		playerLoginTime.put(p, System.currentTimeMillis());
 
 		Map<Object, Object> data = new HashMap<>();
+		data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()));
 		data.put("playtime", playtime);
 
 		try {
