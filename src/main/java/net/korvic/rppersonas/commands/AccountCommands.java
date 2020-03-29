@@ -258,9 +258,9 @@ public class AccountCommands extends BaseCommand {
 						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + data.get(id));
 						ArrayList<String> lore = new ArrayList<>();
 						if (isActive) {
-							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Skin currently in use.");
+							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Skin currently in use. Right Click to delete.");
 						} else {
-							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click to use this skin.");
+							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Left Click to use this skin. Right Click to delete.");
 						}
 
 						meta.setLore(lore);
@@ -270,9 +270,14 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
-						int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
-						plugin.getPersonaHandler().updateActiveSkin(personaID, id, menuAction.getPlayer());
-						menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_COLOR + "Persona skin updated!");
+						ClickType clickType = menuAction.getClick();
+						if (clickType.equals(ClickType.LEFT) || clickType.equals(ClickType.SHIFT_LEFT)) {
+							int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
+							plugin.getPersonaHandler().updateActiveSkin(personaID, id, menuAction.getPlayer());
+							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_COLOR + "Persona skin updated!");
+						} else if (clickType.equals(ClickType.RIGHT) || clickType.equals(ClickType.SHIFT_RIGHT)) {
+							menuAction.getPlayer().sendMessage("Deleting skin...");
+						}
 					}
 				});
 				currentSkinCount++;
