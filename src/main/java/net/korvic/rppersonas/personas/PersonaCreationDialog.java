@@ -86,7 +86,7 @@ public class PersonaCreationDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + name + RPPersonas.PRIMARY_DARK + " as your character name. Is this correct?\n" +
+			BaseComponent confirmation = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + name + RPPersonas.PRIMARY_DARK + " as your character name.\n" + RPPersonas.PRIMARY_DARK + "Is this correct?\n" +
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
@@ -124,7 +124,7 @@ public class PersonaCreationDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent races = new TextComponent(RPPersonas.PRIMARY_DARK + "Pick your main race: \n" + DIVIDER);
+			BaseComponent races = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "Pick your main race: \n" + DIVIDER);
 
 			for (PersonaRace race : PersonaRace.values()) {
 				if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
@@ -172,7 +172,7 @@ public class PersonaCreationDialog {
 			if (race != null) {
 				Player p = (Player) context.getForWhom();
 
-				BaseComponent subraces = new TextComponent(RPPersonas.PRIMARY_DARK + "Pick your subrace: \n" + DIVIDER);
+				BaseComponent subraces = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "Pick your subrace: \n" + DIVIDER);
 				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 				subraces.addExtra(BUTTON_SPACE);
 
@@ -224,7 +224,7 @@ public class PersonaCreationDialog {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PRIMARY_DARK + "Type in the age of your persona now." +
+			return "\n" + RPPersonas.PRIMARY_DARK + "Type in the age of your persona now." +
 				   NOTE + RPPersonas.PRIMARY_DARK + "This is measured in Ages, not Eras. Enter the number only.\n";
 		}
 
@@ -273,7 +273,8 @@ public class PersonaCreationDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + age + " Ages " +
+			BaseComponent confirmation = new TextComponent("\n" +
+														   RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + age + " Ages " +
 														   RPPersonas.PRIMARY_DARK + "for your persona (" + RPPersonas.SECONDARY_DARK + age / 4 + " Eras" +
 														   RPPersonas.PRIMARY_DARK + "). Is this correct?\n" + RPPersonas.SECONDARY_DARK +
 														   DIVIDER);
@@ -309,7 +310,7 @@ public class PersonaCreationDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent genders = new TextComponent(RPPersonas.PRIMARY_DARK + "Please select the Gender of your Persona.\n" +
+			BaseComponent genders = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "Please select the Gender of your Persona.\n" +
 													  DIVIDER);
 
 			for (PersonaGender g : PersonaGender.values()) {
@@ -344,7 +345,8 @@ public class PersonaCreationDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_DARK + "Let's review your persona details...\n" +
+			BaseComponent confirmation = new TextComponent("\n" +
+														   RPPersonas.PRIMARY_DARK + "Let's review your persona details...\n" +
 														   RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_DARK + context.getSessionData("name") + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_DARK + context.getSessionData("race") + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) context.getSessionData("age")) + "\n" +
@@ -380,7 +382,7 @@ public class PersonaCreationDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent options = new TextComponent(RPPersonas.PRIMARY_DARK + "Which part is wrong?\n" +
+			BaseComponent options = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "Which part is wrong?\n" +
 													  DIVIDER);
 			for (String s : SECTION) {
 				options.addExtra(MessageUtil.CommandButton(s, s, "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
