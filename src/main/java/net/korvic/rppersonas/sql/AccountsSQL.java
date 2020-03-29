@@ -189,7 +189,11 @@ public class AccountsSQL {
 		}
 
 		if (data.containsKey("playtime")) {
-			replaceStatement.setLong(4, (long) data.get("playtime"));
+			long playtime = (long) data.get("playtime");
+			if (resultPresent) {
+				playtime += result.getLong("Playtime");
+			}
+			replaceStatement.setLong(4, playtime);
 		} else if (resultPresent) {
 			replaceStatement.setLong(4, result.getLong("Playtime"));
 		} else {

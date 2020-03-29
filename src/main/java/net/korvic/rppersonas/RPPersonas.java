@@ -81,6 +81,7 @@ public final class RPPersonas extends JavaPlugin {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
+					JoinQuitListener.refreshAllAccountPlaytime();
 					personaHandler.queueSavingAll();
 					//accountHandler.queueSavingAll();
 				}
