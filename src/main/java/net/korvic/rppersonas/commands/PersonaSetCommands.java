@@ -40,15 +40,15 @@ public class PersonaSetCommands extends BaseCommand {
 				final Matcher matcher = pattern.matcher(builder.toString());
 				if (!matcher.find()) {
 					pers.setNickName(p, builder.toString());
-					msg(RPPersonas.PRIMARY_COLOR + "Display Name updated to " + RPPersonas.SECONDARY_COLOR + builder.toString() + RPPersonas.PRIMARY_COLOR + ".");
+					msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + builder.toString() + RPPersonas.PRIMARY_DARK + ".");
 				} else {
-					msg(RPPersonas.PRIMARY_COLOR + "That name contained illegal lettering.");
+					msg(RPPersonas.PRIMARY_DARK + "That name contained illegal lettering.");
 				}
 			} else {
-				msg(RPPersonas.PRIMARY_COLOR + "That name is too long! Please enter something shorter.");
+				msg(RPPersonas.PRIMARY_DARK + "That name is too long! Please enter something shorter.");
 			}
 		} else {
-			msg(RPPersonas.PRIMARY_COLOR + PersonaCommands.NO_CONSOLE);
+			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}
 	}
 
@@ -59,9 +59,9 @@ public class PersonaSetCommands extends BaseCommand {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			pers.setPrefix(p, prefix);
-			msg(RPPersonas.PRIMARY_COLOR + "Prefix updated to " + RPPersonas.SECONDARY_COLOR + "[" + prefix + "]" + RPPersonas.PRIMARY_COLOR + ".");
+			msg(RPPersonas.PRIMARY_DARK + "Prefix updated to " + RPPersonas.SECONDARY_LIGHT + "[" + prefix + "]" + RPPersonas.PRIMARY_DARK + ".");
 		} else {
-			msg(RPPersonas.PRIMARY_COLOR + PersonaCommands.NO_CONSOLE);
+			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}
 	}
 

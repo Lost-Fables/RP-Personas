@@ -87,7 +87,7 @@ public class SaveQueue {
 				}
 			}
 
-			plugin.getLogger().info(RPPersonas.PRIMARY_COLOR + "Saved " + RPPersonas.SECONDARY_COLOR + amountThisRun + " row(s) " + RPPersonas.PRIMARY_COLOR + "in " + RPPersonas.SECONDARY_COLOR + (System.currentTimeMillis() - startMillis) + "ms");
+			plugin.getLogger().info(RPPersonas.PRIMARY_DARK + "Saved " + RPPersonas.SECONDARY_LIGHT + amountThisRun + " row(s) " + RPPersonas.PRIMARY_DARK + "in " + RPPersonas.SECONDARY_LIGHT + (System.currentTimeMillis() - startMillis) + "ms");
 		}
 	}
 
@@ -116,6 +116,6 @@ public class SaveQueue {
 			}
 		}
 
-		plugin.getLogger().info(RPPersonas.PRIMARY_COLOR + "Saved " + RPPersonas.SECONDARY_COLOR + queue.size() + " row(s) " + RPPersonas.PRIMARY_COLOR + "in " + RPPersonas.SECONDARY_COLOR + (System.currentTimeMillis() - startMillis) + "ms");
+		plugin.getLogger().info(RPPersonas.PRIMARY_DARK + "Saved " + RPPersonas.SECONDARY_LIGHT + queue.size() + " row(s) " + RPPersonas.PRIMARY_DARK + "in " + RPPersonas.SECONDARY_LIGHT + (System.currentTimeMillis() - startMillis) + "ms");
 	}
 }

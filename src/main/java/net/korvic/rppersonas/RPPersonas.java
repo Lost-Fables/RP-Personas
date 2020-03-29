@@ -21,9 +21,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 public final class RPPersonas extends JavaPlugin {
 
 	// CONSTANTS //
-	public static final ChatColor PRIMARY_COLOR = ChatColor.DARK_AQUA;
-	public static final ChatColor SECONDARY_COLOR = ChatColor.WHITE;
-	public static final ChatColor TERTIARY_COLOR = ChatColor.GRAY;
+	public static final ChatColor PRIMARY_LIGHT = ChatColor.AQUA;
+	public static final ChatColor PRIMARY_DARK = ChatColor.DARK_AQUA;
+	public static final ChatColor SECONDARY_LIGHT = ChatColor.WHITE;
+	public static final ChatColor SECONDARY_DARK = ChatColor.GRAY;
 	public static final boolean DEBUGGING = true;
 	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
 	public static final int DEFAULT_PERSONAS = 2;

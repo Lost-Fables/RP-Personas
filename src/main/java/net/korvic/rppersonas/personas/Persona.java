@@ -6,10 +6,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.*;
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -20,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,16 +97,16 @@ public class Persona {
 		Map<String, Object> data = getBasicInfo();
 
 		String output = PersonaCreationDialog.DIVIDER +
-						RPPersonas.PRIMARY_COLOR + "Persona ID: " + RPPersonas.SECONDARY_COLOR + String.format("%06d", (int) data.get("personaid")) + "\n";
+						RPPersonas.PRIMARY_DARK + "Persona ID: " + RPPersonas.SECONDARY_LIGHT + String.format("%06d", (int) data.get("personaid")) + "\n";
 		if (data.containsKey("nickname")) {
-			output += RPPersonas.PRIMARY_COLOR + "Nickname: " + RPPersonas.SECONDARY_COLOR + data.get("nickname") + "\n";
+			output += RPPersonas.PRIMARY_DARK + "Nickname: " + RPPersonas.SECONDARY_LIGHT + data.get("nickname") + "\n";
 		}
-		output += RPPersonas.PRIMARY_COLOR + "Name: " + RPPersonas.SECONDARY_COLOR + data.get("name") + "\n" +
-				  RPPersonas.PRIMARY_COLOR + "Age: " + RPPersonas.SECONDARY_COLOR + RPPersonas.getRelativeTimeString((long) data.get("age")) + "\n" +
-				  RPPersonas.PRIMARY_COLOR + "Race: " + RPPersonas.SECONDARY_COLOR + data.get("race") + "\n" +
-				  RPPersonas.PRIMARY_COLOR + "Gender: " + RPPersonas.SECONDARY_COLOR + data.get("gender") + "\n";
+		output += RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_LIGHT + data.get("name") + "\n" +
+				  RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_LIGHT + RPPersonas.getRelativeTimeString((long) data.get("age")) + "\n" +
+				  RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_LIGHT + data.get("race") + "\n" +
+				  RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_LIGHT + data.get("gender") + "\n";
 		if (data.containsKey("description")) {
-			output += RPPersonas.PRIMARY_COLOR + "Description: " + RPPersonas.SECONDARY_COLOR + data.get("description") + "\n";
+			output += RPPersonas.PRIMARY_DARK + "Description: " + RPPersonas.SECONDARY_LIGHT + data.get("description") + "\n";
 		}
 		output += PersonaCreationDialog.DIVIDER;
 

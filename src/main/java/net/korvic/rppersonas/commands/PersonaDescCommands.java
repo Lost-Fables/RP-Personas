@@ -20,9 +20,9 @@ public class PersonaDescCommands extends BaseCommand {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			String newDesc = pers.addToDescription(p, text);
-			msg(RPPersonas.PRIMARY_COLOR + "Your persona's description is now:\n " + RPPersonas.SECONDARY_COLOR + newDesc);
+			msg(RPPersonas.PRIMARY_DARK + "Your persona's description is now:\n " + RPPersonas.SECONDARY_LIGHT + newDesc);
 		} else {
-			msg(RPPersonas.PRIMARY_COLOR + PersonaCommands.NO_CONSOLE);
+			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}
 	}
 
@@ -32,9 +32,9 @@ public class PersonaDescCommands extends BaseCommand {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			pers.clearDescription(p);
-			msg(RPPersonas.PRIMARY_COLOR + "Your persona's description has been cleared.");
+			msg(RPPersonas.PRIMARY_DARK + "Your persona's description has been cleared.");
 		} else {
-			msg(RPPersonas.PRIMARY_COLOR + PersonaCommands.NO_CONSOLE);
+			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}
 	}
 

@@ -35,12 +35,12 @@ public class PersonaHandler {
 	public static void createPersona(Player p, int accountID, boolean first) {
 		String welcomeText = "";
 		if (first) {
-			welcomeText = RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Welcome!";
+			welcomeText = RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Welcome!";
 		} else {
 			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
 		}
 		Title title = new Title(welcomeText,
-								RPPersonas.SECONDARY_COLOR + "Type your Persona's name to continue.",
+								RPPersonas.SECONDARY_LIGHT + "Type your Persona's name to continue.",
 								20, 60*20, 20);
 
 		PersonaDisableListener.disablePlayer(p, plugin.getSpawnLocation(), title);
@@ -160,9 +160,9 @@ public class PersonaHandler {
 	public String getPersonaInfo(Player player) {
 		Persona pers = getLoadedPersona(player);
 		if (pers != null) {
-			return RPPersonas.TERTIARY_COLOR + player.getName() + "'s active persona.\n" + pers.getFormattedBasicInfo();
+			return RPPersonas.SECONDARY_DARK + player.getName() + "'s active persona.\n" + pers.getFormattedBasicInfo();
 		} else {
-			return RPPersonas.PRIMARY_COLOR + "Unable to find loaded persona for the given player.";
+			return RPPersonas.PRIMARY_DARK + "Unable to find loaded persona for the given player.";
 		}
 	}
 

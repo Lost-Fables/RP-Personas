@@ -15,17 +15,17 @@ public class PersonaCreationDialog {
 	//// Creation Dialog Prompts ////
 
 	public static final String BUTTON_SPACE = "  ";
-	public static final String DIVIDER = RPPersonas.SECONDARY_COLOR + "================================\n" + ChatColor.RESET;
-	public static final String NOTE = RPPersonas.SECONDARY_COLOR + "" + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
+	public static final String DIVIDER = RPPersonas.SECONDARY_DARK + "================================\n" + ChatColor.RESET;
+	public static final String NOTE = RPPersonas.SECONDARY_DARK + "" + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Intro //
 	protected static class StartingPrompt extends MessagePrompt {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "   ► Welcome to Lost Fables! ◄   \n" +
+			return RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "   ► Welcome to Lost Fables! ◄   \n" +
 				   DIVIDER +
-				   RPPersonas.SECONDARY_COLOR + "Let's get you started with the " + ChatColor.BOLD + "persona" + RPPersonas.SECONDARY_COLOR + " you'll be playing. For the following questions, simply type a reply in chat, or use the buttons to select your answers." + ChatColor.RESET;
+				   RPPersonas.SECONDARY_DARK + "Let's get you started with the " + ChatColor.BOLD + "persona" + RPPersonas.SECONDARY_DARK + " you'll be playing. For the following questions, simply type a reply in chat, or use the buttons to select your answers." + ChatColor.RESET;
 		}
 
 		@Override
@@ -44,8 +44,8 @@ public class PersonaCreationDialog {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PRIMARY_COLOR + "Type in the name for your persona now." +
-				   NOTE + RPPersonas.PRIMARY_COLOR + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
+			return RPPersonas.PRIMARY_DARK + "Type in the name for your persona now." +
+				   NOTE + RPPersonas.PRIMARY_DARK + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
 		}
 
 		@Override
@@ -86,12 +86,12 @@ public class PersonaCreationDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + name + RPPersonas.PRIMARY_COLOR + " as your character name. Is this correct?\n" +
+			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + name + RPPersonas.PRIMARY_DARK + " as your character name. Is this correct?\n" +
 														   DIVIDER);
 
-			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			confirmation.addExtra(BUTTON_SPACE);
-			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 
 			p.spigot().sendMessage(confirmation);
 			return "";
@@ -124,11 +124,11 @@ public class PersonaCreationDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent races = new TextComponent(RPPersonas.PRIMARY_COLOR + "Pick your main race: \n" + DIVIDER);
+			BaseComponent races = new TextComponent(RPPersonas.PRIMARY_DARK + "Pick your main race: \n" + DIVIDER);
 
 			for (PersonaRace race : PersonaRace.values()) {
 				if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
-					races.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to see subraces", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+					races.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to see subraces", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 					races.addExtra(BUTTON_SPACE);
 				}
 			}
@@ -172,13 +172,13 @@ public class PersonaCreationDialog {
 			if (race != null) {
 				Player p = (Player) context.getForWhom();
 
-				BaseComponent subraces = new TextComponent(RPPersonas.PRIMARY_COLOR + "Pick your subrace: \n" + DIVIDER);
-				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+				BaseComponent subraces = new TextComponent(RPPersonas.PRIMARY_DARK + "Pick your subrace: \n" + DIVIDER);
+				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 				subraces.addExtra(BUTTON_SPACE);
 
 				for (PersonaSubRace race : this.race.getSubRaces()) {
 					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
-						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 						subraces.addExtra(BUTTON_SPACE);
 					}
 				}
@@ -224,8 +224,8 @@ public class PersonaCreationDialog {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PRIMARY_COLOR + "Type in the age of your persona now." +
-				   NOTE + RPPersonas.PRIMARY_COLOR + "This is measured in Ages, not Eras. Enter the number only.\n";
+			return RPPersonas.PRIMARY_DARK + "Type in the age of your persona now." +
+				   NOTE + RPPersonas.PRIMARY_DARK + "This is measured in Ages, not Eras. Enter the number only.\n";
 		}
 
 		@Override
@@ -273,14 +273,14 @@ public class PersonaCreationDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + age + " Ages " +
-														   RPPersonas.PRIMARY_COLOR + "for your persona (" + RPPersonas.SECONDARY_COLOR + age / 4 + " Eras" +
-														   RPPersonas.PRIMARY_COLOR + "). Is this correct?\n" + RPPersonas.SECONDARY_COLOR +
+			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + age + " Ages " +
+														   RPPersonas.PRIMARY_DARK + "for your persona (" + RPPersonas.SECONDARY_DARK + age / 4 + " Eras" +
+														   RPPersonas.PRIMARY_DARK + "). Is this correct?\n" + RPPersonas.SECONDARY_DARK +
 														   DIVIDER);
 
-			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			confirmation.addExtra(BUTTON_SPACE);
-			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 
 			p.spigot().sendMessage(confirmation);
 			return "";
@@ -309,11 +309,11 @@ public class PersonaCreationDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent genders = new TextComponent(RPPersonas.PRIMARY_COLOR + "Please select the Gender of your Persona.\n" +
+			BaseComponent genders = new TextComponent(RPPersonas.PRIMARY_DARK + "Please select the Gender of your Persona.\n" +
 													  DIVIDER);
 
 			for (PersonaGender g : PersonaGender.values()) {
-				genders.addExtra(MessageUtil.CommandButton(g.getName(), g.getName(), "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+				genders.addExtra(MessageUtil.CommandButton(g.getName(), g.getName(), "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 				genders.addExtra(BUTTON_SPACE);
 			}
 
@@ -344,17 +344,17 @@ public class PersonaCreationDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "Let's review your persona details...\n" +
-														   RPPersonas.PRIMARY_COLOR + "Name: " +   RPPersonas.SECONDARY_COLOR + context.getSessionData("name") + "\n" +
-														   RPPersonas.PRIMARY_COLOR + "Race: " +   RPPersonas.SECONDARY_COLOR + context.getSessionData("race") + "\n" +
-														   RPPersonas.PRIMARY_COLOR + "Age: " +    RPPersonas.SECONDARY_COLOR + RPPersonas.getRelativeTimeString((long) context.getSessionData("age")) + "\n" +
-														   RPPersonas.PRIMARY_COLOR + "Gender: " + RPPersonas.SECONDARY_COLOR + context.getSessionData("gender") + "\n" +
-														   RPPersonas.PRIMARY_COLOR + "Does everything look to be in order?\n" +
+			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_DARK + "Let's review your persona details...\n" +
+														   RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_DARK + context.getSessionData("name") + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_DARK + context.getSessionData("race") + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) context.getSessionData("age")) + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_DARK + context.getSessionData("gender") + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Does everything look to be in order?\n" +
 														   DIVIDER);
 
-			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			confirmation.addExtra(BUTTON_SPACE);
-			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 
 			p.spigot().sendMessage(confirmation);
 			return "";
@@ -380,10 +380,10 @@ public class PersonaCreationDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent options = new TextComponent(RPPersonas.PRIMARY_COLOR + "Which part is wrong?\n" +
+			BaseComponent options = new TextComponent(RPPersonas.PRIMARY_DARK + "Which part is wrong?\n" +
 													  DIVIDER);
 			for (String s : SECTION) {
-				options.addExtra(MessageUtil.CommandButton(s, s, "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
+				options.addExtra(MessageUtil.CommandButton(s, s, "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 				options.addExtra(BUTTON_SPACE);
 			}
 
@@ -421,10 +421,10 @@ public class PersonaCreationDialog {
 
 	private static Prompt registerPersona(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
-		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Registering your persona now..."));
+		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registering your persona now..."));
 		PersonaHandler.registerPersona(context.getAllSessionData(), p, false);
 		PersonaDisableListener.enablePlayer(p);
-		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Registration complete."));
+		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
 
 		return Prompt.END_OF_CONVERSATION;
 	}
