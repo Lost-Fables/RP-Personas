@@ -10,8 +10,8 @@ import net.korvic.rppersonas.personas.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkinListener;
 import net.korvic.rppersonas.sql.*;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -21,9 +21,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 public final class RPPersonas extends JavaPlugin {
 
 	// CONSTANTS //
-	public static final String PRIMARY_COLOR = ChatColor.DARK_AQUA + "";
-	public static final String SECONDARY_COLOR = ChatColor.WHITE + "";
-	public static final String TERTIARY_COLOR = ChatColor.GRAY + "";
+	public static final ChatColor PRIMARY_COLOR = ChatColor.DARK_AQUA;
+	public static final ChatColor SECONDARY_COLOR = ChatColor.WHITE;
+	public static final ChatColor TERTIARY_COLOR = ChatColor.GRAY;
 	public static final boolean DEBUGGING = true;
 	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
 	public static final int DEFAULT_PERSONAS = 2;

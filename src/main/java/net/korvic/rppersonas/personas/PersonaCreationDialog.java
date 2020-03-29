@@ -16,14 +16,14 @@ public class PersonaCreationDialog {
 
 	public static final String BUTTON_SPACE = "  ";
 	public static final String DIVIDER = RPPersonas.SECONDARY_COLOR + "================================\n" + ChatColor.RESET;
-	private static final String NOTE = RPPersonas.SECONDARY_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
+	public static final String NOTE = RPPersonas.SECONDARY_COLOR + "" + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Intro //
 	protected static class StartingPrompt extends MessagePrompt {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "   ► Welcome to Lost Fables! ◄   \n" +
+			return RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "   ► Welcome to Lost Fables! ◄   \n" +
 				   DIVIDER +
 				   RPPersonas.SECONDARY_COLOR + "Let's get you started with the " + ChatColor.BOLD + "persona" + RPPersonas.SECONDARY_COLOR + " you'll be playing. For the following questions, simply type a reply in chat, or use the buttons to select your answers." + ChatColor.RESET;
 		}
@@ -89,9 +89,9 @@ public class PersonaCreationDialog {
 			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + name + RPPersonas.PRIMARY_COLOR + " as your character name. Is this correct?\n" +
 														   DIVIDER);
 
-			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_COLOR, RPPersonas.PRIMARY_COLOR));
 			confirmation.addExtra(BUTTON_SPACE);
-			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!"));
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.SECONDARY_COLOR, RPPersonas.PRIMARY_COLOR));
 
 			p.spigot().sendMessage(confirmation);
 			return "";
@@ -421,10 +421,10 @@ public class PersonaCreationDialog {
 
 	private static Prompt registerPersona(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
-		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Registering your persona now..."));
+		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Registering your persona now..."));
 		PersonaHandler.registerPersona(context.getAllSessionData(), p, false);
 		PersonaDisableListener.enablePlayer(p);
-		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Registration complete."));
+		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Registration complete."));
 
 		return Prompt.END_OF_CONVERSATION;
 	}

@@ -16,6 +16,7 @@ import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
+import net.korvic.rppersonas.accounts.SkinNameDialog;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -145,7 +146,7 @@ public class AccountCommands extends BaseCommand {
 				public ItemStack getItemStack(MenuAgent menuAgent) {
 					ItemStack item = ItemUtil.getSkullFromTexture(STAT_HEAD);
 					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Stats");
+					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Stats");
 
 					ArrayList<String> lore = new ArrayList<>();
 					lore.add(RPPersonas.SECONDARY_COLOR + "Votes: " + RPPersonas.TERTIARY_COLOR + plugin.getAccountsSQL().getVotes(accountID));
@@ -180,11 +181,11 @@ public class AccountCommands extends BaseCommand {
 				public ItemStack getItemStack(MenuAgent menuAgent) {
 					ItemStack item = ItemUtil.getSkullFromTexture(DISCORD_HEAD);
 					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Discord");
+					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Discord");
 
 					ArrayList<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click here to get a discord invite.");
-					lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Use /account discordlink to link your discord.");
+					lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Click here to get a discord invite.");
+					lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Use /account discordlink to link your discord.");
 
 					String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
 					if (discordTag != null && discordTag.length() > 0) {
@@ -199,7 +200,7 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					TextComponent message = new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "→ Click here to open Discord! ←");
+					TextComponent message = new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "→ Click here to open Discord! ←");
 					message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/MnCMWGR"));
 					message.setHoverEvent(MessageUtil.hoverEvent("Click!"));
 					menuAction.getPlayer().sendMessage(message);
@@ -215,10 +216,10 @@ public class AccountCommands extends BaseCommand {
 				public ItemStack getItemStack(MenuAgent menuAgent) {
 					ItemStack item = ItemUtil.getSkullFromTexture(SKINS_HEAD);
 					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Saved Skins");
+					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Saved Skins");
 
 					ArrayList<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Browse and Manage your stored skins.");
+					lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Browse and Manage your stored skins.");
 
 					meta.setLore(lore);
 					item.setItemMeta(meta);
@@ -255,12 +256,12 @@ public class AccountCommands extends BaseCommand {
 						ItemStack item = ItemUtil.getSkullFromTexture(texture);
 						ItemMeta meta = item.getItemMeta();
 
-						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + data.get(id));
+						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + data.get(id));
 						ArrayList<String> lore = new ArrayList<>();
 						if (isActive) {
-							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Skin currently in use. Right Click to delete.");
+							lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Skin currently in use. Right Click to delete.");
 						} else {
-							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Left Click to use this skin. Right Click to delete.");
+							lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Left Click to use this skin. Right Click to delete.");
 						}
 
 						meta.setLore(lore);
@@ -291,9 +292,9 @@ public class AccountCommands extends BaseCommand {
 						ItemStack item = ItemUtil.getSkullFromTexture(GRAY_STEVE);
 						ItemMeta meta = item.getItemMeta();
 
-						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unused Skins (" + (maxSkins - finalCurrentPersonaCount) + ")");
+						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Unused Skins (" + (maxSkins - finalCurrentPersonaCount) + ")");
 						ArrayList<String> lore = new ArrayList<>();
-						lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click here to save your current skin to your account.");
+						lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Click here to save your current skin to your account.");
 
 						meta.setLore(lore);
 						item.setItemMeta(meta);
@@ -321,10 +322,10 @@ public class AccountCommands extends BaseCommand {
 				public ItemStack getItemStack(MenuAgent menuAgent) {
 					ItemStack item = new ItemStack(Material.PLAYER_HEAD);
 					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Default Skin");
+					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Default Skin");
 
 					ArrayList<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click to reset to your default Minecraft skin.");
+					lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Click to reset to your default Minecraft skin.");
 
 					meta.setLore(lore);
 					item.setItemMeta(meta);
@@ -351,10 +352,10 @@ public class AccountCommands extends BaseCommand {
 					ItemStack item = new ItemStack(Material.PLAYER_HEAD);
 					SkullMeta meta = (SkullMeta) item.getItemMeta();
 					meta.setOwningPlayer(menuAgent.getPlayer());
-					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Personas");
+					meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Personas");
 
 					ArrayList<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Browse and Manage your Personas.");
+					lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Browse and Manage your Personas.");
 
 					meta.setLore(lore);
 					item.setItemMeta(meta);
@@ -395,7 +396,7 @@ public class AccountCommands extends BaseCommand {
 						} else {
 							currentName = (String) data.get("name");
 						}
-						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + currentName);
+						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + currentName);
 
 						ArrayList<String> lore = new ArrayList<>();
 						if (personaID == currentPersonaID) {
@@ -451,7 +452,7 @@ public class AccountCommands extends BaseCommand {
 						} else {
 							currentName = (String) data.get("name");
 						}
-						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + currentName + "(Dead)");
+						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + currentName + "(Dead)");
 
 						ArrayList<String> lore = new ArrayList<>();
 						lore.add(RPPersonas.SECONDARY_COLOR + "Left Click to request ressurection, Right Click to delete.");
@@ -484,9 +485,9 @@ public class AccountCommands extends BaseCommand {
 						ItemStack item = ItemUtil.getSkullFromTexture(GRAY_STEVE);
 						ItemMeta meta = item.getItemMeta();
 
-						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unused Personas (" + (maxPersonas - finalCurrentPersonaCount) + ")");
+						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Unused Personas (" + (maxPersonas - finalCurrentPersonaCount) + ")");
 						ArrayList<String> lore = new ArrayList<>();
-						lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click here to make a new persona!");
+						lore.add(RPPersonas.SECONDARY_COLOR + "" + ChatColor.ITALIC + "Click here to make a new persona!");
 
 						meta.setLore(lore);
 						item.setItemMeta(meta);

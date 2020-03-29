@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.commands;
+package net.korvic.rppersonas.accounts;
 
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.MojangCommunicator;
@@ -18,19 +18,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SkinNameDialog {
-	//// Creation Dialog Prompts ////
 
-	public static final String BUTTON_SPACE = "  ";
-	public static final String DIVIDER = RPPersonas.SECONDARY_COLOR + "================================\n" + ChatColor.RESET;
-	private static final String NOTE = RPPersonas.SECONDARY_COLOR + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
-
-	// Persona Name //
-	protected static class SkinNamePrompt extends ValidatingPrompt {
+	// Skin Name //
+	public static class SkinNamePrompt extends ValidatingPrompt {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
 			return RPPersonas.PRIMARY_COLOR + "Type in a name for this skin now." +
-				   NOTE + RPPersonas.PRIMARY_COLOR + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
+				   PersonaCreationDialog.NOTE + RPPersonas.PRIMARY_COLOR + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
 		}
 
 		@Override
@@ -58,7 +53,7 @@ public class SkinNameDialog {
 		}
 	}
 
-	// Confirm Persona Name //
+	// Confirm Skin Name //
 	private static class ConfirmNamePrompt extends BooleanPrompt {
 		private String name;
 
@@ -70,10 +65,10 @@ public class SkinNameDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + name + RPPersonas.PRIMARY_COLOR + " for the skin name. Is this correct?\n" +
-														   DIVIDER);
+														   PersonaCreationDialog.DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
-			confirmation.addExtra(BUTTON_SPACE);
+			confirmation.addExtra(PersonaCreationDialog.BUTTON_SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!"));
 
 			p.spigot().sendMessage(confirmation);
@@ -94,7 +89,7 @@ public class SkinNameDialog {
 
 	private static Prompt registerSkin(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
-		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Adding your skin now..."));
+		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Adding your skin now..."));
 
 		int accountID = RPPersonas.get().getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
 		String name = (String) context.getAllSessionData().get("name");
@@ -113,9 +108,9 @@ public class SkinNameDialog {
 
 		if (accountID > 0 && texture != null && name.length() > 0) {
 			RPPersonas.get().getSkinsSQL().addSkin(accountID, name, texture, signature);
-			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Successfully added your skin to your account."));
+			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Successfully added your skin to your account."));
 		} else {
-			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unable to add a skin to your account."));
+			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + "" + ChatColor.BOLD + "Unable to add a skin to your account."));
 		}
 
 		return Prompt.END_OF_CONVERSATION;
