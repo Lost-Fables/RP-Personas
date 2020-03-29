@@ -3,6 +3,7 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.MojangCommunicator;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.*;
@@ -98,24 +99,20 @@ public class SkinNameDialog {
 		int accountID = RPPersonas.get().getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
 		String name = (String) context.getAllSessionData().get("name");
 		String texture = null;
+		String signature = null;
 
 		try {
-			texture = MojangCommunicator.requestSkinValue(p.getUniqueId());
+			JsonObject skinObject = MojangCommunicator.requestSkin(p.getUniqueId());
+			texture = skinObject.get("value").getAsString();
+			signature = skinObject.get("signature").getAsString();
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
 			}
 		}
 
-		for (ProfileProperty property : p.getPlayerProfile().getProperties()) {
-			if (property.getName().equalsIgnoreCase("textures")) {
-				texture = property.getValue();
-				break;
-			}
-		}
-
 		if (accountID > 0 && texture != null && name.length() > 0) {
-			RPPersonas.get().getSkinsSQL().addSkin(accountID, texture, name);
+			RPPersonas.get().getSkinsSQL().addSkin(accountID, name, texture, signature);
 			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Successfully added your skin to your account."));
 		} else {
 			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + "Unable to add a skin to your account."));

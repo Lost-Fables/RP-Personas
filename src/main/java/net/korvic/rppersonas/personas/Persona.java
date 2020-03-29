@@ -1,17 +1,24 @@
 package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import com.comphenix.protocol.wrappers.WrappedSignedProperty;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.*;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +34,8 @@ public class Persona {
 	private String nickName;
 	private String inventory;
 	private boolean isAlive;
-	private PersonaSkin activeSkin;
+	private PersonaSkin activeSkin = null;
+
 
 	public Persona(RPPersonas plugin, int personaID, int accountID, String prefix, String nickName, String personaInvData, boolean isAlive, int activeSkinID) {
 		this.plugin = plugin;
@@ -37,7 +45,7 @@ public class Persona {
 		this.nickName = nickName;
 		this.inventory = personaInvData;
 		this.isAlive = isAlive;
-		this.activeSkinID = activeSkinID;
+		this.activeSkin = PersonaSkin.getFromID(activeSkinID);
 	}
 
 	// GET //
@@ -57,7 +65,14 @@ public class Persona {
 		return isAlive;
 	}
 	public int getActiveSkinID() {
-		return activeSkinID;
+		if (activeSkin != null) {
+			return activeSkin.getSkinID();
+		} else {
+			return 0;
+		}
+	}
+	public PersonaSkin getActiveSkin() {
+		return activeSkin;
 	}
 
 	public Map<Object, Object> getLoadedInfo() {
@@ -69,7 +84,7 @@ public class Persona {
 		output.put("inventory", inventory);
 		output.put("nickname", nickName);
 		output.put("prefix", prefix);
-		output.put("skinid", activeSkinID);
+		output.put("skinid", activeSkin.getSkinID());
 
 		return output;
 	}
@@ -183,7 +198,86 @@ public class Persona {
 		queueSave(p, data);
 	}
 
-	public void setSkin(int skinID) {
-		this.activeSkinID = skinID;
+	public void setSkin(int skinID, Player p) {
+		this.activeSkin = PersonaSkin.getFromID(skinID);
+		if (p != null) {
+			refreshPlayer(p);
+		}
+	}
+
+	// ProtocolLib Refreshing
+	private void refreshPlayer(Player p) {
+		Bukkit.getOnlinePlayers().stream()
+			  .filter(x -> (x != p))
+			  .filter(x -> x.canSee(p))
+			  .forEach(x -> {x.hidePlayer(RPPersonas.get(), p); x.showPlayer(RPPersonas.get(), p);});
+
+		final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+
+		WrappedGameProfile profile = WrappedGameProfile.fromPlayer(p); //Protocollib for version independence
+		List<PlayerInfoData> lpid = Lists.newArrayList();
+
+		lpid.add(new PlayerInfoData(profile,
+									1, //who cares honestly
+									EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode()),
+									WrappedChatComponent.fromText(p.getDisplayName())));
+
+		final PacketContainer packetDel = manager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+		final PacketContainer packetAdd = manager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+		packetDel.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.REMOVE_PLAYER);
+		packetAdd.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
+		packetDel.getPlayerInfoDataLists().write(0, lpid);
+		packetAdd.getPlayerInfoDataLists().write(0, lpid);
+
+		try {
+			manager.sendServerPacket(p, packetDel);
+			manager.sendServerPacket(p, packetAdd);
+			fakeRespawn(p, p.getWorld().getEnvironment());
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private static void fakeRespawn(Player p, World.Environment env) {
+		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+
+		PacketContainer packet = manager.createPacket(PacketType.Play.Server.RESPAWN);
+		packet.getDimensions().write(0, env.getId()); //Does matter
+		packet.getDifficulties().write(0, EnumWrappers.Difficulty.valueOf(p.getWorld().getDifficulty().name()));//Doesnt matter
+		packet.getGameModes().write(0, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode()));
+		packet.getWorldTypeModifier().write(0, p.getWorld().getWorldType()); //Doesnt matter tbh
+
+
+		Location location = p.getLocation();
+		PacketContainer teleport = manager.createPacket(PacketType.Play.Server.POSITION);
+		teleport.getModifier().writeDefaults();
+		teleport.getDoubles().write(0, location.getX());
+		teleport.getDoubles().write(1, location.getY());
+		teleport.getDoubles().write(2, location.getZ());
+		teleport.getFloat().write(0, location.getYaw());
+		teleport.getFloat().write(1, location.getPitch());
+		teleport.getIntegers().writeSafely(0, -99);
+
+		try {
+			manager.sendServerPacket(p, packet);
+			manager.sendServerPacket(p, teleport);
+			//Some wizardry here to make the right amount of hearts how up
+			if(p.getGameMode() == GameMode.ADVENTURE || p.getGameMode() == GameMode.SURVIVAL) {
+				boolean toggle = p.isHealthScaled();
+				p.setHealthScaled(!toggle);
+				p.setHealthScale(p.getHealthScale());
+				p.setHealth(p.getHealth());
+				p.setHealthScaled(toggle);
+			}
+
+			//Some wizardry here to prevent unintended speedhacking
+			p.setWalkSpeed(p.getWalkSpeed());
+
+			//Redraw inventory as assumed empty on respawn
+			p.updateInventory();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
 	}
 }

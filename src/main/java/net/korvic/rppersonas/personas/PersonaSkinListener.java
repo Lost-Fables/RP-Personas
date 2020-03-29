@@ -48,22 +48,19 @@ public class PersonaSkinListener {
 										int skinID = pers.getActiveSkinID();
 										if (skinID > 0) {
 											if (RPPersonas.DEBUGGING) {
-												RPPersonas.get().getLogger().info("Skin Found...");
+												RPPersonas.get().getLogger().info("New Skin Found...");
 											}
 											changed = true;
 											WrappedGameProfile newProf = new WrappedGameProfile(uuid, player.getName());
 											Multimap<String, WrappedSignedProperty> properties = newProf.getProperties();
-											WrappedSignedProperty skinProperty = null;
-											for (WrappedSignedProperty property : properties.get("textures")) {
-												skinProperty = property;
-												break;
-											}
-											if (skinProperty != null) {
-												properties.removeAll("textures");
-												properties.put("textures", new WrappedSignedProperty("textures", RPPersonas.get().getSkinsSQL().getTexture(pers.getActiveSkinID()), skinProperty.getSignature()));
-											}
+
+											properties.removeAll("textures");
+											properties.put("textures", RPPersonas.get().getPersonaHandler().getLoadedPersona(player).getActiveSkin().getMojangData());
+
 											playerInfo = new PlayerInfoData(newProf, playerInfo.getLatency(), playerInfo.getGameMode(), playerInfo.getDisplayName());
 											iterator.set(playerInfo);
+										} else if (RPPersonas.DEBUGGING) {
+											RPPersonas.get().getLogger().info("Failed to find a stored skin.");
 										}
 									}
 								}

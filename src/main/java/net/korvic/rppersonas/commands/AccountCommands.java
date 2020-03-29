@@ -15,6 +15,7 @@ import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
+import net.korvic.rppersonas.personas.PersonaSkin;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -227,26 +228,40 @@ public class AccountCommands extends BaseCommand {
 				@Override
 				public void click(MenuAction menuAction) {
 					int maxSkins = PermissionsUtil.getMaxPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots", RPPersonas.DEFAULT_PERSONAS);
-					getSkinsListMenu(accountID, maxSkins).get(0).openSession(menuAction.getPlayer());
+					getSkinsListMenu(accountID, maxSkins, menuAction.getPlayer()).get(0).openSession(menuAction.getPlayer());
 				}
 			};
 		}
 
-		private List<Menu> getSkinsListMenu(int accountID, int maxSkins) {
+		private List<Menu> getSkinsListMenu(int accountID, int maxSkins, Player player) {
 			Map<Integer, String> data = plugin.getSkinsSQL().getSkinNames(accountID);
 			int currentSkinCount = 0;
 
 			ArrayList<Icon> icons = new ArrayList<>();
+			PersonaSkin currentSkin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
 			for (int id : data.keySet()) {
+				boolean isActive = (currentSkin != null) && (id == currentSkin.getSkinID());
+
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						ItemStack item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(id));
+						String texture;
+						if (isActive) {
+							texture = currentSkin.getTextureValue();
+						} else {
+							texture = (String) plugin.getSkinsSQL().getData(id).get("texture");
+						}
+
+						ItemStack item = ItemUtil.getSkullFromTexture(texture);
 						ItemMeta meta = item.getItemMeta();
 
 						meta.setDisplayName(RPPersonas.PRIMARY_COLOR + ChatColor.BOLD + data.get(id));
 						ArrayList<String> lore = new ArrayList<>();
-						lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click to use this skin.");
+						if (isActive) {
+							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Skin currently in use.");
+						} else {
+							lore.add(RPPersonas.SECONDARY_COLOR + ChatColor.ITALIC + "Click to use this skin.");
+						}
 
 						meta.setLore(lore);
 						item.setItemMeta(meta);
@@ -256,7 +271,7 @@ public class AccountCommands extends BaseCommand {
 					@Override
 					public void click(MenuAction menuAction) {
 						int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
-						plugin.getPersonaHandler().updateActiveSkin(personaID, id);
+						plugin.getPersonaHandler().updateActiveSkin(personaID, id, menuAction.getPlayer());
 						menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_COLOR + "Persona skin updated!");
 					}
 				});
@@ -314,7 +329,7 @@ public class AccountCommands extends BaseCommand {
 				@Override
 				public void click(MenuAction menuAction) {
 					int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
-					plugin.getPersonaHandler().updateActiveSkin(personaID, 0);
+					plugin.getPersonaHandler().updateActiveSkin(personaID, 0, menuAction.getPlayer());
 					menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_COLOR + "Persona skin reset!");
 				}
 			});
@@ -360,11 +375,11 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						int skinID = plugin.getPersonasSQL().getActiveSkinID(personaID);
 						Map<String, Object> data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
+						PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()).getActiveSkin();
 						ItemStack item;
-						if (skinID > 0) {
-							item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(skinID));
+						if (skin != null) {
+							item = ItemUtil.getSkullFromTexture(skin.getTextureValue());
 						} else {
 							item = new ItemStack(Material.PLAYER_HEAD);
 						}
@@ -415,11 +430,11 @@ public class AccountCommands extends BaseCommand {
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						int skinID = plugin.getPersonasSQL().getActiveSkinID(personaID);
 						Map<String, Object> data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
+						PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()).getActiveSkin();
 						ItemStack item;
-						if (skinID > 0) {
-							item = ItemUtil.getSkullFromTexture(plugin.getSkinsSQL().getTexture(skinID));
+						if (skin != null) {
+							item = ItemUtil.getSkullFromTexture(skin.getTextureValue());
 						} else {
 							item = ItemUtil.getSkullFromTexture(DEAD_PERSONA);
 						}
