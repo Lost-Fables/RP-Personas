@@ -89,9 +89,9 @@ public class PersonaCreationDialog {
 			BaseComponent confirmation = new TextComponent(RPPersonas.PRIMARY_COLOR + "You have entered " + RPPersonas.SECONDARY_COLOR + name + RPPersonas.PRIMARY_COLOR + " as your character name. Is this correct?\n" +
 														   DIVIDER);
 
-			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 			confirmation.addExtra(BUTTON_SPACE);
-			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.SECONDARY_COLOR, RPPersonas.PRIMARY_COLOR));
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 
 			p.spigot().sendMessage(confirmation);
 			return "";
@@ -128,7 +128,7 @@ public class PersonaCreationDialog {
 
 			for (PersonaRace race : PersonaRace.values()) {
 				if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
-					races.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to see subraces"));
+					races.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to see subraces", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 					races.addExtra(BUTTON_SPACE);
 				}
 			}
@@ -173,12 +173,12 @@ public class PersonaCreationDialog {
 				Player p = (Player) context.getForWhom();
 
 				BaseComponent subraces = new TextComponent(RPPersonas.PRIMARY_COLOR + "Pick your subrace: \n" + DIVIDER);
-				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races"));
+				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 				subraces.addExtra(BUTTON_SPACE);
 
 				for (PersonaSubRace race : this.race.getSubRaces()) {
 					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
-						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace"));
+						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 						subraces.addExtra(BUTTON_SPACE);
 					}
 				}
@@ -278,9 +278,9 @@ public class PersonaCreationDialog {
 														   RPPersonas.PRIMARY_COLOR + "). Is this correct?\n" + RPPersonas.SECONDARY_COLOR +
 														   DIVIDER);
 
-			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!"));
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 			confirmation.addExtra(BUTTON_SPACE);
-			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!"));
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 
 			p.spigot().sendMessage(confirmation);
 			return "";
@@ -313,7 +313,7 @@ public class PersonaCreationDialog {
 													  DIVIDER);
 
 			for (PersonaGender g : PersonaGender.values()) {
-				genders.addExtra(MessageUtil.CommandButton(g.getName(), g.getName(), "Click to select"));
+				genders.addExtra(MessageUtil.CommandButton(g.getName(), g.getName(), "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 				genders.addExtra(BUTTON_SPACE);
 			}
 
@@ -352,9 +352,9 @@ public class PersonaCreationDialog {
 														   RPPersonas.PRIMARY_COLOR + "Does everything look to be in order?\n" +
 														   DIVIDER);
 
-			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select"));
+			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 			confirmation.addExtra(BUTTON_SPACE);
-			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select"));
+			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 
 			p.spigot().sendMessage(confirmation);
 			return "";
@@ -383,7 +383,7 @@ public class PersonaCreationDialog {
 			BaseComponent options = new TextComponent(RPPersonas.PRIMARY_COLOR + "Which part is wrong?\n" +
 													  DIVIDER);
 			for (String s : SECTION) {
-				options.addExtra(MessageUtil.CommandButton(s, s, "Click to select"));
+				options.addExtra(MessageUtil.CommandButton(s, s, "Click to select", RPPersonas.TERTIARY_COLOR, RPPersonas.PRIMARY_COLOR));
 				options.addExtra(BUTTON_SPACE);
 			}
 
