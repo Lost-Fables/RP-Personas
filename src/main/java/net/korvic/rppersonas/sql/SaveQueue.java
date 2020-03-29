@@ -17,6 +17,7 @@ public class SaveQueue {
 	private final int PERCENT;
 
 	private BukkitRunnable runnable;
+	private boolean finalSave = false;
 
 	public SaveQueue(RPPersonas plugin, int ticks, int amount, int percent) {
 		SaveQueue.plugin = plugin;
@@ -62,7 +63,7 @@ public class SaveQueue {
 			}
 
 			for (int i = 0; i < amountThisRun; i++) {
-				if (queue.size() > 0) {
+				if (!finalSave && queue.size() > 0) {
 					PreparedStatement ps = queue.get(0);
 					try {
 						queue.remove(ps);
@@ -93,7 +94,11 @@ public class SaveQueue {
 
 	public void completeAllSaves() {
 		runnable.cancel();
+		finalSave = true;
 		long startMillis = System.currentTimeMillis();
+
+		plugin.getPersonaHandler().queueSavingAll();
+
 		for (PreparedStatement ps : queue) {
 			try {
 				if (ps != null) {
