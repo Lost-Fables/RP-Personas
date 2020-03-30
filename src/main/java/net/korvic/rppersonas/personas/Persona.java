@@ -24,6 +24,9 @@ import java.util.Map;
 public class Persona {
 
 	private RPPersonas plugin;
+
+	private Player usingPlayer;
+
 	private int personaID;
 	private int accountID;
 	private String prefix;
@@ -32,9 +35,11 @@ public class Persona {
 	private boolean isAlive;
 	private PersonaSkin activeSkin = null;
 
-
-	public Persona(RPPersonas plugin, int personaID, int accountID, String prefix, String nickName, String personaInvData, boolean isAlive, int activeSkinID) {
+	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, boolean isAlive, int activeSkinID) {
 		this.plugin = plugin;
+
+		this.usingPlayer = usingPlayer;
+
 		this.personaID = personaID;
 		this.accountID = accountID;
 		this.prefix = prefix;
@@ -45,6 +50,9 @@ public class Persona {
 	}
 
 	// GET //
+	public Player getUsingPlayer() {
+		return usingPlayer;
+	}
 	public int getPersonaID() {
 		return personaID;
 	}
@@ -60,15 +68,15 @@ public class Persona {
 	public boolean isAlive() {
 		return isAlive;
 	}
+	public PersonaSkin getActiveSkin() {
+		return activeSkin;
+	}
 	public int getActiveSkinID() {
 		if (activeSkin != null) {
 			return activeSkin.getSkinID();
 		} else {
 			return 0;
 		}
-	}
-	public PersonaSkin getActiveSkin() {
-		return activeSkin;
 	}
 
 	public Map<Object, Object> getLoadedInfo() {
@@ -80,7 +88,12 @@ public class Persona {
 		output.put("inventory", inventory);
 		output.put("nickname", nickName);
 		output.put("prefix", prefix);
-		output.put("skinid", activeSkin.getSkinID());
+
+		if (activeSkin != null) {
+			output.put("skinid", activeSkin.getSkinID());
+		} else {
+			output.put("skinid", 0);
+		}
 
 		return output;
 	}
@@ -146,6 +159,10 @@ public class Persona {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void unloadPersona() {
+		plugin.getPersonaHandler().unloadPersona(this);
 	}
 
 	// SET //

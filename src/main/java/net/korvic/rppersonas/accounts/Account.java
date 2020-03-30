@@ -11,55 +11,48 @@ import java.util.*;
 
 public class Account {
 	private int accountID;
-	private int activePersonaID;
+	private Map<Integer, Persona> loadedPersonas;
 	private static RPPersonas plugin;
 
 
 	// ACCOUNT CREATION //
 
-	protected static Account createAccount(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
+	protected static Account createAccount(Player p, int accountID, int swapToPersona, boolean saveCurrentPersona) {
 		Account a = RPPersonas.get().getAccountHandler().getLoadedAccount(accountID);
+		boolean first = false;
+
 		if (a == null) {
-			a = new Account(p, accountID, activePersonaID, saveCurrentPersona);
+			a = new Account(p, accountID, saveCurrentPersona);
+			first = true;
 		}
+
+		if (swapToPersona > 0) {
+			plugin.getPersonaHandler().loadPersona(p, accountID, swapToPersona, saveCurrentPersona);
+		} else {
+			PersonaHandler.createPersona(p, accountID, first);
+		}
+
 		return a;
 	}
 
-	private Account(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
+	private Account(Player p, int accountID, boolean saveCurrentPersona) {
 		this.accountID = accountID;
 		plugin = RPPersonas.get();
-
-		if (!plugin.getAccountsSQL().isRegistered(accountID)) {
-			Map<Object, Object> accountData = new HashMap<>();
-			accountData.put("accountid", accountID);
-			accountData.put("personaid", activePersonaID);
-			plugin.getAccountsSQL().registerOrUpdate(accountData);
-		}
-
-		if (activePersonaID > 0) {
-			this.activePersonaID = activePersonaID;
-			plugin.getPersonaHandler().loadPersona(p, accountID, activePersonaID, saveCurrentPersona);
-		} else {
-			PersonaHandler.createPersona(p, accountID, true);
-		}
 	}
 
 	// GETTERS //
-
 	public int getAccountID() {
 		return accountID;
 	}
 
-	public int getActivePersonaID() {
-		return activePersonaID;
+	public List<Persona> getLoadedPersonas() {
+		return (List<Persona>) loadedPersonas.values();
 	}
-
-	public List<Integer> getLivePersonaIDs() {
-		return plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true);
+	public Set<Integer> getLivePersonaIDs() {
+		return plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true).keySet();
 	}
-
-	public List<Integer> getDeadPersonaIDs() {
-		return plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false);
+	public Set<Integer> getDeadPersonaIDs() {
+		return plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false).keySet();
 	}
 
 	public Map<Integer, String> getSkinNames() {
@@ -73,26 +66,29 @@ public class Account {
 	// SWAPPING //
 
 	public void swapToPersonaIfOwned(Player p, int personaID, boolean alive, boolean saveCurrentPersona) {
-		if (plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, alive).contains(personaID)) {
+		Map<Integer, UUID> personas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, alive);
+		if (personas.containsKey(personaID) && personas.get(personaID) == null) {
 			swapToPersona(p, personaID, saveCurrentPersona);
 		}
 	}
 
 	public void swapToPersona(Player p, int personaID, boolean saveCurrentPersona) {
-		if (plugin.getPersonaHandler().getLoadedPersona(p) != null) {
+		Persona originalPersona = plugin.getPersonaHandler().getLoadedPersona(p);
+		if (originalPersona != null) {
 			if (saveCurrentPersona) {
-				plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
+				originalPersona.queueSave(p);
+				plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(originalPersona.getPersonaID(), accountID, originalPersona.isAlive(), null));
 			}
-			plugin.getPersonaHandler().unloadPersona(activePersonaID, p);
+			plugin.getPersonaHandler().getLoadedPersona(p).unloadPersona();
 		}
-		this.activePersonaID = personaID;
+
 		Map<Object, Object> data = new HashMap<>();
 		data.put("accountid", accountID);
-		data.put("activepersonaid", personaID);
 		plugin.getAccountsSQL().registerOrUpdate(data);
+		plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(personaID, accountID, true, p.getUniqueId()));
 
-		Persona pers = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
-		ItemStack[] items = pers.getInventory();
+		Persona newPersona = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
+		ItemStack[] items = newPersona.getInventory();
 		if (items != null) {
 			p.getInventory().setContents(items);
 		} else {

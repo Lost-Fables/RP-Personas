@@ -126,7 +126,7 @@ public class PersonaHandler {
 			data.put("personaid", personaID);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 
-			plugin.getPersonaAccountMapSQL().addMapping(personaID, accountID, isAlive);
+			plugin.getPersonaAccountMapSQL().addOrUpdateMapping(personaID, accountID, isAlive, p.getUniqueId());
 			plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(p, personaID, saveCurrentPersona);
 		}
 
@@ -137,14 +137,15 @@ public class PersonaHandler {
 			}
 		}
 
-		Persona persona = new Persona(plugin, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
-		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
-		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
+		Persona persona = new Persona(plugin, p, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
+		PersonaHandler handler = plugin.getPersonaHandler();
+		handler.playerObjectToID.put(p, personaID);
+		handler.loadedPersonas.put(personaID, persona);
 
 		return persona;
 	}
 
-	// CHECKING //
+	// GET //
 	public Persona getLoadedPersona(Player p) {
 		if (playerObjectToID.containsKey(p)) {
 			return getLoadedPersona(playerObjectToID.get(p));
@@ -167,21 +168,8 @@ public class PersonaHandler {
 	}
 
 	// UNLOADING //
-	public void unloadPersonas(int accountID, Player p) {
-		List<Integer> personas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true);
-		personas.addAll(plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false));
-		for (int i : personas) {
-			if (loadedPersonas.containsKey(i)) {
-				if (PersonaDisableListener.isPlayerEnabled(p)) {
-					loadedPersonas.get(i).queueSave(p);
-				}
-				if (playerObjectToID.values().toArray().length > 1) {
-					playerObjectToID.remove(p);
-				} else {
-					unloadPersona(i, p);
-				}
-			}
-		}
+	public void unloadPersona(Persona pers) {
+		unloadPersona(pers.getPersonaID(), pers.getUsingPlayer());
 	}
 
 	public void unloadPersona(int personaID, Player p) {

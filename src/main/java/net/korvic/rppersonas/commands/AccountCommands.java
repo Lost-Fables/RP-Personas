@@ -14,6 +14,7 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.accounts.SkinNameDialog;
@@ -29,10 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AccountCommands extends BaseCommand {
 
@@ -239,16 +237,21 @@ public class AccountCommands extends BaseCommand {
 			int currentSkinCount = 0;
 
 			ArrayList<Icon> icons = new ArrayList<>();
-			PersonaSkin currentSkin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
+			PersonaSkin currentSkin = null;
+			if (plugin.getPersonaHandler().getLoadedPersona(player) != null) {
+				currentSkin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
+			}
+
 			for (int id : data.keySet()) {
 				boolean isActive = (currentSkin != null) && (id == currentSkin.getSkinID());
+				PersonaSkin finalCurrentSkin = currentSkin;
 
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
 						String texture;
 						if (isActive) {
-							texture = currentSkin.getTextureValue();
+							texture = finalCurrentSkin.getTextureValue();
 						} else {
 							texture = (String) plugin.getSkinsSQL().getData(id).get("texture");
 						}
@@ -371,18 +374,23 @@ public class AccountCommands extends BaseCommand {
 		}
 
 		private List<Menu> getPersonasListMenu(int accountID, int maxPersonas) {
-			ArrayList<Icon> icons = new ArrayList<>();
+			List<Icon> icons = new ArrayList<>();
+			Map<Integer, UUID> livePersonas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true);
 			int currentPersonaCount = 0;
-			int currentPersonaID = plugin.getAccountHandler().getActivePersona(accountID);
 
-			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true)) {
+			for (int personaID : livePersonas.keySet()) {
 				icons.add(new Button() {
 					private String currentName;
 
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
 						Map<String, Object> data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
-						PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()).getActiveSkin();
+
+						PersonaSkin skin = null;
+						if (plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()) != null) {
+							skin = plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()).getActiveSkin();
+						}
+
 						ItemStack item;
 						if (skin != null) {
 							item = ItemUtil.getSkullFromTexture(skin.getTextureValue());
@@ -399,11 +407,12 @@ public class AccountCommands extends BaseCommand {
 						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + currentName);
 
 						ArrayList<String> lore = new ArrayList<>();
-						if (personaID == currentPersonaID) {
-							lore.add(RPPersonas.SECONDARY_LIGHT + "Current Persona! Right Click to delete.");
+						if (livePersonas.get(personaID) != null) {
+							lore.add(RPPersonas.SECONDARY_LIGHT + "Persona currently in use.");
 						} else {
 							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
 						}
+
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Persona ID: " + RPPersonas.SECONDARY_DARK + String.format("%06d", personaID));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " + RPPersonas.SECONDARY_DARK + data.get("name"));
@@ -418,21 +427,24 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
-						ClickType click = menuAction.getClick();
-						if (personaID != currentPersonaID && (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) ) {
-							menuAction.getPlayer().closeInventory();
-							plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID, true);
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + currentName + RPPersonas.PRIMARY_DARK + ".");
-						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
-							menuAction.getPlayer().sendMessage("Deleting Persona...");
-							// TODO - Delete persona & force creation if there's no others left.
+						if (livePersonas.get(personaID) == null) {
+							ClickType click = menuAction.getClick();
+							if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
+								menuAction.getPlayer().closeInventory();
+								plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID, true);
+								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + currentName + RPPersonas.PRIMARY_DARK + ".");
+							} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
+								menuAction.getPlayer().sendMessage("Deleting Persona...");
+								// TODO - Delete persona & force creation if there's no others left.
+							}
 						}
 					}
 				});
 				currentPersonaCount++;
 			}
 
-			for (int personaID : plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false)) {
+			Map<Integer, UUID> deadPersonas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false);
+			for (int personaID : deadPersonas.keySet()) {
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {

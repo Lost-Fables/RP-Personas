@@ -6,9 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class PersonaAccountsMapSQL {
@@ -24,7 +22,8 @@ public class PersonaAccountsMapSQL {
 		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
 				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 				   "    AccountID INT NOT NULL,\n" +
-				   "    Alive TINYINT NOT NULL\n" +
+				   "    Alive TINYINT NOT NULL,\n" +
+				   "    ActiveUUID TEXT\n" +
 				   ");";
 	}
 
@@ -106,22 +105,10 @@ public class PersonaAccountsMapSQL {
 	}
 
 	// Inserts a new mapping for a persona.
-	public void addMapping(int personaID, int accountID, boolean alive) {
-		Connection conn = null;
+	public void addOrUpdateMapping(int personaID, int accountID, boolean alive, UUID uuid) {
 		PreparedStatement ps = null;
 		try {
-			conn = getSQLConnection();
-			byte aliveByte = (byte) 0;
-			if (alive) {
-				aliveByte = (byte) 1;
-			}
-
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive) VALUES(?,?,?)");
-
-			ps.setInt(1, personaID);
-			ps.setInt(2, accountID);
-			ps.setByte(3, aliveByte);
-
+			ps = getSaveStatement(personaID, accountID, alive, uuid);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
@@ -133,6 +120,68 @@ public class PersonaAccountsMapSQL {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
 			}
 		}
+	}
+
+	public PreparedStatement getSaveStatement(int personaID, int accountID, boolean alive, UUID uuid) {
+		Map<Object, Object> data = new HashMap<>();
+		data.put("personaid", personaID);
+		data.put("accountid", accountID);
+		data.put("alive", alive);
+		if (uuid != null) {
+			data.put("uuid", uuid);
+		}
+		return getSaveStatement(data);
+	}
+
+	private PreparedStatement getSaveStatement(Map<Object, Object> data) {
+		PreparedStatement replaceStatement = null;
+		try {
+			PreparedStatement grabStatement = null;
+			Connection conn = null;
+			conn = getSQLConnection();
+
+			grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE PersonaID='" + data.get("personaid") + "'");
+			ResultSet result = grabStatement.executeQuery();
+			boolean resultPresent = result.next();
+
+			conn = getSQLConnection();
+			replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive,ActiveUUID) VALUES(?,?,?,?)");
+
+
+			// Required
+			replaceStatement.setInt(1, (int) data.get("personaid"));
+
+			if (data.containsKey("accountid")) {
+				replaceStatement.setInt(2, (int) data.get("accountid"));
+			} else if (resultPresent) {
+				replaceStatement.setInt(2, result.getInt("AccountID"));
+			} else {
+				replaceStatement.setInt(2, 0);
+			}
+
+			if (data.containsKey("alive")) {
+				replaceStatement.setBoolean(3, (boolean) data.get("alive"));
+			} else if (resultPresent) {
+				replaceStatement.setBoolean(3, result.getBoolean("Alive"));
+			} else {
+				replaceStatement.setBoolean(3, true);
+			}
+
+			if (data.containsKey("uuid")) {
+				replaceStatement.setString(4, ((UUID) data.get("uuid")).toString());
+			} else if (resultPresent) {
+				replaceStatement.setString(4, result.getString("ActiveUUID"));
+			} else {
+				replaceStatement.setString(4, null);
+			}
+
+			grabStatement.close();
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+		return replaceStatement;
 	}
 
 	// Removes a persona mapping.
@@ -182,7 +231,7 @@ public class PersonaAccountsMapSQL {
 	}
 
 	// Retrieves a list of persona IDs for a given account.
-	public List<Integer> getPersonasOf(int accountID, boolean alive) {
+	public Map<Integer, UUID> getPersonasOf(int accountID, boolean alive) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -199,9 +248,14 @@ public class PersonaAccountsMapSQL {
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
 
-			List<Integer> result = new ArrayList<>();
+			Map<Integer, UUID> result = new HashMap<>();
 			while (rs.next()) {
-				result.add(rs.getInt("PersonaID"));
+				String uuid = rs.getString("ActiveUUID");
+				if (uuid != null) {
+					result.put(rs.getInt("PersonaID"), UUID.fromString(uuid));
+				} else {
+					result.put(rs.getInt("PersonaID"), null);
+				}
 			}
 			return result;
 		} catch (SQLException ex) {

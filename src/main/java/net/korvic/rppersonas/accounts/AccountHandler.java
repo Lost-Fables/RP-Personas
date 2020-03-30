@@ -1,16 +1,18 @@
 package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaGender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AccountHandler {
 
 	private RPPersonas plugin;
-	private Map<Integer, Account> loadedAccounts; // accountID , account
+	private Map<Integer, Account> loadedAccounts; // accountID, account
 
 	private static final String MULTIPLE_ACCOUNTS_WARN = "Found multiple accounts with the ID ";
 
@@ -23,13 +25,8 @@ public class AccountHandler {
 		return loadedAccounts.get(accountID);
 	}
 
-	public int getActivePersona(int accountID) {
-		Account account = getLoadedAccount(accountID);
-		if (account != null) {
-			return account.getActivePersonaID();
-		} else {
-			return plugin.getAccountsSQL().getActivePersonaID(accountID);
-		}
+	public List<Persona> getLoadedPersonas(int accountID) {
+		return loadedAccounts.get(accountID).getLoadedPersonas();
 	}
 
 	public Account loadAccount(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
