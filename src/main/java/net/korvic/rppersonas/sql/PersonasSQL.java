@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.PersonaGender;
+import net.korvic.rppersonas.personas.PersonaSubRace;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -162,44 +164,62 @@ public class PersonasSQL {
 
 		if (data.containsKey("name")) {
 			replaceStatement.setString(3, (String) data.get("name"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setString(3, result.getString("Name"));
+		} else {
+			replaceStatement.setString(3, "Lost Name");
 		}
 
 		if (data.containsKey("gender")) {
 			replaceStatement.setString(4, (String) data.get("gender"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setString(4, result.getString("Gender"));
+		} else {
+			replaceStatement.setString(4, PersonaGender.values()[0].getName());
 		}
 
 		if (data.containsKey("age")) {
 			replaceStatement.setLong(5, (long) data.get("age"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setLong(5, result.getLong("Age"));
+		} else {
+			replaceStatement.setLong(5, 0);
 		}
 
 		if (data.containsKey("race")) {
 			replaceStatement.setString(6, (String) data.get("race"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setString(6, result.getString("Race"));
+		} else {
+			replaceStatement.setString(6, PersonaSubRace.values()[0].getName());
 		}
 
 		if (data.containsKey("lives")) {
 			replaceStatement.setInt(7, (int) data.get("lives"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setInt(7, result.getInt("Lives"));
+		} else {
+			replaceStatement.setInt(7, 3);
 		}
 
 		if (data.containsKey("playtime")) {
 			replaceStatement.setLong(8, (long) data.get("playtime"));
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setLong(8, result.getLong("Playtime"));
+		} else {
+			replaceStatement.setLong(8, 0);
 		}
 
 
 		// Location
+		Location loc = null;
 		if (data.containsKey("location")) {
-			Location loc = (Location) data.get("location");
+			loc = (Location) data.get("location");
+		} else if (!resultPresent) {
+			loc = RPPersonas.get().getSpawnLocation();
+		}
+
+		if (loc != null) {
 			replaceStatement.setString(9, loc.getWorld().getName());
 			replaceStatement.setDouble(10, loc.getX());
 			replaceStatement.setDouble(11, loc.getY());
