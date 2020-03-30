@@ -34,7 +34,7 @@ public class PersonaHandler {
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
 		String welcomeText = "";
-		if (first) {
+		if (first || plugin.getPersonaHandler().getLoadedPersona(p) == null) {
 			welcomeText = RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Welcome!";
 		} else {
 			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
