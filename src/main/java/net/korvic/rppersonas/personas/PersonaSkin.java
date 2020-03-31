@@ -12,6 +12,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -128,7 +129,12 @@ public class PersonaSkin {
 			p.setWalkSpeed(p.getWalkSpeed());
 
 			//Redraw inventory as assumed empty on respawn
-			p.updateInventory();
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					p.updateInventory();
+				}
+			}.runTaskLater(RPPersonas.get(), 10);
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
