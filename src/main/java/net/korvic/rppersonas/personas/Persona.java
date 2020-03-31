@@ -152,6 +152,8 @@ public class Persona {
 				newData.putAll(data);
 			}
 			newData.put("location", p.getLocation());
+			newData.put("health", p.getHealth());
+			newData.put("hunger", p.getSaturation());
 			PreparedStatement ps = plugin.getPersonasSQL().getSaveStatement(newData);
 			plugin.getSaveQueue().addToQueue(ps);
 		} catch (Exception e) {

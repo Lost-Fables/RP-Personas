@@ -112,6 +112,18 @@ public class PersonaHandler {
 			}
 		}
 
+		double health = 20.0;
+		if (data.containsKey("health")) {
+			health = (double) data.get("health");
+		}
+		p.setHealth(health);
+
+		float hunger = 20f;
+		if (data.containsKey("hunger")) {
+			health = (float) data.get("hunger");
+		}
+		p.setSaturation(hunger);
+
 		int activeSkinID = 0;
 		if (data.containsKey("skinid")) {
 			activeSkinID = (int) data.get("skinid");

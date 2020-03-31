@@ -38,6 +38,9 @@ public class PersonasSQL {
 				   "    LocationY DOUBLE NOT NULL,\n" +
 				   "    LocationZ DOUBLE NOT NULL,\n" +
 
+				   "    Health DOUBLE NOT NULL,\n" +
+				   "    Hunger REAL NOT NULL,\n" +
+
 				   "    Inventory TEXT,\n" +
 				   "    NickName TEXT,\n" +
 				   "    Prefix TEXT,\n" +
@@ -151,7 +154,7 @@ public class PersonasSQL {
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Health,Hunger,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 
 		// Required
@@ -234,46 +237,62 @@ public class PersonasSQL {
 			replaceStatement.setDouble(12, result.getDouble("LocationZ"));
 		}
 
+		//Health & Hunger
+		if (data.containsKey("health")) {
+			replaceStatement.setDouble(13, (double) data.get("health"));
+		} else if (resultPresent) {
+			replaceStatement.setDouble(13, result.getDouble("Health"));
+		} else {
+			replaceStatement.setDouble(13, 20.0);
+		}
+
+		if (data.containsKey("hunger")) {
+			replaceStatement.setFloat(14, (float) data.get("hunger"));
+		} else if (resultPresent) {
+			replaceStatement.setFloat(14, result.getFloat("Hunger"));
+		} else {
+			replaceStatement.setFloat(14, 20f);
+		}
 
 		// Optional
 		if (data.containsKey("inventory")) {
-			replaceStatement.setString(13, (String) data.get("inventory"));
+			replaceStatement.setString(15, (String) data.get("inventory"));
 		} else if (resultPresent) {
-			replaceStatement.setString(13, result.getString("Inventory"));
-		} else {
-			replaceStatement.setString(13, null);
-		}
-
-		if (data.containsKey("nickname")) {
-			replaceStatement.setString(14, (String) data.get("nickname"));
-		} else if (resultPresent) {
-			replaceStatement.setString(14, result.getString("NickName"));
-		} else {
-			replaceStatement.setString(14, null);
-		}
-
-		if (data.containsKey("prefix")) {
-			replaceStatement.setString(15, (String) data.get("prefix"));
-		} else if (resultPresent) {
-			replaceStatement.setString(15, result.getString("Prefix"));
+			replaceStatement.setString(15, result.getString("Inventory"));
 		} else {
 			replaceStatement.setString(15, null);
 		}
 
-		if (data.containsKey("skinid")) {
-			replaceStatement.setInt(16, (int) data.get("skinid"));
+		if (data.containsKey("nickname")) {
+			replaceStatement.setString(16, (String) data.get("nickname"));
 		} else if (resultPresent) {
-			replaceStatement.setInt(16, result.getInt("ActiveSkinID"));
+			replaceStatement.setString(16, result.getString("NickName"));
 		} else {
-			replaceStatement.setInt(16, 0);
+			replaceStatement.setString(16, null);
+		}
+
+		if (data.containsKey("prefix")) {
+			replaceStatement.setString(17, (String) data.get("prefix"));
+		} else if (resultPresent) {
+			replaceStatement.setString(17, result.getString("Prefix"));
+		} else {
+			replaceStatement.setString(17, null);
+		}
+
+		if (data.containsKey("skinid")) {
+			replaceStatement.setInt(18, (int) data.get("skinid"));
+		} else if (resultPresent) {
+			replaceStatement.setInt(18, result.getInt("ActiveSkinID"));
+		} else {
+			replaceStatement.setInt(18, 0);
 		}
 
 		if (data.containsKey("description")) {
-			replaceStatement.setString(17, (String) data.get("description"));
+			replaceStatement.setString(19, (String) data.get("description"));
 		} else if (resultPresent) {
-			replaceStatement.setString(17, result.getString("Description"));
+			replaceStatement.setString(19, result.getString("Description"));
 		} else {
-			replaceStatement.setString(17, null);
+			replaceStatement.setString(19, null);
 		}
 
 		grabStatement.close();
@@ -367,7 +386,7 @@ public class PersonasSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT Prefix, NickName, Name, Inventory, LocationWorld, LocationX, LocationY, LocationZ, ActiveSkinID, Alive FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+			stmt = "SELECT Prefix, NickName, Name, Inventory, LocationWorld, LocationX, LocationY, LocationZ, Health, Hunger, ActiveSkinID, Alive FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -381,6 +400,8 @@ public class PersonasSQL {
 				output.put("name", rs.getString("Name"));
 				output.put("inventory", rs.getString("Inventory"));
 				output.put("skinid", rs.getInt("ActiveSkinID"));
+				output.put("health", rs.getDouble("Health"));
+				output.put("hunger", rs.getDouble("Hunger"));
 
 				if (rs.getShort("Alive") > 0) {
 					output.put("alive", new Object());
