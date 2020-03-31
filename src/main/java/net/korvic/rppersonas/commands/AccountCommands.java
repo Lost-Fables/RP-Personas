@@ -285,6 +285,7 @@ public class AccountCommands extends BaseCommand {
 						} else if (clickType.equals(ClickType.RIGHT) || clickType.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Deleting skin...");
 							plugin.getPersonaHandler().deleteSkin(skinID);
+							plugin.getPersonasSQL().unlinkSkin(skinID);
 							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Skin deleted.");
 						}
 					}
@@ -498,9 +499,11 @@ public class AccountCommands extends BaseCommand {
 							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Opening Ressurection Application...");
 
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Deleting Persona...");
-							plugin.getPersonaHandler().deletePersona(personaID);
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona deleted.");
+							menuAction.getPlayer().closeInventory();
+
+							ConversationFactory factory = getFreshFactory();
+							factory.withFirstPrompt(new PersonaDeleteDialog.DeletePersonaPrompt(personaID));
+							factory.buildConversation(menuAction.getPlayer()).begin();
 						}
 					}
 				});

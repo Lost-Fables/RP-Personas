@@ -24,7 +24,7 @@ public class PersonasSQL {
 		this.plugin = plugin;
 		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
 				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
-				   "    Alive TINYINT NOT NULL,\n" +
+				   "    Alive BIT NOT NULL,\n" +
 				   "    Name TEXT NOT NULL,\n" +
 				   "    Gender TEXT NOT NULL,\n" +
 				   "    Age BIGINT NOT NULL,\n" +
@@ -156,11 +156,13 @@ public class PersonasSQL {
 		// Required
 		replaceStatement.setInt(1, (int) data.get("personaid"));
 
-		byte aliveByte = (byte) 0;
 		if (data.containsKey("alive")) {
-			aliveByte = (byte) 1;
+			replaceStatement.setBoolean(2, (boolean) data.get("alive"));
+		} else if (resultPresent) {
+			replaceStatement.setBoolean(2, result.getBoolean("Alive"));
+		} else {
+			replaceStatement.setBoolean(2, true);
 		}
-		replaceStatement.setByte(2, aliveByte);
 
 		if (data.containsKey("name")) {
 			replaceStatement.setString(3, (String) data.get("name"));
@@ -285,6 +287,27 @@ public class PersonasSQL {
 		return deleteStatement;
 	}
 
+	public void unlinkSkin(int skinID) {
+		try {
+			Connection conn = getSQLConnection();
+			PreparedStatement grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE ActiveSkinID='" + skinID + "'");
+			ResultSet result = grabStatement.executeQuery();
+
+			while (result.next()) {
+				Map<Object, Object> data = new HashMap<>();
+				data.put("personaid", result.getInt("PersonaID"));
+				data.put("skinid", 0);
+
+				RPPersonas.get().getSaveQueue().addToQueue(getSaveStatement(data));
+			}
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// GET INFO //
 	public Map<String, Object> getBasicPersonaInfo(int personaID) {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -305,7 +328,7 @@ public class PersonasSQL {
 					output.put("nickname", rs.getString("NickName"));
 				}
 				output.put("name", rs.getString("Name"));
-				output.put("age", rs.getLong("Age")); // TODO - Grab actual age.
+				output.put("age", rs.getLong("Age"));
 				output.put("race", rs.getString("Race"));
 				output.put("gender", rs.getString("Gender"));
 
@@ -391,9 +414,7 @@ public class PersonasSQL {
 			Map<String, Object> output = new HashMap<>();
 
 			if (rs.next()) {
-				if (rs.getShort("Alive") > 0) {
-					output.put("alive", new Object());
-				}
+				output.put("alive", rs.getBoolean("Alive"));
 				output.put("name", rs.getString("Name"));
 				output.put("gender", rs.getString("Gender"));
 				output.put("age", rs.getLong("Age"));

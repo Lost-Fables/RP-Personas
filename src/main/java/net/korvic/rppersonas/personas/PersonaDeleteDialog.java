@@ -80,6 +80,8 @@ public class PersonaDeleteDialog {
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			RPPersonas.get().getPersonaHandler().deletePersona(personaID);
+			Player p = (Player) context.getForWhom();
+			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "Persona successfully deleted."));
 			return Prompt.END_OF_CONVERSATION;
 		}
 	}
