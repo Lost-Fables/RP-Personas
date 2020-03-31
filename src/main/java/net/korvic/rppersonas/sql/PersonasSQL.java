@@ -401,7 +401,7 @@ public class PersonasSQL {
 				output.put("inventory", rs.getString("Inventory"));
 				output.put("skinid", rs.getInt("ActiveSkinID"));
 				output.put("health", rs.getDouble("Health"));
-				output.put("hunger", rs.getDouble("Hunger"));
+				output.put("hunger", rs.getFloat("Hunger"));
 
 				if (rs.getShort("Alive") > 0) {
 					output.put("alive", new Object());
