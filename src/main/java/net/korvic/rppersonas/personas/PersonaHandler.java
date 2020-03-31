@@ -49,7 +49,7 @@ public class PersonaHandler {
 
 		Map<Object, Object> data = new HashMap<>();
 		data.put("accountid", accountID);
-		data.put("alive", new Object());
+		data.put("alive", true);
 		data.put("lives", 3);
 		data.put("playtime", 0L);
 		data.put("fresh", new Object());
