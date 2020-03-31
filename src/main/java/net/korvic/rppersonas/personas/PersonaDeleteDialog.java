@@ -29,7 +29,7 @@ public class PersonaDeleteDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "You have are about to " + RPPersonas.SECONDARY_LIGHT + ChatColor.BOLD + "permanently kill" + RPPersonas.PRIMARY_DARK + " your persona '" + name + "'." +
+			BaseComponent confirmation = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "You have are about to " + RPPersonas.SECONDARY_DARK + ChatColor.BOLD + "permanently kill" + RPPersonas.PRIMARY_DARK + " your persona '" + name + "'." +
 														   "\n" + RPPersonas.PRIMARY_DARK + "Are you sure you want to do this?\n" +
 														   PersonaCreationDialog.DIVIDER);
 
@@ -63,7 +63,7 @@ public class PersonaDeleteDialog {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return "\n" + RPPersonas.PRIMARY_DARK + "If you're certain, please type '" + name + "'.";
+			return "\n" + RPPersonas.PRIMARY_DARK + "If you're certain, please type '" + RPPersonas.SECONDARY_DARK + name + RPPersonas.PRIMARY_DARK + "'.";
 		}
 
 		@Override
