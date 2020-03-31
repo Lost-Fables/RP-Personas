@@ -169,6 +169,7 @@ public class PersonaHandler {
 
 	// UNLOADING //
 	public void unloadPersona(Persona pers) {
+		plugin.getPersonaAccountMapSQL().addOrUpdateMapping(pers.getPersonaID(), pers.getAccountID(), pers.isAlive(), null);
 		unloadPersona(pers.getPersonaID(), pers.getUsingPlayer());
 	}
 

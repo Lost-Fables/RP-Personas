@@ -51,7 +51,7 @@ public class AccountCommands extends BaseCommand {
 						 @Arg(value="Forum ID", description="Your forum account ID.") int forumID) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			if (plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()) <= 0) {
+			if (plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()) <= 0 && !plugin.getAccountsSQL().isRegistered(forumID)) {
 				//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the lines below.
 				plugin.getUUIDAccountMapSQL().addMapping(forumID, p);
 				msg(FORUM_LINK_SUCCESS);
@@ -127,9 +127,10 @@ public class AccountCommands extends BaseCommand {
 
 		private Menu buildMainMenu(int accountID) {
 			ArrayList<Icon> icons = new ArrayList<>();
-			icons.add(getStatisticsIcon(accountID));
-			icons.add(getDiscordIcon(accountID));
-			icons.add(getSkinsIcon(accountID));
+			Map<Object, Object> data = plugin.getAccountsSQL().getData(accountID);
+			icons.add(getStatisticsIcon(data));
+			icons.add(getDiscordIcon(data));
+			icons.add(getSkinsIcon(data));
 			icons.add(getPersonasIcon(accountID));
 
 			homeMenu = Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
@@ -138,7 +139,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// STATS //
-		private Icon getStatisticsIcon(int accountID) {
+		private Icon getStatisticsIcon(Map<Object,Object> data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -147,9 +148,9 @@ public class AccountCommands extends BaseCommand {
 					meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Stats");
 
 					ArrayList<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.SECONDARY_LIGHT + "Votes: " + RPPersonas.SECONDARY_DARK + plugin.getAccountsSQL().getVotes(accountID));
+					lore.add(RPPersonas.SECONDARY_LIGHT + "Votes: " + RPPersonas.SECONDARY_DARK + (short) data.get("votes"));
 
-					long timeSpent = plugin.getAccountsSQL().getPlaytime(accountID);
+					long timeSpent = (long) data.get("playtime");
 
 					String playtime;
 					if (timeSpent > 0) {
@@ -173,7 +174,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// DISCORD //
-		private Icon getDiscordIcon(int accountID) {
+		private Icon getDiscordIcon(Map<Object, Object> data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -185,7 +186,7 @@ public class AccountCommands extends BaseCommand {
 					lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Click here to get a discord invite.");
 					lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Use /account discordlink to link your discord.");
 
-					String discordTag = plugin.getAccountsSQL().getDiscordInfo(accountID);
+					String discordTag = (String) data.get("discordid");
 					if (discordTag != null && discordTag.length() > 0) {
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Linked To: " + RPPersonas.SECONDARY_DARK + discordTag);
@@ -208,7 +209,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// SKINS //
-		private Icon getSkinsIcon(int accountID) {
+		private Icon getSkinsIcon(Map<Object, Object> data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -227,13 +228,13 @@ public class AccountCommands extends BaseCommand {
 				@Override
 				public void click(MenuAction menuAction) {
 					int maxSkins = PermissionsUtil.getMaxPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots", RPPersonas.DEFAULT_PERSONAS);
-					getSkinsListMenu(accountID, maxSkins, menuAction.getPlayer()).get(0).openSession(menuAction.getPlayer());
+					getSkinsListMenu(data, maxSkins, menuAction.getPlayer()).get(0).openSession(menuAction.getPlayer());
 				}
 			};
 		}
 
-		private List<Menu> getSkinsListMenu(int accountID, int maxSkins, Player player) {
-			Map<Integer, String> data = plugin.getSkinsSQL().getSkinNames(accountID);
+		private List<Menu> getSkinsListMenu(Map<Object, Object> data, int maxSkins, Player player) {
+			Map<Integer, String> skinData = plugin.getSkinsSQL().getSkinNames((int) data.get("accountid"));
 			int currentSkinCount = 0;
 
 			ArrayList<Icon> icons = new ArrayList<>();
@@ -242,7 +243,7 @@ public class AccountCommands extends BaseCommand {
 				currentSkin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
 			}
 
-			for (int id : data.keySet()) {
+			for (int id : skinData.keySet()) {
 				boolean isActive = (currentSkin != null) && (id == currentSkin.getSkinID());
 				PersonaSkin finalCurrentSkin = currentSkin;
 
@@ -259,10 +260,10 @@ public class AccountCommands extends BaseCommand {
 						ItemStack item = ItemUtil.getSkullFromTexture(texture);
 						ItemMeta meta = item.getItemMeta();
 
-						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + data.get(id));
+						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + skinData.get(id));
 						ArrayList<String> lore = new ArrayList<>();
 						if (isActive) {
-							lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Skin currently in use. Right Click to delete.");
+							lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Current active skin. Right Click to delete.");
 						} else {
 							lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Left Click to use this skin. Right Click to delete.");
 						}
@@ -276,7 +277,7 @@ public class AccountCommands extends BaseCommand {
 					public void click(MenuAction menuAction) {
 						ClickType clickType = menuAction.getClick();
 						if (clickType.equals(ClickType.LEFT) || clickType.equals(ClickType.SHIFT_LEFT)) {
-							int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
+							int personaID = plugin.getPersonaHandler().getLoadedPersona(player).getPersonaID();
 							plugin.getPersonaHandler().updateActiveSkin(personaID, id, menuAction.getPlayer());
 							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin updated!");
 						} else if (clickType.equals(ClickType.RIGHT) || clickType.equals(ClickType.SHIFT_RIGHT)) {
@@ -337,7 +338,7 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					int personaID = plugin.getAccountsSQL().getActivePersonaID(accountID);
+					int personaID = plugin.getPersonaHandler().getLoadedPersona(player).getPersonaID();
 					plugin.getPersonaHandler().updateActiveSkin(personaID, 0, menuAction.getPlayer());
 					menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin reset!");
 				}

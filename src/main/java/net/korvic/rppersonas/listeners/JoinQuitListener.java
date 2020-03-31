@@ -27,12 +27,12 @@ public class JoinQuitListener implements Listener {
 		Player p = event.getPlayer();
 		if (p.hasPermission("rppersonas.link")) {
 			UUID uuid = p.getUniqueId();
-			int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
+			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
 
-			if (account > 0) {
+			if (accountID > 0) {
 				refreshAccountPlaytime(event.getPlayer());
-				int persona = plugin.getAccountsSQL().getActivePersonaID(account);
-				plugin.getAccountHandler().loadAccount(p, account, persona, false);
+				int personaID = plugin.getPersonaAccountMapSQL().getCurrentPersonaID(uuid);
+				plugin.getAccountHandler().loadAccount(p, accountID, personaID, false);
 			} else {
 				plugin.getUnregisteredHandler().add(p);
 			}

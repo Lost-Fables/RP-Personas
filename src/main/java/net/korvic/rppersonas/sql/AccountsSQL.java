@@ -6,6 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -22,7 +23,6 @@ public class AccountsSQL {
 		this.plugin = plugin;
 		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
 				   "    AccountID INT NOT NULL PRIMARY KEY,\n" +
-				   "    ActivePersonaID INT NOT NULL,\n" +
 				   "    DiscordID TEXT,\n" +
 				   "    Playtime BIGINT NOT NULL,\n" +
 				   "    Votes SMALLINT NOT NULL\n" +
@@ -135,6 +135,40 @@ public class AccountsSQL {
 		return false;
 	}
 
+	// Gets our stored data for this account.
+	public Map<Object, Object> getData(int accountid) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		conn = getSQLConnection();
+
+		try {
+			ps = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountid + "'");
+			ResultSet rs = ps.executeQuery();
+
+			Map<Object, Object> data = new HashMap<>();
+
+			if (rs.next()) {
+				data.put("accountid", accountid);
+				data.put("discordid", rs.getString("DiscordID"));
+				data.put("playtime", rs.getLong("Playtime"));
+				data.put("votes", rs.getShort("Votes"));
+			}
+
+			return data;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+
+		return null;
+	}
+
 	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(Map<Object, Object> data) {
 		if (data.containsKey("accountid")) {
@@ -166,26 +200,18 @@ public class AccountsSQL {
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,ActivePersonaID,DiscordID,Playtime,Votes) VALUES(?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,DiscordID,Playtime,Votes) VALUES(?,?,?,?)");
 
 
 		// Required
 		replaceStatement.setInt(1, (int) data.get("accountid"));
 
-		if (data.containsKey("activepersonaid")) {
-			replaceStatement.setInt(2, (int) data.get("activepersonaid"));
-		} else if (resultPresent) {
-			replaceStatement.setInt(2, result.getInt("ActivePersonaID"));
-		} else {
-			replaceStatement.setInt(2, 0);
-		}
-
 		if (data.containsKey("discordid")) {
-			replaceStatement.setString(3, (String) data.get("discordid"));
+			replaceStatement.setString(2, (String) data.get("discordid"));
 		} else if (resultPresent) {
-			replaceStatement.setString(3, result.getString("DiscordID"));
+			replaceStatement.setString(2, result.getString("DiscordID"));
 		} else {
-			replaceStatement.setString(3, null);
+			replaceStatement.setString(2, null);
 		}
 
 		if (data.containsKey("playtime")) {
@@ -193,147 +219,23 @@ public class AccountsSQL {
 			if (resultPresent) {
 				playtime += result.getLong("Playtime");
 			}
-			replaceStatement.setLong(4, playtime);
+			replaceStatement.setLong(3, playtime);
 		} else if (resultPresent) {
-			replaceStatement.setLong(4, result.getLong("Playtime"));
+			replaceStatement.setLong(3, result.getLong("Playtime"));
 		} else {
-			replaceStatement.setLong(4, 0);
+			replaceStatement.setLong(3, 0);
 		}
 
 		if (data.containsKey("votes")) {
-			replaceStatement.setShort(5, (short) data.get("votes"));
+			replaceStatement.setShort(4, (short) data.get("votes"));
 		} else if (resultPresent) {
-			replaceStatement.setShort(5, result.getShort("Votes"));
+			replaceStatement.setShort(4, result.getShort("Votes"));
 		} else {
-			replaceStatement.setShort(5, (short) 0);
+			replaceStatement.setShort(4, (short) 0);
 		}
 
 		grabStatement.close();
 		return replaceStatement;
-	}
-
-	public int getActivePersonaID(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
-			int result = -1;
-			if (rs.next()) {
-				result = rs.getInt("ActivePersonaID");
-			}
-			return result;
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
-		return 0;
-	}
-
-	public String getDiscordInfo(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
-			String result = null;
-			if (rs.next()) {
-				result = rs.getString("DiscordID");
-			}
-			return result;
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
-		return null;
-	}
-
-	public long getPlaytime(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
-			long result = 0L;
-			if (rs.next()) {
-				result = rs.getLong("Playtime");
-			}
-			return result;
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
-		return 0L;
-	}
-
-	public short getVotes(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
-			short result = 0;
-			if (rs.next()) {
-				result = rs.getShort("Votes");
-			}
-			return result;
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
-		return 0;
 	}
 
 }

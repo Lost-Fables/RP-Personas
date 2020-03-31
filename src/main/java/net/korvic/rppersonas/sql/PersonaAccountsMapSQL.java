@@ -127,9 +127,8 @@ public class PersonaAccountsMapSQL {
 		data.put("personaid", personaID);
 		data.put("accountid", accountID);
 		data.put("alive", alive);
-		if (uuid != null) {
-			data.put("uuid", uuid);
-		}
+		data.put("uuid", uuid);
+
 		return getSaveStatement(data);
 	}
 
@@ -168,7 +167,11 @@ public class PersonaAccountsMapSQL {
 			}
 
 			if (data.containsKey("uuid")) {
-				replaceStatement.setString(4, ((UUID) data.get("uuid")).toString());
+				if (data.get("uuid") != null) {
+					replaceStatement.setString(4, ((UUID) data.get("uuid")).toString());
+				} else {
+					replaceStatement.setString(4, null);
+				}
 			} else if (resultPresent) {
 				replaceStatement.setString(4, result.getString("ActiveUUID"));
 			} else {
@@ -271,4 +274,41 @@ public class PersonaAccountsMapSQL {
 		return null;
 	}
 
+	public int getCurrentPersonaID(UUID uuid) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getSQLConnection();
+			String stmt;
+			stmt = "SELECT * FROM " + SQLTableName + " WHERE ActiveUUID='" + uuid.toString() + "';";
+
+			ps = conn.prepareStatement(stmt);
+			rs = ps.executeQuery();
+
+			int result = 0;
+			while (rs.next()) {
+				if (result <= 0) {
+					result = rs.getInt("PersonaID");
+				} else {
+					addOrUpdateMapping(rs.getInt("PersonaID"), rs.getInt("AccountID"), rs.getBoolean("Alive"), null);
+					if (RPPersonas.DEBUGGING) {
+						plugin.getLogger().warning("Multiple personas found with the same UUID. Fixing now...");
+					}
+				}
+			}
+			return result;
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+		return 0;
+	}
 }
