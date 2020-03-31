@@ -118,11 +118,11 @@ public class PersonaHandler {
 		}
 		p.setHealth(health);
 
-		float hunger = 20f;
+		int hunger = 20;
 		if (data.containsKey("hunger")) {
-			health = (float) data.get("hunger");
+			health = (int) data.get("hunger");
 		}
-		p.setSaturation(hunger);
+		p.setFoodLevel(hunger);
 
 		int activeSkinID = 0;
 		if (data.containsKey("skinid")) {
@@ -135,6 +135,7 @@ public class PersonaHandler {
 		}
 
 		if (data.containsKey("fresh")) {
+			p.setSaturation(20); // Give the player 20 saturation if they're a new persona so they can run around a bit more.
 			data.put("personaid", personaID);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 

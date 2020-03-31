@@ -39,7 +39,7 @@ public class PersonasSQL {
 				   "    LocationZ DOUBLE NOT NULL,\n" +
 
 				   "    Health DOUBLE NOT NULL,\n" +
-				   "    Hunger REAL NOT NULL,\n" +
+				   "    Hunger INTEGER NOT NULL,\n" +
 
 				   "    Inventory TEXT,\n" +
 				   "    NickName TEXT,\n" +
@@ -247,11 +247,11 @@ public class PersonasSQL {
 		}
 
 		if (data.containsKey("hunger")) {
-			replaceStatement.setFloat(14, (float) data.get("hunger"));
+			replaceStatement.setInt(14, (int) data.get("hunger"));
 		} else if (resultPresent) {
-			replaceStatement.setFloat(14, result.getFloat("Hunger"));
+			replaceStatement.setInt(14, result.getInt("Hunger"));
 		} else {
-			replaceStatement.setFloat(14, 20f);
+			replaceStatement.setInt(14, 20);
 		}
 
 		// Optional
@@ -401,7 +401,7 @@ public class PersonasSQL {
 				output.put("inventory", rs.getString("Inventory"));
 				output.put("skinid", rs.getInt("ActiveSkinID"));
 				output.put("health", rs.getDouble("Health"));
-				output.put("hunger", rs.getFloat("Hunger"));
+				output.put("hunger", rs.getInt("Hunger"));
 
 				if (rs.getShort("Alive") > 0) {
 					output.put("alive", new Object());
