@@ -283,10 +283,12 @@ public class AccountCommands extends BaseCommand {
 							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin updated!");
 
 						} else if (clickType.equals(ClickType.RIGHT) || clickType.equals(ClickType.SHIFT_RIGHT)) {
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Deleting skin...");
+							Player p = menuAction.getPlayer();
+							p.closeInventory();
+							p.sendMessage(RPPersonas.PRIMARY_DARK + "Deleting skin...");
 							plugin.getPersonaHandler().deleteSkin(skinID);
 							plugin.getPersonasSQL().unlinkSkin(skinID);
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Skin deleted.");
+							p.sendMessage(RPPersonas.PRIMARY_DARK + "Skin deleted.");
 						}
 					}
 				});

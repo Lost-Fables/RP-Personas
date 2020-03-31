@@ -211,10 +211,10 @@ public class Persona {
 		queueSave(p, data);
 	}
 
-	public void setSkin(int skinID, Player p) {
+	public void setSkin(int skinID) {
 		this.activeSkin = PersonaSkin.getFromID(skinID);
-		if (p != null) {
-			PersonaSkin.refreshPlayer(p);
+		if (usingPlayer != null) {
+			PersonaSkin.refreshPlayer(usingPlayer);
 		}
 	}
 }

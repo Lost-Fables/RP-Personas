@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaSubRace;
 import org.bukkit.Bukkit;
@@ -294,8 +295,15 @@ public class PersonasSQL {
 			ResultSet result = grabStatement.executeQuery();
 
 			while (result.next()) {
+				int personaID = result.getInt("PersonaID");
+
+				Persona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
+				if (pers != null) {
+					pers.setSkin(0);
+				}
+
 				Map<Object, Object> data = new HashMap<>();
-				data.put("personaid", result.getInt("PersonaID"));
+				data.put("personaid", personaID);
 				data.put("skinid", 0);
 
 				RPPersonas.get().getSaveQueue().addToQueue(getSaveStatement(data));
