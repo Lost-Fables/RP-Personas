@@ -205,4 +205,30 @@ public class PersonaHandler {
 			}
 		}
 	}
+
+	// DELETE //
+	public void deletePersona(int personaID) {
+		try {
+			plugin.getSaveQueue().addToQueue(plugin.getPersonasSQL().getDeleteStatement(personaID));
+			plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getDeleteStatement(personaID));
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+		Persona pers = getLoadedPersona(personaID);
+		if (pers != null) {
+			pers.unloadPersona();
+		}
+	}
+
+	public void deleteSkin(int skinID) {
+		try {
+			plugin.getSaveQueue().addToQueue(plugin.getSkinsSQL().getDeleteStatement(skinID));
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

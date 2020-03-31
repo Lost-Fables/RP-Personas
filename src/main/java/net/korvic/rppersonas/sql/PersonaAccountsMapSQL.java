@@ -187,6 +187,14 @@ public class PersonaAccountsMapSQL {
 		return replaceStatement;
 	}
 
+	public PreparedStatement getDeleteStatement(int personaID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement deleteStatement = null;
+		conn = getSQLConnection();
+		deleteStatement = conn.prepareStatement("DELETE FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "'");
+		return deleteStatement;
+	}
+
 	// Removes a persona mapping.
 	public void removePersona(int personaID) {
 		Connection conn = null;

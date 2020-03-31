@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.accounts;
+package net.korvic.rppersonas.personas;
 
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.MojangCommunicator;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SkinNameDialog {
+public class PersonaSkinDialog {
 
 	// Skin Name //
 	public static class SkinNamePrompt extends ValidatingPrompt {
@@ -45,7 +45,6 @@ public class SkinNameDialog {
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
-			((Player) context.getForWhom()).hideTitle();
 			return new ConfirmNamePrompt(input);
 		}
 	}

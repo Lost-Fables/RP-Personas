@@ -277,6 +277,14 @@ public class PersonasSQL {
 		return replaceStatement;
 	}
 
+	public PreparedStatement getDeleteStatement(int personaID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement deleteStatement = null;
+		conn = getSQLConnection();
+		deleteStatement = conn.prepareStatement("DELETE FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "'");
+		return deleteStatement;
+	}
+
 	public Map<String, Object> getBasicPersonaInfo(int personaID) {
 		Connection conn = null;
 		PreparedStatement ps = null;

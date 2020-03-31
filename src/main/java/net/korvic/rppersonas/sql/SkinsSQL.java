@@ -227,6 +227,14 @@ public class SkinsSQL {
 		return replaceStatement;
 	}
 
+	public PreparedStatement getDeleteStatement(int skinID) throws SQLException {
+		Connection conn = null;
+		PreparedStatement deleteStatement = null;
+		conn = getSQLConnection();
+		deleteStatement = conn.prepareStatement("DELETE FROM " + SQLTableName + " WHERE SkinID='" + skinID + "'");
+		return deleteStatement;
+	}
+
 	public Map<Object, Object> getData(int skinID) {
 		Connection conn = null;
 		PreparedStatement ps = null;

@@ -14,10 +14,10 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.PersonaDeleteDialog;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
-import net.korvic.rppersonas.accounts.SkinNameDialog;
+import net.korvic.rppersonas.personas.PersonaSkinDialog;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -243,8 +243,8 @@ public class AccountCommands extends BaseCommand {
 				currentSkin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
 			}
 
-			for (int id : skinData.keySet()) {
-				boolean isActive = (currentSkin != null) && (id == currentSkin.getSkinID());
+			for (int skinID : skinData.keySet()) {
+				boolean isActive = (currentSkin != null) && (skinID == currentSkin.getSkinID());
 				PersonaSkin finalCurrentSkin = currentSkin;
 
 				icons.add(new Button() {
@@ -254,13 +254,13 @@ public class AccountCommands extends BaseCommand {
 						if (isActive) {
 							texture = finalCurrentSkin.getTextureValue();
 						} else {
-							texture = (String) plugin.getSkinsSQL().getData(id).get("texture");
+							texture = (String) plugin.getSkinsSQL().getData(skinID).get("texture");
 						}
 
 						ItemStack item = ItemUtil.getSkullFromTexture(texture);
 						ItemMeta meta = item.getItemMeta();
 
-						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + skinData.get(id));
+						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + skinData.get(skinID));
 						ArrayList<String> lore = new ArrayList<>();
 						if (isActive) {
 							lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Current active skin. Right Click to delete.");
@@ -276,12 +276,16 @@ public class AccountCommands extends BaseCommand {
 					@Override
 					public void click(MenuAction menuAction) {
 						ClickType clickType = menuAction.getClick();
+
 						if (clickType.equals(ClickType.LEFT) || clickType.equals(ClickType.SHIFT_LEFT)) {
 							int personaID = plugin.getPersonaHandler().getLoadedPersona(player).getPersonaID();
-							plugin.getPersonaHandler().updateActiveSkin(personaID, id, menuAction.getPlayer());
+							plugin.getPersonaHandler().updateActiveSkin(personaID, skinID, menuAction.getPlayer());
 							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin updated!");
+
 						} else if (clickType.equals(ClickType.RIGHT) || clickType.equals(ClickType.SHIFT_RIGHT)) {
-							menuAction.getPlayer().sendMessage("Deleting skin...");
+							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Deleting skin...");
+							plugin.getPersonaHandler().deleteSkin(skinID);
+							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Skin deleted.");
 						}
 					}
 				});
@@ -315,7 +319,7 @@ public class AccountCommands extends BaseCommand {
 
 						ConversationFactory factory = getFreshFactory();
 						factory.withInitialSessionData(data);
-						factory.withFirstPrompt(new SkinNameDialog.SkinNamePrompt());
+						factory.withFirstPrompt(new PersonaSkinDialog.SkinNamePrompt());
 						factory.buildConversation(p).begin();
 					}
 				});
@@ -430,13 +434,18 @@ public class AccountCommands extends BaseCommand {
 					public void click(MenuAction menuAction) {
 						if (livePersonas.get(personaID) == null) {
 							ClickType click = menuAction.getClick();
+
 							if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
 								menuAction.getPlayer().closeInventory();
 								plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID, true);
 								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + currentName + RPPersonas.PRIMARY_DARK + ".");
+
 							} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
-								menuAction.getPlayer().sendMessage("Deleting Persona...");
-								// TODO - Delete persona & force creation if there's no others left.
+								menuAction.getPlayer().closeInventory();
+
+								ConversationFactory factory = getFreshFactory();
+								factory.withFirstPrompt(new PersonaDeleteDialog.DeletePersonaPrompt(personaID));
+								factory.buildConversation(menuAction.getPlayer()).begin();
 							}
 						}
 					}
@@ -483,8 +492,16 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public void click(MenuAction menuAction) {
-						//TODO - Rez App or delete persona
-						menuAction.getPlayer().sendMessage("Opening Persona...");
+						ClickType click = menuAction.getClick();
+
+						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
+							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Opening Ressurection Application...");
+
+						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
+							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Deleting Persona...");
+							plugin.getPersonaHandler().deletePersona(personaID);
+							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona deleted.");
+						}
 					}
 				});
 				currentPersonaCount++;
