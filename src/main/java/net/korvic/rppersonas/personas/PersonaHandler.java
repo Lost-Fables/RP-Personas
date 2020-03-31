@@ -120,7 +120,7 @@ public class PersonaHandler {
 
 		int hunger = 20;
 		if (data.containsKey("hunger")) {
-			health = (int) data.get("hunger");
+			hunger = (int) data.get("hunger");
 		}
 		p.setFoodLevel(hunger);
 

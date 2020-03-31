@@ -399,17 +399,18 @@ public class PersonasSQL {
 				}
 				output.put("name", rs.getString("Name"));
 				output.put("inventory", rs.getString("Inventory"));
-				output.put("skinid", rs.getInt("ActiveSkinID"));
-				output.put("health", rs.getDouble("Health"));
-				output.put("hunger", rs.getInt("Hunger"));
-
-				if (rs.getShort("Alive") > 0) {
-					output.put("alive", new Object());
-				}
 
 				String world = rs.getString("LocationWorld");
 				if (world != null && Bukkit.getWorld(world) != null) {
 					output.put("location", new Location(Bukkit.getWorld(world), rs.getDouble("LocationX"), rs.getDouble("LocationY"), rs.getDouble("LocationZ")));
+				}
+
+				output.put("health", rs.getDouble("Health"));
+				output.put("hunger", rs.getInt("Hunger"));
+				output.put("skinid", rs.getInt("ActiveSkinID"));
+
+				if (rs.getShort("Alive") > 0) {
+					output.put("alive", new Object());
 				}
 			}
 
