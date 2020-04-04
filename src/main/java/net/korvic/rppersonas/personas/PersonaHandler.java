@@ -33,10 +33,12 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
+		PersonaDisableListener.disablePlayer(p);
+
 		String welcomeText = "";
-		if (first || plugin.getPersonaHandler().getLoadedPersona(p) == null) {
+		if (first) {
 			welcomeText = RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Welcome!";
-		} else {
+		} else if (plugin.getPersonaHandler().getLoadedPersona(p) != null) {
 			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
 		}
 		Title title = new Title(welcomeText,

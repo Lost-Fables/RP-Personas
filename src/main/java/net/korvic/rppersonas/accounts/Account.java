@@ -17,7 +17,7 @@ public class Account {
 
 	// ACCOUNT CREATION //
 
-	protected static Account createAccount(Player p, int accountID, int swapToPersona, boolean saveCurrentPersona) {
+	protected static Account createAccount(Player p, int accountID, int personaIDToSwapTo, boolean saveCurrentPersona) {
 		Account a = RPPersonas.get().getAccountHandler().getLoadedAccount(accountID);
 		boolean first = false;
 
@@ -28,8 +28,8 @@ public class Account {
 			first = true;
 		}
 
-		if (swapToPersona > 0) {
-			plugin.getPersonaHandler().loadPersona(p, accountID, swapToPersona, saveCurrentPersona);
+		if (personaIDToSwapTo > 0) {
+			plugin.getPersonaHandler().loadPersona(p, accountID, personaIDToSwapTo, saveCurrentPersona);
 		} else {
 			PersonaHandler.createPersona(p, accountID, first);
 		}
