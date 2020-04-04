@@ -24,6 +24,8 @@ public class Account {
 		if (a == null) {
 			a = new Account(p, accountID, saveCurrentPersona);
 			first = true;
+		} else if (a.getLivePersonaIDs().size() < 1) {
+			first = true;
 		}
 
 		if (swapToPersona > 0) {

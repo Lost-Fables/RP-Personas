@@ -59,9 +59,10 @@ public class PersonaHandler {
 		factory.withInitialSessionData(data);
 		if (first) {
 			factory.withFirstPrompt(new PersonaCreationDialog.StartingPrompt());
-			//factory.addConversationAbandonedListener(new FirstPersonaAbandonListener());
 		} else {
-			factory.withFirstPrompt(new PersonaCreationDialog.PersonaNamePrompt(false));
+			factory.withFirstPrompt(new PersonaCreationDialog.PersonaNamePrompt(false, false))
+				   .addConversationAbandonedListener(new PersonaCreationAbandonedListener());
+			addAbandoners(factory);
 		}
 		factory.buildConversation(p).begin();
 	}
@@ -196,6 +197,14 @@ public class PersonaHandler {
 		return new ConversationFactory(plugin)
 				.thatExcludesNonPlayersWithMessage("Console does not participate in dialogues.")
 				.withModality(true);
+	}
+
+	private static void addAbandoners(ConversationFactory factory) {
+		factory.withEscapeSequence("quit")
+			   .withEscapeSequence("exit")
+			   .withEscapeSequence("cancel")
+			   .withEscapeSequence("stop")
+			   .withEscapeSequence("help");
 	}
 
 	// UPDATE //

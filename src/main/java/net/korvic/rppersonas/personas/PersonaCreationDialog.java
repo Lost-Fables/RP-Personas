@@ -30,22 +30,28 @@ public class PersonaCreationDialog {
 
 		@Override
 		protected Prompt getNextPrompt(ConversationContext context) {
-			return new PersonaNamePrompt(false);
+			return new PersonaNamePrompt(false, true);
 		}
 	}
 
 	// Persona Name //
 	protected static class PersonaNamePrompt extends ValidatingPrompt {
 		private boolean returnToEnd;
+		private boolean firstPersona;
 
-		public PersonaNamePrompt(boolean returnToEnd) {
+		public PersonaNamePrompt(boolean returnToEnd, boolean firstPersona) {
 			this.returnToEnd = returnToEnd;
+			this.firstPersona = firstPersona;
 		}
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			return RPPersonas.PRIMARY_DARK + "Type in the name for your persona now." +
-				   NOTE + RPPersonas.PRIMARY_DARK + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
+			String output = RPPersonas.PRIMARY_DARK + "Type in the name for your persona now." +
+							NOTE + RPPersonas.SECONDARY_DARK + ChatColor.ITALIC + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
+			if (!firstPersona) {
+				output  +=  NOTE + RPPersonas.SECONDARY_DARK + ChatColor.ITALIC + "Type 'CANCEL' at any time to exit persona creation.";
+			}
+			return output;
 		}
 
 		@Override
@@ -69,7 +75,7 @@ public class PersonaCreationDialog {
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			((Player) context.getForWhom()).hideTitle();
-			return new ConfirmNamePrompt(input, returnToEnd);
+			return new ConfirmNamePrompt(input, returnToEnd, firstPersona);
 		}
 	}
 
@@ -77,16 +83,20 @@ public class PersonaCreationDialog {
 	private static class ConfirmNamePrompt extends BooleanPrompt {
 		private String name;
 		private boolean returnToEnd;
+		private boolean firstPersona;
 
-		public ConfirmNamePrompt(String input, boolean returnToEnd) {
+		public ConfirmNamePrompt(String input, boolean returnToEnd, boolean firstPersona) {
 			this.name = input;
 			this.returnToEnd = returnToEnd;
+			this.firstPersona = firstPersona;
 		}
 
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
-			BaseComponent confirmation = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + name + RPPersonas.PRIMARY_DARK + " as your character name.\n" + RPPersonas.PRIMARY_DARK + "Is this correct?\n" +
+			BaseComponent confirmation = new TextComponent("\n" +
+														   RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_DARK + name + RPPersonas.PRIMARY_DARK + " as your character name.\n" +
+														   RPPersonas.PRIMARY_DARK + "Is this correct?\n" +
 														   DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
@@ -107,7 +117,7 @@ public class PersonaCreationDialog {
 					return new PersonaRacePrompt(false);
 				}
 			} else {
-				return new PersonaNamePrompt(returnToEnd);
+				return new PersonaNamePrompt(returnToEnd, firstPersona);
 			}
 		}
 	}
@@ -406,7 +416,7 @@ public class PersonaCreationDialog {
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			if (input.equalsIgnoreCase("Name")) {
-				return new PersonaNamePrompt(true);
+				return new PersonaNamePrompt(true, false);
 			} else if (input.equalsIgnoreCase("Race")) {
 				return new PersonaRacePrompt(true);
 			} else if (input.equalsIgnoreCase("Age")) {
@@ -427,6 +437,8 @@ public class PersonaCreationDialog {
 		PersonaHandler.registerPersona(context.getAllSessionData(), p, false);
 		PersonaDisableListener.enablePlayer(p);
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
+
+
 
 		return Prompt.END_OF_CONVERSATION;
 	}

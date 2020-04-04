@@ -22,20 +22,12 @@ public class JoinQuitListener implements Listener {
 		JoinQuitListener.plugin = plugin;
 	}
 
+	// EVENT //
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		if (p.hasPermission("rppersonas.link")) {
-			UUID uuid = p.getUniqueId();
-			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
-
-			if (accountID > 0) {
-				refreshAccountPlaytime(event.getPlayer());
-				int personaID = plugin.getPersonaAccountMapSQL().getCurrentPersonaID(uuid);
-				plugin.getAccountHandler().loadAccount(p, accountID, personaID, false);
-			} else {
-				plugin.getUnregisteredHandler().add(p);
-			}
+			loadIntoPersona(p);
 		}
 	}
 
@@ -49,6 +41,21 @@ public class JoinQuitListener implements Listener {
 		playerLoginTime.remove(p);
 		plugin.getPersonaHandler().unloadPersona(plugin.getPersonaHandler().getLoadedPersona(p).getPersonaID(), p);
 		PersonaDisableListener.enablePlayer(p);
+	}
+
+
+	// STATIC //
+	public static void loadIntoPersona(Player p) {
+		UUID uuid = p.getUniqueId();
+		int accountID = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
+
+		if (accountID > 0) {
+			refreshAccountPlaytime(p);
+			int personaID = plugin.getPersonaAccountMapSQL().getCurrentPersonaID(uuid);
+			plugin.getAccountHandler().loadAccount(p, accountID, personaID, false);
+		} else {
+			plugin.getUnregisteredHandler().add(p);
+		}
 	}
 
 	public static void refreshAllAccountPlaytime() {
