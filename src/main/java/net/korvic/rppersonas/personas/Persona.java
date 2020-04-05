@@ -4,7 +4,10 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.aspects.PersonaSkin;
 import net.korvic.rppersonas.personas.modification.PersonaCreationDialog;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
@@ -23,10 +26,11 @@ public class Persona {
 	private String prefix;
 	private String nickName;
 	private String inventory;
+	private Inventory enderInventory;
 	private boolean isAlive;
 	private PersonaSkin activeSkin = null;
 
-	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, boolean isAlive, int activeSkinID) {
+	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean isAlive, int activeSkinID) {
 		this.plugin = plugin;
 
 		this.usingPlayer = usingPlayer;
@@ -36,6 +40,10 @@ public class Persona {
 		this.prefix = prefix;
 		this.nickName = nickName;
 		this.inventory = personaInvData;
+
+		this.enderInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, nickName + "'s Stash");
+		this.enderInventory.setContents(deserializeToArray(personaEnderData));
+
 		this.isAlive = isAlive;
 		this.activeSkin = PersonaSkin.getFromID(activeSkinID);
 	}
@@ -77,6 +85,7 @@ public class Persona {
 		output.put("personaid", personaID);
 		output.put("alive", isAlive);
 		output.put("inventory", inventory);
+		output.put("enderchest", InventoryUtil.serializeItems(enderInventory));
 		output.put("nickname", nickName);
 		output.put("prefix", prefix);
 
@@ -118,6 +127,14 @@ public class Persona {
 	}
 
 	public ItemStack[] getInventory() {
+		return deserializeToArray(inventory);
+	}
+
+	public Inventory getEnderchest() {
+		return enderInventory;
+	}
+
+	private ItemStack[] deserializeToArray(String inventory) {
 		if (inventory != null) {
 			List<ItemStack> items = InventoryUtil.deserializeItems(inventory);
 			ItemStack[] arrayItems = new ItemStack[items.size()];

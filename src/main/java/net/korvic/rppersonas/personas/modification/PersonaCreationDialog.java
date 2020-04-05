@@ -23,7 +23,7 @@ public class PersonaCreationDialog {
 	public static final String NOTE = RPPersonas.SECONDARY_DARK + "" + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
 
 	// Intro //
-	protected static class StartingPrompt extends MessagePrompt {
+	public static class StartingPrompt extends MessagePrompt {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
@@ -39,7 +39,7 @@ public class PersonaCreationDialog {
 	}
 
 	// Persona Name //
-	protected static class PersonaNamePrompt extends ValidatingPrompt {
+	public static class PersonaNamePrompt extends ValidatingPrompt {
 		private boolean returnToEnd;
 		private boolean firstPersona;
 

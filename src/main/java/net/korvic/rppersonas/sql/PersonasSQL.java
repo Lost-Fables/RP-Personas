@@ -42,6 +42,7 @@ public class PersonasSQL {
 				   "    Hunger INTEGER NOT NULL,\n" +
 
 				   "    Inventory TEXT,\n" +
+				   "    EnderChest TEXT,\n" +
 				   "    NickName TEXT,\n" +
 				   "    Prefix TEXT,\n" +
 				   "    ActiveSkinID INT,\n" +
@@ -154,7 +155,7 @@ public class PersonasSQL {
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Health,Hunger,Inventory,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Health,Hunger,Inventory,EnderChest,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 
 		// Required
@@ -263,36 +264,44 @@ public class PersonasSQL {
 			replaceStatement.setString(15, null);
 		}
 
-		if (data.containsKey("nickname")) {
-			replaceStatement.setString(16, (String) data.get("nickname"));
+		if (data.containsKey("enderchest")) {
+			replaceStatement.setString(16, (String) data.get("enderchest"));
 		} else if (resultPresent) {
-			replaceStatement.setString(16, result.getString("NickName"));
+			replaceStatement.setString(16, result.getString("EnderChest"));
 		} else {
 			replaceStatement.setString(16, null);
 		}
 
-		if (data.containsKey("prefix")) {
-			replaceStatement.setString(17, (String) data.get("prefix"));
+		if (data.containsKey("nickname")) {
+			replaceStatement.setString(17, (String) data.get("nickname"));
 		} else if (resultPresent) {
-			replaceStatement.setString(17, result.getString("Prefix"));
+			replaceStatement.setString(17, result.getString("NickName"));
 		} else {
 			replaceStatement.setString(17, null);
 		}
 
-		if (data.containsKey("skinid")) {
-			replaceStatement.setInt(18, (int) data.get("skinid"));
+		if (data.containsKey("prefix")) {
+			replaceStatement.setString(18, (String) data.get("prefix"));
 		} else if (resultPresent) {
-			replaceStatement.setInt(18, result.getInt("ActiveSkinID"));
+			replaceStatement.setString(18, result.getString("Prefix"));
 		} else {
-			replaceStatement.setInt(18, 0);
+			replaceStatement.setString(18, null);
+		}
+
+		if (data.containsKey("skinid")) {
+			replaceStatement.setInt(19, (int) data.get("skinid"));
+		} else if (resultPresent) {
+			replaceStatement.setInt(19, result.getInt("ActiveSkinID"));
+		} else {
+			replaceStatement.setInt(19, 0);
 		}
 
 		if (data.containsKey("description")) {
-			replaceStatement.setString(19, (String) data.get("description"));
+			replaceStatement.setString(20, (String) data.get("description"));
 		} else if (resultPresent) {
-			replaceStatement.setString(19, result.getString("Description"));
+			replaceStatement.setString(20, result.getString("Description"));
 		} else {
-			replaceStatement.setString(19, null);
+			replaceStatement.setString(20, null);
 		}
 
 		grabStatement.close();
@@ -386,7 +395,7 @@ public class PersonasSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT Prefix, NickName, Name, Inventory, LocationWorld, LocationX, LocationY, LocationZ, Health, Hunger, ActiveSkinID, Alive FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+			stmt = "SELECT Prefix, NickName, Name, Inventory, EnderChest, LocationWorld, LocationX, LocationY, LocationZ, Health, Hunger, ActiveSkinID, Alive FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -399,6 +408,7 @@ public class PersonasSQL {
 				}
 				output.put("name", rs.getString("Name"));
 				output.put("inventory", rs.getString("Inventory"));
+				output.put("enderchest", rs.getString("EnderChest"));
 
 				String world = rs.getString("LocationWorld");
 				if (world != null && Bukkit.getWorld(world) != null) {

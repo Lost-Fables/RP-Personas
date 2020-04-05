@@ -118,6 +118,11 @@ public class PersonaHandler {
 			}
 		}
 
+		String personaEnderData = null;
+		if (data.containsKey("enderchest")) {
+			personaInvData = (String) data.get("enderchest");
+		}
+
 		double health = 20.0;
 		if (data.containsKey("health")) {
 			health = (double) data.get("health");
@@ -156,7 +161,7 @@ public class PersonaHandler {
 			}
 		}
 
-		Persona persona = new Persona(plugin, p, personaID, accountID, prefix, nickName, personaInvData, isAlive , activeSkinID);
+		Persona persona = new Persona(plugin, p, personaID, accountID, prefix, nickName, personaInvData, personaEnderData, isAlive , activeSkinID);
 		PersonaHandler handler = plugin.getPersonaHandler();
 		handler.playerObjectToID.put(p, personaID);
 		handler.loadedPersonas.put(personaID, persona);
