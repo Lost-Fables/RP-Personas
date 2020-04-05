@@ -6,15 +6,14 @@ import net.korvic.rppersonas.commands.AccountCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.listeners.InspectListener;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
-import net.korvic.rppersonas.personas.PersonaDisableListener;
+import net.korvic.rppersonas.personas.modification.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.personas.PersonaSkinListener;
+import net.korvic.rppersonas.personas.aspects.PersonaSkinListener;
 import net.korvic.rppersonas.sql.*;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 

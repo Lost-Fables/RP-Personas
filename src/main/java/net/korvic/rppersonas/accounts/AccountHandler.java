@@ -2,7 +2,6 @@ package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
-import net.korvic.rppersonas.personas.PersonaGender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

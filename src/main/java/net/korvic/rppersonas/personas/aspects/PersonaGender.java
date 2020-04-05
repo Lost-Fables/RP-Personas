@@ -1,9 +1,9 @@
-package net.korvic.rppersonas.personas;
+package net.korvic.rppersonas.personas.aspects;
 
 public enum PersonaGender {
+	OTHER(0, "Other"),
 	MALE(1, "Male"),
-	FEMALE(2, "Female"),
-	OTHER(0, "Other");
+	FEMALE(2, "Female");
 
 	private final int id;
 	private final String name;

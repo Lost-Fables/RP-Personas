@@ -3,7 +3,7 @@ package net.korvic.rppersonas.accounts;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.personas.PersonaSkin;
+import net.korvic.rppersonas.personas.aspects.PersonaSkin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

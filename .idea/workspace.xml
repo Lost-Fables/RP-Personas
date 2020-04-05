@@ -2,9 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/aspects/PersonaStatuses.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/AccountHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/accounts/AccountHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AccountCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AccountCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/PersonaCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/PersonaCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/JoinQuitListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/JoinQuitListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/Persona.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/Persona.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaCreationAbandonedListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/modification/PersonaCreationAbandonedListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaCreationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/modification/PersonaCreationDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaDeleteDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/modification/PersonaDeleteDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaDisableListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/modification/PersonaDisableListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaGender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/aspects/PersonaGender.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaRace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/aspects/PersonaRace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaSkin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/aspects/PersonaSkin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaSkinDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/aspects/PersonaSkinDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaSkinListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/aspects/PersonaSkinListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/PersonaSubRace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/personas/aspects/PersonaSubRace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonasSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonasSQL.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,8 +32,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -132,10 +150,10 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="796" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584898453044" />
-    <state x="987" y="318" key="FileChooserDialogImpl" timestamp="1583902423744">
+    <state x="987" y="318" key="FileChooserDialogImpl" timestamp="1586114619876">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="987" y="318" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1583902423744" />
+    <state x="987" y="318" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586114619876" />
     <state x="3300" y="236" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1583613435715" />
     <state x="860" y="442" key="IDE.errors.dialog" timestamp="1585087372653">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -145,10 +163,10 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1298" y="356" key="SettingsEditor/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584142058356" />
-    <state x="953" y="-21" width="1936" height="1129" key="dock-window-1" timestamp="1585508128400">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state x="2454" y="-27" width="1936" height="1129" maximized="true" key="dock-window-1" timestamp="1586114708945">
+      <screen x="2560" y="0" width="1920" height="1040" />
     </state>
-    <state x="953" y="-21" width="1936" height="1129" key="dock-window-1/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1585508128400" />
+    <state x="2454" y="-27" width="1936" height="1129" maximized="true" key="dock-window-1/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586114708945" />
     <state x="2560" y="0" width="1936" height="1129" key="dock-window-1/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1584986769235" />
     <state x="1273" y="0" width="1294" height="1407" key="dock-window-2" timestamp="1583791514606">
       <screen x="0" y="0" width="2560" height="1400" />

@@ -1,6 +1,4 @@
-package net.korvic.rppersonas.personas;
-
-import java.util.List;
+package net.korvic.rppersonas.personas.aspects;
 
 public enum PersonaRace {
 

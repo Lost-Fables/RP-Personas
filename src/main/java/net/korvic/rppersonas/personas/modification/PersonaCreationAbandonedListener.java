@@ -1,8 +1,7 @@
-package net.korvic.rppersonas.personas;
+package net.korvic.rppersonas.personas.modification;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
-import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.conversations.ConversationAbandonedListener;
 import org.bukkit.entity.Player;

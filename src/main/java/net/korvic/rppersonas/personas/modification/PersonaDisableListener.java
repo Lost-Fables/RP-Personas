@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas;
+package net.korvic.rppersonas.personas.modification;
 
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;

@@ -3,12 +3,8 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
-import net.korvic.rppersonas.personas.PersonaCreationDialog;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Map;
 
 public class PersonaCommands extends BaseCommand {
 

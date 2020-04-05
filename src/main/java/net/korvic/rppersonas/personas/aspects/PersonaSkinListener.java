@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas;
+package net.korvic.rppersonas.personas.aspects;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -13,6 +13,7 @@ import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.collect.Multimap;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

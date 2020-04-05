@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas;
+package net.korvic.rppersonas.personas.aspects;
 
 public enum PersonaSubRace {
 

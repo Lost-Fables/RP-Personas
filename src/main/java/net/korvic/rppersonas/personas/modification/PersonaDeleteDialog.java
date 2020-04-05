@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas;
+package net.korvic.rppersonas.personas.modification;
 
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
@@ -10,9 +10,6 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PersonaDeleteDialog {
 
