@@ -192,12 +192,17 @@ public class PersonaHandler {
 	}
 
 	// UNLOADING //
+	public void unloadPersona(Player p) {
+		unloadPersona(loadedPersonas.get(playerObjectToID.get(p)));
+	}
+
 	public void unloadPersona(Persona pers) {
+		pers.queueSave();
 		plugin.getPersonaAccountMapSQL().addOrUpdateMapping(pers.getPersonaID(), pers.getAccountID(), pers.isAlive(), null);
 		unloadPersona(pers.getPersonaID(), pers.getUsingPlayer());
 	}
 
-	public void unloadPersona(int personaID, Player p) {
+	private void unloadPersona(int personaID, Player p) {
 		loadedPersonas.remove(personaID);
 		playerObjectToID.remove(p);
 	}

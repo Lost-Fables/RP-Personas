@@ -42,7 +42,10 @@ public class Persona {
 		this.inventory = personaInvData;
 
 		this.enderInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, nickName + "'s Stash");
-		this.enderInventory.setContents(deserializeToArray(personaEnderData));
+		ItemStack[] items = deserializeToArray(personaEnderData);
+		if (items != null) {
+			this.enderInventory.setContents(items);
+		}
 
 		this.isAlive = isAlive;
 		this.activeSkin = PersonaSkin.getFromID(activeSkinID);
@@ -126,12 +129,12 @@ public class Persona {
 		return output;
 	}
 
-	public ItemStack[] getInventory() {
-		return deserializeToArray(inventory);
-	}
-
 	public Inventory getEnderchest() {
 		return enderInventory;
+	}
+
+	public ItemStack[] getInventory() {
+		return deserializeToArray(inventory);
 	}
 
 	private ItemStack[] deserializeToArray(String inventory) {
@@ -148,6 +151,10 @@ public class Persona {
 	}
 
 	// SAVE //
+	public void queueSave() {
+		queueSave(usingPlayer);
+	}
+
 	public void queueSave(Player p) {
 		queueSave(p, null);
 	}

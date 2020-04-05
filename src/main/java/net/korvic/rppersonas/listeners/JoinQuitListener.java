@@ -39,7 +39,7 @@ public class JoinQuitListener implements Listener {
 		refreshAccountPlaytime(p);
 		plugin.getAccountHandler().unloadAccount(account);
 		playerLoginTime.remove(p);
-		plugin.getPersonaHandler().unloadPersona(plugin.getPersonaHandler().getLoadedPersona(p).getPersonaID(), p);
+		plugin.getPersonaHandler().unloadPersona(p);
 		PersonaDisableListener.enablePlayer(p);
 	}
 
