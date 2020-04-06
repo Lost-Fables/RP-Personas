@@ -237,12 +237,14 @@ public class PersonaHandler {
 	}
 
 	public void unloadPersona(Persona pers, boolean keepLinked) {
-		UUID uuid = null;
-		if (keepLinked) {
-			uuid = pers.getUsingPlayer().getUniqueId();
+		if (pers != null) {
+			UUID uuid = null;
+			if (keepLinked) {
+				uuid = pers.getUsingPlayer().getUniqueId();
+			}
+			plugin.getPersonaAccountMapSQL().addOrUpdateMapping(pers.getPersonaID(), pers.getAccountID(), pers.isAlive(), uuid);
+			removeFromMemory(pers.getPersonaID(), pers.getUsingPlayer(), keepLinked);
 		}
-		plugin.getPersonaAccountMapSQL().addOrUpdateMapping(pers.getPersonaID(), pers.getAccountID(), pers.isAlive(), uuid);
-		removeFromMemory(pers.getPersonaID(), pers.getUsingPlayer(), keepLinked);
 	}
 
 	private void removeFromMemory(int personaID, Player p, boolean keepLinked) {
@@ -288,6 +290,7 @@ public class PersonaHandler {
 
 	// DELETE //
 	public void deletePersona(int personaID) {
+		unloadPersona(personaID, false);
 		try {
 			plugin.getSaveQueue().addToQueue(plugin.getPersonasSQL().getDeleteStatement(personaID));
 			plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getDeleteStatement(personaID));
@@ -295,10 +298,6 @@ public class PersonaHandler {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
 			}
-		}
-		Persona pers = getLoadedPersona(personaID);
-		if (pers != null) {
-			pers.unloadPersona(false);
 		}
 	}
 
