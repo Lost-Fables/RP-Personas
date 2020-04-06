@@ -159,6 +159,10 @@ public class Persona {
 		queueSave(p, null);
 	}
 
+	public void queueSave(Map<Object, Object> data) {
+		queueSave(usingPlayer, data);
+	}
+
 	public void queueSave(Player p, Map<Object, Object> data) {
 		this.inventory = InventoryUtil.serializeItems(p.getInventory());
 		try {
@@ -178,8 +182,8 @@ public class Persona {
 		}
 	}
 
-	public void unloadPersona() {
-		plugin.getPersonaHandler().unloadPersona(this);
+	public void unloadPersona(boolean keepLinked) {
+		plugin.getPersonaHandler().unloadPersona(this, keepLinked);
 	}
 
 	// SET //

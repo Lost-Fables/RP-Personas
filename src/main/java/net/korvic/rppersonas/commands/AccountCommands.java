@@ -440,7 +440,7 @@ public class AccountCommands extends BaseCommand {
 
 							if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
 								menuAction.getPlayer().closeInventory();
-								plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(menuAction.getPlayer(), personaID, true);
+								plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
 								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + currentName + RPPersonas.PRIMARY_DARK + ".");
 
 							} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {

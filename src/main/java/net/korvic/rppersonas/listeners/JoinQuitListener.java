@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.listeners;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.modification.PersonaDisableListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -39,7 +40,10 @@ public class JoinQuitListener implements Listener {
 		refreshAccountPlaytime(p);
 		plugin.getAccountHandler().unloadAccount(account);
 		playerLoginTime.remove(p);
-		plugin.getPersonaHandler().unloadPersona(p);
+
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		pers.queueSave(p);
+		pers.unloadPersona(true);
 		PersonaDisableListener.enablePlayer(p);
 	}
 

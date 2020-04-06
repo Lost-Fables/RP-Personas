@@ -65,39 +65,4 @@ public class Account {
 		return plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID);
 	}
 
-	// SWAPPING //
-
-	public void swapToPersonaIfOwned(Player p, int personaID, boolean alive, boolean saveCurrentPersona) {
-		Map<Integer, UUID> personas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, alive);
-		if (personas.containsKey(personaID) && personas.get(personaID) == null) {
-			swapToPersona(p, personaID, saveCurrentPersona);
-		}
-	}
-
-	public void swapToPersona(Player p, int personaID, boolean saveCurrentPersona) {
-		Persona originalPersona = plugin.getPersonaHandler().getLoadedPersona(p);
-		if (originalPersona != null) {
-			if (saveCurrentPersona) {
-				originalPersona.queueSave(p);
-				plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(originalPersona.getPersonaID(), accountID, originalPersona.isAlive(), null));
-			}
-			plugin.getPersonaHandler().getLoadedPersona(p).unloadPersona();
-		}
-
-		Map<Object, Object> data = new HashMap<>();
-		data.put("accountid", accountID);
-		plugin.getAccountsSQL().registerOrUpdate(data);
-		plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(personaID, accountID, true, p.getUniqueId()));
-
-		Persona newPersona = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
-		ItemStack[] items = newPersona.getInventory();
-		if (items != null) {
-			p.getInventory().setContents(items);
-		} else {
-			p.getInventory().clear();
-		}
-		PersonaSkin.refreshPlayer(p);
-		p.teleportAsync(plugin.getPersonasSQL().getLocation(personaID));
-	}
-
 }

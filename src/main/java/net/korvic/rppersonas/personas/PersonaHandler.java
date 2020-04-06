@@ -4,6 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
 import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.aspects.PersonaSkin;
 import net.korvic.rppersonas.personas.modification.PersonaCreationAbandonedListener;
 import net.korvic.rppersonas.personas.modification.PersonaCreationDialog;
 import net.korvic.rppersonas.personas.modification.PersonaDisableListener;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class PersonaHandler {
 
@@ -151,7 +153,7 @@ public class PersonaHandler {
 			plugin.getPersonasSQL().registerOrUpdate(data);
 
 			plugin.getPersonaAccountMapSQL().addOrUpdateMapping(personaID, accountID, isAlive, p.getUniqueId());
-			plugin.getAccountHandler().getLoadedAccount(accountID).swapToPersona(p, personaID, saveCurrentPersona);
+			plugin.getPersonaHandler().swapToPersona(p, accountID, personaID, saveCurrentPersona);
 		}
 
 		if (data.containsKey("location")) {
@@ -191,18 +193,59 @@ public class PersonaHandler {
 		}
 	}
 
+	// SWAPPING //
+	public void swapToPersonaIfOwned(Player p, int accountID, int personaID, boolean alive, boolean saveCurrentPersona) {
+		Map<Integer, UUID> personas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, alive);
+		if (personas.containsKey(personaID) && personas.get(personaID) == null) {
+			swapToPersona(p, accountID, personaID, saveCurrentPersona);
+		}
+	}
+
+	public void swapToPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
+		Persona originalPersona = plugin.getPersonaHandler().getLoadedPersona(p);
+		if (originalPersona != null) {
+			if (saveCurrentPersona) {
+				originalPersona.queueSave(p);
+				plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(originalPersona.getPersonaID(), accountID, originalPersona.isAlive(), null));
+			}
+			unloadPersona(personaID, false);
+		}
+
+		Map<Object, Object> data = new HashMap<>();
+		data.put("accountid", accountID);
+		plugin.getAccountsSQL().registerOrUpdate(data);
+		plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(personaID, accountID, true, p.getUniqueId()));
+
+		Persona newPersona = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
+		ItemStack[] items = newPersona.getInventory();
+		if (items != null) {
+			p.getInventory().setContents(items);
+		} else {
+			p.getInventory().clear();
+		}
+		PersonaSkin.refreshPlayer(p);
+		p.teleportAsync(plugin.getPersonasSQL().getLocation(personaID));
+	}
+
 	// UNLOADING //
-	public void unloadPersona(Player p) {
-		unloadPersona(loadedPersonas.get(playerObjectToID.get(p)));
+	public void unloadPersona(Player p, boolean keepLinked) {
+		unloadPersona(playerObjectToID.get(p), keepLinked);
 	}
 
-	public void unloadPersona(Persona pers) {
-		pers.queueSave();
-		plugin.getPersonaAccountMapSQL().addOrUpdateMapping(pers.getPersonaID(), pers.getAccountID(), pers.isAlive(), null);
-		unloadPersona(pers.getPersonaID(), pers.getUsingPlayer());
+	public void unloadPersona(int personaID, boolean keepLinked) {
+		unloadPersona(loadedPersonas.get(personaID), keepLinked);
 	}
 
-	private void unloadPersona(int personaID, Player p) {
+	public void unloadPersona(Persona pers, boolean keepLinked) {
+		UUID uuid = null;
+		if (keepLinked) {
+			uuid = pers.getUsingPlayer().getUniqueId();
+		}
+		plugin.getPersonaAccountMapSQL().addOrUpdateMapping(pers.getPersonaID(), pers.getAccountID(), pers.isAlive(), uuid);
+		removeFromMemory(pers.getPersonaID(), pers.getUsingPlayer(), keepLinked);
+	}
+
+	private void removeFromMemory(int personaID, Player p, boolean keepLinked) {
 		loadedPersonas.remove(personaID);
 		playerObjectToID.remove(p);
 	}
@@ -255,7 +298,7 @@ public class PersonaHandler {
 		}
 		Persona pers = getLoadedPersona(personaID);
 		if (pers != null) {
-			pers.unloadPersona();
+			pers.unloadPersona(false);
 		}
 	}
 
