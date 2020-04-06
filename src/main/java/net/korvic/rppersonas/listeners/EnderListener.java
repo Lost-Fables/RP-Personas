@@ -2,6 +2,7 @@ package net.korvic.rppersonas.listeners;
 
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,6 +32,7 @@ public class EnderListener implements Listener {
 			Inventory inv = plugin.getPersonaHandler().getLoadedPersona(p).getEnderchest();
 			if (inv != null) {
 				p.openInventory(inv);
+				p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.5f, 1.0f);
 			}
 		}
 	}
