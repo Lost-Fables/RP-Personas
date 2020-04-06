@@ -88,7 +88,7 @@ public class Persona {
 		output.put("personaid", personaID);
 		output.put("alive", isAlive);
 		output.put("inventory", inventory);
-		output.put("enderchest", InventoryUtil.serializeItems(enderInventory));
+		output.put("enderchest", InventoryUtil.serializeItems(enderInventory.getContents()));
 		output.put("nickname", nickName);
 		output.put("prefix", prefix);
 
@@ -152,7 +152,7 @@ public class Persona {
 
 	// SAVE //
 	public void queueSave() {
-		queueSave(usingPlayer);
+		queueSave(usingPlayer, null);
 	}
 
 	public void queueSave(Player p) {

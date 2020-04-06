@@ -122,7 +122,7 @@ public class PersonaHandler {
 
 		String personaEnderData = null;
 		if (data.containsKey("enderchest")) {
-			personaInvData = (String) data.get("enderchest");
+			personaEnderData = (String) data.get("enderchest");
 		}
 
 		double health = 20.0;
