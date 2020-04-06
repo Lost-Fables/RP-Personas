@@ -41,7 +41,7 @@ public class Persona {
 		this.nickName = nickName;
 		this.inventory = personaInvData;
 
-		this.enderInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, nickName + "'s Stash");
+		this.enderInventory = Bukkit.createInventory(new PersonaEnderHolder(), InventoryType.ENDER_CHEST, nickName + "'s Stash");
 		ItemStack[] items = deserializeToArray(personaEnderData);
 		if (items != null) {
 			this.enderInventory.setContents(items);
