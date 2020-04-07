@@ -67,6 +67,13 @@ public class Persona {
 	public String getNickName() {
 		return nickName;
 	}
+	public String getChatName() {
+		if (prefix != null) {
+			return "[" + prefix + "] " + nickName;
+		} else {
+			return nickName;
+		}
+	}
 	public boolean isAlive() {
 		return isAlive;
 	}
