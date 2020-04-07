@@ -7,6 +7,7 @@ import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.listeners.EnderListener;
 import net.korvic.rppersonas.listeners.InspectListener;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
+import net.korvic.rppersonas.listeners.VoteListener;
 import net.korvic.rppersonas.personas.modification.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.aspects.PersonaSkinListener;
@@ -92,6 +93,11 @@ public final class RPPersonas extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new PersonaDisableListener(this), this);
 			getServer().getPluginManager().registerEvents(new InspectListener(this), this);
 			getServer().getPluginManager().registerEvents(new EnderListener(this), this);
+
+			// If Votifier is online
+			if (getServer().getPluginManager().isPluginEnabled("Votifier")) {
+				getServer().getPluginManager().registerEvents(new VoteListener(this), this);
+			}
 
 			// Packet Listener for skins
 			PersonaSkinListener.listen();

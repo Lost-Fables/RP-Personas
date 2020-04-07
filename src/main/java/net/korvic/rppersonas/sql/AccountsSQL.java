@@ -238,4 +238,17 @@ public class AccountsSQL {
 		return replaceStatement;
 	}
 
+	public void incrementVotes(int accountID) {
+		Map<Object, Object> oldData = getData(accountID);
+		Map<Object, Object> newData = new HashMap<>();
+		newData.put("accountid", accountID);
+		newData.put("votes", ((short) oldData.get("votes")) + 1);
+		try {
+			plugin.getSaveQueue().addToQueue(getSaveStatement(newData));
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
