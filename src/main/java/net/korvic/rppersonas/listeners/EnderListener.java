@@ -24,15 +24,13 @@ public class EnderListener implements Listener {
 	@EventHandler
 	public void openEnderEvent(PlayerInteractEvent e) {
 		Block block = e.getClickedBlock();
-
 		if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) &&
 			block != null && block.getType().equals(Material.ENDER_CHEST)) {
 
-			e.setCancelled(true);
 			Player p = e.getPlayer();
-
 			Inventory inv = plugin.getPersonaHandler().getLoadedPersona(p).getEnderchest();
 			if (inv != null) {
+				e.setCancelled(true);
 				p.openInventory(inv);
 				p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.5f, 1.0f);
 			}
