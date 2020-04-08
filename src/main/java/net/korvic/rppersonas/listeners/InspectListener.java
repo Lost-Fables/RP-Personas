@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class InspectListener implements Listener {
 
 	private static final int COOLDOWN = 20; // Time in ticks between inspections.
 	private RPPersonas plugin;
-	private Map<Player, List<Player>> recentInteractions;
+	private Map<Player, List<Player>> recentInteractions = new HashMap<>();
 
 	public InspectListener(RPPersonas plugin) {
 		this.plugin = plugin;
