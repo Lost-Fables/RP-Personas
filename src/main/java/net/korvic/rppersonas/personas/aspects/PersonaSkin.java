@@ -69,9 +69,9 @@ public class PersonaSkin {
 		final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
 		WrappedGameProfile profile = WrappedGameProfile.fromPlayer(p); //Protocollib for version independence
-		List<PlayerInfoData> lpid = Lists.newArrayList();
+		List<PlayerInfoData> playerInfoList = Lists.newArrayList();
 
-		lpid.add(new PlayerInfoData(profile,
+		playerInfoList.add(new PlayerInfoData(profile,
 									1, //who cares honestly
 									EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode()),
 									WrappedChatComponent.fromText(p.getDisplayName())));
@@ -80,8 +80,8 @@ public class PersonaSkin {
 		final PacketContainer packetAdd = manager.createPacket(PacketType.Play.Server.PLAYER_INFO);
 		packetDel.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.REMOVE_PLAYER);
 		packetAdd.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
-		packetDel.getPlayerInfoDataLists().write(0, lpid);
-		packetAdd.getPlayerInfoDataLists().write(0, lpid);
+		packetDel.getPlayerInfoDataLists().write(0, playerInfoList);
+		packetAdd.getPlayerInfoDataLists().write(0, playerInfoList);
 
 		try {
 			manager.sendServerPacket(p, packetDel);

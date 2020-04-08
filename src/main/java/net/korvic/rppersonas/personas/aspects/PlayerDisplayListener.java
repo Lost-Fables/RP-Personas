@@ -7,10 +7,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import com.comphenix.protocol.wrappers.WrappedSignedProperty;
+import com.comphenix.protocol.wrappers.*;
 import com.google.common.collect.Multimap;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
@@ -21,7 +18,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
 
-public class PersonaSkinListener {
+public class PlayerDisplayListener {
 
 	public static void listen() {
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
@@ -30,7 +27,7 @@ public class PersonaSkinListener {
 					@Override
 					public void onPacketSending(PacketEvent event) {
 						if (RPPersonas.DEBUGGING) {
-							RPPersonas.get().getLogger().info("Skin Packet Being Sent...");
+							RPPersonas.get().getLogger().info("Player Packet Being Sent...");
 						}
 						PacketContainer container = event.getPacket();
 						EnumWrappers.PlayerInfoAction InfoAction = container.getPlayerInfoAction().read(0);
@@ -46,26 +43,32 @@ public class PersonaSkinListener {
 								if (player != null) {
 									Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
 									if (pers != null) {
-										int skinID = pers.getActiveSkinID();
-										if (skinID > 0) {
+										WrappedGameProfile profile = new WrappedGameProfile(uuid, pers.getNickName());
+
+										if (pers.getActiveSkinID() > 0) {
 											if (RPPersonas.DEBUGGING) {
 												RPPersonas.get().getLogger().info("New Skin Found...");
 											}
-											changed = true;
-											WrappedGameProfile newProf = new WrappedGameProfile(uuid, player.getName());
-											Multimap<String, WrappedSignedProperty> properties = newProf.getProperties();
 
+											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
 											properties.removeAll("textures");
-											properties.put("textures", RPPersonas.get().getPersonaHandler().getLoadedPersona(player).getActiveSkin().getMojangData());
+											properties.put("textures", pers.getActiveSkin().getMojangData());
+										} else {
+											WrappedGameProfile oldProfile = WrappedGameProfile.fromPlayer(player);
+											Multimap<String, WrappedSignedProperty> oldProperties = oldProfile.getProperties();
 
-											playerInfo = new PlayerInfoData(newProf, playerInfo.getLatency(), playerInfo.getGameMode(), playerInfo.getDisplayName());
-											iterator.set(playerInfo);
-										} else if (RPPersonas.DEBUGGING) {
-											RPPersonas.get().getLogger().info("Failed to find a stored skin.");
+											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
+											properties.removeAll("textures");
+											properties.putAll("textures", oldProperties.get("textures"));
 										}
+
+										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), playerInfo.getDisplayName());
+										iterator.set(playerInfo);
+										changed = true;
 									}
 								}
 							}
+
 							if (changed) {
 								container.getPlayerInfoDataLists().write(0, allPlayerInfo);
 								if (RPPersonas.DEBUGGING) {

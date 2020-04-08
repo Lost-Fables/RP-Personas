@@ -10,7 +10,7 @@ import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.listeners.VoteListener;
 import net.korvic.rppersonas.personas.modification.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.personas.aspects.PersonaSkinListener;
+import net.korvic.rppersonas.personas.aspects.PlayerDisplayListener;
 import net.korvic.rppersonas.sql.*;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -100,7 +100,7 @@ public final class RPPersonas extends JavaPlugin {
 			}
 
 			// Packet Listener for skins
-			PersonaSkinListener.listen();
+			PlayerDisplayListener.listen();
 
 			// Register our handlers
 			accountHandler = new AccountHandler(this);
