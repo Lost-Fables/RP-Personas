@@ -59,11 +59,11 @@ public class Altar {
 		return label;
 	}
 
-	public Block getAltarBase() {
+	public Block getAltarBlock() {
 		return altarBase;
 	}
 
-	public Location getLocation() {
+	public Location getTPLocation() {
 		return teleportLocation;
 	}
 

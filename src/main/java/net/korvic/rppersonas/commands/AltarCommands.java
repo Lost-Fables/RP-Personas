@@ -2,14 +2,16 @@ package net.korvic.rppersonas.commands;
 
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.altars.Altar;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.dynmap.DynmapCommonAPI;
 
 public class AltarCommands extends BaseCommand {
+
+	private static final String CREATION_SUCCESS = "A new altar has been created where you stand.";
+	private static final String CONSOLE = "Only players may run this command.";
 
 	private RPPersonas plugin;
 	private DynmapCommonAPI dynmapAPI;
@@ -28,6 +30,19 @@ public class AltarCommands extends BaseCommand {
 			blockLoc.setYaw(yaw);
 
 			plugin.getAltarHandler().createAltar(name, blockLoc);
+			msg(RPPersonas.PRIMARY_DARK + CREATION_SUCCESS);
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
+		}
+	}
+
+	@Cmd(value = "Teleport to a given altar.")
+	public void tp(CommandSender sender, Altar altar) {
+		if (sender instanceof Player) {
+			((Player) sender).teleportAsync(altar.getTPLocation());
+			msg(RPPersonas.PRIMARY_DARK + "You've been teleported to " + altar.getLabel() + ".");
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
 		}
 	}
 
