@@ -9,38 +9,26 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 
-public class PersonaAccountsMapSQL {
+public class PersonaAccountsMapSQL extends SQLConnection {
 
-	public static Connection connection;
-
-	private RPPersonas plugin;
-	private String SQLTable;
-	private String SQLTableName = "rppersonas_persona_account_map";
+	private static final String SQLTableName = "rppersonas_persona_account_map";
 
 	public PersonaAccountsMapSQL(RPPersonas plugin) {
-		this.plugin = plugin;
-		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
-				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
-				   "    AccountID INT NOT NULL,\n" +
-				   "    Alive TINYINT NOT NULL,\n" +
-				   "    ActiveUUID TEXT\n" +
-				   ");";
-	}
-
-	public void load() {
-		connection = getSQLConnection();
-		try {
-			Statement s = connection.createStatement();
-			s.execute(SQLTable);
-			s.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (SQLConnection.plugin == null) {
+			SQLConnection.plugin = plugin;
 		}
-		initialize();
-		runConnectionMaintainer();
+
+		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
+						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
+						  "    AccountID INT NOT NULL,\n" +
+						  "    Alive TINYINT NOT NULL,\n" +
+						  "    ActiveUUID TEXT\n" +
+						  ");";
+		load(SQLTable, SQLTableName);
 	}
 
-	public void initialize(){
+	@Override
+	protected boolean customStatement() {
 		connection = getSQLConnection();
 		try {
 			String stmt;
@@ -54,54 +42,8 @@ public class PersonaAccountsMapSQL {
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-	}
 
-	public Connection getSQLConnection() {
-		String host = RPPersonas.config.getString("mysql.host");
-		String port = RPPersonas.config.getString("mysql.port");
-		String database = RPPersonas.config.getString("mysql.database");
-		String user = RPPersonas.config.getString("mysql.user");
-		String password = RPPersonas.config.getString("mysql.password");
-
-		try {
-			if (connection != null && !connection.isClosed()) {
-				return connection;
-			}
-			String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false";
-			return DriverManager.getConnection(url, user, password);
-		} catch (SQLException ex) {
-			if (RPPersonas.DEBUGGING) {
-				plugin.getLogger().log(Level.SEVERE, "MySQL exception on initialize", ex);
-			}
-		}
-
-		return null;
-	}
-
-	private void runConnectionMaintainer() {
-		(new BukkitRunnable() {
-			@Override
-			public void run() {
-				try {
-					if (connection != null && !connection.isClosed()) {
-						connection.createStatement().execute("SELECT 1");
-					}
-				} catch (SQLException e) {
-					connection = getSQLConnection();
-				}
-			}
-		}).runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
-	}
-
-	private void close(PreparedStatement ps, ResultSet rs){
-		try {
-			if (ps != null)
-				ps.close();
-			if (rs != null)
-				rs.close();
-		} catch (SQLException ex) {
-			Errors.close(plugin, ex);
-		}
+		return true;
 	}
 
 	// Inserts a new mapping for a persona.

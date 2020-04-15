@@ -2,31 +2,34 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.dynmap.DynmapCommonAPI;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
-public class AccountsSQL extends SQLConnection {
+public class AltarSQL extends SQLConnection {
 
-	private static final String SQLTableName = "rppersonas_accounts";
+	private static final String SQLTableName = "rppersonas_altars";
+	private static DynmapCommonAPI dynmapAPI;
 
-	public AccountsSQL(RPPersonas plugin) {
+	public AltarSQL(RPPersonas plugin) {
 		if (SQLConnection.plugin == null) {
 			SQLConnection.plugin = plugin;
 		}
 
+		dynmapAPI = (DynmapCommonAPI) plugin.getServer().getPluginManager().getPlugin("Dynmap");
+
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
-						  "    AccountID INT NOT NULL PRIMARY KEY,\n" +
-						  "    DiscordID TEXT,\n" +
-						  "    Playtime BIGINT NOT NULL,\n" +
-						  "    Votes SMALLINT NOT NULL\n" +
+						  "    Name TEXT NOT NULL PRIMARY KEY,\n" +
+						  "    World TEXT NOT NULL,\n" +
+						  "    LocationX DOUBLE NOT NULL,\n" +
+						  "    LocationY DOUBLE NOT NULL,\n" +
+						  "    LocationZ DOUBLE NOT NULL,\n" +
+						  "    Icon TEXT\n" +
 						  ");";
-		this.load(SQLTable, SQLTableName);
+		load(SQLTable, SQLTableName);
 	}
 
 	@Override
@@ -34,6 +37,7 @@ public class AccountsSQL extends SQLConnection {
 		return false;
 	}
 
+	/*
 	// Checks if this account is already registered.
 	public boolean isRegistered(int accountID) {
 		Connection conn = null;
@@ -181,5 +185,5 @@ public class AccountsSQL extends SQLConnection {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 }

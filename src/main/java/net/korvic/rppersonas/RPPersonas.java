@@ -129,13 +129,6 @@ public final class RPPersonas extends JavaPlugin {
 		personas = new PersonasSQL(this);
 		currency = new CurrencySQL(this);
 		skins = new SkinsSQL(this);
-
-		uuidAccountMap.load();
-		accounts.load();
-		personaAccountMap.load();
-		personas.load();
-		currency.load();
-		skins.load();
 	}
 
 	// CONFIG //

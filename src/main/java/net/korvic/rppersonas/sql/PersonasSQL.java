@@ -13,115 +13,46 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class PersonasSQL {
+public class PersonasSQL extends SQLConnection {
 
-	public static Connection connection;
-
-	private RPPersonas plugin;
-	private String SQLTable;
-	private String SQLTableName = "rppersonas_personas";
+	private static final String SQLTableName = "rppersonas_personas";
 
 	public PersonasSQL(RPPersonas plugin) {
-		this.plugin = plugin;
-		SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
-				   "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
-				   "    Alive BIT NOT NULL,\n" +
-				   "    Name TEXT NOT NULL,\n" +
-				   "    Gender TEXT NOT NULL,\n" +
-				   "    Age BIGINT NOT NULL,\n" +
-				   "    Race TEXT NOT NULL,\n" +
-				   "    Lives INT NOT NULL,\n" +
-				   "    Playtime BIGINT NOT NULL,\n" +
-
-				   "    LocationWorld TEXT NOT NULL,\n" +
-				   "    LocationX DOUBLE NOT NULL,\n" +
-				   "    LocationY DOUBLE NOT NULL,\n" +
-				   "    LocationZ DOUBLE NOT NULL,\n" +
-
-				   "    Health DOUBLE NOT NULL,\n" +
-				   "    Hunger INTEGER NOT NULL,\n" +
-
-				   "    Inventory TEXT,\n" +
-				   "    EnderChest TEXT,\n" +
-				   "    NickName TEXT,\n" +
-				   "    Prefix TEXT,\n" +
-				   "    ActiveSkinID INT,\n" +
-				   "    Description TEXT\n" +
-				   ");";
-	}
-
-	public void load() {
-		connection = getSQLConnection();
-		try {
-			Statement s = connection.createStatement();
-			s.execute(SQLTable);
-			s.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		initialize();
-		runConnectionMaintainer();
-	}
-
-	public void initialize(){
-		connection = getSQLConnection();
-		try {
-			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + ";";
-			PreparedStatement ps = connection.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
-			close(ps, rs);
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
-		}
-	}
-
-	public Connection getSQLConnection() {
-		String host = RPPersonas.config.getString("mysql.host");
-		String port = RPPersonas.config.getString("mysql.port");
-		String database = RPPersonas.config.getString("mysql.database");
-		String user = RPPersonas.config.getString("mysql.user");
-		String password = RPPersonas.config.getString("mysql.password");
-
-		try {
-			if (connection != null && !connection.isClosed()) {
-				return connection;
-			}
-			String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false";
-			return DriverManager.getConnection(url, user, password);
-		} catch (SQLException ex) {
-			if (RPPersonas.DEBUGGING) {
-				plugin.getLogger().log(Level.SEVERE, "MySQL exception on initialize", ex);
-			}
+		if (SQLConnection.plugin == null) {
+			SQLConnection.plugin = plugin;
 		}
 
-		return null;
+		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
+						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
+						  "    Alive BIT NOT NULL,\n" +
+						  "    Name TEXT NOT NULL,\n" +
+						  "    Gender TEXT NOT NULL,\n" +
+						  "    Age BIGINT NOT NULL,\n" +
+						  "    Race TEXT NOT NULL,\n" +
+						  "    Lives INT NOT NULL,\n" +
+						  "    Playtime BIGINT NOT NULL,\n" +
+
+						  "    LocationWorld TEXT NOT NULL,\n" +
+						  "    LocationX DOUBLE NOT NULL,\n" +
+						  "    LocationY DOUBLE NOT NULL,\n" +
+						  "    LocationZ DOUBLE NOT NULL,\n" +
+
+						  "    Health DOUBLE NOT NULL,\n" +
+						  "    Hunger INTEGER NOT NULL,\n" +
+
+						  "    Inventory TEXT,\n" +
+						  "    EnderChest TEXT,\n" +
+						  "    NickName TEXT,\n" +
+						  "    Prefix TEXT,\n" +
+						  "    ActiveSkinID INT,\n" +
+						  "    Description TEXT\n" +
+						  ");";
+		load(SQLTable, SQLTableName);
 	}
 
-	private void runConnectionMaintainer() {
-		(new BukkitRunnable() {
-			@Override
-			public void run() {
-				try {
-					if (connection != null && !connection.isClosed()) {
-						connection.createStatement().execute("SELECT 1");
-					}
-				} catch (SQLException e) {
-					connection = getSQLConnection();
-				}
-			}
-		}).runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
-	}
-
-	private void close(PreparedStatement ps, ResultSet rs){
-		try {
-			if (ps != null)
-				ps.close();
-			if (rs != null)
-				rs.close();
-		} catch (SQLException ex) {
-			Errors.close(plugin, ex);
-		}
+	@Override
+	protected boolean customStatement() {
+		return false;
 	}
 
 	// Inserts a new mapping for a persona.
