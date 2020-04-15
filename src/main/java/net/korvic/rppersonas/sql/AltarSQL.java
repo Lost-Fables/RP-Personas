@@ -1,6 +1,9 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
@@ -31,94 +34,35 @@ public class AltarSQL extends SQLConnection {
 
 	@Override
 	protected boolean customStatement() {
-		return false;
-	}
-
-
-
-	/*
-	// Checks if this account is already registered.
-	public boolean isRegistered(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
+		connection = getSQLConnection();
 		try {
-			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
-			boolean result = false;
-			if (rs.next()) {
-				result = true;
-			}
-			return result;
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
-		return false;
-	}
-
-	// Gets our stored data for this account.
-	public Map<Object, Object> getData(int accountid) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		conn = getSQLConnection();
-
-		try {
-			ps = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountid + "'");
+			stmt = "SELECT * FROM " + SQLTableName + ";";
+			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 
-			Map<Object, Object> data = new HashMap<>();
-
-			if (rs.next()) {
-				data.put("accountid", accountid);
-				data.put("discordid", rs.getString("DiscordID"));
-				data.put("playtime", rs.getLong("Playtime"));
-				data.put("votes", rs.getShort("Votes"));
+			while (rs.next()) {
+				World world = Bukkit.getWorld(rs.getString("World"));
+				if (world != null) {
+					Location loc = new Location(world, rs.getDouble("LocationX"), rs.getDouble("LocationY"), rs.getDouble("LocationZ"));
+					plugin.getAltarHandler().loadAltar(rs.getInt("AltarID"), rs.getString("Name"), loc, rs.getString("IconID"));
+				}
 			}
 
-			return data;
+			close(ps, rs);
 		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
 
-		return null;
+		return true;
 	}
 
-	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(Map<Object, Object> data) {
-		if (data.containsKey("accountid")) {
-			PreparedStatement ps = null;
+		if (data.containsKey("altarid")) {
 			try {
-				ps = getSaveStatement(data);
-				ps.executeUpdate();
+				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			} finally {
-				try {
-					if (ps != null)
-						ps.close();
-				} catch (SQLException ex) {
-					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-				}
 			}
 		}
 	}
@@ -129,60 +73,53 @@ public class AltarSQL extends SQLConnection {
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + data.get("accountid") + "'");
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AltarID='" + data.get("altarid") + "'");
 		ResultSet result = grabStatement.executeQuery();
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,DiscordID,Playtime,Votes) VALUES(?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AltarID,Name,World,LocationX,LocationY,LocationZ,IconID) VALUES(?,?,?,?,?,?,?)");
 
 
 		// Required
-		replaceStatement.setInt(1, (int) data.get("accountid"));
+		replaceStatement.setInt(1, (int) data.get("altarid"));
 
-		if (data.containsKey("discordid")) {
-			replaceStatement.setString(2, (String) data.get("discordid"));
+		if (data.containsKey("label")) {
+			replaceStatement.setString(2, (String) data.get("label"));
 		} else if (resultPresent) {
-			replaceStatement.setString(2, result.getString("DiscordID"));
+			replaceStatement.setString(2, result.getString("Name"));
 		} else {
 			replaceStatement.setString(2, null);
 		}
 
-		if (data.containsKey("playtime")) {
-			long playtime = (long) data.get("playtime");
-			if (resultPresent) {
-				playtime += result.getLong("Playtime");
-			}
-			replaceStatement.setLong(3, playtime);
+		if (data.containsKey("location")) {
+			Location loc = (Location) data.get("location");
+			replaceStatement.setString(3, loc.getWorld().getName());
+			replaceStatement.setDouble(4, loc.getX());
+			replaceStatement.setDouble(5, loc.getY());
+			replaceStatement.setDouble(6, loc.getZ());
 		} else if (resultPresent) {
-			replaceStatement.setLong(3, result.getLong("Playtime"));
+			replaceStatement.setString(3, result.getString("World"));
+			replaceStatement.setDouble(4, result.getInt("LocationX"));
+			replaceStatement.setDouble(5, result.getInt("LocationY"));
+			replaceStatement.setDouble(6, result.getInt("LocationZ"));
 		} else {
-			replaceStatement.setLong(3, 0);
+			replaceStatement.setString(3, null);
+			replaceStatement.setDouble(4, 0);
+			replaceStatement.setDouble(5, 0);
+			replaceStatement.setDouble(6, 0);
 		}
 
-		if (data.containsKey("votes")) {
-			replaceStatement.setShort(4, (short) data.get("votes"));
+		if (data.containsKey("iconid")) {
+			replaceStatement.setString(7, (String) data.get("iconid"));
 		} else if (resultPresent) {
-			replaceStatement.setShort(4, result.getShort("Votes"));
+			replaceStatement.setString(7, result.getString("IconID"));
 		} else {
-			replaceStatement.setShort(4, (short) 0);
+			replaceStatement.setString(7, null);
 		}
 
 		grabStatement.close();
 		return replaceStatement;
 	}
 
-	public void incrementVotes(int accountID) {
-		Map<Object, Object> oldData = getData(accountID);
-		Map<Object, Object> newData = new HashMap<>();
-		newData.put("accountid", accountID);
-		newData.put("votes", ((short) oldData.get("votes")) + 1);
-		try {
-			plugin.getSaveQueue().addToQueue(getSaveStatement(newData));
-		} catch (Exception e) {
-			if (RPPersonas.DEBUGGING) {
-				e.printStackTrace();
-			}
-		}
-	}*/
 }

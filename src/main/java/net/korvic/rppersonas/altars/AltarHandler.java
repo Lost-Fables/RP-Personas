@@ -40,4 +40,10 @@ public class AltarHandler {
 		return output;
 	}
 
+	public Altar loadAltar(int altarID, String label, Location loc, String iconID) {
+		Altar output = Altar.loadAltar(altarID, label, loc, iconID);
+		allAltars.put(label, output);
+		return output;
+	}
+
 }
