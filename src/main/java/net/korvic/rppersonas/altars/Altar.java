@@ -31,6 +31,8 @@ public class Altar {
 		data.put("location", loc);
 		RPPersonas.get().getAltarSQL().registerOrUpdate(data);
 
+		// TODO add altar icon to Dynmap
+
 		return new Altar(altarID, label, loc, iconID);
 	}
 
