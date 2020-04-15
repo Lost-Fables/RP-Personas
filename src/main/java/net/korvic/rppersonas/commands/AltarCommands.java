@@ -11,6 +11,7 @@ import org.dynmap.DynmapCommonAPI;
 public class AltarCommands extends BaseCommand {
 
 	private static final String CREATION_SUCCESS = "A new altar has been created where you stand.";
+	private static final String CREATION_FAILURE = "Failed to create altar. Check the name isn't already used and try again.";
 	private static final String CONSOLE = "Only players may run this command.";
 
 	private RPPersonas plugin;
@@ -30,8 +31,11 @@ public class AltarCommands extends BaseCommand {
 			blockLoc.setYaw(yaw);
 			blockLoc.setPitch(0);
 
-			plugin.getAltarHandler().createAltar(name, blockLoc);
-			msg(RPPersonas.PRIMARY_DARK + CREATION_SUCCESS);
+			if (plugin.getAltarHandler().createAltar(name, blockLoc) != null) {
+				msg(RPPersonas.PRIMARY_DARK + CREATION_SUCCESS);
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + CREATION_FAILURE);
+			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
 		}

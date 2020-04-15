@@ -35,8 +35,13 @@ public class AltarHandler {
 	}
 
 	public Altar createAltar(String label, Location loc) {
-		Altar output = Altar.createAltar(label, loc);
-		allAltars.put(label, output);
+		Altar output = getAltar(label);
+		if (output == null) {
+			output = Altar.createAltar(label, loc);
+			allAltars.put(label, output);
+		} else {
+			output = null;
+		}
 		return output;
 	}
 
