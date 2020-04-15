@@ -28,6 +28,7 @@ public class AltarCommands extends BaseCommand {
 			float yaw = roundYaw(p.getLocation().getYaw());
 			Location blockLoc = p.getLocation().toBlockLocation().subtract(0, 1, 0);
 			blockLoc.setYaw(yaw);
+			blockLoc.setPitch(0);
 
 			plugin.getAltarHandler().createAltar(name, blockLoc);
 			msg(RPPersonas.PRIMARY_DARK + CREATION_SUCCESS);
