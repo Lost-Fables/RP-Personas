@@ -113,6 +113,10 @@ public final class RPPersonas extends JavaPlugin {
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
 
+			// Load up existing altars. Must be done after the alter handler is created.
+			altars.loadAltars();
+
+			// Register parameters
 			registerParameters();
 
 			// Build our commands

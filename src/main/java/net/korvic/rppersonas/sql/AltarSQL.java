@@ -34,10 +34,13 @@ public class AltarSQL extends SQLConnection {
 
 	@Override
 	protected boolean customStatement() {
+		return false;
+	}
+
+	public void loadAltars() {
 		connection = getSQLConnection();
 		try {
-			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + ";";
+			String stmt = "SELECT * FROM " + SQLTableName + ";";
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 
@@ -53,8 +56,6 @@ public class AltarSQL extends SQLConnection {
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-
-		return true;
 	}
 
 	public void registerOrUpdate(Map<Object, Object> data) {
