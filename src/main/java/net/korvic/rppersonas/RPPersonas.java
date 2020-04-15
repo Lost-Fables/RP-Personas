@@ -2,7 +2,9 @@ package net.korvic.rppersonas;
 
 import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
+import net.korvic.rppersonas.altars.AltarHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
+import net.korvic.rppersonas.commands.AltarCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.listeners.EnderListener;
 import net.korvic.rppersonas.listeners.InspectListener;
@@ -40,6 +42,7 @@ public final class RPPersonas extends JavaPlugin {
 	// Handlers
 	private AccountHandler accountHandler;
 	private PersonaHandler personaHandler;
+	private AltarHandler altarHandler;
 	private UnregisteredHandler unregisteredHandler;
 
 	// SQL
@@ -50,6 +53,7 @@ public final class RPPersonas extends JavaPlugin {
 	private PersonasSQL personas;
 	private CurrencySQL currency;
 	private SkinsSQL skins;
+	private AltarSQL altars;
 
 	// Default Location
 	private Location spawnLocation;
@@ -105,11 +109,13 @@ public final class RPPersonas extends JavaPlugin {
 			// Register our handlers
 			accountHandler = new AccountHandler(this);
 			personaHandler = new PersonaHandler(this);
+			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
 
 			// Build our commands
 			Commands.build(getCommand("account"), () -> new AccountCommands(this));
 			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
+			Commands.build(getCommand("altar"), () -> new AltarCommands(this)); // TODO move this under staff commands
 		} else {
 			this.onDisable();
 		}
@@ -129,6 +135,7 @@ public final class RPPersonas extends JavaPlugin {
 		personas = new PersonasSQL(this);
 		currency = new CurrencySQL(this);
 		skins = new SkinsSQL(this);
+		altars = new AltarSQL(this);
 	}
 
 	// CONFIG //
@@ -143,7 +150,6 @@ public final class RPPersonas extends JavaPlugin {
 		}
 	}
 
-	// GET //
 	private float getYawFromFacing(String facing) {
 		float output = 0;
 		if (facing.equalsIgnoreCase("west")) {
@@ -156,6 +162,7 @@ public final class RPPersonas extends JavaPlugin {
 		return output;
 	}
 
+	// GET //
 	public static RPPersonas get() {
 		return instance;
 	}
@@ -164,6 +171,9 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public PersonaHandler getPersonaHandler() {
 		return personaHandler;
+	}
+	public AltarHandler getAltarHandler() {
+		return altarHandler;
 	}
 	public UnregisteredHandler getUnregisteredHandler() {
 		return unregisteredHandler;
@@ -190,6 +200,9 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public SkinsSQL getSkinsSQL() {
 		return skins;
+	}
+	public AltarSQL getAltarSQL() {
+		return altars;
 	}
 	public SaveQueue getSaveQueue() {
 		return saveQueue;

@@ -19,18 +19,18 @@ public class PersonaCommands extends BaseCommand {
 		this.personaDescCommands = new PersonaDescCommands(plugin);
 	}
 
-	@Cmd(value="Get the information on someone else's persona.", permission="rppersonas.accepted")
+	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void info(CommandSender sender,
 					 @Arg(value="Player", description="The player who's info you wish to see.") Player player) {
 		msg(plugin.getPersonaHandler().getPersonaInfo(player));
 	}
 
-	@Cmd(value="Set information about your persona.", permission="rppersonas.accepted")
+	@Cmd(value = "Set information about your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public BaseCommand set() {
 		return personaSetCommands;
 	}
 
-	@Cmd(value="Update the description of your persona.", permission="rppersonas.accepted")
+	@Cmd(value = "Update the description of your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public BaseCommand desc() {
 		return personaDescCommands;
 	}

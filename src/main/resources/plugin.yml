@@ -11,6 +11,9 @@ commands:
   persona:
     command: /<command>
     description: "Check, set, and update persona info."
+  altar:
+    command: /<command>
+    description: "Test command. Remove later."
 permissions:
   rppersonas.accepted:
     default: op

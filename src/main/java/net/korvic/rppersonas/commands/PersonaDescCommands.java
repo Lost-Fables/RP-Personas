@@ -14,7 +14,7 @@ public class PersonaDescCommands extends BaseCommand {
 		this.plugin = plugin;
 	}
 
-	@Cmd(value="Add text to the end of your persona's description.")
+	@Cmd(value = "Add text to the end of your persona's description.")
 	public void add(CommandSender sender, String[] text) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -26,7 +26,7 @@ public class PersonaDescCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Reset the description of your persona to nothing.")
+	@Cmd(value = "Reset the description of your persona to nothing.")
 	public void clear(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;

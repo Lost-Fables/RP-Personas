@@ -2,7 +2,6 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.dynmap.DynmapCommonAPI;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -12,22 +11,20 @@ import java.util.logging.Level;
 public class AltarSQL extends SQLConnection {
 
 	private static final String SQLTableName = "rppersonas_altars";
-	private static DynmapCommonAPI dynmapAPI;
 
 	public AltarSQL(RPPersonas plugin) {
 		if (SQLConnection.plugin == null) {
 			SQLConnection.plugin = plugin;
 		}
 
-		dynmapAPI = (DynmapCommonAPI) plugin.getServer().getPluginManager().getPlugin("Dynmap");
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
-						  "    Name TEXT NOT NULL PRIMARY KEY,\n" +
+						  "    AltarID INT NOT NULL PRIMARY KEY,\n" +
+						  "    Name TEXT NOT NULL,\n" +
 						  "    World TEXT NOT NULL,\n" +
 						  "    LocationX DOUBLE NOT NULL,\n" +
 						  "    LocationY DOUBLE NOT NULL,\n" +
 						  "    LocationZ DOUBLE NOT NULL,\n" +
-						  "    Icon TEXT\n" +
+						  "    IconID TEXT\n" +
 						  ");";
 		load(SQLTable, SQLTableName);
 	}
@@ -36,6 +33,8 @@ public class AltarSQL extends SQLConnection {
 	protected boolean customStatement() {
 		return false;
 	}
+
+
 
 	/*
 	// Checks if this account is already registered.
