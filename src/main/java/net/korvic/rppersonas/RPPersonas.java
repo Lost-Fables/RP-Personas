@@ -2,6 +2,7 @@ package net.korvic.rppersonas;
 
 import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
+import net.korvic.rppersonas.altars.Altar;
 import net.korvic.rppersonas.altars.AltarHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
 import net.korvic.rppersonas.commands.AltarCommands;
@@ -112,6 +113,8 @@ public final class RPPersonas extends JavaPlugin {
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
 
+			registerParameters();
+
 			// Build our commands
 			Commands.build(getCommand("account"), () -> new AccountCommands(this));
 			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
@@ -148,6 +151,18 @@ public final class RPPersonas extends JavaPlugin {
 				spawnLocation = new Location(Bukkit.getWorld(world), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), getYawFromFacing(facing), 0);
 			}
 		}
+	}
+
+	// PARAMETERS //
+	private void registerParameters() {
+
+		Commands.defineArgumentType(Altar.class)
+				.defaultName("Altar")
+				.defaultError("Failed to find an altar by that name.")
+				.completer(() -> altarHandler.getAltarList())
+				.mapperWithSender((sender, name) -> altarHandler.getAltar(name))
+				.register();
+
 	}
 
 	private float getYawFromFacing(String facing) {

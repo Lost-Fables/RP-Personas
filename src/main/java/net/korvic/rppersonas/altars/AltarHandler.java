@@ -16,7 +16,18 @@ public class AltarHandler {
 	}
 
 	public Altar getAltar(String label) {
-		return allAltars.get(label);
+		Altar altar = allAltars.get(label);
+
+		if (altar == null) {
+			for (String key : allAltars.keySet()) {
+				if (label.equalsIgnoreCase(key)) {
+					altar = allAltars.get(key);
+					break;
+				}
+			}
+		}
+
+		return altar;
 	}
 
 	public Set<String> getAltarList() {
