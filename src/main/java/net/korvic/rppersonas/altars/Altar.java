@@ -1,7 +1,10 @@
 package net.korvic.rppersonas.altars;
 
+import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+
+import java.util.HashMap;
 
 public class Altar {
 
@@ -20,6 +23,13 @@ public class Altar {
 		int altarID = maxAltarID;
 		updateMaxAltarID(altarID);
 		String iconID = formatIconID(altarID);
+
+		HashMap<Object, Object> data = new HashMap<>();
+		data.put("altarid", altarID);
+		data.put("iconid", iconID);
+		data.put("label", label);
+		data.put("location", loc);
+		RPPersonas.get().getAltarSQL().registerOrUpdate(data);
 
 		return new Altar(altarID, label, loc, iconID);
 	}
