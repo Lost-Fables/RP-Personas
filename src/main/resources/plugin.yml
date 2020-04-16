@@ -21,3 +21,6 @@ permissions:
   rppersonas.link:
     default: true
     description: "Allow the user to link their Forum and Discord IDs."
+  rppersonas.corpsebypass:
+    default: op
+    description: "Allow the user to add items to a corpse's inventory. Still cannot nest."

@@ -1,7 +1,6 @@
 package net.korvic.rppersonas.listeners;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
-import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
 import co.lotc.core.bukkit.util.ItemUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
@@ -13,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -43,13 +44,18 @@ public class CorpseListener implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void onCorpseInCorpse(InventoryInteractEvent e) {
+	@EventHandler(ignoreCancelled = true)
+	public void onCorpseTransfer(InventoryClickEvent e) {
 		if (e.getInventory().getHolder() instanceof CorpseHolder) {
-			for (MovedItem item : InventoryUtil.getResultOfEvent(e)) {
-				if (ItemUtil.hasCustomTag(item.getItem(), CorpseHandler.CORPSE_KEY)) {
-					e.setCancelled(true);
-					break;
+			if (!e.getWhoClicked().hasPermission(RPPersonas.PERMISSION_START + ".corpsebypass") &&
+				e.getClickedInventory() != null && !(e.getClickedInventory().getHolder() instanceof CorpseHolder)) {
+				e.setCancelled(true);
+			} else {
+				for (ItemStack item : InventoryUtil.getTouchedByEvent(e)) {
+					if (ItemUtil.hasCustomTag(item, CorpseHandler.CORPSE_KEY)) {
+						e.setCancelled(true);
+						break;
+					}
 				}
 			}
 		}

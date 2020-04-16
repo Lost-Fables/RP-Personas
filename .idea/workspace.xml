@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/Corpse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/CorpseHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/CorpseHolder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/altars/Altar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/Altar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/altars/AltarHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/AltarHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AltarCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AltarCommands.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/CorpseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/CorpseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,9 +172,9 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1022" y="318" key="refactoring.ChangeSignatureDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584527296616" />
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1587021738641">
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1587035717902">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587021738641" />
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587035717902" />
   </component>
 </project>
