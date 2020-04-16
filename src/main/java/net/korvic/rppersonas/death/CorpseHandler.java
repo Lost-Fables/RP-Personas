@@ -37,6 +37,7 @@ public class CorpseHandler {
 
 		Corpse corpse = new Corpse(id, name, texture, inv, created);
 		knownCorpses.put(id, corpse);
+		updateMaxID(id);
 
 		return corpse;
 	}

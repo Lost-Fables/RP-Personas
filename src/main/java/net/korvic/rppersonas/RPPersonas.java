@@ -47,14 +47,15 @@ public final class RPPersonas extends JavaPlugin {
 	private UnregisteredHandler unregisteredHandler;
 
 	// SQL
-	private SaveQueue saveQueue;
-	private UUIDAccountMapSQL uuidAccountMap;
-	private AccountsSQL accounts;
-	private PersonaAccountsMapSQL personaAccountMap;
-	private PersonasSQL personas;
-	private CurrencySQL currency;
-	private SkinsSQL skins;
-	private AltarSQL altars;
+	private SaveQueue saveQueueSQL;
+	private UUIDAccountMapSQL uuidAccountMapSQL;
+	private AccountsSQL accountsSQL;
+	private PersonaAccountsMapSQL personaAccountMapSQL;
+	private PersonasSQL personasSQL;
+	private CurrencySQL currencySQL;
+	private SkinsSQL skinsSQL;
+	private AltarSQL altarsSQL;
+	private CorpseSQL corpseSQL;
 
 	// Default Location
 	private Location spawnLocation;
@@ -116,8 +117,9 @@ public final class RPPersonas extends JavaPlugin {
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
 
-			// Load up existing altars. Must be done after the alter handler is created.
-			altars.loadAltars();
+			// Load up existing altars & corpses. Must be done after the alter handler is created.
+			altarsSQL.loadAltars();
+			corpseSQL.loadCorpses();
 
 			// Register parameters
 			registerParameters();
@@ -133,24 +135,25 @@ public final class RPPersonas extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		saveQueue.completeAllSaves();
+		saveQueueSQL.completeAllSaves();
 		PersonaDisableListener.enableAll();
 	}
 
 	// SQL //
 	private void setupDatabases() {
-		uuidAccountMap = new UUIDAccountMapSQL(this);
-		accounts = new AccountsSQL(this);
-		personaAccountMap = new PersonaAccountsMapSQL(this);
-		personas = new PersonasSQL(this);
-		currency = new CurrencySQL(this);
-		skins = new SkinsSQL(this);
-		altars = new AltarSQL(this);
+		uuidAccountMapSQL = new UUIDAccountMapSQL(this);
+		accountsSQL = new AccountsSQL(this);
+		personaAccountMapSQL = new PersonaAccountsMapSQL(this);
+		personasSQL = new PersonasSQL(this);
+		currencySQL = new CurrencySQL(this);
+		skinsSQL = new SkinsSQL(this);
+		altarsSQL = new AltarSQL(this);
+		corpseSQL = new CorpseSQL(this);
 	}
 
 	// CONFIG //
 	private void loadFromConfig() {
-		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
+		saveQueueSQL = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
 		String world = config.getString("spawn.world");
 		if (world != null && Bukkit.getWorld(world) != null) {
 			String facing = config.getString("spawn.facing");
@@ -209,28 +212,28 @@ public final class RPPersonas extends JavaPlugin {
 	}
 
 	public UUIDAccountMapSQL getUUIDAccountMapSQL() {
-		return uuidAccountMap;
+		return uuidAccountMapSQL;
 	}
 	public AccountsSQL getAccountsSQL() {
-		return accounts;
+		return accountsSQL;
 	}
 	public PersonaAccountsMapSQL getPersonaAccountMapSQL() {
-		return personaAccountMap;
+		return personaAccountMapSQL;
 	}
 	public PersonasSQL getPersonasSQL() {
-		return personas;
+		return personasSQL;
 	}
 	public CurrencySQL getCurrencySQL() {
-		return currency;
+		return currencySQL;
 	}
 	public SkinsSQL getSkinsSQL() {
-		return skins;
+		return skinsSQL;
 	}
 	public AltarSQL getAltarSQL() {
-		return altars;
+		return altarsSQL;
 	}
 	public SaveQueue getSaveQueue() {
-		return saveQueue;
+		return saveQueueSQL;
 	}
 
 	// TIME //
