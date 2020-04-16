@@ -1,8 +1,9 @@
 package net.korvic.rppersonas.commands;
 
+import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.altars.Altar;
+import net.korvic.rppersonas.death.Altar;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,6 +47,16 @@ public class AltarCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			((Player) sender).teleportAsync(altar.getTPLocation());
 			msg(RPPersonas.PRIMARY_DARK + "You've been teleported to " + altar.getLabel() + ".");
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
+		}
+	}
+
+	@Cmd(value = "Debug command.")
+	public void getCorpse(CommandSender sender, Player player) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			InventoryUtil.addOrDropItem(p, plugin.getCorpseHandler().createCorpse("Test", null, null).getItem());
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
 		}

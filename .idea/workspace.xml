@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/CorpseListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/Corpse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/CorpseHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/CorpseHolder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/altars/AltarHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/altars/AltarHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/altars/Altar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/Altar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/altars/AltarHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/AltarHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AltarCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/AltarCommands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/CorpseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/listeners/CorpseListener.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +49,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Pit Autofill" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ShulkR-nbt" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.32413793" />
@@ -56,6 +62,7 @@
       <recent name="net.korvic.rppersonas.sql" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="net.korvic.rppersonas.death" />
       <recent name="net.korvic.rppersonas.personas" />
       <recent name="net.korvic.rppersonas.listeners" />
     </key>
@@ -125,22 +132,22 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="919" y="386" key="#com.intellij.ide.fileTemplates.ui.ConfigureTemplatesDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1583647996964" />
-    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser" timestamp="1586928617094">
+    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser" timestamp="1587023069915">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586928617094" />
-    <state x="1010" y="475" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1586143579714">
+    <state x="1085" y="415" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587023069915" />
+    <state x="1010" y="475" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1587023051288">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1010" y="475" key="#com.intellij.ide.util.PackageChooserDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586143579714" />
+    <state x="1010" y="475" key="#com.intellij.ide.util.PackageChooserDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587023051288" />
     <state x="796" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586134383118">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="796" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586134383118" />
-    <state x="987" y="318" key="FileChooserDialogImpl" timestamp="1586114619876">
+    <state x="987" y="318" key="FileChooserDialogImpl" timestamp="1587013547194">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="987" y="318" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586114619876" />
+    <state x="987" y="318" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587013547194" />
     <state x="3300" y="236" key="FileChooserDialogImpl/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1583613435715" />
     <state x="860" y="442" key="IDE.errors.dialog" timestamp="1585087372653">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -171,9 +178,9 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1022" y="318" key="refactoring.ChangeSignatureDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584527296616" />
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1586957438658">
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1587021738641">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586957438658" />
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587021738641" />
   </component>
 </project>

@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.altars;
+package net.korvic.rppersonas.death;
 
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Location;
@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class AltarHandler {
 
-	private RPPersonas plugin;
+	private final RPPersonas plugin;
 	private HashMap<String, Altar> allAltars = new HashMap<>();
 
 	public AltarHandler(RPPersonas plugin) {

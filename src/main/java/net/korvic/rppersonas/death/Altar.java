@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.altars;
+package net.korvic.rppersonas.death;
 
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Location;

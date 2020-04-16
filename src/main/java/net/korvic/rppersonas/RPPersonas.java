@@ -2,11 +2,12 @@ package net.korvic.rppersonas;
 
 import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
-import net.korvic.rppersonas.altars.Altar;
-import net.korvic.rppersonas.altars.AltarHandler;
+import net.korvic.rppersonas.death.Altar;
+import net.korvic.rppersonas.death.AltarHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
 import net.korvic.rppersonas.commands.AltarCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
+import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.personas.modification.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
@@ -41,6 +42,7 @@ public final class RPPersonas extends JavaPlugin {
 	// Handlers
 	private AccountHandler accountHandler;
 	private PersonaHandler personaHandler;
+	private CorpseHandler corpseHandler;
 	private AltarHandler altarHandler;
 	private UnregisteredHandler unregisteredHandler;
 
@@ -110,6 +112,7 @@ public final class RPPersonas extends JavaPlugin {
 			// Register our handlers
 			accountHandler = new AccountHandler(this);
 			personaHandler = new PersonaHandler(this);
+			corpseHandler = new CorpseHandler(this);
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
 
@@ -190,6 +193,9 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public PersonaHandler getPersonaHandler() {
 		return personaHandler;
+	}
+	public CorpseHandler getCorpseHandler() {
+		return corpseHandler;
 	}
 	public AltarHandler getAltarHandler() {
 		return altarHandler;
