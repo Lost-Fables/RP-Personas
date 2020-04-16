@@ -2,6 +2,7 @@ package net.korvic.rppersonas.altars;
 
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -51,4 +52,14 @@ public class AltarHandler {
 		return output;
 	}
 
+	public Altar getAltarOfBlock(Block clickedBlock) {
+		Altar output = null;
+		for (Altar altar : allAltars.values()) {
+			if (altar.getAltarBlock().equals(clickedBlock)) {
+				output = altar;
+				break;
+			}
+		}
+		return output;
+	}
 }

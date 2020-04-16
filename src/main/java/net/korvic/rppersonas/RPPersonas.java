@@ -7,10 +7,7 @@ import net.korvic.rppersonas.altars.AltarHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
 import net.korvic.rppersonas.commands.AltarCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
-import net.korvic.rppersonas.listeners.EnderListener;
-import net.korvic.rppersonas.listeners.InspectListener;
-import net.korvic.rppersonas.listeners.JoinQuitListener;
-import net.korvic.rppersonas.listeners.VoteListener;
+import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.personas.modification.PersonaDisableListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.aspects.PlayerDisplayListener;
@@ -19,6 +16,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -94,10 +92,12 @@ public final class RPPersonas extends JavaPlugin {
 			}.runTaskTimerAsynchronously(this, 0, 36000);
 
 			// Register our Listeners
-			getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
-			getServer().getPluginManager().registerEvents(new PersonaDisableListener(this), this);
-			getServer().getPluginManager().registerEvents(new InspectListener(this), this);
-			getServer().getPluginManager().registerEvents(new EnderListener(this), this);
+			PluginManager manager = getServer().getPluginManager();
+			manager.registerEvents(new JoinQuitListener(this), this);
+			manager.registerEvents(new PersonaDisableListener(this), this);
+			manager.registerEvents(new InspectListener(this), this);
+			manager.registerEvents(new EnderListener(this), this);
+			manager.registerEvents(new CorpseListener(this), this);
 
 			// If Votifier is online
 			if (getServer().getPluginManager().isPluginEnabled("Votifier")) {
