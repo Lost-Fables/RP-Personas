@@ -7,7 +7,6 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,14 +51,7 @@ public class CorpseHandler {
 		updateMaxID(id);
 
 		Corpse corpse = loadCorpse(id, name, texture, inventory, System.currentTimeMillis());
-		Map<Object, Object> data = new HashMap<>();
-		data.put("corpseid", id);
-		data.put("name", name);
-		data.put("inventory", corpse.getInventory());
-		data.put("created", corpse.getCreated());
-		data.put("texture", texture);
-		plugin.getCorpseSQL().registerOrUpdate(data);
-
+		corpse.save();
 		return corpse;
 	}
 
@@ -78,6 +70,12 @@ public class CorpseHandler {
 		updateMaxID(id);
 
 		return corpse;
+	}
+
+	public void saveAllCorpses() {
+		for (Corpse corpse : knownCorpses.values()) {
+			corpse.save();
+		}
 	}
 
 	public Corpse getCorpse(String utilKey) {
