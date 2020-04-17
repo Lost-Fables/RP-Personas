@@ -280,7 +280,7 @@ public class PersonaHandler {
 		plugin.getPersonasSQL().registerOrUpdate(map);
 	}
 
-	public void queueSavingAll() {
+	public void saveAllPersonas() {
 		for (Player p : playerObjectToID.keySet()) {
 			if (PersonaDisableListener.isPlayerEnabled(p)) {
 				loadedPersonas.get(playerObjectToID.get(p)).queueSave(p);

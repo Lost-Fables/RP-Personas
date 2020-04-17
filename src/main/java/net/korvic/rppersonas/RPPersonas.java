@@ -89,8 +89,8 @@ public final class RPPersonas extends JavaPlugin {
 				@Override
 				public void run() {
 					JoinQuitListener.refreshAllAccountPlaytime();
-					personaHandler.queueSavingAll();
-					//accountHandler.queueSavingAll();
+					corpseHandler.saveAllCorpses();
+					personaHandler.saveAllPersonas();
 				}
 			}.runTaskTimerAsynchronously(this, 0, 36000);
 
