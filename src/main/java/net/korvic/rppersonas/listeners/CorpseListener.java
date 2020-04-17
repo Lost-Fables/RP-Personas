@@ -7,6 +7,7 @@ import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.death.CorpseHolder;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,6 +37,7 @@ public class CorpseListener implements Listener {
 			(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) &&
 			e.getPlayer().isSneaking()) {
 			e.setCancelled(true);
+			e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHORUS_FLOWER_DEATH, 0.5f, 1.0f);
 
 			// Get Corpse item and null out the one in the player's inventory
 			ItemStack corpseItem = e.getItem();
