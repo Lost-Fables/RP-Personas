@@ -83,35 +83,35 @@ public class PersonaDisableListener implements Listener {
 	}
 
 	// Events to listen to.
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void openInventory(InventoryOpenEvent e) {
 		if (blindedPlayers.containsKey((Player) e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void touchAnyInventory(InventoryInteractEvent e) {
 		if (blindedPlayers.containsKey((Player) e.getWhoClicked())) {
 			e.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void clickAnyInventory(InventoryClickEvent e) {
 		if (blindedPlayers.containsKey((Player) e.getWhoClicked())) {
 			e.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void dropItem(PlayerDropItemEvent e) {
 		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void swapItem(PlayerSwapHandItemsEvent e) {
 		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(true);
@@ -131,7 +131,7 @@ public class PersonaDisableListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void itemPickUp(EntityPickupItemEvent e) {
 		if (e.getEntity() instanceof Player &&
 			blindedPlayers.containsKey((Player) e.getEntity())) {
@@ -139,21 +139,21 @@ public class PersonaDisableListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void breakBlock(BlockBreakEvent e) {
 		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void placeBlock(BlockPlaceEvent e) {
 		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void interaction(PlayerInteractEvent e) {
 		if (blindedPlayers.containsKey(e.getPlayer())) {
 			e.setCancelled(true);

@@ -230,6 +230,9 @@ public final class RPPersonas extends JavaPlugin {
 	public SkinsSQL getSkinsSQL() {
 		return skinsSQL;
 	}
+	public CorpseSQL getCorpseSQL() {
+		return corpseSQL;
+	}
 	public AltarSQL getAltarSQL() {
 		return altarsSQL;
 	}

@@ -5,6 +5,7 @@ import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -49,7 +50,17 @@ public class CorpseHandler {
 	private Corpse createCorpse(String name, String texture, ItemStack[] inventory) {
 		int id = maxID;
 		updateMaxID(id);
-		return loadCorpse(id, name, texture, inventory, System.currentTimeMillis());
+
+		Corpse corpse = loadCorpse(id, name, texture, inventory, System.currentTimeMillis());
+		Map<Object, Object> data = new HashMap<>();
+		data.put("corpseid", id);
+		data.put("name", name);
+		data.put("inventory", corpse.getInventory());
+		data.put("created", corpse.getCreated());
+		data.put("texture", texture);
+		plugin.getCorpseSQL().registerOrUpdate(data);
+
+		return corpse;
 	}
 
 	public Corpse loadCorpse(int id, String name, String texture, String inventory, long created) {
@@ -57,7 +68,7 @@ public class CorpseHandler {
 	}
 
 	public Corpse loadCorpse(int id, String name, String texture, ItemStack[] inventory, long created) {
-		Inventory inv = Bukkit.createInventory(holder, InventoryType.PLAYER);
+		Inventory inv = Bukkit.createInventory(holder, 9*5, ChatColor.stripColor(name));
 		if (inventory != null) {
 			inv.setContents(inventory);
 		}

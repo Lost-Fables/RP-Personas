@@ -2,6 +2,7 @@ package net.korvic.rppersonas.sql;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.death.Corpse;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -99,8 +101,8 @@ public class CorpseSQL extends SQLConnection {
 			replaceStatement.setString(3, null);
 		}
 
-		if (data.containsKey("create")) {
-			replaceStatement.setLong(4, (long) data.get("create"));
+		if (data.containsKey("created")) {
+			replaceStatement.setLong(4, (long) data.get("created"));
 		} else if (resultPresent) {
 			replaceStatement.setLong(4, result.getLong("Created"));
 		} else {
