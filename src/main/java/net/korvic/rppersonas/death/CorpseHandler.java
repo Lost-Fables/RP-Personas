@@ -102,7 +102,7 @@ public class CorpseHandler {
 		}
 
 		InventoryUtil.addItem(inv, itemsToKeep);
-		return (ItemStack[]) itemsToDrop.toArray();
+		return ItemUtil.itemListToArray(itemsToDrop);
 	}
 
 	// STATIC //
