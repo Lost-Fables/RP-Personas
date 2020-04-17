@@ -37,7 +37,7 @@ public class CorpseListener implements Listener {
 			(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) &&
 			e.getPlayer().isSneaking()) {
 			e.setCancelled(true);
-			e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHORUS_FLOWER_DEATH, 0.5f, 1.0f);
+			e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHORUS_FLOWER_DEATH, 1.0f, 1.0f);
 
 			// Get Corpse item and null out the one in the player's inventory
 			ItemStack corpseItem = e.getItem();
