@@ -137,6 +137,7 @@ public final class RPPersonas extends JavaPlugin {
 	public void onDisable() {
 		saveQueueSQL.completeAllSaves();
 		PersonaDisableListener.enableAll();
+		SQLConnection.cancelMaintainer();
 	}
 
 	// SQL //

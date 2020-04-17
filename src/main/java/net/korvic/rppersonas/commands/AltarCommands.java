@@ -56,7 +56,7 @@ public class AltarCommands extends BaseCommand {
 	public void getCorpse(CommandSender sender, Player player) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			InventoryUtil.addOrDropItem(p, plugin.getCorpseHandler().createCorpse("Test", null, null).getItem());
+			InventoryUtil.addOrDropItem(p, plugin.getCorpseHandler().createCorpse(player).getItem());
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
 		}

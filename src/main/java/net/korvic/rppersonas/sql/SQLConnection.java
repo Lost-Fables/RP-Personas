@@ -9,8 +9,17 @@ import java.util.logging.Level;
 public abstract class SQLConnection {
 
 	protected static RPPersonas plugin = null;
-	protected Connection connection;
+	protected static Connection connection;
 
+	private static BukkitRunnable runnable = null;
+
+	private static final String HOST = RPPersonas.config.getString("mysql.host");
+	private static final String PORT = RPPersonas.config.getString("mysql.port");
+	private static final String DATABASE = RPPersonas.config.getString("mysql.database");
+	private static final String USER = RPPersonas.config.getString("mysql.user");
+	private static final String PASSWORD = RPPersonas.config.getString("mysql.password");
+
+	// INSTANCE //
 	protected void load(String SQLTable, String SQLTableName) {
 		connection = getSQLConnection();
 		try {
@@ -21,7 +30,9 @@ public abstract class SQLConnection {
 			e.printStackTrace();
 		}
 		initialize(SQLTableName);
-		runConnectionMaintainer();
+		if (runnable == null || runnable.isCancelled()) {
+			runConnectionMaintainer();
+		}
 	}
 
 	protected void initialize(String SQLTableName){
@@ -39,19 +50,16 @@ public abstract class SQLConnection {
 		}
 	}
 
-	protected Connection getSQLConnection() {
-		String host = RPPersonas.config.getString("mysql.host");
-		String port = RPPersonas.config.getString("mysql.port");
-		String database = RPPersonas.config.getString("mysql.database");
-		String user = RPPersonas.config.getString("mysql.user");
-		String password = RPPersonas.config.getString("mysql.password");
+	protected abstract boolean customStatement();
 
+	// STATIC //
+	protected static Connection getSQLConnection() {
 		try {
 			if (connection != null && !connection.isClosed()) {
 				return connection;
 			}
-			String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false";
-			return DriverManager.getConnection(url, user, password);
+			String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?useSSL=false";
+			return DriverManager.getConnection(url, USER, PASSWORD);
 		} catch (SQLException ex) {
 			if (RPPersonas.DEBUGGING) {
 				plugin.getLogger().log(Level.SEVERE, "MySQL exception on initialize", ex);
@@ -61,8 +69,8 @@ public abstract class SQLConnection {
 		return null;
 	}
 
-	protected void runConnectionMaintainer() {
-		(new BukkitRunnable() {
+	protected static void runConnectionMaintainer() {
+		runnable = new BukkitRunnable() {
 			@Override
 			public void run() {
 				try {
@@ -73,10 +81,27 @@ public abstract class SQLConnection {
 					connection = getSQLConnection();
 				}
 			}
-		}).runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
+		};
+
+		runnable.runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
 	}
 
-	protected void close(PreparedStatement ps, ResultSet rs){
+	public static void cancelMaintainer() {
+		runnable.cancel();
+		runnable = null;
+
+		try {
+			if (connection != null && !connection.isClosed()) {
+				connection.close();
+			}
+		} catch (SQLException e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected static void close(PreparedStatement ps, ResultSet rs) {
 		try {
 			if (ps != null)
 				ps.close();
@@ -86,7 +111,5 @@ public abstract class SQLConnection {
 			Errors.close(plugin, ex);
 		}
 	}
-
-	protected abstract boolean customStatement();
 
 }

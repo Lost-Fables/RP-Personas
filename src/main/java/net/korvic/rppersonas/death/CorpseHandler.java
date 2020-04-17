@@ -1,10 +1,13 @@
 package net.korvic.rppersonas.death;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,16 +26,37 @@ public class CorpseHandler {
 		this.plugin = plugin;
 	}
 
+	public Corpse createCorpse(Player player) {
+		Corpse output = null;
+		try {
+			output = createCorpse(player.getName(), PlayerUtil.getPlayerTexture(player.getUniqueId()), player.getInventory().getContents());
+			player.getInventory().clear();
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+		return output;
+	}
+
 	public Corpse createCorpse(String name, String texture, String inventory) {
+		return createCorpse(name, texture, InventoryUtil.deserializeItemsToArray(inventory));
+	}
+
+	private Corpse createCorpse(String name, String texture, ItemStack[] inventory) {
 		int id = maxID;
 		updateMaxID(id);
 		return loadCorpse(id, name, texture, inventory, System.currentTimeMillis());
 	}
 
 	public Corpse loadCorpse(int id, String name, String texture, String inventory, long created) {
+		return loadCorpse(id, name, texture, InventoryUtil.deserializeItemsToArray(inventory), created);
+	}
+
+	public Corpse loadCorpse(int id, String name, String texture, ItemStack[] inventory, long created) {
 		Inventory inv = Bukkit.createInventory(holder, InventoryType.PLAYER);
 		if (inventory != null) {
-			InventoryUtil.addItem(inv, InventoryUtil.deserializeItems(inventory));
+			inv.setContents(inventory);
 		}
 
 		Corpse corpse = new Corpse(id, name, texture, inv, created);

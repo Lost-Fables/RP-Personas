@@ -22,7 +22,7 @@ public class Corpse {
 
 		ItemStack item = new ItemStack(Material.PLAYER_HEAD);
 		if (texture != null) {
-			ItemUtil.getSkullFromTexture(texture);
+			item = ItemUtil.getSkullFromTexture(texture);
 		}
 
 		ItemMeta meta = item.getItemMeta();
