@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.death;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Bukkit;
@@ -9,7 +10,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CorpseHandler {
@@ -29,8 +32,8 @@ public class CorpseHandler {
 	public Corpse createCorpse(Player player) {
 		Corpse output = null;
 		try {
-			output = createCorpse(player.getName(), PlayerUtil.getPlayerTexture(player.getUniqueId()), player.getInventory().getContents());
-			player.getInventory().clear();
+			ItemStack[] items = filterInventoryForCorpse(player);
+			output = createCorpse(RPPersonas.PRIMARY_DARK + plugin.getPersonaHandler().getLoadedPersona(player).getNickName() + "'s Corpse", PlayerUtil.getPlayerTexture(player.getUniqueId()), items);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
@@ -80,6 +83,26 @@ public class CorpseHandler {
 			}
 		}
 		return output;
+	}
+
+	private ItemStack[] filterInventoryForCorpse(Player player) {
+		Inventory inv = player.getInventory();
+		List<ItemStack> itemsToDrop = new ArrayList<>();
+		List<ItemStack> itemsToKeep = new ArrayList<>();
+
+		ItemStack[] itemsAsArray = inv.getContents();
+		inv.clear();
+
+		for (ItemStack item : itemsAsArray) {
+			if (ItemUtil.hasCustomTag(item, CORPSE_KEY)) {
+				itemsToKeep.add(item);
+			} else {
+				itemsToDrop.add(item);
+			}
+		}
+
+		InventoryUtil.addItem(inv, itemsToKeep);
+		return (ItemStack[]) itemsToDrop.toArray();
 	}
 
 	// STATIC //
