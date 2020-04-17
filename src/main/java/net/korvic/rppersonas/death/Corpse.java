@@ -7,7 +7,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Corpse {
@@ -31,10 +33,13 @@ public class Corpse {
 			item = ItemUtil.getSkullFromTexture(texture);
 		}
 
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(name);
-		item.setItemMeta(meta);
+		List<String> lore = new ArrayList<>();
+		lore.add("Take this to a resurrection altar");
+		lore.add("to bring them back to life.");
+		lore.add("");
+		lore.add("Crouch + Right Click to open.");
 
+		ItemUtil.decorate(item, name, String.valueOf(lore));
 		ItemUtil.setCustomTag(item, CorpseHandler.CORPSE_KEY, id + ":" + created);
 
 		this.itemstack = item;
