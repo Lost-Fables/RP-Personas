@@ -24,9 +24,9 @@ public class AltarSQL extends SQLConnection {
 						  "    AltarID INT NOT NULL PRIMARY KEY,\n" +
 						  "    Name TEXT NOT NULL,\n" +
 						  "    World TEXT NOT NULL,\n" +
-						  "    LocationX DOUBLE NOT NULL,\n" +
-						  "    LocationY DOUBLE NOT NULL,\n" +
-						  "    LocationZ DOUBLE NOT NULL,\n" +
+						  "    LocationX INT NOT NULL,\n" +
+						  "    LocationY INT NOT NULL,\n" +
+						  "    LocationZ INT NOT NULL,\n" +
 						  "    IconID TEXT\n" +
 						  ");";
 		load(SQLTable, SQLTableName);
@@ -96,19 +96,19 @@ public class AltarSQL extends SQLConnection {
 		if (data.containsKey("location")) {
 			Location loc = (Location) data.get("location");
 			replaceStatement.setString(3, loc.getWorld().getName());
-			replaceStatement.setDouble(4, loc.getX());
-			replaceStatement.setDouble(5, loc.getY());
-			replaceStatement.setDouble(6, loc.getZ());
+			replaceStatement.setInt(4, loc.getBlockX());
+			replaceStatement.setInt(5, loc.getBlockY());
+			replaceStatement.setInt(6, loc.getBlockZ());
 		} else if (resultPresent) {
 			replaceStatement.setString(3, result.getString("World"));
-			replaceStatement.setDouble(4, result.getInt("LocationX"));
-			replaceStatement.setDouble(5, result.getInt("LocationY"));
-			replaceStatement.setDouble(6, result.getInt("LocationZ"));
+			replaceStatement.setInt(4, result.getInt("LocationX"));
+			replaceStatement.setInt(5, result.getInt("LocationY"));
+			replaceStatement.setInt(6, result.getInt("LocationZ"));
 		} else {
 			replaceStatement.setString(3, null);
-			replaceStatement.setDouble(4, 0);
-			replaceStatement.setDouble(5, 0);
-			replaceStatement.setDouble(6, 0);
+			replaceStatement.setInt(4, 0);
+			replaceStatement.setInt(5, 0);
+			replaceStatement.setInt(6, 0);
 		}
 
 		if (data.containsKey("iconid")) {
