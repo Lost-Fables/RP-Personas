@@ -86,7 +86,7 @@ public abstract class SQLConnection {
 		runnable.runTaskTimerAsynchronously(plugin, 60 * 20, 60 * 20);
 	}
 
-	public static void cancelMaintainer() {
+	public static void cancelConnectionMaintainer() {
 		runnable.cancel();
 		runnable = null;
 
