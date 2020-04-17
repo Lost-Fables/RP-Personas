@@ -40,7 +40,11 @@ public class CorpseListener implements Listener {
 			// Get Corpse item and null out the one in the player's inventory
 			ItemStack corpseItem = e.getItem();
 			Corpse corpse = plugin.getCorpseHandler().getCorpse(ItemUtil.getCustomTag(corpseItem, CorpseHandler.CORPSE_KEY));
-			e.getPlayer().openInventory(corpse.getInventory());
+			if (!InventoryUtil.isEmpty(corpse.getInventory())) {
+				e.getPlayer().openInventory(corpse.getInventory());
+			} else {
+				e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "The corpse has nothing on it...");
+			}
 		}
 	}
 
