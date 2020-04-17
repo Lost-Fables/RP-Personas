@@ -78,7 +78,7 @@ public class CorpseHandler {
 			long created = Long.parseLong(keys[1]);
 
 			output = knownCorpses.get(id);
-			if (output.getCreated() != created) {
+			if (output != null && output.getCreated() != created) {
 				output = null;
 			}
 		}

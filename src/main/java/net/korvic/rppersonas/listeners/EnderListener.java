@@ -32,7 +32,7 @@ public class EnderListener implements Listener {
 			if (inv != null) {
 				e.setCancelled(true);
 				p.openInventory(inv);
-				p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.5f, 1.0f);
+				p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.4f, 1.0f);
 			}
 		}
 	}
@@ -41,7 +41,7 @@ public class EnderListener implements Listener {
 	public void closeEnderEvent(InventoryCloseEvent e) {
 		if (e.getInventory().getHolder() instanceof PersonaEnderHolder) {
 			Player p = (Player) e.getPlayer();
-			p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_CLOSE, 0.5f, 1.0f);
+			p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_CLOSE, 0.4f, 1.0f);
 		}
 	}
 

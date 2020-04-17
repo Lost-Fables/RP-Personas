@@ -37,15 +37,19 @@ public class CorpseListener implements Listener {
 			(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) &&
 			e.getPlayer().isSneaking()) {
 			e.setCancelled(true);
-			e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHORUS_FLOWER_DEATH, 1.0f, 1.0f);
+			e.getPlayer().getLocation().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHORUS_FLOWER_DEATH, 1.5f, 1.0f);
 
 			// Get Corpse item and null out the one in the player's inventory
 			ItemStack corpseItem = e.getItem();
 			Corpse corpse = plugin.getCorpseHandler().getCorpse(ItemUtil.getCustomTag(corpseItem, CorpseHandler.CORPSE_KEY));
-			if (!InventoryUtil.isEmpty(corpse.getInventory())) {
-				e.getPlayer().openInventory(corpse.getInventory());
+			if (corpse != null) {
+				if (!InventoryUtil.isEmpty(corpse.getInventory())) {
+					e.getPlayer().openInventory(corpse.getInventory());
+				} else {
+					e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "The corpse has nothing on it...");
+				}
 			} else {
-				e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "The corpse has nothing on it...");
+				e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "The corpse has rotted away...");
 			}
 		}
 	}
