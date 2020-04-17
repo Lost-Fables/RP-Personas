@@ -28,9 +28,11 @@ public class Corpse {
 		this.created = created;
 		this.texture = texture;
 
-		ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+		ItemStack item;
 		if (texture != null) {
 			item = ItemUtil.getSkullFromTexture(texture);
+		} else {
+			item = new ItemStack(Material.PLAYER_HEAD);
 		}
 
 		List<String> lore = new ArrayList<>();

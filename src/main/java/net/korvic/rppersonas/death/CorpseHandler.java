@@ -4,6 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.aspects.PersonaSkin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -33,7 +34,16 @@ public class CorpseHandler {
 		Corpse output = null;
 		try {
 			ItemStack[] items = filterInventoryForCorpse(player);
-			output = createCorpse(RPPersonas.PRIMARY_DARK + plugin.getPersonaHandler().getLoadedPersona(player).getNickName() + "'s Corpse", PlayerUtil.getPlayerTexture(player.getUniqueId()), items);
+
+			PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
+			String texture;
+			if (skin.getSkinID() > 0) {
+				texture = skin.getTextureValue();
+			} else {
+				texture = PlayerUtil.getPlayerTexture(player.getUniqueId());
+			}
+
+			output = createCorpse(RPPersonas.PRIMARY_DARK + plugin.getPersonaHandler().getLoadedPersona(player).getNickName() + "'s Corpse", texture, items);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
