@@ -21,8 +21,16 @@ public class PersonaCommands extends BaseCommand {
 
 	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void info(CommandSender sender,
-					 @Arg(value="Player", description="The player who's info you wish to see.") Player player) {
+					 @Arg(value = "Player", description = "The player who's info you wish to see.") Player player) {
 		msg(plugin.getPersonaHandler().getPersonaInfo(player));
+	}
+
+	@Cmd(value = "Execute the given player's current persona by your current persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
+	public void execute(CommandSender sender,
+						@Arg(value = "Player", description = "The player which you're executing.") Player player) {
+		if (sender instanceof Player) {
+			plugin.getDeathHandler().requestExecute((Player) sender, player);
+		}
 	}
 
 	@Cmd(value = "Set information about your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")

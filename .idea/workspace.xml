@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="" />
+    <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/DeathHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/PersonaCommands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/commands/PersonaCommands.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -130,10 +135,10 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1010" y="475" key="#com.intellij.ide.util.PackageChooserDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587023051288" />
-    <state x="796" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586134383118">
+    <state x="796" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1587225356101">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="796" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586134383118" />
+    <state x="796" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587225356101" />
     <state x="987" y="318" key="FileChooserDialogImpl" timestamp="1587013547194">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
