@@ -19,12 +19,18 @@ public class DeathSQL extends SQLConnection {
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
-						  "    Name TEXT NOT NULL PRIMARY KEY,\n" +
+						  "    VictimPersona INT NOT NULL,\n" +
+						  "    VictimAccount INT NOT NULL,\n" +
+						  "    VictimUUID TEXT NOT NULL,\n" +
+						  "    KillerPersona INT NOT NULL,\n" +
+						  "    KillerAccount INT NOT NULL,\n" +
+						  "    KillerUUID TEXT NOT NULL,\n" +
 						  "    World TEXT NOT NULL,\n" +
-						  "    LocationX DOUBLE NOT NULL,\n" +
-						  "    LocationY DOUBLE NOT NULL,\n" +
-						  "    LocationZ DOUBLE NOT NULL,\n" +
-						  "    Icon TEXT\n" +
+						  "    LocationX INT NOT NULL,\n" +
+						  "    LocationY INT NOT NULL,\n" +
+						  "    LocationZ INT NOT NULL,\n" +
+						  "    Time BIGINT NOT NULL,\n" +
+						  "    Refunder TEXT\n" +
 						  ");";
 		load(SQLTable, SQLTableName);
 	}

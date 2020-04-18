@@ -1,5 +1,6 @@
-package net.korvic.rppersonas;
+package net.korvic.rppersonas.accounts;
 
+import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

@@ -2,6 +2,7 @@ package net.korvic.rppersonas;
 
 import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
+import net.korvic.rppersonas.accounts.UnregisteredHandler;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.AltarHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
@@ -54,8 +55,9 @@ public final class RPPersonas extends JavaPlugin {
 	private PersonasSQL personasSQL;
 	private CurrencySQL currencySQL;
 	private SkinsSQL skinsSQL;
-	private AltarSQL altarsSQL;
+	private DeathSQL deathSQL;
 	private CorpseSQL corpseSQL;
+	private AltarSQL altarsSQL;
 
 	// Default Location
 	private Location spawnLocation;
@@ -148,8 +150,9 @@ public final class RPPersonas extends JavaPlugin {
 		personasSQL = new PersonasSQL(this);
 		currencySQL = new CurrencySQL(this);
 		skinsSQL = new SkinsSQL(this);
-		altarsSQL = new AltarSQL(this);
+		deathSQL = new DeathSQL(this);
 		corpseSQL = new CorpseSQL(this);
+		altarsSQL = new AltarSQL(this);
 	}
 
 	// CONFIG //
@@ -229,6 +232,9 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public SkinsSQL getSkinsSQL() {
 		return skinsSQL;
+	}
+	public DeathSQL getDeathSQL() {
+		return deathSQL;
 	}
 	public CorpseSQL getCorpseSQL() {
 		return corpseSQL;
