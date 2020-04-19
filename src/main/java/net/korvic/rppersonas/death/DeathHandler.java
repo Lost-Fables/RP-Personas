@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.death;
 
+import co.lotc.core.bukkit.util.LocationUtil;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.entity.Player;
 
@@ -16,14 +17,9 @@ public class DeathHandler {
 		this.plugin = plugin;
 	}
 
-	public boolean requestExecute(Player killer, Player victim) {
-		boolean output = false;
-		if (!requestMap.containsKey(victim)) {
-			output = true;
-			requestMap.put(victim, new DeathRequest(killer, victim));
-		}
+	public void requestExecute(Player killer, Player victim) {
+		requestMap.put(victim, new DeathRequest(killer, victim));
 		pingRequest(victim);
-		return output;
 	}
 
 	public boolean acceptExecute(Player killer, Player victim) {
