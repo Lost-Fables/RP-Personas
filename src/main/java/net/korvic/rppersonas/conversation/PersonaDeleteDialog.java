@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas.modification;
+package net.korvic.rppersonas.conversation;
 
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;

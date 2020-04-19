@@ -2,8 +2,7 @@ package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.aspects.PersonaSkin;
-import net.korvic.rppersonas.personas.modification.PersonaCreationDialog;
+import net.korvic.rppersonas.conversation.PersonaCreationDialog;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;

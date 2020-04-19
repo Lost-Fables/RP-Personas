@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas.aspects;
+package net.korvic.rppersonas.listeners;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;

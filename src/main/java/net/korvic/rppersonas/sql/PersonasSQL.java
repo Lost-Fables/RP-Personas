@@ -2,11 +2,10 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
-import net.korvic.rppersonas.personas.aspects.PersonaGender;
-import net.korvic.rppersonas.personas.aspects.PersonaSubRace;
+import net.korvic.rppersonas.personas.pieces.PersonaGender;
+import net.korvic.rppersonas.personas.pieces.PersonaSubRace;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.util.HashMap;

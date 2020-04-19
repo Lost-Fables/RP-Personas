@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas.aspects;
+package net.korvic.rppersonas.personas.pieces;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.potion.PotionEffect;

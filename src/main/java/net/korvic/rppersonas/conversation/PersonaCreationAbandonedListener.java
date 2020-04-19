@@ -1,7 +1,8 @@
-package net.korvic.rppersonas.personas.modification;
+package net.korvic.rppersonas.conversation;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
+import net.korvic.rppersonas.listeners.PersonaDisableListener;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.conversations.ConversationAbandonedListener;
 import org.bukkit.entity.Player;

@@ -1,11 +1,12 @@
-package net.korvic.rppersonas.personas.modification;
+package net.korvic.rppersonas.conversation;
 
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.aspects.PersonaGender;
+import net.korvic.rppersonas.personas.pieces.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.personas.aspects.PersonaRace;
-import net.korvic.rppersonas.personas.aspects.PersonaSubRace;
+import net.korvic.rppersonas.personas.pieces.PersonaRace;
+import net.korvic.rppersonas.personas.pieces.PersonaSubRace;
+import net.korvic.rppersonas.listeners.PersonaDisableListener;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
