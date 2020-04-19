@@ -61,6 +61,10 @@ public class PersonaHandler {
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
 
+		if (first) {
+			data.put("first", new Object());
+		}
+
 		new PersonaCreationConvo(plugin).startConvo(p, data, !first);
 	}
 

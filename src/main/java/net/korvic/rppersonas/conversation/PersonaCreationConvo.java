@@ -25,7 +25,7 @@ public class PersonaCreationConvo extends BaseConvo {
 
 	@Override
 	public Prompt getFirstPrompt(Map<Object, Object> data) {
-		if (data.containsKey("fresh")) {
+		if (data.containsKey("first")) {
 			return new StartingPrompt();
 		} else {
 			this.factory.addConversationAbandonedListener(new PersonaCreationAbandonedListener());
