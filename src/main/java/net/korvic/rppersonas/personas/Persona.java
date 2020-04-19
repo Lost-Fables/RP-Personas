@@ -2,7 +2,7 @@ package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.conversation.PersonaCreationConvo;
+import net.korvic.rppersonas.conversation.BaseConvo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -118,7 +118,7 @@ public class Persona {
 	public String getFormattedBasicInfo() {
 		Map<String, Object> data = getBasicInfo();
 
-		String output = PersonaCreationConvo.DIVIDER +
+		String output = BaseConvo.DIVIDER +
 						RPPersonas.PRIMARY_DARK + "Persona ID: " + RPPersonas.SECONDARY_LIGHT + String.format("%06d", (int) data.get("personaid")) + "\n";
 		if (data.containsKey("nickname")) {
 			output += RPPersonas.PRIMARY_DARK + "Nickname: " + RPPersonas.SECONDARY_LIGHT + data.get("nickname") + "\n";
@@ -130,7 +130,7 @@ public class Persona {
 		if (data.containsKey("description")) {
 			output += RPPersonas.PRIMARY_DARK + "Description: " + RPPersonas.SECONDARY_LIGHT + data.get("description") + "\n";
 		}
-		output += PersonaCreationConvo.DIVIDER;
+		output += BaseConvo.DIVIDER;
 
 		return output;
 	}

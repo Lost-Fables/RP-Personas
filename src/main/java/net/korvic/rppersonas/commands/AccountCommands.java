@@ -14,6 +14,7 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.conversation.PersonaDeleteConvo;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
@@ -320,10 +321,7 @@ public class AccountCommands extends BaseCommand {
 						Map<Object, Object> data = new HashMap<>();
 						data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()));
 
-						ConversationFactory factory = getFreshFactory();
-						factory.withInitialSessionData(data);
-						factory.withFirstPrompt(new PersonaSkinConvo.SkinNamePrompt());
-						factory.buildConversation(p).begin();
+						new PersonaSkinConvo(plugin).startConvo(p, data, true);
 					}
 				});
 			}
@@ -446,9 +444,9 @@ public class AccountCommands extends BaseCommand {
 							} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 								menuAction.getPlayer().closeInventory();
 
-								ConversationFactory factory = getFreshFactory();
-								factory.withFirstPrompt(new PersonaDeleteConvo.DeletePersonaPrompt(personaID));
-								factory.buildConversation(menuAction.getPlayer()).begin();
+								Map<Object, Object> data = new HashMap<>();
+								data.put("personaid", personaID);
+								new PersonaDeleteConvo(plugin).startConvo(menuAction.getPlayer(), data, true);
 							}
 						}
 					}
@@ -503,9 +501,9 @@ public class AccountCommands extends BaseCommand {
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().closeInventory();
 
-							ConversationFactory factory = getFreshFactory();
-							factory.withFirstPrompt(new PersonaDeleteConvo.DeletePersonaPrompt(personaID));
-							factory.buildConversation(menuAction.getPlayer()).begin();
+							Map<Object, Object> data = new HashMap<>();
+							data.put("personaid", personaID);
+							new PersonaDeleteConvo(plugin).startConvo(menuAction.getPlayer(), data, true);
 						}
 					}
 				});
@@ -541,10 +539,4 @@ public class AccountCommands extends BaseCommand {
 		}
 	}
 
-	// FACTORY //
-	private ConversationFactory getFreshFactory() {
-		return new ConversationFactory(plugin)
-				.thatExcludesNonPlayersWithMessage("Console does not participate in dialogues.")
-				.withModality(true);
-	}
 }

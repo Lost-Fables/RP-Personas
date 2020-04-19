@@ -61,16 +61,7 @@ public class PersonaHandler {
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
 
-		ConversationFactory factory = getFreshFactory();
-		factory.withInitialSessionData(data);
-		if (first) {
-			factory.withFirstPrompt(new PersonaCreationConvo.StartingPrompt());
-		} else {
-			factory.withFirstPrompt(new PersonaCreationConvo.PersonaNamePrompt(false, false))
-				   .addConversationAbandonedListener(new PersonaCreationAbandonedListener());
-			addAbandoners(factory);
-		}
-		factory.buildConversation(p).begin();
+		new PersonaCreationConvo(plugin).startConvo(p, data, first);
 	}
 
 	public Persona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
@@ -249,21 +240,6 @@ public class PersonaHandler {
 	private void removeFromMemory(int personaID, Player p, boolean keepLinked) {
 		loadedPersonas.remove(personaID);
 		playerObjectToID.remove(p);
-	}
-
-	// FACTORY //
-	private static ConversationFactory getFreshFactory() {
-		return new ConversationFactory(plugin)
-				.thatExcludesNonPlayersWithMessage("Console does not participate in dialogues.")
-				.withModality(true);
-	}
-
-	private static void addAbandoners(ConversationFactory factory) {
-		factory.withEscapeSequence("quit")
-			   .withEscapeSequence("exit")
-			   .withEscapeSequence("cancel")
-			   .withEscapeSequence("stop")
-			   .withEscapeSequence("help");
 	}
 
 	// UPDATE //

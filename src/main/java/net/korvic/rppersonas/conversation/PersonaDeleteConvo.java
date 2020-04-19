@@ -11,20 +11,29 @@ import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 public class PersonaDeleteConvo extends BaseConvo {
+
+	public PersonaDeleteConvo(RPPersonas plugin) {
+		super(plugin);
+	}
+
+	@Override
+	public Prompt getFirstPrompt(Map<Object, Object> data) {
+		return new DeletePersonaPrompt();
+	}
 
 	// Confirm Deletion //
 	public static class DeletePersonaPrompt extends BooleanPrompt {
 		private String name;
 		private int personaID;
 
-		public DeletePersonaPrompt(int personaID) {
-			this.name = RPPersonas.get().getPersonasSQL().getName(personaID);
-			this.personaID = personaID;
-		}
-
 		@Override
 		public String getPromptText(ConversationContext context) {
+			this.personaID = (int) context.getSessionData("personaid");
+			this.name = RPPersonas.get().getPersonasSQL().getName(personaID);
+
 			Player p = (Player) context.getForWhom();
 			BaseComponent confirmation = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "You have are about to " + RPPersonas.SECONDARY_DARK + ChatColor.BOLD + "permanently kill" + RPPersonas.PRIMARY_DARK + " your persona '" + name + "'." +
 														   "\n" + RPPersonas.PRIMARY_DARK + "Are you sure you want to do this?\n" +
