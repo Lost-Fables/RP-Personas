@@ -16,12 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PersonaCreationDialog {
-	//// Creation Dialog Prompts ////
-
-	public static final String BUTTON_SPACE = "  ";
-	public static final String DIVIDER = RPPersonas.SECONDARY_DARK + "================================\n" + ChatColor.RESET;
-	public static final String NOTE = RPPersonas.SECONDARY_DARK + "" + ChatColor.BOLD + "\nNote: " + ChatColor.RESET;
+public class PersonaCreationConvo extends BaseConvo {
 
 	// Intro //
 	public static class StartingPrompt extends MessagePrompt {

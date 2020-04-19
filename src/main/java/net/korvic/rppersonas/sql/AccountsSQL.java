@@ -1,23 +1,19 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
-public class AccountsSQL extends SQLConnection {
+public class AccountsSQL extends BaseSQL {
 
 	private static final String SQLTableName = "rppersonas_accounts";
 
 	public AccountsSQL(RPPersonas plugin) {
-		if (SQLConnection.plugin == null) {
-			SQLConnection.plugin = plugin;
+		if (BaseSQL.plugin == null) {
+			BaseSQL.plugin = plugin;
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +

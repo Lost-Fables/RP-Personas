@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.*;
 import java.util.logging.Level;
 
-public abstract class SQLConnection {
+public abstract class BaseSQL {
 
 	protected static RPPersonas plugin = null;
 	protected static Connection connection;

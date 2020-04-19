@@ -11,7 +11,7 @@ import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
 
-public class PersonaDeleteDialog {
+public class PersonaDeleteConvo extends BaseConvo {
 
 	// Confirm Deletion //
 	public static class DeletePersonaPrompt extends BooleanPrompt {
@@ -28,10 +28,10 @@ public class PersonaDeleteDialog {
 			Player p = (Player) context.getForWhom();
 			BaseComponent confirmation = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "You have are about to " + RPPersonas.SECONDARY_DARK + ChatColor.BOLD + "permanently kill" + RPPersonas.PRIMARY_DARK + " your persona '" + name + "'." +
 														   "\n" + RPPersonas.PRIMARY_DARK + "Are you sure you want to do this?\n" +
-														   PersonaCreationDialog.DIVIDER);
+														   PersonaCreationConvo.DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
-			confirmation.addExtra(PersonaCreationDialog.BUTTON_SPACE);
+			confirmation.addExtra(PersonaCreationConvo.BUTTON_SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 
 			p.spigot().sendMessage(confirmation);

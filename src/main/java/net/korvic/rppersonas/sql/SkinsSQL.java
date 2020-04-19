@@ -1,24 +1,20 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.PersonaHandler;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class SkinsSQL extends SQLConnection {
+public class SkinsSQL extends BaseSQL {
 
 	private static final String SQLTableName = "rppersonas_saved_skins";
 	private int highestSkinID = 1;
 
 	public SkinsSQL(RPPersonas plugin) {
-		if (SQLConnection.plugin == null) {
-			SQLConnection.plugin = plugin;
+		if (BaseSQL.plugin == null) {
+			BaseSQL.plugin = plugin;
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +

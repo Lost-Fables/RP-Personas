@@ -1,21 +1,14 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.dynmap.DynmapCommonAPI;
 
-import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
-public class DeathSQL extends SQLConnection {
+public class DeathSQL extends BaseSQL {
 
 	private static final String SQLTableName = "rppersonas_deaths";
 
 	public DeathSQL(RPPersonas plugin) {
-		if (SQLConnection.plugin == null) {
-			SQLConnection.plugin = plugin;
+		if (BaseSQL.plugin == null) {
+			BaseSQL.plugin = plugin;
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +

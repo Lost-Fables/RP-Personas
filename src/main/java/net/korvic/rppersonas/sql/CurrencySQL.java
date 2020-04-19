@@ -1,21 +1,19 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import org.bukkit.Location;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class CurrencySQL extends SQLConnection {
+public class CurrencySQL extends BaseSQL {
 
 	private static final String SQLTableName = "rppersonas_currency";
 
 	public CurrencySQL(RPPersonas plugin) {
-		if (SQLConnection.plugin == null) {
-			SQLConnection.plugin = plugin;
+		if (BaseSQL.plugin == null) {
+			BaseSQL.plugin = plugin;
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +

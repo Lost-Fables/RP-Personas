@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PersonaSkinDialog {
+public class PersonaSkinConvo extends BaseConvo {
 
 	// Skin Name //
 	public static class SkinNamePrompt extends ValidatingPrompt {
@@ -21,7 +21,7 @@ public class PersonaSkinDialog {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			return "\n" + RPPersonas.PRIMARY_DARK + "Type in a name for this skin now." +
-				   PersonaCreationDialog.NOTE + RPPersonas.PRIMARY_DARK + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
+				   PersonaCreationConvo.NOTE + RPPersonas.PRIMARY_DARK + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
 		}
 
 		@Override
@@ -60,10 +60,10 @@ public class PersonaSkinDialog {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 			BaseComponent confirmation = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "You have entered " + RPPersonas.SECONDARY_LIGHT + name + RPPersonas.PRIMARY_DARK + " for the skin name.\n" + RPPersonas.PRIMARY_DARK + "Is this correct?\n" +
-														   PersonaCreationDialog.DIVIDER);
+														   PersonaCreationConvo.DIVIDER);
 
 			confirmation.addExtra(MessageUtil.CommandButton("Yes", "Yes", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
-			confirmation.addExtra(PersonaCreationDialog.BUTTON_SPACE);
+			confirmation.addExtra(PersonaCreationConvo.BUTTON_SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 
 			p.spigot().sendMessage(confirmation);

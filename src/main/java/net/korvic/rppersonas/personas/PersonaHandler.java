@@ -5,7 +5,7 @@ import co.lotc.core.bukkit.util.LocationUtil;
 import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaCreationAbandonedListener;
-import net.korvic.rppersonas.conversation.PersonaCreationDialog;
+import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.listeners.PersonaDisableListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -64,9 +64,9 @@ public class PersonaHandler {
 		ConversationFactory factory = getFreshFactory();
 		factory.withInitialSessionData(data);
 		if (first) {
-			factory.withFirstPrompt(new PersonaCreationDialog.StartingPrompt());
+			factory.withFirstPrompt(new PersonaCreationConvo.StartingPrompt());
 		} else {
-			factory.withFirstPrompt(new PersonaCreationDialog.PersonaNamePrompt(false, false))
+			factory.withFirstPrompt(new PersonaCreationConvo.PersonaNamePrompt(false, false))
 				   .addConversationAbandonedListener(new PersonaCreationAbandonedListener());
 			addAbandoners(factory);
 		}

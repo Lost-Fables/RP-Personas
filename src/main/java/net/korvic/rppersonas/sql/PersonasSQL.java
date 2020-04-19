@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class PersonasSQL extends SQLConnection {
+public class PersonasSQL extends BaseSQL {
 
 	private static final String SQLTableName = "rppersonas_personas";
 
 	public PersonasSQL(RPPersonas plugin) {
-		if (SQLConnection.plugin == null) {
-			SQLConnection.plugin = plugin;
+		if (BaseSQL.plugin == null) {
+			BaseSQL.plugin = plugin;
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +

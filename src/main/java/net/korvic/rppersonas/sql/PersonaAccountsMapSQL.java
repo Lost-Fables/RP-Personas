@@ -2,20 +2,18 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 
-public class PersonaAccountsMapSQL extends SQLConnection {
+public class PersonaAccountsMapSQL extends BaseSQL {
 
 	private static final String SQLTableName = "rppersonas_persona_account_map";
 
 	public PersonaAccountsMapSQL(RPPersonas plugin) {
-		if (SQLConnection.plugin == null) {
-			SQLConnection.plugin = plugin;
+		if (BaseSQL.plugin == null) {
+			BaseSQL.plugin = plugin;
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +

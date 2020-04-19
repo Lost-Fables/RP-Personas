@@ -4,20 +4,18 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class AltarSQL extends SQLConnection {
+public class AltarSQL extends BaseSQL {
 
 	private static final String SQLTableName = "rppersonas_altars";
 
 	public AltarSQL(RPPersonas plugin) {
-		if (SQLConnection.plugin == null) {
-			SQLConnection.plugin = plugin;
+		if (BaseSQL.plugin == null) {
+			BaseSQL.plugin = plugin;
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +

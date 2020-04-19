@@ -14,10 +14,10 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.conversation.PersonaDeleteDialog;
+import net.korvic.rppersonas.conversation.PersonaDeleteConvo;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
-import net.korvic.rppersonas.conversation.PersonaSkinDialog;
+import net.korvic.rppersonas.conversation.PersonaSkinConvo;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -322,7 +322,7 @@ public class AccountCommands extends BaseCommand {
 
 						ConversationFactory factory = getFreshFactory();
 						factory.withInitialSessionData(data);
-						factory.withFirstPrompt(new PersonaSkinDialog.SkinNamePrompt());
+						factory.withFirstPrompt(new PersonaSkinConvo.SkinNamePrompt());
 						factory.buildConversation(p).begin();
 					}
 				});
@@ -447,7 +447,7 @@ public class AccountCommands extends BaseCommand {
 								menuAction.getPlayer().closeInventory();
 
 								ConversationFactory factory = getFreshFactory();
-								factory.withFirstPrompt(new PersonaDeleteDialog.DeletePersonaPrompt(personaID));
+								factory.withFirstPrompt(new PersonaDeleteConvo.DeletePersonaPrompt(personaID));
 								factory.buildConversation(menuAction.getPlayer()).begin();
 							}
 						}
@@ -504,7 +504,7 @@ public class AccountCommands extends BaseCommand {
 							menuAction.getPlayer().closeInventory();
 
 							ConversationFactory factory = getFreshFactory();
-							factory.withFirstPrompt(new PersonaDeleteDialog.DeletePersonaPrompt(personaID));
+							factory.withFirstPrompt(new PersonaDeleteConvo.DeletePersonaPrompt(personaID));
 							factory.buildConversation(menuAction.getPlayer()).begin();
 						}
 					}
