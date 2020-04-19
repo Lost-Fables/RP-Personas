@@ -61,7 +61,7 @@ public class PersonaHandler {
 		data.put("fresh", new Object());
 		data.put("location", plugin.getSpawnLocation());
 
-		new PersonaCreationConvo(plugin).startConvo(p, data, first);
+		new PersonaCreationConvo(plugin).startConvo(p, data, !first);
 	}
 
 	public Persona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
