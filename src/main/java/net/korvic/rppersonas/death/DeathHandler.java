@@ -16,20 +16,38 @@ public class DeathHandler {
 		this.plugin = plugin;
 	}
 
-	public void requestExecute(Player killer, Player victim) {
+	public boolean requestExecute(Player killer, Player victim) {
+		boolean output = false;
 		if (!requestMap.containsKey(victim)) {
+			output = true;
 			requestMap.put(victim, new DeathRequest(killer, victim));
-		} else {
-			killer.sendMessage(RPPersonas.PRIMARY_DARK + "That player already has an execution request pending!");
 		}
 		pingRequest(victim);
+		return output;
 	}
 
-	public void forceExecute(Player killer, Player victim, boolean event) {
-
+	public boolean acceptExecute(Player killer, Player victim) {
+		boolean output = false;
+		if (requestMap.containsKey(victim)) {
+			DeathRequest req = requestMap.get(victim);
+			if (req.getKiller().equals(killer)) {
+				req.complete(false);
+				requestMap.remove(victim);
+				output = true;
+			}
+		}
+		return output;
 	}
 
-	private void pingRequest(Player victim) {
+	public void forceExecute(Player killer, Player victim) {
+		new DeathRequest(killer, victim).complete(true);
+	}
+
+	public boolean hasRequest(Player victim) {
+		return requestMap.containsKey(victim);
+	}
+
+	public void pingRequest(Player victim) {
 
 	}
 

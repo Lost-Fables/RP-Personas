@@ -26,10 +26,30 @@ public class PersonaCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Execute the given player's current persona by your current persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
-	public void execute(CommandSender sender,
+	public void Execute(CommandSender sender,
 						@Arg(value = "Player", description = "The player which you're executing.") Player player) {
+		if (sender instanceof Player &&
+			!plugin.getDeathHandler().requestExecute((Player) sender, player)) {
+			msg(RPPersonas.PRIMARY_DARK + "That player already has an execution request pending!");
+		} else {
+			msg(NO_CONSOLE);
+		}
+	}
+
+	@Cmd(value = "Accept being executed by a given player.", permission = RPPersonas.PERMISSION_START + ".accepted")
+	public void ExecuteAccept(CommandSender sender,
+							  @Arg(value = "Player", description = "The player executing you.") Player killer) {
 		if (sender instanceof Player) {
-			plugin.getDeathHandler().requestExecute((Player) sender, player);
+			Player victim = (Player) sender;
+			if (plugin.getDeathHandler().hasRequest(victim)) {
+				if (!plugin.getDeathHandler().acceptExecute(killer, victim)) {
+					plugin.getDeathHandler().pingRequest(victim);
+				}
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You have no pending execution requests.");
+			}
+		} else {
+			msg(NO_CONSOLE);
 		}
 	}
 
