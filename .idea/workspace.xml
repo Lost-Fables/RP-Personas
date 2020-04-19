@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/DeathSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/DeathSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/DeathRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/death/DeathRequest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,10 +153,10 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1298" y="356" key="SettingsEditor/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1584142058356" />
-    <state x="2454" y="-27" width="1936" height="1129" maximized="true" key="dock-window-1" timestamp="1586114708945">
+    <state x="2560" y="0" width="1936" height="1129" key="dock-window-1" timestamp="1587304796037">
       <screen x="2560" y="0" width="1920" height="1040" />
     </state>
-    <state x="2454" y="-27" width="1936" height="1129" maximized="true" key="dock-window-1/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1586114708945" />
+    <state x="2560" y="0" width="1936" height="1129" key="dock-window-1/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1587304796037" />
     <state x="2560" y="0" width="1936" height="1129" key="dock-window-1/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1584986769235" />
     <state x="1273" y="0" width="1294" height="1407" key="dock-window-2" timestamp="1583791514606">
       <screen x="0" y="0" width="2560" height="1400" />

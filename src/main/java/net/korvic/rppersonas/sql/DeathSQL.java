@@ -113,10 +113,10 @@ public class DeathSQL extends BaseSQL {
 			replaceStatement.setInt(10, 0);
 		}
 
-		if (data.containsKey("created")) {
-			replaceStatement.setLong(11, (long) data.get("created"));
+		if (data.containsKey("time")) {
+			replaceStatement.setLong(11, (long) data.get("time"));
 		} else {
-			replaceStatement.setLong(11, 0);
+			replaceStatement.setLong(11, System.currentTimeMillis());
 		}
 
 		if (data.containsKey("staff")) {
