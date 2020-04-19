@@ -1,6 +1,15 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Location;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
 
 public class DeathSQL extends BaseSQL {
 
@@ -23,6 +32,7 @@ public class DeathSQL extends BaseSQL {
 						  "    LocationY INT NOT NULL,\n" +
 						  "    LocationZ INT NOT NULL,\n" +
 						  "    Time BIGINT NOT NULL,\n" +
+						  "    StaffInflicted BIT NOT NULL,\n" +
 						  "    Refunder TEXT\n" +
 						  ");";
 		load(SQLTable, SQLTableName);
@@ -33,153 +43,95 @@ public class DeathSQL extends BaseSQL {
 		return false;
 	}
 
-
-	/*// Checks if this account is already registered.
-	public boolean isRegistered(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
-			boolean result = false;
-			if (rs.next()) {
-				result = true;
-			}
-			return result;
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
-		return false;
-	}
-
-	// Gets our stored data for this account.
-	public Map<Object, Object> getData(int accountid) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		conn = getSQLConnection();
-
-		try {
-			ps = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountid + "'");
-			ResultSet rs = ps.executeQuery();
-
-			Map<Object, Object> data = new HashMap<>();
-
-			if (rs.next()) {
-				data.put("accountid", accountid);
-				data.put("discordid", rs.getString("DiscordID"));
-				data.put("playtime", rs.getLong("Playtime"));
-				data.put("votes", rs.getShort("Votes"));
-			}
-
-			return data;
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
-
-		return null;
-	}
-
 	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(Map<Object, Object> data) {
 		if (data.containsKey("accountid")) {
-			PreparedStatement ps = null;
 			try {
-				ps = getSaveStatement(data);
-				ps.executeUpdate();
+				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			} finally {
-				try {
-					if (ps != null)
-						ps.close();
-				} catch (SQLException ex) {
-					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-				}
 			}
 		}
 	}
 
 	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
 		Connection conn = null;
-		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + data.get("accountid") + "'");
-		ResultSet result = grabStatement.executeQuery();
-		boolean resultPresent = result.next();
-
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,DiscordID,Playtime,Votes) VALUES(?,?,?,?)");
+		replaceStatement = conn.prepareStatement("INSERT INTO " + SQLTableName + " (VictimPersona,VictimAccount,VictimUUID,KillerPersona,KillerAccount,KillerUUID,World,LocationX,LocationY,LocationZ,Time,StaffInflicted,Refunder) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 
 		// Required
-		replaceStatement.setInt(1, (int) data.get("accountid"));
-
-		if (data.containsKey("discordid")) {
-			replaceStatement.setString(2, (String) data.get("discordid"));
-		} else if (resultPresent) {
-			replaceStatement.setString(2, result.getString("DiscordID"));
+		if (data.containsKey("victimpersonaid")) {
+			replaceStatement.setInt(1, (int) data.get("victimpersonaid"));
 		} else {
-			replaceStatement.setString(2, null);
+			replaceStatement.setInt(1, 0);
 		}
 
-		if (data.containsKey("playtime")) {
-			long playtime = (long) data.get("playtime");
-			if (resultPresent) {
-				playtime += result.getLong("Playtime");
-			}
-			replaceStatement.setLong(3, playtime);
-		} else if (resultPresent) {
-			replaceStatement.setLong(3, result.getLong("Playtime"));
+		if (data.containsKey("victimaccountid")) {
+			replaceStatement.setInt(2, (int) data.get("victimaccountid"));
 		} else {
-			replaceStatement.setLong(3, 0);
+			replaceStatement.setInt(2, 0);
 		}
 
-		if (data.containsKey("votes")) {
-			replaceStatement.setShort(4, (short) data.get("votes"));
-		} else if (resultPresent) {
-			replaceStatement.setShort(4, result.getShort("Votes"));
+		if (data.containsKey("victimuuid")) {
+			replaceStatement.setString(3, data.get("victimuuid").toString());
 		} else {
-			replaceStatement.setShort(4, (short) 0);
+			replaceStatement.setString(3, null);
 		}
 
-		grabStatement.close();
+		if (data.containsKey("killerpersonaid")) {
+			replaceStatement.setInt(4, (int) data.get("killerpersonaid"));
+		} else {
+			replaceStatement.setInt(4, 0);
+		}
+
+		if (data.containsKey("killeraccountid")) {
+			replaceStatement.setInt(5, (int) data.get("killeraccountid"));
+		} else {
+			replaceStatement.setInt(5, 0);
+		}
+
+		if (data.containsKey("killeruuid")) {
+			replaceStatement.setString(6, data.get("killeruuid").toString());
+		} else {
+			replaceStatement.setString(6, null);
+		}
+
+		if (data.containsKey("location")) {
+			Location loc = (Location) data.get("location");
+			replaceStatement.setString(7, loc.getWorld().getName());
+			replaceStatement.setInt(8, loc.getBlockX());
+			replaceStatement.setInt(9, loc.getBlockY());
+			replaceStatement.setInt(10, loc.getBlockZ());
+		} else {
+			replaceStatement.setString(7, null);
+			replaceStatement.setInt(8, 0);
+			replaceStatement.setInt(9, 0);
+			replaceStatement.setInt(10, 0);
+		}
+
+		if (data.containsKey("created")) {
+			replaceStatement.setLong(11, (long) data.get("created"));
+		} else {
+			replaceStatement.setLong(11, 0);
+		}
+
+		if (data.containsKey("staff")) {
+			replaceStatement.setBoolean(12, (boolean) data.get("staff"));
+		} else {
+			replaceStatement.setBoolean(12, false);
+		}
+
+		if (data.containsKey("refunder")) {
+			replaceStatement.setString(13, data.get("refunder").toString());
+		} else {
+			replaceStatement.setString(13, null);
+		}
+
 		return replaceStatement;
 	}
 
-	public void incrementVotes(int accountID) {
-		Map<Object, Object> oldData = getData(accountID);
-		Map<Object, Object> newData = new HashMap<>();
-		newData.put("accountid", accountID);
-		newData.put("votes", ((short) oldData.get("votes")) + 1);
-		try {
-			plugin.getSaveQueue().addToQueue(getSaveStatement(newData));
-		} catch (Exception e) {
-			if (RPPersonas.DEBUGGING) {
-				e.printStackTrace();
-			}
-		}
-	}*/
 }
