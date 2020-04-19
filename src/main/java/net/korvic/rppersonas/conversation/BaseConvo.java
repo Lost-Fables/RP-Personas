@@ -10,7 +10,8 @@ import java.util.Map;
 
 public abstract class BaseConvo {
 
-	private RPPersonas plugin;
+	protected RPPersonas plugin;
+	protected ConversationFactory factory;
 
 	// String Assets
 	public static final String BUTTON_SPACE = "  ";
@@ -22,11 +23,10 @@ public abstract class BaseConvo {
 	}
 
 	public void startConvo(Player p, Map<Object, Object> data, boolean abandonable) {
-		ConversationFactory factory = getFreshFactory();
+		this.factory = getFreshFactory();
 		factory.withInitialSessionData(data);
 		factory.withFirstPrompt(this.getFirstPrompt(data));
 		if (abandonable) {
-			factory.addConversationAbandonedListener(new PersonaCreationAbandonedListener());
 			addAbandoners(factory);
 		}
 		factory.buildConversation(p).begin();

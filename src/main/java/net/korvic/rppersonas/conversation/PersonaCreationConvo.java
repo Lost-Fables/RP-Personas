@@ -28,6 +28,7 @@ public class PersonaCreationConvo extends BaseConvo {
 		if (data.containsKey("fresh")) {
 			return new StartingPrompt();
 		} else {
+			this.factory.addConversationAbandonedListener(new PersonaCreationAbandonedListener());
 			return new PersonaNamePrompt(false, false);
 		}
 	}
