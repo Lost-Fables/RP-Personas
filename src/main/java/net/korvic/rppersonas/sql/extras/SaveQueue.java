@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.sql;
+package net.korvic.rppersonas.sql.extras;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.listeners.JoinQuitListener;

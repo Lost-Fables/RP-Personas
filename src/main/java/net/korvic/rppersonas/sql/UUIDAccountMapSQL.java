@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.Errors;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
@@ -9,23 +11,31 @@ import java.util.logging.Level;
 
 public class UUIDAccountMapSQL extends BaseSQL {
 
-	private static final String SQLTableName = "rppersonas_uuid_account_map";
+	private static final String SQL_TABLE_NAME = "rppersonas_uuid_account_map";
+	
+	public static final String PLAYER_UUID = "uuid";
+	public static final String ACCOUNTID = "accountid";
 
 	public UUIDAccountMapSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
 			BaseSQL.plugin = plugin;
 		}
 
-		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
+		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    UUID VARCHAR(255) NOT NULL PRIMARY KEY,\n" +
 						  "    AccountID INT NOT NULL\n" +
 						  ");";
-		this.load(SQLTable, SQLTableName);
+		this.load(SQLTable, SQL_TABLE_NAME);
 	}
 
 	@Override
 	protected boolean customStatement() {
 		return false;
+	}
+
+	protected void addDataMappings() {
+		DataBuffer.addMapping(PLAYER_UUID, PLAYER_UUID, UUID.class);
+		DataBuffer.addMapping(ACCOUNTID, ACCOUNTID, Integer.class);
 	}
 
 	public void addMapping(int accountID, Player p) {
@@ -39,7 +49,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		PreparedStatement ps = null;
 		try {
 			conn = getSQLConnection();
-			ps = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (UUID,AccountID) VALUES(?,?)");
+			ps = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (UUID,AccountID) VALUES(?,?)");
 			ps.setString(1, uuid.toString());
 			ps.setInt(2, accountID);
 			ps.executeUpdate();
@@ -64,7 +74,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -95,7 +105,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE UUID='" + uuid.toString() + "';";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE UUID='" + uuid.toString() + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();

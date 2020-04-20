@@ -2,6 +2,8 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
+import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.Errors;
 
 import java.sql.*;
 import java.util.*;
@@ -42,6 +44,10 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		}
 
 		return true;
+	}
+
+	protected void addDataMappings() {
+		DataBuffer.addMapping("accountid", "accountid", Integer.class);
 	}
 
 	// Inserts a new mapping for a persona.

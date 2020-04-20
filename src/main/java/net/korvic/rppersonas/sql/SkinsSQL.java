@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.Errors;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -9,7 +11,14 @@ import java.util.logging.Level;
 
 public class SkinsSQL extends BaseSQL {
 
-	private static final String SQLTableName = "rppersonas_saved_skins";
+	private static final String SQL_TABLE_NAME = "rppersonas_saved_skins";
+	
+	public static final String SKINID = "skinid";
+	public static final String ACCOUNTID = "accountid";
+	public static final String NAME = "name";
+	public static final String TEXTURE = "texture";
+	public static final String SIGNATURE = "signature";
+
 	private int highestSkinID = 1;
 
 	public SkinsSQL(RPPersonas plugin) {
@@ -17,14 +26,14 @@ public class SkinsSQL extends BaseSQL {
 			BaseSQL.plugin = plugin;
 		}
 
-		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
+		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    SkinID INT NOT NULL PRIMARY KEY,\n" +
 						  "    AccountID INT NOT NULL,\n" +
 						  "    Name TEXT NOT NULL,\n" +
 						  "    Texture TEXT NOT NULL,\n" +
 						  "    Signature TEXT NOT NULL\n" +
 						  ");";
-		load(SQLTable, SQLTableName);
+		load(SQLTable, SQL_TABLE_NAME);
 	}
 
 	@Override
@@ -32,7 +41,7 @@ public class SkinsSQL extends BaseSQL {
 		connection = getSQLConnection();
 		try {
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE SkinID=(SELECT MAX(SkinID) FROM " + SQLTableName + ");";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID=(SELECT MAX(SkinID) FROM " + SQL_TABLE_NAME + ");";
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -44,6 +53,14 @@ public class SkinsSQL extends BaseSQL {
 		}
 
 		return true;
+	}
+
+	protected void addDataMappings() {
+		DataBuffer.addMapping(SKINID, SKINID, Integer.class);
+		DataBuffer.addMapping(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataBuffer.addMapping(NAME, NAME, String.class);
+		DataBuffer.addMapping(TEXTURE, TEXTURE, String.class);
+		DataBuffer.addMapping(SIGNATURE, SIGNATURE, String.class);
 	}
 
 	private void updateHighestSkinID(int skinID) {
@@ -61,7 +78,7 @@ public class SkinsSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -87,16 +104,16 @@ public class SkinsSQL extends BaseSQL {
 	public void addSkin(int accountID, String name, String texture, String signature) {
 		if (accountID > 0 && texture != null && signature != null) {
 			Map<Object, Object> data = new HashMap<>();
-			data.put("accountid", accountID);
-			data.put("name", name);
-			data.put("texture", texture);
-			data.put("signature", signature);
+			data.put(ACCOUNTID, accountID);
+			data.put(NAME, name);
+			data.put(TEXTURE, texture);
+			data.put(SIGNATURE, signature);
 			addSkin(data);
 		}
 	}
 	public void addSkin(Map<Object, Object> data) {
 		PreparedStatement ps = null;
-		data.put("skinid", highestSkinID);
+		data.put(SKINID, highestSkinID);
 		updateHighestSkinID(highestSkinID);
 		try {
 			ps = getSaveStatement(data);
@@ -119,43 +136,43 @@ public class SkinsSQL extends BaseSQL {
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE SkinID='" + data.get("skinid") + "'");
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + data.get(SKINID) + "'");
 		ResultSet result = grabStatement.executeQuery();
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (SkinID,AccountID,Name,Texture,Signature) VALUES(?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (SkinID,AccountID,Name,Texture,Signature) VALUES(?,?,?,?,?)");
 
 
 		// Required
-		replaceStatement.setInt(1, (int) data.get("skinid"));
+		replaceStatement.setInt(1, (int) data.get(SKINID));
 
-		if (data.containsKey("accountid")) {
-			replaceStatement.setInt(2, (int) data.get("accountid"));
+		if (data.containsKey(ACCOUNTID)) {
+			replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
 		} else if (resultPresent) {
 			replaceStatement.setInt(2, result.getInt("AccountID"));
 		} else {
 			replaceStatement.setInt(2, 0);
 		}
 
-		if (data.containsKey("name")) {
-			replaceStatement.setString(3, (String) data.get("name"));
+		if (data.containsKey(NAME)) {
+			replaceStatement.setString(3, (String) data.get(NAME));
 		} else if (resultPresent) {
 			replaceStatement.setString(3, result.getString("Name"));
 		} else {
 			replaceStatement.setString(3, null);
 		}
 
-		if (data.containsKey("texture")) {
-			replaceStatement.setString(4, (String) data.get("texture"));
+		if (data.containsKey(TEXTURE)) {
+			replaceStatement.setString(4, (String) data.get(TEXTURE));
 		} else if (resultPresent) {
 			replaceStatement.setString(4, result.getString("Texture"));
 		} else {
 			replaceStatement.setString(4, null);
 		}
 
-		if (data.containsKey("signature")) {
-			replaceStatement.setString(5, (String) data.get("signature"));
+		if (data.containsKey(SIGNATURE)) {
+			replaceStatement.setString(5, (String) data.get(SIGNATURE));
 		} else if (resultPresent) {
 			replaceStatement.setString(5, result.getString("Signature"));
 		} else {
@@ -170,7 +187,7 @@ public class SkinsSQL extends BaseSQL {
 		Connection conn = null;
 		PreparedStatement deleteStatement = null;
 		conn = getSQLConnection();
-		deleteStatement = conn.prepareStatement("DELETE FROM " + SQLTableName + " WHERE SkinID='" + skinID + "'");
+		deleteStatement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "'");
 		return deleteStatement;
 	}
 
@@ -182,18 +199,18 @@ public class SkinsSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE SkinID='" + skinID + "';";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
 
 			Map<Object, Object> output = new HashMap<>();
 			if (rs.next()) {
-				output.put("skinid", skinID);
-				output.put("accountid", rs.getInt("AccountID"));
-				output.put("name", rs.getString("Name"));
-				output.put("texture", rs.getString("Texture"));
-				output.put("signature", rs.getString("Signature"));
+				output.put(SKINID, skinID);
+				output.put(ACCOUNTID, rs.getInt("AccountID"));
+				output.put(NAME, rs.getString("Name"));
+				output.put(TEXTURE, rs.getString("Texture"));
+				output.put(SIGNATURE, rs.getString("Signature"));
 			}
 
 			return output;

@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.Errors;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -9,25 +11,39 @@ import java.util.logging.Level;
 
 public class AccountsSQL extends BaseSQL {
 
-	private static final String SQLTableName = "rppersonas_accounts";
+	private static final String SQL_TABLE_NAME = "rppersonas_accounts";
+
+	public static final String ACCOUNTID = "accountid";
+	public static final String DISCORDID = "discordid";
+	public static final String PLAYTIME = "playtime";
+	public static final String VOTES = "votes";
 
 	public AccountsSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
 			BaseSQL.plugin = plugin;
 		}
 
-		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
+		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    AccountID INT NOT NULL PRIMARY KEY,\n" +
 						  "    DiscordID TEXT,\n" +
 						  "    Playtime BIGINT NOT NULL,\n" +
 						  "    Votes SMALLINT NOT NULL\n" +
 						  ");";
-		this.load(SQLTable, SQLTableName);
+		this.load(SQLTable, SQL_TABLE_NAME);
+
+		addDataMappings();
 	}
 
 	@Override
 	protected boolean customStatement() {
 		return false;
+	}
+
+	protected void addDataMappings() {
+		DataBuffer.addMapping(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataBuffer.addMapping(DISCORDID, DISCORDID, String.class);
+		DataBuffer.addMapping(PLAYTIME, PLAYTIME, Long.class);
+		DataBuffer.addMapping(VOTES, VOTES, Short.class);
 	}
 
 	// Checks if this account is already registered.
@@ -39,7 +55,7 @@ public class AccountsSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -63,22 +79,22 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	// Gets our stored data for this account.
-	public Map<Object, Object> getData(int accountid) {
+	public Map<String, Object> getData(int accountid) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		conn = getSQLConnection();
 
 		try {
-			ps = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountid + "'");
+			ps = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountid + "'");
 			ResultSet rs = ps.executeQuery();
 
-			Map<Object, Object> data = new HashMap<>();
+			Map<String, Object> data = new HashMap<>();
 
 			if (rs.next()) {
-				data.put("accountid", accountid);
-				data.put("discordid", rs.getString("DiscordID"));
-				data.put("playtime", rs.getLong("Playtime"));
-				data.put("votes", rs.getShort("Votes"));
+				data.put(ACCOUNTID, accountid);
+				data.put(DISCORDID, rs.getString("DiscordID"));
+				data.put(PLAYTIME, rs.getLong("Playtime"));
+				data.put(VOTES, rs.getShort("Votes"));
 			}
 
 			return data;
@@ -97,8 +113,12 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	// Updates or Inserts a new mapping for an account.
-	public void registerOrUpdate(Map<Object, Object> data) {
-		if (data.containsKey("accountid")) {
+	public void registerOrUpdate(DataBuffer data) {
+		registerOrUpdate(data.getData());
+	}
+
+	private void registerOrUpdate(Map<String, Object> data) {
+		if (data.containsKey(ACCOUNTID)) {
 			PreparedStatement ps = null;
 			try {
 				ps = getSaveStatement(data);
@@ -116,33 +136,33 @@ public class AccountsSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE AccountID='" + data.get("accountid") + "'");
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + data.get("accountid") + "'");
 		ResultSet result = grabStatement.executeQuery();
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (AccountID,DiscordID,Playtime,Votes) VALUES(?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (AccountID,DiscordID,Playtime,Votes) VALUES(?,?,?,?)");
 
 
 		// Required
-		replaceStatement.setInt(1, (int) data.get("accountid"));
+		replaceStatement.setInt(1, (int) data.get(ACCOUNTID));
 
-		if (data.containsKey("discordid")) {
-			replaceStatement.setString(2, (String) data.get("discordid"));
+		if (data.containsKey(DISCORDID)) {
+			replaceStatement.setString(2, (String) data.get(DISCORDID));
 		} else if (resultPresent) {
 			replaceStatement.setString(2, result.getString("DiscordID"));
 		} else {
 			replaceStatement.setString(2, null);
 		}
 
-		if (data.containsKey("playtime")) {
-			long playtime = (long) data.get("playtime");
+		if (data.containsKey(PLAYTIME)) {
+			long playtime = (long) data.get(PLAYTIME);
 			if (resultPresent) {
 				playtime += result.getLong("Playtime");
 			}
@@ -153,8 +173,8 @@ public class AccountsSQL extends BaseSQL {
 			replaceStatement.setLong(3, 0);
 		}
 
-		if (data.containsKey("votes")) {
-			replaceStatement.setShort(4, (short) data.get("votes"));
+		if (data.containsKey(VOTES)) {
+			replaceStatement.setShort(4, (short) data.get(VOTES));
 		} else if (resultPresent) {
 			replaceStatement.setShort(4, result.getShort("Votes"));
 		} else {
@@ -166,12 +186,10 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	public void incrementVotes(int accountID) {
-		Map<Object, Object> oldData = getData(accountID);
-		Map<Object, Object> newData = new HashMap<>();
-		newData.put("accountid", accountID);
-		newData.put("votes", ((short) oldData.get("votes")) + 1);
+		Map<String, Object> data = getData(accountID);
+		data.put(VOTES, ((short) data.get(VOTES)) + 1);
 		try {
-			plugin.getSaveQueue().addToQueue(getSaveStatement(newData));
+			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();

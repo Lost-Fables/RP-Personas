@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.extras.Errors;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
@@ -48,9 +49,12 @@ public abstract class BaseSQL {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
 		}
+		addDataMappings();
 	}
 
 	protected abstract boolean customStatement();
+
+	protected abstract void addDataMappings();
 
 	// STATIC //
 	protected static Connection getSQLConnection() {
