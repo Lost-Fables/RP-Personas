@@ -41,7 +41,7 @@ public class CurrencySQL extends BaseSQL {
 		DataBuffer.addMapping(BANK, BANK, Float.class);
 	}
 
-	public Map<Object, Object> getData(int personaID) {
+	public Map<String, Object> getData(int personaID) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -54,7 +54,7 @@ public class CurrencySQL extends BaseSQL {
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
 
-			Map<Object, Object> output = new HashMap<>();
+			Map<String, Object> output = new HashMap<>();
 
 			if (rs.next()) {
 				output.put(PERSONAID, personaID);
@@ -76,7 +76,11 @@ public class CurrencySQL extends BaseSQL {
 		return null;
 	}
 
-	public void setData(Map<Object, Object> data) {
+	public void registerOrUpdate(DataBuffer data) {
+		registerOrUpdate(data.getData());
+	}
+
+	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(PERSONAID)) {
 			PreparedStatement ps = null;
 			try {
@@ -95,7 +99,7 @@ public class CurrencySQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;

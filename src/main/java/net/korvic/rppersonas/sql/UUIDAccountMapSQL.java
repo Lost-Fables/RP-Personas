@@ -13,7 +13,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 
 	private static final String SQL_TABLE_NAME = "rppersonas_uuid_account_map";
 	
-	public static final String PLAYER_UUID = "uuid";
+	public static final String PLAYER = "player";
 	public static final String ACCOUNTID = "accountid";
 
 	public UUIDAccountMapSQL(RPPersonas plugin) {
@@ -34,35 +34,43 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(PLAYER_UUID, PLAYER_UUID, UUID.class);
+		DataBuffer.addMapping(PLAYER, PLAYER, Player.class);
 		DataBuffer.addMapping(ACCOUNTID, ACCOUNTID, Integer.class);
 	}
 
-	public void addMapping(int accountID, Player p) {
-		plugin.getUnregisteredHandler().remove(p);
-		addMapping(accountID, p.getUniqueId());
-		plugin.getAccountHandler().loadAccount(p, accountID, 0, true);
+	public void registerOrUpdate(DataBuffer data) {
+		registerOrUpdate(data.getData());
 	}
 
-	protected void addMapping(int accountID, UUID uuid) {
-		Connection conn = null;
-		PreparedStatement ps = null;
+	private void registerOrUpdate(Map<String, Object> data) {
+		Player p = (Player) data.get(PLAYER);
 		try {
-			conn = getSQLConnection();
-			ps = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (UUID,AccountID) VALUES(?,?)");
-			ps.setString(1, uuid.toString());
-			ps.setInt(2, accountID);
-			ps.executeUpdate();
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			plugin.getUnregisteredHandler().remove(p);
+			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+			plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
 			}
 		}
+	}
+
+	private PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
+		Connection conn = null;
+		PreparedStatement replaceStatement = null;
+		conn = getSQLConnection();
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (UUID,AccountID) VALUES(?,?)");
+
+		// Required
+		replaceStatement.setString(1, ((Player) data.get(PLAYER)).getUniqueId().toString());
+
+		if (data.containsKey(ACCOUNTID)) {
+			replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
+		} else {
+			replaceStatement.setInt(2, 0);
+		}
+
+		return replaceStatement;
 	}
 
 	// Retrieves the amount of tokens a player has, as per our database.
@@ -110,12 +118,12 @@ public class UUIDAccountMapSQL extends BaseSQL {
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
 
-			int result = -1;
+			int result = 0;
 			if (rs.next()) {
 				result = rs.getInt("AccountID");
 			}
 			if (rs.next()) {
-				plugin.getLogger().warning("Found duplicate accounts for UUID: " + uuid.toString());
+				plugin.getLogger().warning("Found duplicate account maps for UUID: " + uuid.toString());
 			}
 			return result;
 		} catch (SQLException ex) {

@@ -68,7 +68,11 @@ public class CorpseSQL extends BaseSQL {
 		}
 	}
 
-	public void registerOrUpdate(Map<Object, Object> data) {
+	public void registerOrUpdate(DataBuffer data) {
+		registerOrUpdate(data.getData());
+	}
+
+	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(CORPSEID)) {
 			try {
 				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
@@ -78,7 +82,7 @@ public class CorpseSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;

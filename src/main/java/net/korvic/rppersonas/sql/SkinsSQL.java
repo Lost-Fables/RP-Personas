@@ -101,17 +101,11 @@ public class SkinsSQL extends BaseSQL {
 		return null;
 	}
 
-	public void addSkin(int accountID, String name, String texture, String signature) {
-		if (accountID > 0 && texture != null && signature != null) {
-			Map<Object, Object> data = new HashMap<>();
-			data.put(ACCOUNTID, accountID);
-			data.put(NAME, name);
-			data.put(TEXTURE, texture);
-			data.put(SIGNATURE, signature);
-			addSkin(data);
-		}
+	public void registerOrUpdate(DataBuffer data) {
+		registerOrUpdate(data.getData());
 	}
-	public void addSkin(Map<Object, Object> data) {
+
+	private void registerOrUpdate(Map<String, Object> data) {
 		PreparedStatement ps = null;
 		data.put(SKINID, highestSkinID);
 		updateHighestSkinID(highestSkinID);
@@ -130,7 +124,7 @@ public class SkinsSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;

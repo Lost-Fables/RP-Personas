@@ -97,7 +97,11 @@ public class PersonasSQL extends BaseSQL {
 	}
 
 	// Inserts a new mapping for a persona.
-	public void registerOrUpdate(Map<Object, Object> data) {
+	public void registerOrUpdate(DataBuffer data) {
+		registerOrUpdate(data.getData());
+	}
+
+	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(PERSONAID)) {
 			PreparedStatement ps = null;
 			try {
@@ -116,7 +120,7 @@ public class PersonasSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<Object, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;
@@ -302,7 +306,7 @@ public class PersonasSQL extends BaseSQL {
 					pers.setSkin(0);
 				}
 
-				Map<Object, Object> data = new HashMap<>();
+				Map<String, Object> data = new HashMap<>();
 				data.put(PERSONAID, personaID);
 				data.put(SKINID, 0);
 

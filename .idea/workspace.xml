@@ -2,19 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2339d54-e0f7-4cea-a4cd-bb67ff5cb1da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/extras/DataBuffer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/RPPersonas.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/AccountsSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/AccountsSQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/AltarSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/AltarSQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/BaseSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/BaseSQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/CorpseSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/CorpseSQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/CurrencySQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/CurrencySQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/DeathSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/DeathSQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/Errors.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/extras/Errors.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonaAccountsMapSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonaAccountsMapSQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonasSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/PersonasSQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/SaveQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/extras/SaveQueue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/SkinsSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/SkinsSQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/UUIDAccountMapSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/korvic/rppersonas/sql/UUIDAccountMapSQL.java" afterDir="false" />
     </list>
