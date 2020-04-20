@@ -2,7 +2,7 @@ name: RPPersonas
 version: ${project.version}
 main: net.korvic.rppersonas.RPPersonas
 api-version: '1.13'
-depend: [Tythan, ProtocolLib]
+depend: [Tythan, ProtocolLib, PacketWrapper]
 softdepend: [Votifier, Dynmap]
 commands:
   account:

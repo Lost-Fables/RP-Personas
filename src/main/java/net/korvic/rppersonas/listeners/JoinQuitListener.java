@@ -32,6 +32,7 @@ public class JoinQuitListener implements Listener {
 		if (p.hasPermission("rppersonas.link")) {
 			loadIntoPersona(p);
 		}
+		p.setCollidable(false);
 	}
 
 	@EventHandler

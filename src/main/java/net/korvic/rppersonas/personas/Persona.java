@@ -96,7 +96,7 @@ public class Persona {
 		output.put(PersonasSQL.PERSONAID, personaID);
 		output.put(PersonasSQL.ALIVE, isAlive);
 		output.put(PersonasSQL.INVENTORY, inventory);
-		output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderInventory.getContents()));
+		output.put(PersonasSQL.ENDERCHEST, enderInventory.getContents());
 		output.put(PersonasSQL.NICKNAME, nickName);
 		output.put(PersonasSQL.PREFIX, prefix);
 

@@ -4,6 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
+import net.korvic.rppersonas.death.GhostHandler;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -59,6 +60,15 @@ public class AltarCommands extends BaseCommand {
 			InventoryUtil.addOrDropItem(p, plugin.getCorpseHandler().createCorpse(player).getItem());
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
+		}
+	}
+
+	@Cmd(value = "Debug command.")
+	public void toggleGhost(Player sender) {
+		if (GhostHandler.isGhost(sender)) {
+			GhostHandler.removeGhost(sender);
+		} else {
+			GhostHandler.addGhost(sender);
 		}
 	}
 
