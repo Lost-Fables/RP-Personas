@@ -106,21 +106,12 @@ public class SkinsSQL extends BaseSQL {
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {
-		PreparedStatement ps = null;
 		data.put(SKINID, highestSkinID);
 		updateHighestSkinID(highestSkinID);
 		try {
-			ps = getSaveStatement(data);
-			ps.executeUpdate();
+			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 	}
 

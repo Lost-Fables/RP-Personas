@@ -103,19 +103,10 @@ public class PersonasSQL extends BaseSQL {
 
 	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(PERSONAID)) {
-			PreparedStatement ps = null;
 			try {
-				ps = getSaveStatement(data);
-				ps.executeUpdate();
+				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			} finally {
-				try {
-					if (ps != null)
-						ps.close();
-				} catch (SQLException ex) {
-					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-				}
 			}
 		}
 	}
