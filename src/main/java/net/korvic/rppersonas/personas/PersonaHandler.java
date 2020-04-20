@@ -6,6 +6,7 @@ import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.listeners.PersonaDisableListener;
+import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.ChatColor;
@@ -71,16 +72,19 @@ public class PersonaHandler {
 	public Persona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
 		DataMapFilter personaData = new DataMapFilter();
 		personaData.putAll(plugin.getPersonasSQL().getLoadingInfo(personaID))
-				   .put(PersonasSQL.PERSONAID, personaID);
-		return registerPersona(accountID, personaData, p, saveCurrentPersona);
+				   .put(PersonasSQL.PERSONAID, personaID)
+				   .put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
+		return registerPersona(personaData, p, saveCurrentPersona);
 	}
 
-	public static Persona registerPersona(int accountID, DataMapFilter data, Player p, boolean saveCurrentPersona) {
+	public static Persona registerPersona(DataMapFilter data, Player p, boolean saveCurrentPersona) {
 		int personaID = highestPersonaID;
 		if (data.containsKey(PersonasSQL.PERSONAID)) {
 			personaID = (int) data.get(PersonasSQL.PERSONAID);
 		}
 		updateHighestPersonaID(personaID);
+
+		int accountID = (int) data.get(PersonaAccountsMapSQL.ACCOUNTID);
 
 		String prefix = null;
 		if (data.containsKey(PersonasSQL.PREFIX)) {
@@ -142,7 +146,7 @@ public class PersonaHandler {
 			data.put(PersonasSQL.PERSONAID, personaID);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 
-			plugin.getPersonaAccountMapSQL().addOrUpdateMapping(personaID, accountID, isAlive, p.getUniqueId());
+			plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 			plugin.getPersonaHandler().swapToPersona(p, accountID, personaID, saveCurrentPersona);
 		}
 
@@ -196,15 +200,23 @@ public class PersonaHandler {
 		if (originalPersona != null) {
 			if (saveCurrentPersona) {
 				originalPersona.queueSave(p);
-				plugin.getPersonaAccountMapSQL().addOrUpdateMapping(originalPersona.getPersonaID(), accountID, originalPersona.isAlive(), null);
+				DataMapFilter data = new DataMapFilter();
+				data.put(PersonaAccountsMapSQL.PERSONAID, originalPersona.getPersonaID())
+					.put(PersonaAccountsMapSQL.ACCOUNTID, accountID)
+					.put(PersonaAccountsMapSQL.ALIVE, originalPersona.isAlive())
+					.put(PersonaAccountsMapSQL.ACTIVEUUID, null);
+				plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 			}
 			unloadPersona(personaID, false);
 		}
 
 		DataMapFilter data = new DataMapFilter();
-		data.put("accountid", accountID);
+		data.put(PersonaAccountsMapSQL.PERSONAID, personaID)
+			.put(PersonaAccountsMapSQL.ACCOUNTID, accountID)
+			.put(PersonaAccountsMapSQL.ALIVE, true)
+			.put(PersonaAccountsMapSQL.ACTIVEUUID, p.getUniqueId());
 		plugin.getAccountsSQL().registerOrUpdate(data);
-		plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(personaID, accountID, true, p.getUniqueId()));
+		plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 
 		Persona newPersona = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
 		ItemStack[] items = newPersona.getInventory();
@@ -232,7 +244,12 @@ public class PersonaHandler {
 			if (keepLinked) {
 				uuid = pers.getUsingPlayer().getUniqueId();
 			}
-			plugin.getPersonaAccountMapSQL().addOrUpdateMapping(pers.getPersonaID(), pers.getAccountID(), pers.isAlive(), uuid);
+			DataMapFilter data = new DataMapFilter();
+			data.put(PersonaAccountsMapSQL.PERSONAID, pers.getPersonaID())
+				.put(PersonaAccountsMapSQL.ACCOUNTID, pers.getAccountID())
+				.put(PersonaAccountsMapSQL.ALIVE, pers.isAlive())
+				.put(PersonaAccountsMapSQL.ACTIVEUUID, uuid);
+			plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 			removeFromMemory(pers.getPersonaID(), pers.getUsingPlayer(), keepLinked);
 		}
 	}

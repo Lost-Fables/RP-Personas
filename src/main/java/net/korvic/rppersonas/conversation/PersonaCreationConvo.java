@@ -452,10 +452,9 @@ public class PersonaCreationConvo extends BaseConvo {
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registering your persona now..."));
 
 		DataMapFilter data = new DataMapFilter();
-		Map<Object, Object> convoData = context.getAllSessionData();
-		data.putAllObject(convoData);
+		data.putAllObject(context.getAllSessionData());
 
-		PersonaHandler.registerPersona((int) convoData.get("accountid"), data, p, false);
+		PersonaHandler.registerPersona(data, p, false);
 		PersonaDisableListener.enablePlayer(p);
 
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));

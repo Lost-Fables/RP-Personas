@@ -11,20 +11,25 @@ import java.util.logging.Level;
 
 public class PersonaAccountsMapSQL extends BaseSQL {
 
-	private static final String SQLTableName = "rppersonas_persona_account_map";
+	private static final String SQL_TABLE_NAME = "rppersonas_persona_account_map";
+
+	public static final String PERSONAID = "";
+	public static final String ACCOUNTID = "";
+	public static final String ALIVE = "";
+	public static final String ACTIVEUUID = "";
 
 	public PersonaAccountsMapSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
 			BaseSQL.plugin = plugin;
 		}
 
-		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQLTableName + " (\n" +
+		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 						  "    AccountID INT NOT NULL,\n" +
-						  "    Alive TINYINT NOT NULL,\n" +
+						  "    Alive BIT NOT NULL,\n" +
 						  "    ActiveUUID TEXT\n" +
 						  ");";
-		load(SQLTable, SQLTableName);
+		load(SQLTable, SQL_TABLE_NAME);
 	}
 
 	@Override
@@ -32,7 +37,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		connection = getSQLConnection();
 		try {
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQLTableName + ");";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQL_TABLE_NAME + ");";
 			PreparedStatement ps = connection.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -47,61 +52,54 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter("accountid", "accountid", Integer.class);
+		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
+		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(ALIVE, ALIVE, Boolean.class);
+		DataMapFilter.addFilter(ACTIVEUUID, ACTIVEUUID, UUID.class);
 	}
 
 	// Inserts a new mapping for a persona.
-	public void addOrUpdateMapping(int personaID, int accountID, boolean alive, UUID uuid) {
-		plugin.getSaveQueue().addToQueue(getSaveStatement(personaID, accountID, alive, uuid));
+	public void registerOrUpdate(DataMapFilter data) {
+		plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 	}
 
-	public PreparedStatement getSaveStatement(int personaID, int accountID, boolean alive, UUID uuid) {
-		Map<Object, Object> data = new HashMap<>();
-		data.put("personaid", personaID);
-		data.put("accountid", accountID);
-		data.put("alive", alive);
-		data.put("uuid", uuid);
-
-		return getSaveStatement(data);
-	}
-
-	private PreparedStatement getSaveStatement(Map<Object, Object> data) {
+	private PreparedStatement getSaveStatement(DataMapFilter data) {
 		PreparedStatement replaceStatement = null;
 		try {
 			PreparedStatement grabStatement = null;
 			Connection conn = null;
 			conn = getSQLConnection();
 
-			grabStatement = conn.prepareStatement("SELECT * FROM " + SQLTableName + " WHERE PersonaID='" + data.get("personaid") + "'");
+			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
 			ResultSet result = grabStatement.executeQuery();
 			boolean resultPresent = result.next();
 
 			conn = getSQLConnection();
-			replaceStatement = conn.prepareStatement("REPLACE INTO " + SQLTableName + " (PersonaID,AccountID,Alive,ActiveUUID) VALUES(?,?,?,?)");
+			replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,AccountID,Alive,ActiveUUID) VALUES(?,?,?,?)");
 
 
 			// Required
-			replaceStatement.setInt(1, (int) data.get("personaid"));
+			replaceStatement.setInt(1, (int) data.get(PERSONAID));
 
-			if (data.containsKey("accountid")) {
-				replaceStatement.setInt(2, (int) data.get("accountid"));
+			if (data.containsKey(ACCOUNTID)) {
+				replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
 			} else if (resultPresent) {
 				replaceStatement.setInt(2, result.getInt("AccountID"));
 			} else {
 				replaceStatement.setInt(2, 0);
 			}
 
-			if (data.containsKey("alive")) {
-				replaceStatement.setBoolean(3, (boolean) data.get("alive"));
+			if (data.containsKey(ALIVE)) {
+				replaceStatement.setBoolean(3, (boolean) data.get(ALIVE));
 			} else if (resultPresent) {
 				replaceStatement.setBoolean(3, result.getBoolean("Alive"));
 			} else {
 				replaceStatement.setBoolean(3, true);
 			}
 
-			if (data.containsKey("uuid")) {
-				if (data.get("uuid") != null) {
-					replaceStatement.setString(4, ((UUID) data.get("uuid")).toString());
+			if (data.containsKey(ACTIVEUUID)) {
+				if (data.get(ACTIVEUUID) != null) {
+					replaceStatement.setString(4, ((UUID) data.get(ACTIVEUUID)).toString());
 				} else {
 					replaceStatement.setString(4, null);
 				}
@@ -124,7 +122,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		Connection conn = null;
 		PreparedStatement deleteStatement = null;
 		conn = getSQLConnection();
-		deleteStatement = conn.prepareStatement("DELETE FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "'");
+		deleteStatement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
 		return deleteStatement;
 	}
 
@@ -136,7 +134,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "DELETE FROM " + SQLTableName + " WHERE PersonaID='" + personaID + "';";
+			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
 			ps = conn.prepareStatement(stmt);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
@@ -159,7 +157,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "DELETE FROM " + SQLTableName + " WHERE AccountID='" + accountID + "';";
+			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
 			ps = conn.prepareStatement(stmt);
 			ps.executeUpdate();
 		} catch (SQLException ex) {
@@ -187,7 +185,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 			if (alive) {
 				aliveBoolean = (byte) 1;
 			}
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE AccountID='" + accountID + "' AND Alive='" + aliveBoolean + "';";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "' AND Alive='" + aliveBoolean + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -223,7 +221,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT * FROM " + SQLTableName + " WHERE ActiveUUID='" + uuid.toString() + "';";
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE ActiveUUID='" + uuid.toString() + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -233,7 +231,11 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 				if (result <= 0) {
 					result = rs.getInt("PersonaID");
 				} else {
-					addOrUpdateMapping(rs.getInt("PersonaID"), rs.getInt("AccountID"), rs.getBoolean("Alive"), null);
+					DataMapFilter data = new DataMapFilter();
+					data.put(PERSONAID, rs.getInt("PersonaID"))
+						.put(ACCOUNTID, rs.getInt("AccountID"))
+						.put(ALIVE, rs.getBoolean("Alive"))
+						.put(ACTIVEUUID, null);
 					if (RPPersonas.DEBUGGING) {
 						plugin.getLogger().warning("Multiple personas found with the same UUID. Fixing now...");
 					}
