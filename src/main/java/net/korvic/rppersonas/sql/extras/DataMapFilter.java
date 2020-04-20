@@ -51,7 +51,7 @@ public class DataMapFilter {
 	public DataMapFilter put(String input, Object value) {
 		String output = DATA_MAP.get(input);
 		Class clazz = CLASS_MAP.get(output);
-		if (clazz.isInstance(value)) {
+		if (value == null || clazz.isInstance(value)) {
 			data.put(output, value);
 		} else {
 			RPPersonas.get().getLogger().warning("Wrong data type submitted for '" + output + "'. Expected instance of " + clazz.toString() + ", received " + value.getClass().toString());

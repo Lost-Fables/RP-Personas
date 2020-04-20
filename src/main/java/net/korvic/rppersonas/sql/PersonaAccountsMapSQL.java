@@ -13,10 +13,10 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 
 	private static final String SQL_TABLE_NAME = "rppersonas_persona_account_map";
 
-	public static final String PERSONAID = "";
-	public static final String ACCOUNTID = "";
-	public static final String ALIVE = "";
-	public static final String ACTIVEUUID = "";
+	public static final String PERSONAID = "personaid";
+	public static final String ACCOUNTID = "accountid";
+	public static final String ALIVE = "alive";
+	public static final String ACTIVEUUID = "active_uuid";
 
 	public PersonaAccountsMapSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {

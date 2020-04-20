@@ -3,6 +3,7 @@ package net.korvic.rppersonas.personas;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.BaseConvo;
+import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.Bukkit;
@@ -92,11 +93,11 @@ public class Persona {
 	public Map<String, Object> getLoadedInfo() {
 		Map<String, Object> output = new HashMap<>();
 
-		output.put("accountid", accountID);
+		output.put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
 		output.put(PersonasSQL.PERSONAID, personaID);
 		output.put(PersonasSQL.ALIVE, isAlive);
 		output.put(PersonasSQL.INVENTORY, inventory);
-		output.put(PersonasSQL.ENDERCHEST, enderInventory.getContents());
+		output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderInventory));
 		output.put(PersonasSQL.NICKNAME, nickName);
 		output.put(PersonasSQL.PREFIX, prefix);
 

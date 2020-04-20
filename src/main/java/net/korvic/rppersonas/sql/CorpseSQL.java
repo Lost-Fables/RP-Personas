@@ -46,7 +46,7 @@ public class CorpseSQL extends BaseSQL {
 	protected void addDataMappings() {
 		DataMapFilter.addFilter(CORPSEID, CORPSEID, Integer.class);
 		DataMapFilter.addFilter(NAME, NAME, String.class);
-		DataMapFilter.addFilter(INVENTORY, INVENTORY, Inventory.class);
+		DataMapFilter.addFilter(INVENTORY, INVENTORY, String.class);
 		DataMapFilter.addFilter(CREATED, CREATED, Long.class);
 		DataMapFilter.addFilter(TEXTURE, TEXTURE, String.class);
 	}

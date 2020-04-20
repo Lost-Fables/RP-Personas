@@ -88,8 +88,8 @@ public class PersonasSQL extends BaseSQL {
 		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);
 		DataMapFilter.addFilter(HEALTH, HEALTH, Double.class);
 		DataMapFilter.addFilter(HUNGER, HUNGER, Integer.class);
-		DataMapFilter.addFilter(INVENTORY, INVENTORY, Inventory.class);
-		DataMapFilter.addFilter(ENDERCHEST, ENDERCHEST, Inventory.class);
+		DataMapFilter.addFilter(INVENTORY, INVENTORY, String.class);
+		DataMapFilter.addFilter(ENDERCHEST, ENDERCHEST, String.class);
 		DataMapFilter.addFilter(NICKNAME, NICKNAME, String.class);
 		DataMapFilter.addFilter(PREFIX, PREFIX, String.class);
 		DataMapFilter.addFilter(SKINID, SKINID, Integer.class);
@@ -224,7 +224,7 @@ public class PersonasSQL extends BaseSQL {
 
 		// Optional
 		if (data.containsKey(INVENTORY)) {
-			replaceStatement.setString(15, InventoryUtil.serializeItems((Inventory) data.get(INVENTORY)));
+			replaceStatement.setString(15, (String) data.get(INVENTORY));
 		} else if (resultPresent) {
 			replaceStatement.setString(15, result.getString("Inventory"));
 		} else {
@@ -232,7 +232,7 @@ public class PersonasSQL extends BaseSQL {
 		}
 
 		if (data.containsKey(ENDERCHEST)) {
-			replaceStatement.setString(16, InventoryUtil.serializeItems((Inventory) data.get(ENDERCHEST)));
+			replaceStatement.setString(16, (String) data.get(ENDERCHEST));
 		} else if (resultPresent) {
 			replaceStatement.setString(16, result.getString("EnderChest"));
 		} else {
@@ -385,10 +385,7 @@ public class PersonasSQL extends BaseSQL {
 				output.put(HEALTH, rs.getDouble("Health"));
 				output.put(HUNGER, rs.getInt("Hunger"));
 				output.put(SKINID, rs.getInt("ActiveSkinID"));
-
-				if (rs.getShort("Alive") > 0) {
-					output.put(ALIVE, new Object());
-				}
+				output.put(ALIVE, rs.getBoolean("Alive"));
 			}
 
 			return output;

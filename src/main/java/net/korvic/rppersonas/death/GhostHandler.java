@@ -34,7 +34,7 @@ public class GhostHandler {
 		packet.sendPacket(p);
 
 		p.setInvulnerable(true);
-		p.setWalkSpeed(0.8f);
+		p.setWalkSpeed(0.17f);
 
 		p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 255, false, false));
 	}
@@ -46,7 +46,7 @@ public class GhostHandler {
 		packet.sendPacket(p);
 
 		p.setInvulnerable(false);
-		p.setWalkSpeed(1.0f);
+		p.setWalkSpeed(0.2f);
 
 		p.removePotionEffect(PotionEffectType.INVISIBILITY);
 	}
