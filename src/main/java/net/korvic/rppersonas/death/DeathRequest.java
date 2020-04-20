@@ -2,11 +2,10 @@ package net.korvic.rppersonas.death;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.sql.DeathSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DeathRequest {
 
@@ -43,17 +42,17 @@ public class DeathRequest {
 
 		// TODO kill persona
 
-		Map<Object, Object> data = new HashMap<>();
-		data.put("victimpersonaid", this.victimPersona.getPersonaID());
-		data.put("victimaccountid", this.victimPersona.getAccountID());
-		data.put("victimuuid", this.victim.getUniqueId());
+		DataMapFilter data = new DataMapFilter();
+		data.put(DeathSQL.VICTIM_PERSONAID, this.victimPersona.getPersonaID())
+			.put(DeathSQL.VICTIM_ACCOUNTID, this.victimPersona.getAccountID())
+			.put(DeathSQL.VICTIM_UUID, this.victim.getUniqueId())
 
-		data.put("killerpersonaid", this.killerPersona.getPersonaID());
-		data.put("killeraccountid", this.killerPersona.getAccountID());
-		data.put("killeruuid", this.killer.getUniqueId());
+			.put(DeathSQL.KILLER_PERSONAID, this.killerPersona.getPersonaID())
+			.put(DeathSQL.KILLER_ACCOUNTID, this.killerPersona.getAccountID())
+			.put(DeathSQL.KILLER_UUID, this.killer.getUniqueId())
 
-		data.put("location", this.location);
-		data.put("staff", staffInflicted);
+			.put(DeathSQL.LOCATION, this.location)
+			.put(DeathSQL.STAFF, staffInflicted);
 
 		plugin.getDeathSQL().registerOrUpdate(data);
 

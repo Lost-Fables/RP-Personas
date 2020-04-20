@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 import org.bukkit.entity.Player;
 
@@ -34,12 +34,12 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(PLAYER, PLAYER, Player.class);
-		DataBuffer.addMapping(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(PLAYER, PLAYER, Player.class);
+		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
 	}
 
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {

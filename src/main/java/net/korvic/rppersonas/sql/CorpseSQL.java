@@ -2,7 +2,7 @@ package net.korvic.rppersonas.sql;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 import org.bukkit.inventory.Inventory;
 
@@ -44,11 +44,11 @@ public class CorpseSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(CORPSEID, CORPSEID, Integer.class);
-		DataBuffer.addMapping(NAME, NAME, String.class);
-		DataBuffer.addMapping(INVENTORY, INVENTORY, Inventory.class);
-		DataBuffer.addMapping(CREATED, CREATED, Long.class);
-		DataBuffer.addMapping(TEXTURE, TEXTURE, String.class);
+		DataMapFilter.addFilter(CORPSEID, CORPSEID, Integer.class);
+		DataMapFilter.addFilter(NAME, NAME, String.class);
+		DataMapFilter.addFilter(INVENTORY, INVENTORY, Inventory.class);
+		DataMapFilter.addFilter(CREATED, CREATED, Long.class);
+		DataMapFilter.addFilter(TEXTURE, TEXTURE, String.class);
 	}
 
 	public void loadCorpses() {
@@ -68,8 +68,8 @@ public class CorpseSQL extends BaseSQL {
 		}
 	}
 
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {

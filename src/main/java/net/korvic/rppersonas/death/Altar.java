@@ -1,10 +1,10 @@
 package net.korvic.rppersonas.death;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.AltarSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-
-import java.util.HashMap;
 
 public class Altar {
 
@@ -24,11 +24,11 @@ public class Altar {
 		updateMaxAltarID(altarID);
 		String iconID = formatIconID(altarID);
 
-		HashMap<Object, Object> data = new HashMap<>();
-		data.put("altarid", altarID);
-		data.put("iconid", iconID);
-		data.put("label", label);
-		data.put("location", loc);
+		DataMapFilter data = new DataMapFilter();
+		data.put(AltarSQL.ALTARID, altarID)
+			.put(AltarSQL.ICONID, iconID)
+			.put(AltarSQL.NAME, label)
+			.put(AltarSQL.LOCATION, loc);
 		RPPersonas.get().getAltarSQL().registerOrUpdate(data);
 
 		// TODO add altar icon to Dynmap

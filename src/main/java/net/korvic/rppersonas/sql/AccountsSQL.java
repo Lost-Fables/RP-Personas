@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 
 import java.sql.*;
@@ -40,10 +40,10 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(ACCOUNTID, ACCOUNTID, Integer.class);
-		DataBuffer.addMapping(DISCORDID, DISCORDID, String.class);
-		DataBuffer.addMapping(PLAYTIME, PLAYTIME, Long.class);
-		DataBuffer.addMapping(VOTES, VOTES, Short.class);
+		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(DISCORDID, DISCORDID, String.class);
+		DataMapFilter.addFilter(PLAYTIME, PLAYTIME, Long.class);
+		DataMapFilter.addFilter(VOTES, VOTES, Short.class);
 	}
 
 	// Checks if this account is already registered.
@@ -113,8 +113,8 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	// Updates or Inserts a new mapping for an account.
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {

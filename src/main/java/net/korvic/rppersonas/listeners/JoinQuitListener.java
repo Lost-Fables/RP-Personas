@@ -2,6 +2,9 @@ package net.korvic.rppersonas.listeners;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.sql.AccountsSQL;
+import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -74,17 +77,11 @@ public class JoinQuitListener implements Listener {
 		}
 		playerLoginTime.put(p, System.currentTimeMillis());
 
-		Map<Object, Object> data = new HashMap<>();
-		data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()));
-		data.put("playtime", playtime);
+		DataMapFilter data = new DataMapFilter();
+		data.put(AccountsSQL.ACCOUNTID, plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()))
+			.put(AccountsSQL.PLAYTIME, playtime);
 
-		try {
-			plugin.getSaveQueue().addToQueue(plugin.getAccountsSQL().getSaveStatement(data));
-		} catch (Exception e) {
-			if (RPPersonas.DEBUGGING) {
-				e.printStackTrace();
-			}
-		}
+		plugin.getAccountsSQL().registerOrUpdate(data);
 	}
 
 }

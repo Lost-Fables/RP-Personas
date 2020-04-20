@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 
 import java.sql.*;
@@ -56,11 +56,11 @@ public class SkinsSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(SKINID, SKINID, Integer.class);
-		DataBuffer.addMapping(ACCOUNTID, ACCOUNTID, Integer.class);
-		DataBuffer.addMapping(NAME, NAME, String.class);
-		DataBuffer.addMapping(TEXTURE, TEXTURE, String.class);
-		DataBuffer.addMapping(SIGNATURE, SIGNATURE, String.class);
+		DataMapFilter.addFilter(SKINID, SKINID, Integer.class);
+		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(NAME, NAME, String.class);
+		DataMapFilter.addFilter(TEXTURE, TEXTURE, String.class);
+		DataMapFilter.addFilter(SIGNATURE, SIGNATURE, String.class);
 	}
 
 	private void updateHighestSkinID(int skinID) {
@@ -101,8 +101,8 @@ public class SkinsSQL extends BaseSQL {
 		return null;
 	}
 
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {

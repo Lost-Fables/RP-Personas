@@ -4,12 +4,12 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
 import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.conversation.PersonaCreationAbandonedListener;
 import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.listeners.PersonaDisableListener;
+import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -55,11 +55,11 @@ public class PersonaHandler {
 
 		Map<Object, Object> data = new HashMap<>();
 		data.put("accountid", accountID);
-		data.put("alive", true);
-		data.put("lives", 3);
-		data.put("playtime", 0L);
+		data.put(PersonasSQL.ALIVE, true);
+		data.put(PersonasSQL.LIVES, 3);
+		data.put(PersonasSQL.PLAYTIME, 0L);
 		data.put("fresh", new Object());
-		data.put("location", plugin.getSpawnLocation());
+		data.put(PersonasSQL.LOCATION, plugin.getSpawnLocation());
 
 		if (first) {
 			data.put("first", new Object());
@@ -69,38 +69,34 @@ public class PersonaHandler {
 	}
 
 	public Persona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
-		Map<Object, Object> personaData = new HashMap<>();
-		personaData.put("personaid", personaID);
-		personaData.put("accountid", accountID);
-		personaData.putAll(plugin.getPersonasSQL().getLoadingInfo(personaID));
-
-		return registerPersona(personaData, p, saveCurrentPersona);
+		DataMapFilter personaData = new DataMapFilter();
+		personaData.putAll(plugin.getPersonasSQL().getLoadingInfo(personaID))
+				   .put(PersonasSQL.PERSONAID, personaID);
+		return registerPersona(accountID, personaData, p, saveCurrentPersona);
 	}
 
-	public static Persona registerPersona(Map<Object, Object> data, Player p, boolean saveCurrentPersona) {
+	public static Persona registerPersona(int accountID, DataMapFilter data, Player p, boolean saveCurrentPersona) {
 		int personaID = highestPersonaID;
-		if (data.containsKey("personaid")) {
-			personaID = (int) data.get("personaid");
+		if (data.containsKey(PersonasSQL.PERSONAID)) {
+			personaID = (int) data.get(PersonasSQL.PERSONAID);
 		}
 		updateHighestPersonaID(personaID);
 
-		int accountID = (int) data.get("accountid");
-
 		String prefix = null;
-		if (data.containsKey("prefix")) {
-			prefix = (String) data.get("prefix");
+		if (data.containsKey(PersonasSQL.PREFIX)) {
+			prefix = (String) data.get(PersonasSQL.PREFIX);
 		}
 
 		String nickName = null;
-		if (data.containsKey("nickname")) {
-			nickName = (String) data.get("nickname");
-		} else if (data.containsKey("name")) {
-			nickName = (String) data.get("name");
+		if (data.containsKey(PersonasSQL.NICKNAME)) {
+			nickName = (String) data.get(PersonasSQL.NICKNAME);
+		} else if (data.containsKey(PersonasSQL.NAME)) {
+			nickName = (String) data.get(PersonasSQL.NAME);
 		}
 
 		String personaInvData = null;
-		if (data.containsKey("inventory")) {
-			personaInvData = (String) data.get("inventory");
+		if (data.containsKey(PersonasSQL.INVENTORY)) {
+			personaInvData = (String) data.get(PersonasSQL.INVENTORY);
 
 			if (personaInvData != null) {
 				List<ItemStack> items = InventoryUtil.deserializeItems(personaInvData);
@@ -115,43 +111,43 @@ public class PersonaHandler {
 		}
 
 		String personaEnderData = null;
-		if (data.containsKey("enderchest")) {
-			personaEnderData = (String) data.get("enderchest");
+		if (data.containsKey(PersonasSQL.ENDERCHEST)) {
+			personaEnderData = (String) data.get(PersonasSQL.ENDERCHEST);
 		}
 
 		double health = 20.0;
-		if (data.containsKey("health")) {
-			health = (double) data.get("health");
+		if (data.containsKey(PersonasSQL.HEALTH)) {
+			health = (double) data.get(PersonasSQL.HEALTH);
 		}
 		p.setHealth(health);
 
 		int hunger = 20;
-		if (data.containsKey("hunger")) {
-			hunger = (int) data.get("hunger");
+		if (data.containsKey(PersonasSQL.HUNGER)) {
+			hunger = (int) data.get(PersonasSQL.HUNGER);
 		}
 		p.setFoodLevel(hunger);
 
 		int activeSkinID = 0;
-		if (data.containsKey("skinid")) {
-			activeSkinID = (int) data.get("skinid");
+		if (data.containsKey(PersonasSQL.SKINID)) {
+			activeSkinID = (int) data.get(PersonasSQL.SKINID);
 		}
 
 		boolean isAlive = false;
-		if (data.containsKey("alive")) {
+		if (data.containsKey(PersonasSQL.ALIVE)) {
 			isAlive = true;
 		}
 
 		if (data.containsKey("fresh")) {
 			p.setSaturation(20); // Give the player 20 saturation if they're a new persona so they can run around a bit more.
-			data.put("personaid", personaID);
+			data.put(PersonasSQL.PERSONAID, personaID);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 
 			plugin.getPersonaAccountMapSQL().addOrUpdateMapping(personaID, accountID, isAlive, p.getUniqueId());
 			plugin.getPersonaHandler().swapToPersona(p, accountID, personaID, saveCurrentPersona);
 		}
 
-		if (data.containsKey("location")) {
-			Location loc = (Location) data.get("location");
+		if (data.containsKey(PersonasSQL.LOCATION)) {
+			Location loc = (Location) data.get(PersonasSQL.LOCATION);
 			if (!LocationUtil.isClose(p, loc, 1.0D)) {
 				p.teleport(loc);
 			}
@@ -200,12 +196,12 @@ public class PersonaHandler {
 		if (originalPersona != null) {
 			if (saveCurrentPersona) {
 				originalPersona.queueSave(p);
-				plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(originalPersona.getPersonaID(), accountID, originalPersona.isAlive(), null));
+				plugin.getPersonaAccountMapSQL().addOrUpdateMapping(originalPersona.getPersonaID(), accountID, originalPersona.isAlive(), null);
 			}
 			unloadPersona(personaID, false);
 		}
 
-		Map<Object, Object> data = new HashMap<>();
+		DataMapFilter data = new DataMapFilter();
 		data.put("accountid", accountID);
 		plugin.getAccountsSQL().registerOrUpdate(data);
 		plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getSaveStatement(personaID, accountID, true, p.getUniqueId()));
@@ -253,10 +249,10 @@ public class PersonaHandler {
 			loadedPersonas.get(personaID).setSkin(skinID);
 		}
 
-		Map<Object, Object> map = new HashMap<>();
-		map.put("personaid", personaID);
-		map.put("skinid", skinID);
-		plugin.getPersonasSQL().registerOrUpdate(map);
+		DataMapFilter data = new DataMapFilter();
+		data.put(PersonasSQL.PERSONAID, personaID);
+		data.put(PersonasSQL.SKINID, skinID);
+		plugin.getPersonasSQL().registerOrUpdate(data);
 	}
 
 	public void saveAllPersonas() {

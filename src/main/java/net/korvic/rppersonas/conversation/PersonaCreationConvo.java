@@ -7,6 +7,7 @@ import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.pieces.PersonaRace;
 import net.korvic.rppersonas.personas.pieces.PersonaSubRace;
 import net.korvic.rppersonas.listeners.PersonaDisableListener;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -449,8 +450,14 @@ public class PersonaCreationConvo extends BaseConvo {
 	private static Prompt registerPersona(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registering your persona now..."));
-		PersonaHandler.registerPersona(context.getAllSessionData(), p, false);
+
+		DataMapFilter data = new DataMapFilter();
+		Map<Object, Object> convoData = context.getAllSessionData();
+		data.putAllObject(convoData);
+
+		PersonaHandler.registerPersona((int) convoData.get("accountid"), data, p, false);
 		PersonaDisableListener.enablePlayer(p);
+
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
 
 

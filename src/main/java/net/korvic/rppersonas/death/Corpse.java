@@ -2,15 +2,15 @@ package net.korvic.rppersonas.death;
 
 import co.lotc.core.bukkit.util.ItemUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.CorpseSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Corpse {
 
@@ -67,12 +67,12 @@ public class Corpse {
 	}
 
 	public void save() {
-		Map<Object, Object> data = new HashMap<>();
-		data.put("corpseid", id);
-		data.put("name", name);
-		data.put("inventory", inv);
-		data.put("created", created);
-		data.put("texture", texture);
+		DataMapFilter data = new DataMapFilter();
+		data.put(CorpseSQL.CORPSEID, id)
+			.put(CorpseSQL.NAME, name)
+			.put(CorpseSQL.INVENTORY, inv)
+			.put(CorpseSQL.CREATED, created)
+			.put(CorpseSQL.TEXTURE, texture);
 		RPPersonas.get().getCorpseSQL().registerOrUpdate(data);
 	}
 

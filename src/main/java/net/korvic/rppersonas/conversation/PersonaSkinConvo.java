@@ -4,6 +4,8 @@ import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.MojangCommunicator;
 import com.google.gson.JsonObject;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.SkinsSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -112,7 +114,12 @@ public class PersonaSkinConvo extends BaseConvo {
 		}
 
 		if (accountID > 0 && texture != null && name.length() > 0) {
-			RPPersonas.get().getSkinsSQL().addSkin(accountID, name, texture, signature);
+			DataMapFilter data = new DataMapFilter();
+			data.put(SkinsSQL.ACCOUNTID, accountID)
+				.put(SkinsSQL.NAME, name)
+				.put(SkinsSQL.TEXTURE, texture)
+				.put(SkinsSQL.SIGNATURE, signature);
+			RPPersonas.get().getSkinsSQL().registerOrUpdate(data);
 			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Successfully added your skin to your account."));
 		} else {
 			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Unable to add a skin to your account."));

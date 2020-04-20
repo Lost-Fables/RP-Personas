@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -43,10 +43,10 @@ public class AltarSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(ALTARID, ALTARID, Integer.class);
-		DataBuffer.addMapping(NAME, NAME, String.class);
-		DataBuffer.addMapping(LOCATION, LOCATION, Location.class);
-		DataBuffer.addMapping(ICONID, ICONID, String.class);
+		DataMapFilter.addFilter(ALTARID, ALTARID, Integer.class);
+		DataMapFilter.addFilter(NAME, NAME, String.class);
+		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);
+		DataMapFilter.addFilter(ICONID, ICONID, String.class);
 	}
 
 	public void loadAltars() {
@@ -70,8 +70,8 @@ public class AltarSQL extends BaseSQL {
 		}
 	}
 
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {

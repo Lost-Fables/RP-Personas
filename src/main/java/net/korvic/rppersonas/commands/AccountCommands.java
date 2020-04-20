@@ -19,6 +19,9 @@ import net.korvic.rppersonas.conversation.PersonaDeleteConvo;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.conversation.PersonaSkinConvo;
+import net.korvic.rppersonas.sql.AccountsSQL;
+import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -54,7 +57,10 @@ public class AccountCommands extends BaseCommand {
 			Player p = (Player) sender;
 			if (plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()) <= 0 && !plugin.getAccountsSQL().isRegistered(forumID)) {
 				//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the lines below.
-				plugin.getUUIDAccountMapSQL().addMapping(forumID, p);
+				DataMapFilter data = new DataMapFilter();
+				data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
+					.put(UUIDAccountMapSQL.PLAYER, p);
+				plugin.getUUIDAccountMapSQL().registerOrUpdate(data);
 				msg(FORUM_LINK_SUCCESS);
 			} else {
 				msg(ALREADY_REGISTERED);
@@ -82,9 +88,9 @@ public class AccountCommands extends BaseCommand {
 				discordOutput = discordID;
 			}
 
-			Map<Object, Object> data = new HashMap<>();
-			data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(((Player) sender).getUniqueId()));
-			data.put("discordid", discordOutput);
+			DataMapFilter data = new DataMapFilter();
+			data.put(AccountsSQL.ACCOUNTID, plugin.getUUIDAccountMapSQL().getAccountID(((Player) sender).getUniqueId()))
+				.put(AccountsSQL.DISCORDID, discordOutput);
 
 			plugin.getAccountsSQL().registerOrUpdate(data);
 
@@ -128,7 +134,7 @@ public class AccountCommands extends BaseCommand {
 
 		private Menu buildMainMenu(int accountID) {
 			ArrayList<Icon> icons = new ArrayList<>();
-			Map<Object, Object> data = plugin.getAccountsSQL().getData(accountID);
+			Map<String, Object> data = plugin.getAccountsSQL().getData(accountID);
 			icons.add(getStatisticsIcon(data));
 			icons.add(getDiscordIcon(data));
 			icons.add(getSkinsIcon(data));
@@ -140,7 +146,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// STATS //
-		private Icon getStatisticsIcon(Map<Object,Object> data) {
+		private Icon getStatisticsIcon(Map<String, Object> data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -175,7 +181,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// DISCORD //
-		private Icon getDiscordIcon(Map<Object, Object> data) {
+		private Icon getDiscordIcon(Map<String, Object> data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -210,7 +216,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// SKINS //
-		private Icon getSkinsIcon(Map<Object, Object> data) {
+		private Icon getSkinsIcon(Map<String, Object> data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -234,7 +240,7 @@ public class AccountCommands extends BaseCommand {
 			};
 		}
 
-		private List<Menu> getSkinsListMenu(Map<Object, Object> data, int maxSkins, Player player) {
+		private List<Menu> getSkinsListMenu(Map<String, Object> data, int maxSkins, Player player) {
 			Map<Integer, String> skinData = plugin.getSkinsSQL().getSkinNames((int) data.get("accountid"));
 			int currentSkinCount = 0;
 

@@ -5,7 +5,7 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.pieces.PersonaGender;
 import net.korvic.rppersonas.personas.pieces.PersonaSubRace;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -77,28 +77,28 @@ public class PersonasSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(PERSONAID, PERSONAID, Integer.class);
-		DataBuffer.addMapping(ALIVE, ALIVE, Boolean.class);
-		DataBuffer.addMapping(NAME, NAME, String.class);
-		DataBuffer.addMapping(GENDER, GENDER, PersonaGender.class);
-		DataBuffer.addMapping(AGE, AGE, Long.class);
-		DataBuffer.addMapping(RACE, RACE, PersonaSubRace.class);
-		DataBuffer.addMapping(LIVES, LIVES, Integer.class);
-		DataBuffer.addMapping(PLAYTIME, PLAYTIME, Long.class);
-		DataBuffer.addMapping(LOCATION, LOCATION, Location.class);
-		DataBuffer.addMapping(HEALTH, HEALTH, Double.class);
-		DataBuffer.addMapping(HUNGER, HUNGER, Integer.class);
-		DataBuffer.addMapping(INVENTORY, INVENTORY, Inventory.class);
-		DataBuffer.addMapping(ENDERCHEST, ENDERCHEST, Inventory.class);
-		DataBuffer.addMapping(NICKNAME, NICKNAME, String.class);
-		DataBuffer.addMapping(PREFIX, PREFIX, String.class);
-		DataBuffer.addMapping(SKINID, SKINID, Integer.class);
-		DataBuffer.addMapping(DESCRIPTION, DESCRIPTION, String.class);
+		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
+		DataMapFilter.addFilter(ALIVE, ALIVE, Boolean.class);
+		DataMapFilter.addFilter(NAME, NAME, String.class);
+		DataMapFilter.addFilter(GENDER, GENDER, PersonaGender.class);
+		DataMapFilter.addFilter(AGE, AGE, Long.class);
+		DataMapFilter.addFilter(RACE, RACE, PersonaSubRace.class);
+		DataMapFilter.addFilter(LIVES, LIVES, Integer.class);
+		DataMapFilter.addFilter(PLAYTIME, PLAYTIME, Long.class);
+		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);
+		DataMapFilter.addFilter(HEALTH, HEALTH, Double.class);
+		DataMapFilter.addFilter(HUNGER, HUNGER, Integer.class);
+		DataMapFilter.addFilter(INVENTORY, INVENTORY, Inventory.class);
+		DataMapFilter.addFilter(ENDERCHEST, ENDERCHEST, Inventory.class);
+		DataMapFilter.addFilter(NICKNAME, NICKNAME, String.class);
+		DataMapFilter.addFilter(PREFIX, PREFIX, String.class);
+		DataMapFilter.addFilter(SKINID, SKINID, Integer.class);
+		DataMapFilter.addFilter(DESCRIPTION, DESCRIPTION, String.class);
 	}
 
 	// Inserts a new mapping for a persona.
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {

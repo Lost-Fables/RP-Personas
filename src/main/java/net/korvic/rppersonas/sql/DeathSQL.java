@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 import org.bukkit.Location;
 
@@ -61,25 +61,25 @@ public class DeathSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(DEATHID, DEATHID, Integer.class);
+		DataMapFilter.addFilter(DEATHID, DEATHID, Integer.class);
 
-		DataBuffer.addMapping(VICTIM_PERSONAID, VICTIM_PERSONAID, Integer.class);
-		DataBuffer.addMapping(VICTIM_ACCOUNTID, VICTIM_ACCOUNTID, Integer.class);
-		DataBuffer.addMapping(VICTIM_UUID, VICTIM_UUID, UUID.class);
+		DataMapFilter.addFilter(VICTIM_PERSONAID, VICTIM_PERSONAID, Integer.class);
+		DataMapFilter.addFilter(VICTIM_ACCOUNTID, VICTIM_ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(VICTIM_UUID, VICTIM_UUID, UUID.class);
 
-		DataBuffer.addMapping(KILLER_PERSONAID, KILLER_PERSONAID, Integer.class);
-		DataBuffer.addMapping(KILLER_ACCOUNTID, KILLER_ACCOUNTID, Integer.class);
-		DataBuffer.addMapping(KILLER_UUID, KILLER_UUID, UUID.class);
+		DataMapFilter.addFilter(KILLER_PERSONAID, KILLER_PERSONAID, Integer.class);
+		DataMapFilter.addFilter(KILLER_ACCOUNTID, KILLER_ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(KILLER_UUID, KILLER_UUID, UUID.class);
 
-		DataBuffer.addMapping(LOCATION, LOCATION, Location.class);
-		DataBuffer.addMapping(CREATED, CREATED, Long.class);
-		DataBuffer.addMapping(STAFF, STAFF, Boolean.class);
-		DataBuffer.addMapping(REFUNDER, REFUNDER, UUID.class);
+		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);
+		DataMapFilter.addFilter(CREATED, CREATED, Long.class);
+		DataMapFilter.addFilter(STAFF, STAFF, Boolean.class);
+		DataMapFilter.addFilter(REFUNDER, REFUNDER, UUID.class);
 	}
 
 	// Updates or Inserts a new mapping for an account.
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {

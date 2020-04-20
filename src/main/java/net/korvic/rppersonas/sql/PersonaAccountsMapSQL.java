@@ -2,7 +2,7 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 
 import java.sql.*;
@@ -47,25 +47,12 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping("accountid", "accountid", Integer.class);
+		DataMapFilter.addFilter("accountid", "accountid", Integer.class);
 	}
 
 	// Inserts a new mapping for a persona.
 	public void addOrUpdateMapping(int personaID, int accountID, boolean alive, UUID uuid) {
-		PreparedStatement ps = null;
-		try {
-			ps = getSaveStatement(personaID, accountID, alive, uuid);
-			ps.executeUpdate();
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
-		}
+		plugin.getSaveQueue().addToQueue(getSaveStatement(personaID, accountID, alive, uuid));
 	}
 
 	public PreparedStatement getSaveStatement(int personaID, int accountID, boolean alive, UUID uuid) {

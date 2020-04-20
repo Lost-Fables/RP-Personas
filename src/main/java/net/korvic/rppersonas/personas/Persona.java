@@ -3,6 +3,8 @@ package net.korvic.rppersonas.personas;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.BaseConvo;
+import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -87,21 +89,21 @@ public class Persona {
 		}
 	}
 
-	public Map<Object, Object> getLoadedInfo() {
-		Map<Object, Object> output = new HashMap<>();
+	public Map<String, Object> getLoadedInfo() {
+		Map<String, Object> output = new HashMap<>();
 
 		output.put("accountid", accountID);
-		output.put("personaid", personaID);
-		output.put("alive", isAlive);
-		output.put("inventory", inventory);
-		output.put("enderchest", InventoryUtil.serializeItems(enderInventory.getContents()));
-		output.put("nickname", nickName);
-		output.put("prefix", prefix);
+		output.put(PersonasSQL.PERSONAID, personaID);
+		output.put(PersonasSQL.ALIVE, isAlive);
+		output.put(PersonasSQL.INVENTORY, inventory);
+		output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderInventory.getContents()));
+		output.put(PersonasSQL.NICKNAME, nickName);
+		output.put(PersonasSQL.PREFIX, prefix);
 
 		if (activeSkin != null) {
-			output.put("skinid", activeSkin.getSkinID());
+			output.put(PersonasSQL.SKINID, activeSkin.getSkinID());
 		} else {
-			output.put("skinid", 0);
+			output.put(PersonasSQL.SKINID, 0);
 		}
 
 		return output;
@@ -110,7 +112,7 @@ public class Persona {
 	public Map<String, Object> getBasicInfo() {
 		Map<String, Object> output = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
-		output.put("personaid", personaID);
+		output.put(PersonasSQL.PERSONAID, personaID);
 
 		return output;
 	}
@@ -119,16 +121,16 @@ public class Persona {
 		Map<String, Object> data = getBasicInfo();
 
 		String output = BaseConvo.DIVIDER +
-						RPPersonas.PRIMARY_DARK + "Persona ID: " + RPPersonas.SECONDARY_LIGHT + String.format("%06d", (int) data.get("personaid")) + "\n";
-		if (data.containsKey("nickname")) {
-			output += RPPersonas.PRIMARY_DARK + "Nickname: " + RPPersonas.SECONDARY_LIGHT + data.get("nickname") + "\n";
+						RPPersonas.PRIMARY_DARK + "Persona ID: " + RPPersonas.SECONDARY_LIGHT + String.format("%06d", (int) data.get(PersonasSQL.PERSONAID)) + "\n";
+		if (data.containsKey(PersonasSQL.NICKNAME)) {
+			output += RPPersonas.PRIMARY_DARK + "Nickname: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.NICKNAME) + "\n";
 		}
-		output += RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_LIGHT + data.get("name") + "\n" +
-				  RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_LIGHT + RPPersonas.getRelativeTimeString((long) data.get("age")) + "\n" +
-				  RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_LIGHT + data.get("race") + "\n" +
-				  RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_LIGHT + data.get("gender") + "\n";
-		if (data.containsKey("description")) {
-			output += RPPersonas.PRIMARY_DARK + "Description: " + RPPersonas.SECONDARY_LIGHT + data.get("description") + "\n";
+		output += RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.NAME) + "\n" +
+				  RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_LIGHT + RPPersonas.getRelativeTimeString((long) data.get(PersonasSQL.AGE)) + "\n" +
+				  RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.RACE) + "\n" +
+				  RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.GENDER) + "\n";
+		if (data.containsKey(PersonasSQL.DESCRIPTION)) {
+			output += RPPersonas.PRIMARY_DARK + "Description: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.DESCRIPTION) + "\n";
 		}
 		output += BaseConvo.DIVIDER;
 
@@ -165,22 +167,23 @@ public class Persona {
 		queueSave(p, null);
 	}
 
-	public void queueSave(Map<Object, Object> data) {
+	public void queueSave(DataMapFilter data) {
 		queueSave(usingPlayer, data);
 	}
 
-	public void queueSave(Player p, Map<Object, Object> data) {
+	public void queueSave(Player p, DataMapFilter data) {
 		this.inventory = InventoryUtil.serializeItems(p.getInventory());
 		try {
-			Map<Object, Object> newData = getLoadedInfo();
+			DataMapFilter newData = new DataMapFilter();
+			newData.putAll(getLoadedInfo());
 			if (data != null) {
-				newData.putAll(data);
+				newData.putAll(data.getRawMap());
 			}
-			newData.put("location", p.getLocation());
-			newData.put("health", p.getHealth());
-			newData.put("hunger", p.getFoodLevel());
-			PreparedStatement ps = plugin.getPersonasSQL().getSaveStatement(newData);
-			plugin.getSaveQueue().addToQueue(ps);
+			newData.put(PersonasSQL.LOCATION, p.getLocation())
+				   .put(PersonasSQL.HEALTH, p.getHealth())
+				   .put(PersonasSQL.HUNGER, p.getFoodLevel());
+			
+			plugin.getPersonasSQL().registerOrUpdate(newData);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
@@ -197,7 +200,7 @@ public class Persona {
 		if (name.length() > 0) {
 			this.nickName = name;
 		} else {
-			this.nickName = (String) getBasicInfo().get("name");
+			this.nickName = (String) getBasicInfo().get(PersonasSQL.NAME);
 		}
 		queueSave(p);
 	}
@@ -214,8 +217,8 @@ public class Persona {
 	public String addToDescription(Player p, String[] description) {
 		Map<String, Object> data = getBasicInfo();
 		StringBuilder desc = new StringBuilder();
-		if (data.containsKey("description")) {
-			desc.append((String) data.get("description"));
+		if (data.containsKey(PersonasSQL.DESCRIPTION)) {
+			desc.append((String) data.get(PersonasSQL.DESCRIPTION));
 		}
 
 		for (String s : description) {
@@ -225,16 +228,16 @@ public class Persona {
 			desc.append(s);
 		}
 
-		Map<Object, Object> newData = new HashMap<>();
-		newData.put("description", desc.toString());
+		DataMapFilter newData = new DataMapFilter();
+		newData.put(PersonasSQL.DESCRIPTION, desc.toString());
 
 		queueSave(p, newData);
 		return desc.toString();
 	}
 
 	public void clearDescription(Player p) {
-		Map<Object, Object> data = new HashMap<>();
-		data.put("description", null);
+		DataMapFilter data = new DataMapFilter();
+		data.put(PersonasSQL.DESCRIPTION, null);
 		queueSave(p, data);
 	}
 

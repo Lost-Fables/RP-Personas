@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataBuffer;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 
 import java.sql.*;
@@ -36,9 +36,9 @@ public class CurrencySQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataBuffer.addMapping(PERSONAID, PERSONAID, Integer.class);
-		DataBuffer.addMapping(MONEY, MONEY, Float.class);
-		DataBuffer.addMapping(BANK, BANK, Float.class);
+		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
+		DataMapFilter.addFilter(MONEY, MONEY, Float.class);
+		DataMapFilter.addFilter(BANK, BANK, Float.class);
 	}
 
 	public Map<String, Object> getData(int personaID) {
@@ -76,8 +76,8 @@ public class CurrencySQL extends BaseSQL {
 		return null;
 	}
 
-	public void registerOrUpdate(DataBuffer data) {
-		registerOrUpdate(data.getData());
+	public void registerOrUpdate(DataMapFilter data) {
+		registerOrUpdate(data.getRawMap());
 	}
 
 	private void registerOrUpdate(Map<String, Object> data) {
