@@ -79,10 +79,6 @@ public class DeathSQL extends BaseSQL {
 
 	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(DataMapFilter data) {
-		registerOrUpdate(data.getRawMap());
-	}
-
-	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(DEATHID)) {
 			try {
 				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
@@ -92,7 +88,7 @@ public class DeathSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();

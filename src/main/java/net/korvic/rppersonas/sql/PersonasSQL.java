@@ -35,6 +35,8 @@ public class PersonasSQL extends BaseSQL {
 	public static final String PREFIX = "prefix";
 	public static final String SKINID = "skinid";
 	public static final String DESCRIPTION = "description";
+	public static final String FIRST = "first";
+	public static final String FRESH = "fresh";
 
 	public PersonasSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
@@ -92,24 +94,37 @@ public class PersonasSQL extends BaseSQL {
 		DataMapFilter.addFilter(PREFIX, PREFIX, String.class);
 		DataMapFilter.addFilter(SKINID, SKINID, Integer.class);
 		DataMapFilter.addFilter(DESCRIPTION, DESCRIPTION, String.class);
+		DataMapFilter.addFilter(FIRST, FIRST, Object.class);
+		DataMapFilter.addFilter(FRESH, FRESH, Object.class);
 	}
 
 	// Inserts a new mapping for a persona.
 	public void registerOrUpdate(DataMapFilter data) {
-		registerOrUpdate(data.getRawMap());
-	}
-
-	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(PERSONAID)) {
+			PreparedStatement ps = null;
 			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				if (data.containsKey(PersonasSQL.FRESH)) {
+					ps = getSaveStatement(data);
+					ps.executeUpdate();
+					ps.close();
+				} else {
+					plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				}
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+			} finally {
+				try {
+					if (ps != null) {
+						ps.close();
+					}
+				} catch (SQLException ex) {
+					plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+				}
 			}
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;
@@ -295,11 +310,11 @@ public class PersonasSQL extends BaseSQL {
 					pers.setSkin(0);
 				}
 
-				Map<String, Object> data = new HashMap<>();
+				DataMapFilter data = new DataMapFilter();
 				data.put(PERSONAID, personaID);
 				data.put(SKINID, 0);
 
-				RPPersonas.get().getSaveQueue().addToQueue(getSaveStatement(data));
+				registerOrUpdate(data);
 			}
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {

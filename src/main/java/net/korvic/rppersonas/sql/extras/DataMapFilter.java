@@ -32,10 +32,19 @@ public class DataMapFilter {
 	// INSTANCE //
 	private Map<String, Object> data = new HashMap<>();
 
+	public DataMapFilter putAllData(DataMapFilter data) {
+		for (Entry<String, Object> entry : data.data.entrySet()) {
+			put(entry.getKey(), entry.getValue());
+		}
+		return this;
+	}
+
 	public DataMapFilter putAllObject(Map<Object, Object> data) {
 		for (Entry<Object, Object> entry : data.entrySet()) {
 			if (entry.getKey() instanceof String) {
 				put((String) entry.getKey(), entry.getValue());
+			} else if (RPPersonas.DEBUGGING) {
+				RPPersonas.get().getLogger().warning("Failed to translate " + entry.getKey().toString() + " to a string. Had value " + entry.getValue().toString());
 			}
 		}
 		return this;
@@ -51,17 +60,31 @@ public class DataMapFilter {
 	public DataMapFilter put(String input, Object value) {
 		String output = DATA_MAP.get(input);
 		Class clazz = CLASS_MAP.get(output);
-		if (value == null || clazz.isInstance(value)) {
-			data.put(output, value);
-		} else {
-			RPPersonas.get().getLogger().warning("Wrong data type submitted for '" + output + "'. Expected instance of " + clazz.toString() + ", received " + value.getClass().toString());
+		try {
+			if (value == null || clazz.isInstance(value)) {
+				data.put(output, value);
+			} else {
+				RPPersonas.get().getLogger().warning("Wrong data type submitted for '" + output + "'. Expected instance of " + clazz.toString() + ", received " + value.getClass().toString());
+			}
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				String clazzString = null;
+				String valueString = null;
+
+				if (clazz != null) {
+					clazzString = clazz.toString();
+				}
+
+				if (value != null) {
+					valueString = value.getClass().toString();
+				}
+
+				RPPersonas.get().getLogger().warning("Wrong data type submitted for '" + output + "'. Expected instance of " + clazzString + ", received " + valueString);
+				e.printStackTrace();
+			}
 		}
 
 		return this;
-	}
-
-	public Map<String, Object> getRawMap() {
-		return data;
 	}
 
 	public Object get(String key) {

@@ -47,4 +47,8 @@ public class DeathHandler {
 
 	}
 
+	public void deleteRequest(Player victim) {
+		requestMap.remove(victim);
+	}
+
 }

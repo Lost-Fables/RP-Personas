@@ -112,10 +112,6 @@ public class AccountsSQL extends BaseSQL {
 
 	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(DataMapFilter data) {
-		registerOrUpdate(data.getRawMap());
-	}
-
-	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(ACCOUNTID)) {
 			try {
 				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
@@ -125,7 +121,7 @@ public class AccountsSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;
@@ -175,8 +171,9 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	public void incrementVotes(int accountID) {
-		Map<String, Object> data = getData(accountID);
-		data.put(VOTES, ((short) data.get(VOTES)) + 1);
+		DataMapFilter data = new DataMapFilter();
+		data.putAll(getData(accountID))
+			.put(VOTES, ((short) data.get(VOTES)) + 1);
 		try {
 			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 		} catch (Exception e) {

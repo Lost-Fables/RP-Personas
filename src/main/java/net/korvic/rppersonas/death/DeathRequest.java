@@ -1,11 +1,16 @@
 package net.korvic.rppersonas.death;
 
+import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.DeathSQL;
+import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
+import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.statuses.EtherealStatus;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class DeathRequest {
 
@@ -38,9 +43,14 @@ public class DeathRequest {
 	}
 
 	public void complete(boolean staffInflicted) {
-		RPPersonas plugin = RPPersonas.get();
+		saveDeathSQL(staffInflicted);
+		victimPersona.addStatus(new EtherealStatus(-1)); // Become Ghost
+		dropCorpse();
+		savePersona();
+	}
 
-		// TODO kill persona
+	private void saveDeathSQL(boolean staffInflicted) {
+		RPPersonas plugin = RPPersonas.get();
 
 		DataMapFilter data = new DataMapFilter();
 		data.put(DeathSQL.VICTIM_PERSONAID, this.victimPersona.getPersonaID())
@@ -55,9 +65,35 @@ public class DeathRequest {
 			.put(DeathSQL.STAFF, staffInflicted);
 
 		plugin.getDeathSQL().registerOrUpdate(data);
+	}
 
-		// TODO change to ghost
-		// TODO drop body
+	private void dropCorpse() {
+		RPPersonas plugin = RPPersonas.get();
+
+		InventoryUtil.addOrDropItem(victim, plugin.getCorpseHandler().createCorpse(victim).getItem());
+		ItemStack[] items = victim.getInventory().getContents();
+		victim.getInventory().clear();
+		for (ItemStack item : items) {
+			if (item != null) {
+				victim.getLocation().getWorld().dropItem(victim.getLocation(), item);
+			}
+		}
+	}
+
+	private void savePersona() {
+		RPPersonas plugin = RPPersonas.get();
+
+		plugin.getDeathHandler().deleteRequest(victim);
+
+		DataMapFilter data = new DataMapFilter();
+		data.put(PersonasSQL.ALIVE, false);
+		data.put(PersonasSQL.PERSONAID, victimPersona.getPersonaID());
+
+		// In case we ever differentiate between SQL db data filters for some reason
+		//data.put(PersonaAccountsMapSQL.ALIVE, false);
+		//data.put(PersonaAccountsMapSQL.PERSONAID, victimPersona.getPersonaID());
+		plugin.getPersonasSQL().registerOrUpdate(data);
+		plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 	}
 
 }

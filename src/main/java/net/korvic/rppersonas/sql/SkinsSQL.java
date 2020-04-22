@@ -102,10 +102,6 @@ public class SkinsSQL extends BaseSQL {
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
-		registerOrUpdate(data.getRawMap());
-	}
-
-	private void registerOrUpdate(Map<String, Object> data) {
 		data.put(SKINID, highestSkinID);
 		updateHighestSkinID(highestSkinID);
 		try {
@@ -115,7 +111,7 @@ public class SkinsSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;

@@ -31,13 +31,14 @@ public class PersonaCommands extends BaseCommand {
 
 	@Cmd(value = "Execute the given player's current persona by your current persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void Execute(CommandSender sender,
-						@Arg(value = "Player", description = "The player which you're executing.") Player killer) {
+						@Arg(value = "Player", description = "The player which you're executing.") Player victim) {
 		if (sender instanceof Player) {
-			Player victim = (Player) sender;
-			if (LocationUtil.isClose(victim, killer, EXECUTE_DISTANCE)) {
+			Player killer = (Player) sender;
+			if (LocationUtil.isClose(killer, victim, EXECUTE_DISTANCE)) {
 				if (!plugin.getDeathHandler().hasRequest(victim)) {
-					if (plugin.getPersonaHandler().getLoadedPersona(killer).getAccountID() != plugin.getPersonaHandler().getLoadedPersona(victim).getAccountID()) {
-						plugin.getDeathHandler().requestExecute(victim, killer);
+					if (plugin.getPersonaHandler().getLoadedPersona(victim).getAccountID() != plugin.getPersonaHandler().getLoadedPersona(killer).getAccountID()) {
+						plugin.getDeathHandler().requestExecute(killer, victim);
+						msg(RPPersonas.PRIMARY_DARK + "Execution request sent!");
 					} else {
 						msg(RPPersonas.PRIMARY_DARK + "You cannot execute your own persona!");
 					}

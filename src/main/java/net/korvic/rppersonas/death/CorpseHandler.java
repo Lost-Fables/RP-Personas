@@ -37,7 +37,7 @@ public class CorpseHandler {
 
 			PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
 			String texture;
-			if (skin.getSkinID() > 0) {
+			if (skin != null && skin.getSkinID() > 0) {
 				texture = skin.getTextureValue();
 			} else {
 				texture = PlayerUtil.getPlayerTexture(player.getUniqueId());

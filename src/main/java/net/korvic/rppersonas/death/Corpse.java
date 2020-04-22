@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.death;
 
+import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.CorpseSQL;
@@ -70,7 +71,7 @@ public class Corpse {
 		DataMapFilter data = new DataMapFilter();
 		data.put(CorpseSQL.CORPSEID, id)
 			.put(CorpseSQL.NAME, name)
-			.put(CorpseSQL.INVENTORY, inv)
+			.put(CorpseSQL.INVENTORY, InventoryUtil.serializeItems(inv))
 			.put(CorpseSQL.CREATED, created)
 			.put(CorpseSQL.TEXTURE, texture);
 		RPPersonas.get().getCorpseSQL().registerOrUpdate(data);

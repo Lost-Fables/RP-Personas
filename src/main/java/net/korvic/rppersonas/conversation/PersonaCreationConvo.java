@@ -7,6 +7,7 @@ import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaRace;
 import net.korvic.rppersonas.personas.PersonaSubRace;
 import net.korvic.rppersonas.listeners.StatusEventListener;
+import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -27,7 +28,7 @@ public class PersonaCreationConvo extends BaseConvo {
 
 	@Override
 	public Prompt getFirstPrompt(Map<Object, Object> data) {
-		if (data.containsKey("first")) {
+		if (data.containsKey(PersonasSQL.FIRST)) {
 			return new StartingPrompt();
 		} else {
 			this.factory.addConversationAbandonedListener(new PersonaCreationAbandonedListener());
@@ -127,7 +128,7 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
-				context.setSessionData("name", name);
+				context.setSessionData(PersonasSQL.NAME, name);
 				if (returnToEnd) {
 					return new PersonaConfirmPrompt();
 				} else {
@@ -181,7 +182,6 @@ public class PersonaCreationConvo extends BaseConvo {
 	private static class PickSubracePrompt extends ValidatingPrompt {
 		private PersonaRace race = null;
 		private boolean returnToEnd;
-		private String correctedOutput = null;
 
 		private PickSubracePrompt(String string, boolean returnToEnd){
 			try {
@@ -218,20 +218,15 @@ public class PersonaCreationConvo extends BaseConvo {
 
 		@Override
 		protected boolean isInputValid(ConversationContext context, String input) {
-			if ("back".equalsIgnoreCase(input)) return true;
-			PersonaSubRace subrace = PersonaSubRace.getByName(input);
-			if (subrace != null) {
-				correctedOutput = subrace.getName();
-				return true;
-			} else {
-				return false;
-			}
+			return PersonaSubRace.getByName(input) != null || ("back".equalsIgnoreCase(input));
 		}
 
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, String input) {
-			if ("back".equalsIgnoreCase(input)) return new PersonaRacePrompt(returnToEnd);
-			context.setSessionData("race", correctedOutput);
+			if ("back".equalsIgnoreCase(input)) {
+				return new PersonaRacePrompt(returnToEnd);
+			}
+			context.setSessionData(PersonasSQL.RACE, PersonaSubRace.getByName(input));
 			if (returnToEnd) {
 				return new PersonaConfirmPrompt();
 			} else {
@@ -317,7 +312,7 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
-				context.setSessionData("age", RPPersonas.getMillisFromAge(age));
+				context.setSessionData(PersonasSQL.AGE, RPPersonas.getMillisFromAge(age));
 				if (returnToEnd) {
 					return new PersonaConfirmPrompt();
 				} else {
@@ -331,8 +326,6 @@ public class PersonaCreationConvo extends BaseConvo {
 
 	// Gender //
 	private static class PersonaGenderPrompt extends FixedSetPrompt {
-		private String correctedOutput = null;
-
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
@@ -351,18 +344,12 @@ public class PersonaCreationConvo extends BaseConvo {
 
 		@Override
 		protected boolean isInputValid(ConversationContext context, String input) {
-			PersonaGender gender = PersonaGender.getByName(input);
-			if (gender != null) {
-				correctedOutput = gender.getName();
-				return true;
-			} else {
-				return false;
-			}
+			return PersonaGender.getByName(input) != null;
 		}
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
-			context.setSessionData("gender", correctedOutput);
+			context.setSessionData(PersonasSQL.GENDER, PersonaGender.getByName(input));
 			return new PersonaConfirmPrompt();
 		}
 	}
@@ -372,12 +359,25 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
+			PersonaSubRace race = (PersonaSubRace) context.getSessionData(PersonasSQL.RACE);
+			PersonaGender gender = (PersonaGender) context.getSessionData(PersonasSQL.GENDER);
+
+			String raceString = null;
+			if (race != null) {
+				raceString = race.getName();
+			}
+
+			String genderString = null;
+			if (gender != null) {
+				genderString = gender.getName();
+			}
+
 			BaseComponent confirmation = new TextComponent("\n" +
 														   RPPersonas.PRIMARY_DARK + "Let's review your persona details...\n" +
-														   RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_DARK + context.getSessionData("name") + "\n" +
-														   RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_DARK + context.getSessionData("race") + "\n" +
-														   RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) context.getSessionData("age")) + "\n" +
-														   RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_DARK + context.getSessionData("gender") + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_DARK + context.getSessionData(PersonasSQL.NAME) + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_DARK + raceString + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) context.getSessionData(PersonasSQL.AGE)) + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_DARK + genderString + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Does everything look to be in order?\n" +
 														   DIVIDER);
 

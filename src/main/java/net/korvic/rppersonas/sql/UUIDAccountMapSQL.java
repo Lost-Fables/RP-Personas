@@ -39,10 +39,6 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
-		registerOrUpdate(data.getRawMap());
-	}
-
-	private void registerOrUpdate(Map<String, Object> data) {
 		Player p = (Player) data.get(PLAYER);
 		try {
 			plugin.getUnregisteredHandler().remove(p);
@@ -55,7 +51,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		}
 	}
 
-	private PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
+	private PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();

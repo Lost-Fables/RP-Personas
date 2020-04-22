@@ -69,10 +69,6 @@ public class CorpseSQL extends BaseSQL {
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
-		registerOrUpdate(data.getRawMap());
-	}
-
-	private void registerOrUpdate(Map<String, Object> data) {
 		if (data.containsKey(CORPSEID)) {
 			try {
 				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
@@ -82,7 +78,7 @@ public class CorpseSQL extends BaseSQL {
 		}
 	}
 
-	public PreparedStatement getSaveStatement(Map<String, Object> data) throws SQLException {
+	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		Connection conn = null;
 		PreparedStatement grabStatement = null;
 		PreparedStatement replaceStatement = null;
@@ -108,8 +104,7 @@ public class CorpseSQL extends BaseSQL {
 		}
 
 		if (data.containsKey(INVENTORY)) {
-			Inventory inv = (Inventory) data.get(INVENTORY);
-			replaceStatement.setString(3, InventoryUtil.serializeItems(inv));
+			replaceStatement.setString(3, (String) data.get(INVENTORY));
 		} else if (resultPresent) {
 			replaceStatement.setString(3, result.getString("Inventory"));
 		} else {

@@ -10,6 +10,7 @@ import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
+import net.korvic.rppersonas.statuses.EtherealStatus;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -55,15 +56,15 @@ public class PersonaHandler {
 		p.getInventory().clear();
 
 		Map<Object, Object> data = new HashMap<>();
-		data.put("accountid", accountID);
+		data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
 		data.put(PersonasSQL.ALIVE, true);
 		data.put(PersonasSQL.LIVES, 3);
 		data.put(PersonasSQL.PLAYTIME, 0L);
-		data.put("fresh", new Object());
+		data.put(PersonasSQL.FRESH, new Object());
 		data.put(PersonasSQL.LOCATION, plugin.getSpawnLocation());
 
 		if (first) {
-			data.put("first", new Object());
+			data.put(PersonasSQL.FIRST, new Object());
 		}
 
 		new PersonaCreationConvo(plugin).startConvo(p, data, !first);
@@ -138,10 +139,10 @@ public class PersonaHandler {
 
 		boolean isAlive = false;
 		if (data.containsKey(PersonasSQL.ALIVE)) {
-			isAlive = true;
+			isAlive = (boolean) data.get(PersonasSQL.ALIVE);
 		}
 
-		if (data.containsKey("fresh")) {
+		if (data.containsKey(PersonasSQL.FRESH)) {
 			p.setSaturation(20); // Give the player 20 saturation if they're a new persona so they can run around a bit more.
 			data.put(PersonasSQL.PERSONAID, personaID);
 			plugin.getPersonasSQL().registerOrUpdate(data);
@@ -161,6 +162,10 @@ public class PersonaHandler {
 		PersonaHandler handler = plugin.getPersonaHandler();
 		handler.playerObjectToID.put(p, personaID);
 		handler.loadedPersonas.put(personaID, persona);
+
+		if (!isAlive) {
+			persona.addStatus(new EtherealStatus(-1));
+		}
 
 		return persona;
 	}
@@ -213,9 +218,7 @@ public class PersonaHandler {
 		DataMapFilter data = new DataMapFilter();
 		data.put(PersonaAccountsMapSQL.PERSONAID, personaID)
 			.put(PersonaAccountsMapSQL.ACCOUNTID, accountID)
-			.put(PersonaAccountsMapSQL.ALIVE, true)
 			.put(PersonaAccountsMapSQL.ACTIVEUUID, p.getUniqueId());
-		plugin.getAccountsSQL().registerOrUpdate(data);
 		plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 
 		Persona newPersona = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);

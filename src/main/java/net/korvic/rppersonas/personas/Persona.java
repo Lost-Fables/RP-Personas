@@ -181,7 +181,7 @@ public class Persona {
 			DataMapFilter newData = new DataMapFilter();
 			newData.putAll(getLoadedInfo());
 			if (data != null) {
-				newData.putAll(data.getRawMap());
+				newData.putAllData(data);
 			}
 			newData.put(PersonasSQL.LOCATION, p.getLocation())
 				   .put(PersonasSQL.HEALTH, p.getHealth())
