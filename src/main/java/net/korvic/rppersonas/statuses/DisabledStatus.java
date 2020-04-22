@@ -34,6 +34,7 @@ public class DisabledStatus extends Status {
 
 		player.setInvulnerable(false);
 
+		player.removePotionEffect(PotionEffectType.SLOW);
 		player.removePotionEffect(PotionEffectType.BLINDNESS);
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
@@ -46,6 +47,7 @@ public class DisabledStatus extends Status {
 
 		player.setInvulnerable(true);
 
+		player.addPotionEffect(createInfiniteEffect(PotionEffectType.SLOW, 255));
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.BLINDNESS));
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.INVISIBILITY));
 	}
