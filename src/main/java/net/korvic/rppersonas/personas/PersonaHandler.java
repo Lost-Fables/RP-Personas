@@ -5,25 +5,24 @@ import co.lotc.core.bukkit.util.LocationUtil;
 import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaCreationConvo;
-import net.korvic.rppersonas.listeners.PersonaDisableListener;
+import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.statuses.DisabledStatus;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PersonaHandler {
 
 	private static RPPersonas plugin;
 	private Map<Integer, Persona> loadedPersonas = new HashMap<>(); // personaID, persona
 	private Map<Player, Integer> playerObjectToID = new HashMap<>(); // player, personaID
+	private static Map<Player, Persona> skipSave = new HashMap<>(); // List of personas to skip saving (i.e. disabled)
 	private static int highestPersonaID = 1;
 
 	public PersonaHandler(RPPersonas plugin) {
@@ -38,19 +37,20 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
-		PersonaDisableListener.disablePlayer(p);
+		new DisabledStatus(null).applyEffect(p);
 
 		String welcomeText = "";
 		if (first) {
 			welcomeText = RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Welcome!";
 		} else if (plugin.getPersonaHandler().getLoadedPersona(p) != null) {
 			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
+			skipSave.put(p, plugin.getPersonaHandler().getLoadedPersona(p));
 		}
 		Title title = new Title(welcomeText,
 								RPPersonas.SECONDARY_LIGHT + "Type your Persona's name to continue.",
 								20, 60*20, 20);
 
-		PersonaDisableListener.disablePlayer(p, plugin.getSpawnLocation(), title);
+		new DisabledStatus(title).applyEffect(p);
 		p.teleportAsync(plugin.getSpawnLocation());
 		p.getInventory().clear();
 
@@ -274,8 +274,9 @@ public class PersonaHandler {
 
 	public void saveAllPersonas() {
 		for (Player p : playerObjectToID.keySet()) {
-			if (PersonaDisableListener.isPlayerEnabled(p)) {
-				loadedPersonas.get(playerObjectToID.get(p)).queueSave(p);
+			Persona pers = loadedPersonas.get(playerObjectToID.get(p));
+			if (!isSkipped(pers)) {
+				pers.queueSave(p);
 			}
 		}
 	}
@@ -301,6 +302,19 @@ public class PersonaHandler {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	// SKIP SAVE //
+	public static void startSkipping(Player p, Persona pers) {
+		skipSave.put(p, pers);
+	}
+
+	public static void stopSkipping(Player p) {
+		skipSave.remove(p);
+	}
+
+	public static boolean isSkipped(Persona pers) {
+		return skipSave.containsValue(pers);
 	}
 
 }

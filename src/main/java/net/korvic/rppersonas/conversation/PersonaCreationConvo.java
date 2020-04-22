@@ -2,12 +2,13 @@ package net.korvic.rppersonas.conversation;
 
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.pieces.PersonaGender;
+import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.personas.pieces.PersonaRace;
-import net.korvic.rppersonas.personas.pieces.PersonaSubRace;
-import net.korvic.rppersonas.listeners.PersonaDisableListener;
+import net.korvic.rppersonas.personas.PersonaRace;
+import net.korvic.rppersonas.personas.PersonaSubRace;
+import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -455,7 +456,8 @@ public class PersonaCreationConvo extends BaseConvo {
 		data.putAllObject(context.getAllSessionData());
 
 		PersonaHandler.registerPersona(data, p, false);
-		PersonaDisableListener.enablePlayer(p);
+		PersonaHandler.stopSkipping(p);
+		new DisabledStatus(null).clearEffect(p);
 
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
 

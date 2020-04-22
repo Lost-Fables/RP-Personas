@@ -1,8 +1,8 @@
-package net.korvic.rppersonas.personas.pieces;
+package net.korvic.rppersonas.personas;
 
 public enum PersonaRace {
 
-	HUMAN("Human", new PersonaSubRace[]{ PersonaSubRace.ARMUSIAN, PersonaSubRace.CARRIBAR, PersonaSubRace.GRAVICAN });
+	HUMAN("Human", new PersonaSubRace[]{ PersonaSubRace.ARMUSIAN, PersonaSubRace.CARRIBARD, PersonaSubRace.GRAVICAN });
 
 	private String name;
 	private PersonaSubRace[] subRaceList;

@@ -1,10 +1,10 @@
-package net.korvic.rppersonas.personas.pieces;
+package net.korvic.rppersonas.personas;
 
 public enum PersonaSubRace {
 
 	// HUMANS
 	ARMUSIAN("Armusian", 90, PersonaRace.HUMAN),
-	CARRIBAR("Carribar", 90, PersonaRace.HUMAN),
+	CARRIBARD("Carribard", 90, PersonaRace.HUMAN),
 	GRAVICAN("Gravican", 90, PersonaRace.HUMAN);
 
 	private String name;

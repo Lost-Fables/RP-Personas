@@ -2,9 +2,10 @@ package net.korvic.rppersonas.listeners;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.AccountsSQL;
-import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.statuses.DisabledStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,7 +48,8 @@ public class JoinQuitListener implements Listener {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 		pers.queueSave(p);
 		pers.unloadPersona(true);
-		PersonaDisableListener.enablePlayer(p);
+		PersonaHandler.stopSkipping(p);
+		new DisabledStatus(null).clearEffect(p);
 	}
 
 

@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.personas.pieces;
+package net.korvic.rppersonas.personas;
 
 public enum PersonaGender {
 	OTHER(0, "Other"),

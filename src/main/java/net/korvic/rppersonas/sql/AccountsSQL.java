@@ -30,8 +30,6 @@ public class AccountsSQL extends BaseSQL {
 						  "    Votes SMALLINT NOT NULL\n" +
 						  ");";
 		this.load(SQLTable, SQL_TABLE_NAME);
-
-		addDataMappings();
 	}
 
 	@Override

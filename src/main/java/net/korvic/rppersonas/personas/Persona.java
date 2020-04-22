@@ -6,6 +6,7 @@ import net.korvic.rppersonas.conversation.BaseConvo;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.statuses.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ public class Persona {
 	private Inventory enderInventory;
 	private boolean isAlive;
 	private PersonaSkin activeSkin = null;
+	private List<Status> activeStatuses = new ArrayList<>();
 
 	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean isAlive, int activeSkinID) {
 		this.plugin = plugin;
@@ -246,6 +249,44 @@ public class Persona {
 		this.activeSkin = PersonaSkin.getFromID(skinID);
 		if (usingPlayer != null) {
 			PersonaSkin.refreshPlayer(usingPlayer);
+		}
+	}
+
+	// STATUS //
+	public List<Status> getActiveStatuses() {
+		return activeStatuses;
+	}
+
+	public boolean hasStatus(Status status) {
+		return hasStatus(status.getName());
+	}
+
+	public boolean hasStatus(String name) {
+		for (Status status : activeStatuses) {
+			if (status.getName().equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void addStatus(Status status) {
+		if (!activeStatuses.contains(status)) {
+			activeStatuses.add(status);
+			status.applyEffect(usingPlayer);
+		}
+	}
+
+	public void clearStatus(Status status) {
+		clearStatus(status.getName());
+	}
+
+	public void clearStatus(String name) {
+		for (Status status : activeStatuses) {
+			if (status.getName().equalsIgnoreCase(name)) {
+				clearStatus(status);
+				break;
+			}
 		}
 	}
 }

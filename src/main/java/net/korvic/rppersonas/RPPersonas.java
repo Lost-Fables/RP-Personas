@@ -11,7 +11,7 @@ import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.death.DeathHandler;
 import net.korvic.rppersonas.listeners.*;
-import net.korvic.rppersonas.listeners.PersonaDisableListener;
+import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.PlayerDisplayListener;
 import net.korvic.rppersonas.sql.*;
@@ -102,7 +102,7 @@ public final class RPPersonas extends JavaPlugin {
 			// Register our Listeners
 			PluginManager manager = getServer().getPluginManager();
 			manager.registerEvents(new JoinQuitListener(this), this);
-			manager.registerEvents(new PersonaDisableListener(this), this);
+			manager.registerEvents(new StatusEventListener(this), this);
 			manager.registerEvents(new InspectListener(this), this);
 			manager.registerEvents(new EnderListener(this), this);
 			manager.registerEvents(new CorpseListener(this), this);
@@ -142,7 +142,6 @@ public final class RPPersonas extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		saveQueueSQL.completeAllSaves();
-		PersonaDisableListener.enableAll();
 		BaseSQL.cancelConnectionMaintainer();
 	}
 
