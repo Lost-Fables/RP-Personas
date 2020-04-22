@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.listeners;
 
+import co.lotc.core.bukkit.menu.Menu;
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import net.korvic.rppersonas.RPPersonas;
@@ -83,21 +84,21 @@ public class StatusEventListener implements Listener {
 	// ITEMS //
 	@EventHandler(ignoreCancelled = true)
 	public void openInventory(InventoryOpenEvent e) {
-		if (itemBlocked.contains((Player) e.getPlayer())) {
+		if (!(e.getInventory().getHolder() instanceof Menu) && itemBlocked.contains((Player) e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void touchAnyInventory(InventoryInteractEvent e) {
-		if (itemBlocked.contains((Player) e.getWhoClicked())) {
+		if (!(e.getInventory().getHolder() instanceof Menu) && itemBlocked.contains((Player) e.getWhoClicked())) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void clickAnyInventory(InventoryClickEvent e) {
-		if (itemBlocked.contains((Player) e.getWhoClicked())) {
+		if (!(e.getInventory().getHolder() instanceof Menu) && itemBlocked.contains((Player) e.getWhoClicked())) {
 			e.setCancelled(true);
 		}
 	}

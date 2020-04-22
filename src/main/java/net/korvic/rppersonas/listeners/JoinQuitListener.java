@@ -48,10 +48,10 @@ public class JoinQuitListener implements Listener {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 		if (pers != null) {
 			pers.queueSave(p);
+			pers.clearAllStatuses();
 			pers.unloadPersona(true);
 		}
 		PersonaHandler.stopSkipping(p);
-		new DisabledStatus(null).clearEffect(p);
 	}
 
 

@@ -13,7 +13,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -271,7 +270,7 @@ public class Persona {
 	}
 
 	public void addStatus(Status status) {
-		if (!activeStatuses.contains(status)) {
+		if (!hasStatus(status)) {
 			activeStatuses.add(status);
 			status.applyEffect(usingPlayer);
 		}
@@ -286,8 +285,22 @@ public class Persona {
 			if (status.getName().equalsIgnoreCase(name)) {
 				activeStatuses.remove(status);
 				status.clearEffect(usingPlayer);
+				refreshStatuses();
 				break;
 			}
+		}
+	}
+
+	public void clearAllStatuses() {
+		for (Status status : activeStatuses) {
+			activeStatuses.remove(status);
+			status.clearEffect(usingPlayer);
+		}
+	}
+
+	public void refreshStatuses() {
+		for (Status status : activeStatuses) {
+			status.refreshEffect(usingPlayer);
 		}
 	}
 }
