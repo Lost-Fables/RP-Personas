@@ -284,7 +284,8 @@ public class Persona {
 	public void clearStatus(String name) {
 		for (Status status : activeStatuses) {
 			if (status.getName().equalsIgnoreCase(name)) {
-				clearStatus(status);
+				activeStatuses.remove(status);
+				status.clearEffect(usingPlayer);
 				break;
 			}
 		}
