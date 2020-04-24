@@ -3,6 +3,7 @@ package net.korvic.rppersonas.listeners;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.conversation.BaseConvo;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
@@ -76,17 +77,19 @@ public class CorpseListener implements Listener {
 		if (ItemUtil.hasCustomTag(e.getItemInHand(), CorpseHandler.CORPSE_KEY)) {
 			e.setCancelled(true);
 
-			// Get Corpse item and null out the one in the player's inventory
+			// If placed against an altar, take the corpse item during the rez prompt.
+			// Otherwise inform player to ruin the corpse if they wish to place it.
 			Player p = e.getPlayer();
-			ItemStack corpseItem = e.getItemInHand();
-			p.getInventory().setItem(getIndexFromInventory(p.getInventory(), e.getItemInHand()), null);
 			Altar altar = plugin.getAltarHandler().getAltarOfBlock(e.getBlockAgainst());
 
 			if (altar != null) {
+				ItemStack corpseItem = e.getItemInHand();
+				p.getInventory().setItem(getIndexFromInventory(p.getInventory(), e.getItemInHand()), null);
 				resConfirm(p, corpseItem, altar);
 			} else {
 				e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You may only place a ruined corpse.\n" +
-										  "Use " + RPPersonas.SECONDARY_DARK + "/persona RuinCorpse " + RPPersonas.PRIMARY_DARK + "to enable placing.");
+										  "Use " + RPPersonas.SECONDARY_DARK + "/persona RuinCorpse " + RPPersonas.PRIMARY_DARK + "to enable placing.\n" +
+										  BaseConvo.NOTE + RPPersonas.PRIMARY_DARK + "A ruined corpse can no longer be resurrected.");
 			}
 		}
 	}
