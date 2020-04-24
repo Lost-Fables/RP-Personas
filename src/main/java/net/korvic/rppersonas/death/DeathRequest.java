@@ -42,16 +42,24 @@ public class DeathRequest {
 		return location;
 	}
 
-	public void complete(boolean staffInflicted) {
-		saveDeathSQL(staffInflicted);
-		victimPersona.addStatus(new EtherealStatus(-1)); // Become Ghost
-		dropCorpse();
-		savePersona();
+	public void ping() {
+		if (victim.isOnline()) {
+			victim.sendMessage(RPPersonas.SECONDARY_DARK + killerPersona.getNickName() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.\n" +
+							   RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_DARK + "/persona ExecuteAccept " + killer.getName() + RPPersonas.PRIMARY_DARK + " to accept.");
+		}
 	}
 
-	private void saveDeathSQL(boolean staffInflicted) {
+	public void complete(boolean staffInflicted) {
 		RPPersonas plugin = RPPersonas.get();
 
+		saveDeathSQL(plugin, staffInflicted);
+		victimPersona.addStatus(new EtherealStatus(-1)); // Become Ghost
+		dropCorpse(plugin);
+		savePersona(plugin);
+		plugin.getDeathHandler().deleteRequest(victim);
+	}
+
+	private void saveDeathSQL(RPPersonas plugin, boolean staffInflicted) {
 		DataMapFilter data = new DataMapFilter();
 		data.put(DeathSQL.VICTIM_PERSONAID, this.victimPersona.getPersonaID())
 			.put(DeathSQL.VICTIM_ACCOUNTID, this.victimPersona.getAccountID())
@@ -67,9 +75,7 @@ public class DeathRequest {
 		plugin.getDeathSQL().registerOrUpdate(data);
 	}
 
-	private void dropCorpse() {
-		RPPersonas plugin = RPPersonas.get();
-
+	private void dropCorpse(RPPersonas plugin) {
 		InventoryUtil.addOrDropItem(victim, plugin.getCorpseHandler().createCorpse(victim).getItem());
 		ItemStack[] items = victim.getInventory().getContents();
 		victim.getInventory().clear();
@@ -80,11 +86,7 @@ public class DeathRequest {
 		}
 	}
 
-	private void savePersona() {
-		RPPersonas plugin = RPPersonas.get();
-
-		plugin.getDeathHandler().deleteRequest(victim);
-
+	private void savePersona(RPPersonas plugin) {
 		DataMapFilter data = new DataMapFilter();
 		data.put(PersonasSQL.ALIVE, false);
 		data.put(PersonasSQL.PERSONAID, victimPersona.getPersonaID());

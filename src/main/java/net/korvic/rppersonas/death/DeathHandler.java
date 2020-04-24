@@ -18,8 +18,9 @@ public class DeathHandler {
 	}
 
 	public void requestExecute(Player killer, Player victim) {
-		requestMap.put(victim, new DeathRequest(killer, victim));
-		pingRequest(victim);
+		DeathRequest req = new DeathRequest(killer, victim);
+		requestMap.put(victim, req);
+		req.ping();
 	}
 
 	public boolean acceptExecute(Player killer, Player victim) {
@@ -44,7 +45,9 @@ public class DeathHandler {
 	}
 
 	public void pingRequest(Player victim) {
-
+		if (requestMap.containsKey(victim)) {
+			requestMap.get(victim).ping();
+		}
 	}
 
 	public void deleteRequest(Player victim) {
