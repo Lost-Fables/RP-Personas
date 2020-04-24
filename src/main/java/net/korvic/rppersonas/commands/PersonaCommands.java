@@ -1,11 +1,21 @@
 package net.korvic.rppersonas.commands;
 
+import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.death.CorpseHandler;
+import net.korvic.rppersonas.listeners.CorpseListener;
+import net.korvic.rppersonas.statuses.DisabledStatus;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PersonaCommands extends BaseCommand {
 
@@ -29,7 +39,7 @@ public class PersonaCommands extends BaseCommand {
 		msg(plugin.getPersonaHandler().getPersonaInfo(player));
 	}
 
-	@Cmd(value = "Execute the given player's current persona by your current persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
+	@Cmd(value = "Execute the given player's current persona by your current persona.", permission = RPPersonas.PERMISSION_START + ".execute")
 	public void Execute(CommandSender sender,
 						@Arg(value = "Player", description = "The player which you're executing.") Player victim) {
 		if (sender instanceof Player) {
@@ -53,7 +63,7 @@ public class PersonaCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value = "Accept being executed by a given player.", permission = RPPersonas.PERMISSION_START + ".accepted")
+	@Cmd(value = "Accept being executed by a given player.", permission = RPPersonas.PERMISSION_START + ".execute")
 	public void ExecuteAccept(CommandSender sender,
 							  @Arg(value = "Player", description = "The player executing you.") Player killer) {
 		if (sender instanceof Player) {
@@ -67,6 +77,55 @@ public class PersonaCommands extends BaseCommand {
 			}
 		} else {
 			msg(NO_CONSOLE);
+		}
+	}
+
+	@Cmd(value = "Ruin a corpse so it can no longer be resurrected.", permission = RPPersonas.PERMISSION_START + ".ruincorpse")
+	public void RuinCorpse(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			DisabledStatus status = new DisabledStatus(null);
+			status.applyEffect(p);
+			ItemStack corpse = getCorpseFromHand(p);
+			status.clearEffect(p);
+
+			if (corpse != null) {
+				ItemUtil.removeCustomTag(corpse, CorpseHandler.CORPSE_KEY);
+				ItemMeta meta = corpse.getItemMeta();
+
+				List<String> lore = new ArrayList<>();
+				lore.add("This corpse has been ruined!");
+				lore.add("It may no longer be resurrected, however");
+				lore.add("it may be placed on the ground now.");
+				meta.setLore(lore);
+
+				corpse.setItemMeta(meta);
+				InventoryUtil.addOrDropItem(p, corpse);
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You must be holding a corpse in your hand in order to ruin it!");
+			}
+		} else {
+			msg(NO_CONSOLE);
+		}
+	}
+
+	private ItemStack getCorpseFromHand(Player p) {
+		ItemStack corpseItem = p.getInventory().getItemInMainHand();
+		boolean isCorpse = false;
+		if (ItemUtil.hasCustomTag(corpseItem, CorpseHandler.CORPSE_KEY)) {
+			p.getInventory().setItem(CorpseListener.getIndexFromInventory(p.getInventory(), corpseItem), null);
+			isCorpse = true;
+		} else {
+			corpseItem = p.getInventory().getItemInOffHand();
+			if (ItemUtil.hasCustomTag(corpseItem, CorpseHandler.CORPSE_KEY)) {
+				p.getInventory().setItem(CorpseListener.getIndexFromInventory(p.getInventory(), corpseItem), null);
+				isCorpse = true;
+			}
+		}
+		if (isCorpse) {
+			return corpseItem;
+		} else {
+			return null;
 		}
 	}
 
