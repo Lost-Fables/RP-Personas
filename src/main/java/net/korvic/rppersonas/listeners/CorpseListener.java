@@ -85,7 +85,8 @@ public class CorpseListener implements Listener {
 			if (altar != null) {
 				resConfirm(p, corpseItem, altar);
 			} else {
-				placeConfirm(p, corpseItem);
+				e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You may only place a ruined corpse.\n" +
+										  "Use " + RPPersonas.SECONDARY_DARK + "/persona RuinCorpse " + RPPersonas.PRIMARY_DARK + "to enable placing.");
 			}
 		}
 	}
@@ -109,14 +110,6 @@ public class CorpseListener implements Listener {
 		data.put("altar", altar);
 
 		// TODO Convo factory to confirm and start resurrection.
-	}
-
-	private void placeConfirm(Player p, ItemStack corpse) {
-		Map<Object, Object> data = new HashMap<>();
-		data.put("player", p);
-		data.put("corpse", corpse);
-
-		// TODO Convo factory to confirm and return placeable head item.
 	}
 
 }
