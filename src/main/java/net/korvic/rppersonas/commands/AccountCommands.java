@@ -44,14 +44,14 @@ public class AccountCommands extends BaseCommand {
 	private static final String DISCORD_LINK_SUCCESS = RPPersonas.PRIMARY_DARK + "Successfully linked your Discord account!";
 	private static final String DISCORD_UNLINKED_SUCCESS = RPPersonas.PRIMARY_DARK + "Successfully removed the Discord link on your account.";
 	private static final String ALREADY_REGISTERED = RPPersonas.PRIMARY_DARK + "Your account is already linked!";
-	private static final String FORUM_LINK_REQUIRED = RPPersonas.PRIMARY_DARK + "You need to link your account with " + RPPersonas.SECONDARY_LIGHT + "/account link FORUM_ID " + RPPersonas.PRIMARY_DARK + "to use that.";
+	private static final String FORUM_LINK_REQUIRED = RPPersonas.PRIMARY_DARK + "You need to link your account with " + RPPersonas.SECONDARY_LIGHT + "/account ForumLink FORUM_ID " + RPPersonas.PRIMARY_DARK + "to use that.";
 
 	public AccountCommands(RPPersonas plugin) {
 		this.plugin = plugin;
 	}
 
 	@Cmd(value = "Send a registration message to your forum account.", permission = RPPersonas.PERMISSION_START + ".link")
-	public void forumlink(CommandSender sender,
+	public void ForumLink(CommandSender sender,
 						 @Arg(value="Forum ID", description="Your forum account ID.") int forumID) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -71,14 +71,14 @@ public class AccountCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Start the register process for someone else.", permission = RPPersonas.PERMISSION_START + ".helper")
-	public void forumlinkother(CommandSender sender,
+	public void ForumLinkOther(CommandSender sender,
 							   @Arg(value="The Player", description="The player you're helping register.") Player p,
 							   @Arg(value="Forum ID", description="The forum ID of the other player.") int forumID) {
-		forumlink((CommandSender) p, forumID);
+		ForumLink((CommandSender) p, forumID);
 	}
 
 	@Cmd(value = "Send a registration message to your forum account.", permission = RPPersonas.PERMISSION_START + ".link")
-	public void discordlink(CommandSender sender,
+	public void DiscordLink(CommandSender sender,
 							@Arg(value="DiscordID#0000", description="Your personal Discord ID.") @Default(value="") String discordID) {
 		if (sender instanceof Player) {
 			//TODO - Hook into Discord bot to send a message to them to confirm the link.
@@ -105,7 +105,7 @@ public class AccountCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Open a menu to manage your account.", permission = RPPersonas.PERMISSION_START + ".accepted")
-	public void menu(CommandSender sender) {
+	public void Menu(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
