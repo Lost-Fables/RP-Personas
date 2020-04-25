@@ -31,6 +31,15 @@ public class AltarHandler {
 		return altar;
 	}
 
+	public Altar getAltar(int altarID) {
+		for (Altar altar : allAltars.values()) {
+			if (altar.getAltarID() == altarID) {
+				return altar;
+			}
+		}
+		return null;
+	}
+
 	public Set<String> getAltarList() {
 		return allAltars.keySet();
 	}

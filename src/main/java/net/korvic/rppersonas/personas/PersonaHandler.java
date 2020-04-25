@@ -5,6 +5,7 @@ import co.lotc.core.bukkit.util.LocationUtil;
 import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaCreationConvo;
+import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
@@ -164,8 +165,25 @@ public class PersonaHandler {
 		handler.loadedPersonas.put(personaID, persona);
 
 		if (!isAlive) {
-			persona.addStatus(new EtherealStatus(-1));
-			// TODO Run resurrection animations if marked as to be resurrected
+			if (data.containsKey(PersonasSQL.ALTARID)) {
+				Altar altar = plugin.getAltarHandler().getAltar((int) data.get(PersonasSQL.ALTARID));
+				p.teleportAsync(altar.getTPLocation());
+
+				// TODO - Create respawn animation
+
+				persona.clearStatus(EtherealStatus.NAME);
+
+				if (data.containsKey(PersonasSQL.CORPSEINV)) {
+					ItemStack[] items = InventoryUtil.deserializeItemsToArray((String) data.get(PersonasSQL.CORPSEINV));
+					for (ItemStack item : items) {
+						if (item != null) {
+							InventoryUtil.addOrDropItem(p, item);
+						}
+					}
+				}
+			} else {
+				persona.addStatus(new EtherealStatus(-1));
+			}
 		}
 
 		return persona;
