@@ -167,7 +167,7 @@ public class PersonaHandler {
 		if (!isAlive) {
 			if (data.containsKey(PersonasSQL.ALTARID)) {
 				Altar altar = plugin.getAltarHandler().getAltar((int) data.get(PersonasSQL.ALTARID));
-				p.teleportAsync(altar.getTPLocation());
+				p.teleport(altar.getTPLocation());
 
 				// TODO - Create respawn animation
 
