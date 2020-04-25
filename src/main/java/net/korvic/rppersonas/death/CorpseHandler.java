@@ -70,16 +70,21 @@ public class CorpseHandler {
 	}
 
 	public Corpse loadCorpse(int id, String name, String texture, ItemStack[] inventory, long created) {
-		Inventory inv = Bukkit.createInventory(holder, 9*5, ChatColor.stripColor(name));
-		if (inventory != null) {
-			inv.setContents(inventory);
+		if (System.currentTimeMillis() - created < RPPersonas.MONTH_IN_MILLIS) {
+			Inventory inv = Bukkit.createInventory(holder, 9 * 5, ChatColor.stripColor(name));
+			if (inventory != null) {
+				inv.setContents(inventory);
+			}
+
+			Corpse corpse = new Corpse(id, name, texture, inv, created);
+			knownCorpses.put(id, corpse);
+			updateMaxID(id);
+
+			return corpse;
+		} else {
+			plugin.getCorpseSQL().permanentlyDelete(id);
+			return null;
 		}
-
-		Corpse corpse = new Corpse(id, name, texture, inv, created);
-		knownCorpses.put(id, corpse);
-		updateMaxID(id);
-
-		return corpse;
 	}
 
 	public void saveAllCorpses() {

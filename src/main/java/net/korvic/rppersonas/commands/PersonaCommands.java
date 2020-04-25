@@ -86,7 +86,7 @@ public class PersonaCommands extends BaseCommand {
 			Player p = (Player) sender;
 			DisabledStatus status = new DisabledStatus(null);
 			status.applyEffect(p);
-			ItemStack corpse = getCorpseFromHand(p);
+			ItemStack corpse = takeCorpseFromHand(p);
 			status.clearEffect(p);
 
 			if (corpse != null) {
@@ -109,7 +109,7 @@ public class PersonaCommands extends BaseCommand {
 		}
 	}
 
-	private ItemStack getCorpseFromHand(Player p) {
+	private ItemStack takeCorpseFromHand(Player p) {
 		ItemStack corpseItem = p.getInventory().getItemInMainHand();
 		boolean isCorpse = false;
 		if (ItemUtil.hasCustomTag(corpseItem, CorpseHandler.CORPSE_KEY)) {

@@ -42,7 +42,11 @@ public class Corpse {
 		lore.add("");
 		lore.add("Crouch + Right Click to open.");
 
-		ItemUtil.decorate(item, name, String.valueOf(lore));
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(name);
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+
 		ItemUtil.setCustomTag(item, CorpseHandler.CORPSE_KEY, id + ":" + created);
 
 		this.itemstack = item;
