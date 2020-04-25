@@ -143,7 +143,7 @@ public class PersonasSQL extends BaseSQL {
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Health,Hunger,Inventory,EnderChest,NickName,Prefix,ActiveSkinID,Description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Health,Hunger,Inventory,EnderChest,NickName,Prefix,ActiveSkinID,Description,RezToAltar,CorpseInv) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 
 		// Required
@@ -292,6 +292,22 @@ public class PersonasSQL extends BaseSQL {
 			replaceStatement.setString(20, null);
 		}
 
+		if (data.containsKey(ALTARID)) {
+			replaceStatement.setInt(21, (int) data.get(ALTARID));
+		} else if (resultPresent) {
+			replaceStatement.setInt(21, result.getInt("RezToAltar"));
+		} else {
+			replaceStatement.setInt(21, 0);
+		}
+
+		if (data.containsKey(CORPSEINV)) {
+			replaceStatement.setString(22, (String) data.get(CORPSEINV));
+		} else if (resultPresent) {
+			replaceStatement.setString(22, result.getString("CorpseInv"));
+		} else {
+			replaceStatement.setString(22, null);
+		}
+
 		grabStatement.close();
 		return replaceStatement;
 	}
@@ -383,7 +399,7 @@ public class PersonasSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT Prefix, NickName, Name, Inventory, EnderChest, LocationWorld, LocationX, LocationY, LocationZ, Health, Hunger, ActiveSkinID, Alive FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
+			stmt = "SELECT Prefix, NickName, Name, Inventory, EnderChest, LocationWorld, LocationX, LocationY, LocationZ, Health, Hunger, ActiveSkinID, Alive, RezToAltar, CorpseInv FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -407,6 +423,8 @@ public class PersonasSQL extends BaseSQL {
 				output.put(HUNGER, rs.getInt("Hunger"));
 				output.put(SKINID, rs.getInt("ActiveSkinID"));
 				output.put(ALIVE, rs.getBoolean("Alive"));
+				output.put(ALTARID, rs.getInt("RezToAltar"));
+				output.put(CORPSEINV, rs.getString("CorpseInv"));
 			}
 
 			return output;
