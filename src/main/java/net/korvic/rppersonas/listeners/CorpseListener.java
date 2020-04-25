@@ -92,11 +92,17 @@ public class CorpseListener implements Listener {
 
 				Corpse corpse = plugin.getCorpseHandler().getCorpse(ItemUtil.getCustomTag(corpseItem, CorpseHandler.CORPSE_KEY));
 				Map<String, Object> personaData = plugin.getPersonasSQL().getFullInfo(corpse.getPersonaID());
-				if (personaData.containsKey(PersonasSQL.LIVES) && ((int) personaData.get(PersonasSQL.LIVES) > 0)) {
-					resConfirm(p, corpse, altar, personaData);
+				if (personaData.containsKey(PersonasSQL.ALIVE) && !((boolean) personaData.get(PersonasSQL.ALIVE))) {
+					if (personaData.containsKey(PersonasSQL.LIVES) && ((int) personaData.get(PersonasSQL.LIVES) > 0)) {
+						resConfirm(p, corpse, altar, personaData);
+					} else {
+						p.sendMessage(RPPersonas.PRIMARY_DARK + "That persona no longer has any lives left.\n" +
+									  RPPersonas.PRIMARY_DARK + "They will need to make a resurrection application to be revived.");
+						InventoryUtil.addOrDropItem(p, corpseItem);
+					}
 				} else {
-					p.sendMessage(RPPersonas.PRIMARY_DARK + "That persona no longer has any lives left.\n" +
-								  RPPersonas.PRIMARY_DARK + "They will need to make a resurrection application to be revived.");
+					p.sendMessage(RPPersonas.PRIMARY_DARK + "That persona is currently alive.");
+					InventoryUtil.addOrDropItem(p, corpseItem);
 				}
 			} else {
 				e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You may only place a ruined corpse.\n" +

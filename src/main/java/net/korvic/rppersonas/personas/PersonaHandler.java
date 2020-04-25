@@ -165,6 +165,7 @@ public class PersonaHandler {
 
 		if (!isAlive) {
 			persona.addStatus(new EtherealStatus(-1));
+			// TODO Run resurrection animations if marked as to be resurrected
 		}
 
 		return persona;

@@ -46,10 +46,15 @@ public class PersonasSQL extends BaseSQL {
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 						  "    Alive BIT NOT NULL,\n" +
+						  "    Prefix TEXT,\n" +
+						  "    NickName TEXT,\n" +
 						  "    Name TEXT NOT NULL,\n" +
+						  "    Race TEXT NOT NULL,\n" +
 						  "    Gender TEXT NOT NULL,\n" +
 						  "    Age BIGINT NOT NULL,\n" +
-						  "    Race TEXT NOT NULL,\n" +
+						  "    Description TEXT,\n" +
+
+						  "    ActiveSkinID INT,\n" +
 						  "    Lives INT NOT NULL,\n" +
 						  "    Playtime BIGINT NOT NULL,\n" +
 
@@ -63,10 +68,9 @@ public class PersonasSQL extends BaseSQL {
 
 						  "    Inventory TEXT,\n" +
 						  "    EnderChest TEXT,\n" +
-						  "    NickName TEXT,\n" +
-						  "    Prefix TEXT,\n" +
-						  "    ActiveSkinID INT,\n" +
-						  "    Description TEXT\n" +
+						  "    CorpseInv TEXT,\n" +
+
+						  "    RezToAltar INT\n" +
 						  ");";
 		load(SQLTable, SQL_TABLE_NAME);
 	}

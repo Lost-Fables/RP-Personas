@@ -55,7 +55,7 @@ public class DeathHandler {
 	}
 
 	public void applyResurrection(Map<Object, Object> data) {
-
+		// TODO mark persona altar & inventory to return.
 	}
 
 }
