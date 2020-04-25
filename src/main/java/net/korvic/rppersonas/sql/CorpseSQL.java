@@ -21,6 +21,7 @@ public class CorpseSQL extends BaseSQL {
 	public static final String NAME = "name";
 	public static final String INVENTORY = "inventory";
 	public static final String CREATED = "created";
+	public static final String PERSONAID = "personaid";
 	public static final String TEXTURE = "texture";
 
 	public CorpseSQL(RPPersonas plugin) {
@@ -33,6 +34,7 @@ public class CorpseSQL extends BaseSQL {
 						  "    Name TEXT NOT NULL,\n" +
 						  "    Inventory TEXT NOT NULL,\n" +
 						  "    Created BIGINT NOT NULL,\n" +
+						  "    PersonaID INT NOT NULL,\n" +
 						  "    Texture TEXT\n" +
 						  ");";
 		load(SQLTable, SQL_TABLE_NAME);
@@ -48,6 +50,7 @@ public class CorpseSQL extends BaseSQL {
 		DataMapFilter.addFilter(NAME, NAME, String.class);
 		DataMapFilter.addFilter(INVENTORY, INVENTORY, String.class);
 		DataMapFilter.addFilter(CREATED, CREATED, Long.class);
+		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
 		DataMapFilter.addFilter(TEXTURE, TEXTURE, String.class);
 	}
 
@@ -59,7 +62,12 @@ public class CorpseSQL extends BaseSQL {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				plugin.getCorpseHandler().loadCorpse(rs.getInt("CorpseID"), rs.getString("Name"), rs.getString("Texture"), rs.getString("Inventory"), rs.getLong("Created"));
+				plugin.getCorpseHandler().loadCorpse(rs.getInt("CorpseID"),
+													 rs.getString("Name"),
+													 rs.getString("Texture"),
+													 rs.getString("Inventory"),
+													 rs.getLong("Created"),
+													 rs.getInt("PersonaID"));
 			}
 
 			close(ps, rs);
@@ -89,7 +97,7 @@ public class CorpseSQL extends BaseSQL {
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (CorpseID,Name,Inventory,Created,Texture) VALUES(?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (CorpseID,Name,Inventory,Created,PersonaID,Texture) VALUES(?,?,?,?,?,?)");
 
 
 		// Required
@@ -119,12 +127,20 @@ public class CorpseSQL extends BaseSQL {
 			replaceStatement.setLong(4, System.currentTimeMillis());
 		}
 
-		if (data.containsKey(TEXTURE)) {
-			replaceStatement.setString(5, (String) data.get(TEXTURE));
+		if (data.containsKey(PERSONAID)) {
+			replaceStatement.setInt(5, (int) data.get(PERSONAID));
 		} else if (resultPresent) {
-			replaceStatement.setString(5, result.getString("Texture"));
+			replaceStatement.setInt(5, result.getInt("PersonaID"));
 		} else {
-			replaceStatement.setString(5, null);
+			replaceStatement.setInt(5, 0);
+		}
+
+		if (data.containsKey(TEXTURE)) {
+			replaceStatement.setString(6, (String) data.get(TEXTURE));
+		} else if (resultPresent) {
+			replaceStatement.setString(6, result.getString("Texture"));
+		} else {
+			replaceStatement.setString(6, null);
 		}
 
 		grabStatement.close();

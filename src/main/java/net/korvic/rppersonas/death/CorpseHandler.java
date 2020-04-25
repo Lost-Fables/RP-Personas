@@ -4,6 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,7 +44,8 @@ public class CorpseHandler {
 				texture = PlayerUtil.getPlayerTexture(player.getUniqueId());
 			}
 
-			output = createCorpse(RPPersonas.PRIMARY_DARK + plugin.getPersonaHandler().getLoadedPersona(player).getNickName() + "'s Corpse", texture, items);
+			Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+			output = createCorpse(RPPersonas.PRIMARY_DARK + pers.getNickName() + "'s Corpse", texture, items, pers.getPersonaID());
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
@@ -52,31 +54,31 @@ public class CorpseHandler {
 		return output;
 	}
 
-	public Corpse createCorpse(String name, String texture, String inventory) {
-		return createCorpse(name, texture, InventoryUtil.deserializeItemsToArray(inventory));
+	public Corpse createCorpse(String name, String texture, String inventory, int personaID) {
+		return createCorpse(name, texture, InventoryUtil.deserializeItemsToArray(inventory), personaID);
 	}
 
-	private Corpse createCorpse(String name, String texture, ItemStack[] inventory) {
+	private Corpse createCorpse(String name, String texture, ItemStack[] inventory, int personaID) {
 		int id = maxID;
 		updateMaxID(id);
 
-		Corpse corpse = loadCorpse(id, name, texture, inventory, System.currentTimeMillis());
+		Corpse corpse = loadCorpse(id, name, texture, inventory, System.currentTimeMillis(), personaID);
 		corpse.save();
 		return corpse;
 	}
 
-	public Corpse loadCorpse(int id, String name, String texture, String inventory, long created) {
-		return loadCorpse(id, name, texture, InventoryUtil.deserializeItemsToArray(inventory), created);
+	public Corpse loadCorpse(int id, String name, String texture, String inventory, long created, int personaID) {
+		return loadCorpse(id, name, texture, InventoryUtil.deserializeItemsToArray(inventory), created, personaID);
 	}
 
-	public Corpse loadCorpse(int id, String name, String texture, ItemStack[] inventory, long created) {
+	public Corpse loadCorpse(int id, String name, String texture, ItemStack[] inventory, long created, int personaID) {
 		if (System.currentTimeMillis() - created < RPPersonas.MONTH_IN_MILLIS) {
 			Inventory inv = Bukkit.createInventory(holder, 9 * 5, ChatColor.stripColor(name));
 			if (inventory != null) {
 				inv.setContents(inventory);
 			}
 
-			Corpse corpse = new Corpse(id, name, texture, inv, created);
+			Corpse corpse = new Corpse(id, name, texture, inv, created, personaID);
 			knownCorpses.put(id, corpse);
 			updateMaxID(id);
 

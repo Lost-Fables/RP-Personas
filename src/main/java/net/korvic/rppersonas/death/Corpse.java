@@ -19,14 +19,16 @@ public class Corpse {
 	private String name;
 	private Inventory inv;
 	private long created;
+	private int personaID;
 	private ItemStack itemstack;
 	private String texture;
 
-	public Corpse(int id, String name, String texture, Inventory inv, long created) {
+	public Corpse(int id, String name, String texture, Inventory inv, long created, int personaID) {
 		this.id = id;
 		this.name = name;
 		this.inv = inv;
 		this.created = created;
+		this.personaID = personaID;
 		this.texture = texture;
 
 		ItemStack item;
@@ -77,6 +79,7 @@ public class Corpse {
 			.put(CorpseSQL.NAME, name)
 			.put(CorpseSQL.INVENTORY, InventoryUtil.serializeItems(inv))
 			.put(CorpseSQL.CREATED, created)
+			.put(CorpseSQL.PERSONAID, personaID)
 			.put(CorpseSQL.TEXTURE, texture);
 		RPPersonas.get().getCorpseSQL().registerOrUpdate(data);
 	}
