@@ -55,6 +55,7 @@ public class CorpseHandler {
 	}
 
 	public Corpse createCorpse(String name, String texture, String inventory, int personaID) {
+		plugin.getCorpseSQL().deleteByPersonaID(personaID);
 		return createCorpse(name, texture, InventoryUtil.deserializeItemsToArray(inventory), personaID);
 	}
 
@@ -84,7 +85,7 @@ public class CorpseHandler {
 
 			return corpse;
 		} else {
-			plugin.getCorpseSQL().permanentlyDelete(id);
+			plugin.getCorpseSQL().deleteByCorpseID(id);
 			return null;
 		}
 	}

@@ -147,7 +147,7 @@ public class CorpseSQL extends BaseSQL {
 		return replaceStatement;
 	}
 
-	public void permanentlyDelete(int corpseID) {
+	public void deleteByCorpseID(int corpseID) {
 		Connection conn = getSQLConnection();
 		try {
 			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE CorpseID='" + corpseID + "'");
@@ -156,4 +156,15 @@ public class CorpseSQL extends BaseSQL {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
 	}
+
+	public void deleteByPersonaID(int personaID) {
+		Connection conn = getSQLConnection();
+		try {
+			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			statement.executeUpdate();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+	}
+
 }
