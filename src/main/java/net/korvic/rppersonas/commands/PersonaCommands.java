@@ -95,7 +95,7 @@ public class PersonaCommands extends BaseCommand {
 
 				String[] name = meta.getDisplayName().split(" ");
 				if (name.length > 0) {
-					meta.setDisplayName(name[0] + " Rotted Corpse");
+					meta.setDisplayName(name[0] + " Ruined Corpse");
 				}
 
 				List<String> lore = new ArrayList<>();
