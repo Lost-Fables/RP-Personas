@@ -93,6 +93,11 @@ public class PersonaCommands extends BaseCommand {
 				ItemUtil.removeCustomTag(corpse, CorpseHandler.CORPSE_KEY);
 				ItemMeta meta = corpse.getItemMeta();
 
+				String[] name = meta.getDisplayName().split(" ");
+				if (name.length > 0) {
+					meta.setDisplayName(name[0] + " Rotted Corpse");
+				}
+
 				List<String> lore = new ArrayList<>();
 				lore.add("This corpse has been ruined!");
 				lore.add("It may no longer be resurrected, however");
