@@ -4,10 +4,13 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.BaseConvo;
+import net.korvic.rppersonas.conversation.ResurrectionConfirmConvo;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.death.CorpseHolder;
+import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.statuses.DisabledStatus;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -83,12 +86,21 @@ public class CorpseListener implements Listener {
 			Altar altar = plugin.getAltarHandler().getAltarOfBlock(e.getBlockAgainst());
 
 			if (altar != null) {
+				new DisabledStatus(null).applyEffect(p);
 				ItemStack corpseItem = e.getItemInHand();
 				p.getInventory().setItem(getIndexFromInventory(p.getInventory(), e.getItemInHand()), null);
-				resConfirm(p, corpseItem, altar);
+
+				Corpse corpse = plugin.getCorpseHandler().getCorpse(ItemUtil.getCustomTag(corpseItem, CorpseHandler.CORPSE_KEY));
+				Map<String, Object> personaData = plugin.getPersonasSQL().getFullInfo(corpse.getPersonaID());
+				if (personaData.containsKey(PersonasSQL.LIVES) && ((int) personaData.get(PersonasSQL.LIVES) > 0)) {
+					resConfirm(p, corpse, altar, personaData);
+				} else {
+					p.sendMessage(RPPersonas.PRIMARY_DARK + "That persona no longer has any lives left.\n" +
+								  RPPersonas.PRIMARY_DARK + "They will need to make a resurrection application to be revived.");
+				}
 			} else {
 				e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You may only place a ruined corpse.\n" +
-										  "Use " + RPPersonas.SECONDARY_DARK + "/persona RuinCorpse " + RPPersonas.PRIMARY_DARK + "to enable placing.\n" +
+										  RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_DARK + "/persona RuinCorpse " + RPPersonas.PRIMARY_DARK + "to enable placing.\n" +
 										  BaseConvo.NOTE + RPPersonas.PRIMARY_DARK + "A ruined corpse can no longer be resurrected.");
 			}
 		}
@@ -106,13 +118,13 @@ public class CorpseListener implements Listener {
 		return index;
 	}
 
-	private void resConfirm(Player p, ItemStack corpse, Altar altar) {
-		Map<Object, Object> data = new HashMap<>();
-		data.put("player", p);
-		data.put("corpse", corpse);
-		data.put("altar", altar);
+	private void resConfirm(Player p, Corpse corpse, Altar altar, Map<String, Object> data) {
+		Map<Object, Object> newData = new HashMap<>();
+		newData.put("corpse", corpse);
+		newData.put("altar", altar);
+		newData.putAll(data);
 
-		// TODO Convo factory to confirm and start resurrection.
+		new ResurrectionConfirmConvo(plugin).startConvo(p, newData, false);
 	}
 
 }

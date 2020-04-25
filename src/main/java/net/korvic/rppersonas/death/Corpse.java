@@ -66,6 +66,9 @@ public class Corpse {
 	public long getCreated() {
 		return created;
 	}
+	public int getPersonaID() {
+		return personaID;
+	}
 	public String getTexture() {
 		return texture;
 	}

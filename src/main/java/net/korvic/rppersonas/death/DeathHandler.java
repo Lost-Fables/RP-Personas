@@ -54,4 +54,8 @@ public class DeathHandler {
 		requestMap.remove(victim);
 	}
 
+	public void applyResurrection(Map<Object, Object> data) {
+
+	}
+
 }

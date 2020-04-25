@@ -429,6 +429,7 @@ public class PersonasSQL extends BaseSQL {
 			rs = ps.executeQuery();
 
 			Map<String, Object> output = new HashMap<>();
+			output.put(PERSONAID, personaID);
 
 			if (rs.next()) {
 				output.put(ALIVE, rs.getBoolean("Alive"));
