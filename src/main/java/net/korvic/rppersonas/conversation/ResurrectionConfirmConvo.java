@@ -3,8 +3,10 @@ package net.korvic.rppersonas.conversation;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -63,13 +65,27 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
-				plugin.getDeathHandler().applyResurrection(context.getAllSessionData());
+				applyResurrection(context.getAllSessionData());
 				((Player) context.getForWhom()).sendMessage(RPPersonas.PRIMARY_DARK + "The persona will be resurrected the next time they're active.");
 			} else {
 				InventoryUtil.addOrDropItem((Player) context.getForWhom(), corpse.getItem());
 			}
 			new DisabledStatus(null).clearEffect((Player) context.getForWhom());
 			return Prompt.END_OF_CONVERSATION;
+		}
+
+		private void applyResurrection(Map<Object, Object> data) {
+			Altar altar = (Altar) data.get("altar");
+			Corpse corpse = (Corpse) data.get("corpse");
+
+			DataMapFilter personaData = new DataMapFilter();
+			personaData.put(PersonasSQL.PERSONAID, (int) data.get(PersonasSQL.PERSONAID));
+			personaData.put(PersonasSQL.LIVES, ((int) data.get(PersonasSQL.LIVES) - 1));
+			personaData.put(PersonasSQL.ALTARID, altar.getAltarID());
+			personaData.put(PersonasSQL.CORPSEINV, InventoryUtil.serializeItems(corpse.getInventory()));
+
+			plugin.getPersonasSQL().registerOrUpdate(personaData);
+			plugin.getCorpseSQL().deleteByCorpseID(corpse.getID());
 		}
 
 	}

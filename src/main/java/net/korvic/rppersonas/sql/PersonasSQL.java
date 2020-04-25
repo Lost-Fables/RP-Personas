@@ -37,6 +37,8 @@ public class PersonasSQL extends BaseSQL {
 	public static final String DESCRIPTION = "description";
 	public static final String FIRST = "first";
 	public static final String FRESH = "fresh";
+	public static final String ALTARID = "altarid";
+	public static final String CORPSEINV = "corpseinv";
 
 	public PersonasSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
@@ -100,6 +102,8 @@ public class PersonasSQL extends BaseSQL {
 		DataMapFilter.addFilter(DESCRIPTION, DESCRIPTION, String.class);
 		DataMapFilter.addFilter(FIRST, FIRST, Object.class);
 		DataMapFilter.addFilter(FRESH, FRESH, Object.class);
+		DataMapFilter.addFilter(ALTARID, ALTARID, Integer.class);
+		DataMapFilter.addFilter(CORPSEINV, CORPSEINV, String.class);
 	}
 
 	// Inserts a new mapping for a persona.

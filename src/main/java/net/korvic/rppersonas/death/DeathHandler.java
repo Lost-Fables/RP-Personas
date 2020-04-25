@@ -1,7 +1,10 @@
 package net.korvic.rppersonas.death;
 
+import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -52,10 +55,6 @@ public class DeathHandler {
 
 	public void deleteRequest(Player victim) {
 		requestMap.remove(victim);
-	}
-
-	public void applyResurrection(Map<Object, Object> data) {
-		// TODO mark persona altar & inventory to return.
 	}
 
 }
