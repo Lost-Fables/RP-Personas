@@ -86,7 +86,7 @@ public class CorpseListener implements Listener {
 			Altar altar = plugin.getAltarHandler().getAltarOfBlock(e.getBlockAgainst());
 
 			if (altar != null) {
-				new DisabledStatus(null).applyEffect(p);
+				new DisabledStatus(null).applyEffect(p); // TODO make this not TP you to spawn on jump.
 				ItemStack corpseItem = e.getItemInHand();
 				p.getInventory().setItem(getIndexFromInventory(p.getInventory(), e.getItemInHand()), null);
 
@@ -98,10 +98,12 @@ public class CorpseListener implements Listener {
 					} else {
 						p.sendMessage(RPPersonas.PRIMARY_DARK + "That persona no longer has any lives left.\n" +
 									  RPPersonas.PRIMARY_DARK + "They will need to make a resurrection application to be revived.");
+						new DisabledStatus(null).clearEffect(p);
 						InventoryUtil.addOrDropItem(p, corpseItem);
 					}
 				} else {
 					p.sendMessage(RPPersonas.PRIMARY_DARK + "That persona is currently alive.");
+					new DisabledStatus(null).clearEffect(p);
 					InventoryUtil.addOrDropItem(p, corpseItem);
 				}
 			} else {

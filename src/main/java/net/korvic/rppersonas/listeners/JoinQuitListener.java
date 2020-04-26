@@ -48,7 +48,7 @@ public class JoinQuitListener implements Listener {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 		if (pers != null) {
 			pers.queueSave(p);
-			pers.clearAllStatuses();
+			pers.clearAllStatuses(); // TODO fix null concurrent modification on player quit.
 			pers.unloadPersona(true);
 		}
 		PersonaHandler.stopSkipping(p);
