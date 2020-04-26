@@ -10,6 +10,7 @@ import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.conversations.BooleanPrompt;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
@@ -17,6 +18,7 @@ import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class ResurrectionConfirmConvo extends BaseConvo {
 
@@ -86,6 +88,15 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 
 			plugin.getPersonasSQL().registerOrUpdate(personaData);
 			plugin.getCorpseSQL().deleteByCorpseID(corpse.getID());
+
+			int accountID = plugin.getPersonaAccountMapSQL().getAccountOf((int) data.get(PersonasSQL.PERSONAID));
+			for (UUID uuid : plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID)) {
+				Player p = Bukkit.getPlayer(uuid);
+				if (p != null && p.isOnline()) {
+					p.sendMessage(RPPersonas.PRIMARY_DARK + "Your persona " + RPPersonas.SECONDARY_DARK + (String) data.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + " has been resurrected.");
+				}
+			}
+
 		}
 
 	}
