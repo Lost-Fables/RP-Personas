@@ -146,9 +146,10 @@ public class PersonaHandler {
 		if (data.containsKey(PersonasSQL.FRESH)) {
 			p.setSaturation(20); // Give the player 20 saturation if they're a new persona so they can run around a bit more.
 			data.put(PersonasSQL.PERSONAID, personaID);
-			plugin.getPersonasSQL().registerOrUpdate(data);
 
+			plugin.getPersonasSQL().registerOrUpdate(data);
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
+
 			plugin.getPersonaHandler().swapToPersona(p, accountID, personaID, saveCurrentPersona);
 		}
 
@@ -181,6 +182,12 @@ public class PersonaHandler {
 						}
 					}
 				}
+
+				data.put(PersonasSQL.ALTARID, 0);
+				data.put(PersonasSQL.CORPSEINV, null);
+
+				plugin.getPersonasSQL().registerOrUpdate(data);
+				plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 			} else {
 				if (!persona.hasStatus(EtherealStatus.NAME)) {
 					persona.addStatus(new EtherealStatus(-1));
