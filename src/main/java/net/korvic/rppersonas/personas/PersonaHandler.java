@@ -183,6 +183,7 @@ public class PersonaHandler {
 					}
 				}
 
+				data.put(PersonasSQL.ALIVE, true);
 				data.put(PersonasSQL.ALTARID, 0);
 				data.put(PersonasSQL.CORPSEINV, null);
 
