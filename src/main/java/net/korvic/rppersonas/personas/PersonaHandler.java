@@ -159,21 +159,21 @@ public class PersonaHandler {
 			}
 		}
 
-		Persona persona = new Persona(plugin, p, personaID, accountID, prefix, nickName, personaInvData, personaEnderData, isAlive , activeSkinID);
-		PersonaHandler handler = plugin.getPersonaHandler();
-		handler.playerObjectToID.put(p, personaID);
-		handler.loadedPersonas.put(personaID, persona);
+		Persona persona = new Persona(plugin, p, personaID, accountID, prefix, nickName, personaInvData, personaEnderData, isAlive, activeSkinID);
+		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
+		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
 
 		if (!isAlive) {
-			if (data.containsKey(PersonasSQL.ALTARID)) {
+			if (data.containsKey(PersonasSQL.ALTARID) && ((int) data.get(PersonasSQL.ALTARID)) > 0) {
 				Altar altar = plugin.getAltarHandler().getAltar((int) data.get(PersonasSQL.ALTARID));
-				p.teleport(altar.getTPLocation());
-
-				// TODO - Create respawn animation
+				if (altar != null) {
+					p.teleport(altar.getTPLocation());
+					// TODO - Create respawn animation
+				}
 
 				persona.clearStatus(EtherealStatus.NAME);
 
-				if (data.containsKey(PersonasSQL.CORPSEINV)) {
+				if (data.containsKey(PersonasSQL.CORPSEINV) && data.get(PersonasSQL.CORPSEINV) != null) {
 					ItemStack[] items = InventoryUtil.deserializeItemsToArray((String) data.get(PersonasSQL.CORPSEINV));
 					for (ItemStack item : items) {
 						if (item != null) {
@@ -182,7 +182,9 @@ public class PersonaHandler {
 					}
 				}
 			} else {
-				persona.addStatus(new EtherealStatus(-1));
+				if (!persona.hasStatus(EtherealStatus.NAME)) {
+					persona.addStatus(new EtherealStatus(-1));
+				}
 			}
 		}
 

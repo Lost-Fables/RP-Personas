@@ -5,6 +5,7 @@ import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
@@ -87,16 +88,21 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 			personaData.put(PersonasSQL.CORPSEINV, InventoryUtil.serializeItems(corpse.getInventory()));
 
 			plugin.getPersonasSQL().registerOrUpdate(personaData);
+			plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
 			plugin.getCorpseSQL().deleteByCorpseID(corpse.getID());
 
-			int accountID = plugin.getPersonaAccountMapSQL().getAccountOf((int) data.get(PersonasSQL.PERSONAID));
-			for (UUID uuid : plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID)) {
-				Player p = Bukkit.getPlayer(uuid);
-				if (p != null && p.isOnline()) {
-					p.sendMessage(RPPersonas.PRIMARY_DARK + "Your persona " + RPPersonas.SECONDARY_DARK + (String) data.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + " has been resurrected.");
+			Persona pers = plugin.getPersonaHandler().getLoadedPersona((int) personaData.get(PersonasSQL.PERSONAID));
+			if (pers != null && pers.getUsingPlayer().isOnline()) {
+				plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), pers.getPersonaID(), false);
+			} else {
+				int accountID = plugin.getPersonaAccountMapSQL().getAccountOf((int) data.get(PersonasSQL.PERSONAID));
+				for (UUID uuid : plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID)) {
+					Player p = Bukkit.getPlayer(uuid);
+					if (p != null && p.isOnline()) {
+						p.sendMessage(RPPersonas.PRIMARY_DARK + "Your persona " + RPPersonas.SECONDARY_DARK + (String) data.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + " has been resurrected.");
+					}
 				}
 			}
-
 		}
 
 	}
