@@ -17,6 +17,7 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -69,7 +70,7 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
 				applyResurrection(context.getAllSessionData());
-				((Player) context.getForWhom()).sendMessage(RPPersonas.PRIMARY_DARK + "The persona will be resurrected the next time they're active.");
+				((Player) context.getForWhom()).spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "The persona will be resurrected the next time they're active."));
 			} else {
 				InventoryUtil.addOrDropItem((Player) context.getForWhom(), corpse.getItem());
 			}
@@ -80,23 +81,31 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 		private void applyResurrection(Map<Object, Object> data) {
 			Altar altar = (Altar) data.get("altar");
 			Corpse corpse = (Corpse) data.get("corpse");
+			int personaID = (int) data.get(PersonasSQL.PERSONAID);
 
 			DataMapFilter personaData = new DataMapFilter();
-			personaData.put(PersonasSQL.PERSONAID, (int) data.get(PersonasSQL.PERSONAID));
+			personaData.put(PersonasSQL.PERSONAID, personaID);
 			personaData.put(PersonasSQL.LIVES, ((int) data.get(PersonasSQL.LIVES) - 1));
 			personaData.put(PersonasSQL.ALTARID, altar.getAltarID());
 			personaData.put(PersonasSQL.CORPSEINV, InventoryUtil.serializeItems(corpse.getInventory()));
 			personaData.put(PersonasSQL.ALIVE, true);
+			personaData.put(PersonasSQL.LOCATION, altar.getTPLocation());
 
 			plugin.getPersonasSQL().registerOrUpdate(personaData);
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
 			plugin.getCorpseSQL().deleteByCorpseID(corpse.getID());
 
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona((int) personaData.get(PersonasSQL.PERSONAID));
+			Persona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
 			if (pers != null && pers.getUsingPlayer().isOnline()) {
-				plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), pers.getPersonaID(), false);
+				pers.getUsingPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), personaID, false); // Reload the force-saved data from above.
+					}
+				}.runTaskLaterAsynchronously(plugin, 40);
 			} else {
-				int accountID = plugin.getPersonaAccountMapSQL().getAccountOf((int) data.get(PersonasSQL.PERSONAID));
+				int accountID = plugin.getPersonaAccountMapSQL().getAccountOf(personaID);
 				for (UUID uuid : plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID)) {
 					Player p = Bukkit.getPlayer(uuid);
 					if (p != null && p.isOnline()) {

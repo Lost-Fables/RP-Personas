@@ -241,7 +241,7 @@ public class PersonaHandler {
 					.put(PersonaAccountsMapSQL.ACTIVEUUID, null);
 				plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 			}
-			unloadPersona(personaID, false);
+			unloadPersona(originalPersona.getPersonaID(), false);
 		}
 
 		DataMapFilter data = new DataMapFilter();
