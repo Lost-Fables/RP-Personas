@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.death;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.DeathSQL;
@@ -8,6 +9,7 @@ import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.EtherealStatus;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,8 +46,9 @@ public class DeathRequest {
 
 	public void ping() {
 		if (victim.isOnline()) {
+			BaseComponent command = MessageUtil.CommandButton(RPPersonas.SECONDARY_DARK + "/persona ExecuteAccept " + killer.getName(), "/persona ExecuteAccept " + killer.getName());
 			victim.sendMessage(RPPersonas.SECONDARY_DARK + killerPersona.getNickName() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.\n" +
-							   RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_DARK + "/persona ExecuteAccept " + killer.getName() + RPPersonas.PRIMARY_DARK + " to accept.");
+							   RPPersonas.PRIMARY_DARK + "Use " + command + RPPersonas.PRIMARY_DARK + " to accept.");
 		}
 	}
 
@@ -91,7 +94,8 @@ public class DeathRequest {
 		data.put(PersonasSQL.ALIVE, false);
 		data.put(PersonasSQL.PERSONAID, victimPersona.getPersonaID());
 
-		// In case we ever differentiate between SQL db data filters for some reason
+		// In case we ever differentiate between SQL db data filters for some reason,
+		// currently just applies the same data twice.
 		//data.put(PersonaAccountsMapSQL.ALIVE, false);
 		//data.put(PersonaAccountsMapSQL.PERSONAID, victimPersona.getPersonaID());
 		plugin.getPersonasSQL().registerOrUpdate(data);
