@@ -8,6 +8,7 @@ import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.listeners.CorpseListener;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -43,20 +44,25 @@ public class PersonaCommands extends BaseCommand {
 	public void Execute(CommandSender sender,
 						@Arg(value = "Player", description = "The player which you're executing.") Player victim) {
 		if (sender instanceof Player) {
-			Player killer = (Player) sender;
-			if (LocationUtil.isClose(killer, victim, EXECUTE_DISTANCE)) {
-				if (!plugin.getDeathHandler().hasRequest(victim)) {
-					if (plugin.getPersonaHandler().getLoadedPersona(victim).getAccountID() != plugin.getPersonaHandler().getLoadedPersona(killer).getAccountID()) {
-						plugin.getDeathHandler().requestExecute(killer, victim);
-						msg(RPPersonas.PRIMARY_DARK + "Execution request sent!");
+			Persona victimPersona = plugin.getPersonaHandler().getLoadedPersona(victim);
+			if (victimPersona.isAlive()) {
+				Player killer = (Player) sender;
+				if (LocationUtil.isClose(killer, victim, EXECUTE_DISTANCE)) {
+					if (!plugin.getDeathHandler().hasRequest(victim)) {
+						if (victimPersona.getAccountID() != plugin.getPersonaHandler().getLoadedPersona(killer).getAccountID()) {
+							plugin.getDeathHandler().requestExecute(killer, victim);
+							msg(RPPersonas.PRIMARY_DARK + "Execution request sent!");
+						} else {
+							msg(RPPersonas.PRIMARY_DARK + "You cannot execute your own persona!");
+						}
 					} else {
-						msg(RPPersonas.PRIMARY_DARK + "You cannot execute your own persona!");
+						msg(RPPersonas.PRIMARY_DARK + "That player already has an execution request pending!");
 					}
 				} else {
-					msg(RPPersonas.PRIMARY_DARK + "That player already has an execution request pending!");
+					msg(RPPersonas.PRIMARY_DARK + "You must be within " + EXECUTE_DISTANCE + " blocks to execute someone.");
 				}
 			} else {
-				msg(RPPersonas.PRIMARY_DARK + "You must be within " + EXECUTE_DISTANCE + " blocks to execute someone.");
+				msg(RPPersonas.PRIMARY_DARK + "That user is not on a live persona!");
 			}
 		} else {
 			msg(NO_CONSOLE);

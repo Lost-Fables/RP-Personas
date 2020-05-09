@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -111,6 +112,15 @@ public class CorpseListener implements Listener {
 										  RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_DARK + "/persona RuinCorpse " + RPPersonas.PRIMARY_DARK + "to enable placing.\n" +
 										  BaseConvo.NOTE + RPPersonas.PRIMARY_DARK + "A ruined corpse can no longer be resurrected.");
 			}
+		}
+	}
+
+	@EventHandler (ignoreCancelled=true)
+	public void onAltarBreak(BlockBreakEvent e) {
+		Altar altar = plugin.getAltarHandler().getAltarOfBlock(e.getBlock());
+		if (altar != null) {
+			e.setCancelled(true);
+			e.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Please remove the altar " + RPPersonas.SECONDARY_DARK + altar.getLabel() + RPPersonas.PRIMARY_DARK + " before breaking this block.");
 		}
 	}
 

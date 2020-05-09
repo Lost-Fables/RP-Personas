@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.listeners;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaEnderHolder;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -28,11 +29,14 @@ public class EnderListener implements Listener {
 			block != null && block.getType().equals(Material.ENDER_CHEST)) {
 
 			Player p = e.getPlayer();
-			Inventory inv = plugin.getPersonaHandler().getLoadedPersona(p).getEnderchest();
-			if (inv != null) {
-				e.setCancelled(true);
-				p.openInventory(inv);
-				p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.4f, 1.0f);
+			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			if (pers != null) {
+				Inventory inv = pers.getEnderchest();
+				if (inv != null) {
+					e.setCancelled(true);
+					p.openInventory(inv);
+					p.getLocation().getWorld().playSound(p.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.4f, 1.0f);
+				}
 			}
 		}
 	}
