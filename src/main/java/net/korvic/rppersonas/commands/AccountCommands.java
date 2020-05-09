@@ -51,7 +51,7 @@ public class AccountCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Send a registration message to your forum account.", permission = RPPersonas.PERMISSION_START + ".link")
-	public void ForumLink(CommandSender sender,
+	public void linkforum (CommandSender sender,
 						 @Arg(value="Forum ID", description="Your forum account ID.") int forumID) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -71,14 +71,14 @@ public class AccountCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Start the register process for someone else.", permission = RPPersonas.PERMISSION_START + ".helper")
-	public void ForumLinkOther(CommandSender sender,
+	public void linkforumother (CommandSender sender,
 							   @Arg(value="The Player", description="The player you're helping register.") Player p,
 							   @Arg(value="Forum ID", description="The forum ID of the other player.") int forumID) {
-		ForumLink((CommandSender) p, forumID);
+		linkforum((CommandSender) p, forumID);
 	}
 
 	@Cmd(value = "Send a registration message to your forum account.", permission = RPPersonas.PERMISSION_START + ".link")
-	public void DiscordLink(CommandSender sender,
+	public void linkdiscord (CommandSender sender,
 							@Arg(value="DiscordID#0000", description="Your personal Discord ID.") @Default(value="") String discordID) {
 		if (sender instanceof Player) {
 			//TODO - Hook into Discord bot to send a message to them to confirm the link.
@@ -105,7 +105,7 @@ public class AccountCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Open a menu to manage your account.", permission = RPPersonas.PERMISSION_START + ".accepted")
-	public void Menu(CommandSender sender) {
+	public void menu(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId());

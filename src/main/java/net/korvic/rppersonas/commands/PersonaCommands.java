@@ -35,13 +35,13 @@ public class PersonaCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
-	public void Info(CommandSender sender,
+	public void info(CommandSender sender,
 					 @Arg(value = "Player", description = "The player who's info you wish to see.") Player player) {
 		msg(plugin.getPersonaHandler().getPersonaInfo(player));
 	}
 
 	@Cmd(value = "Execute the given player's current persona by your current persona.", permission = RPPersonas.PERMISSION_START + ".execute")
-	public void Execute(CommandSender sender,
+	public void execute(CommandSender sender,
 						@Arg(value = "Player", description = "The player which you're executing.") Player victim) {
 		if (sender instanceof Player) {
 			Persona victimPersona = plugin.getPersonaHandler().getLoadedPersona(victim);
@@ -70,7 +70,7 @@ public class PersonaCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Accept being executed by a given player.", permission = RPPersonas.PERMISSION_START + ".execute")
-	public void ExecuteAccept(CommandSender sender,
+	public void executeaccept(CommandSender sender,
 							  @Arg(value = "Player", description = "The player executing you.") Player killer) {
 		if (sender instanceof Player) {
 			Player victim = (Player) sender;
@@ -87,7 +87,7 @@ public class PersonaCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Ruin a corpse so it can no longer be resurrected.", permission = RPPersonas.PERMISSION_START + ".ruincorpse")
-	public void RuinCorpse(CommandSender sender) {
+	public void ruinCorpse(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			DisabledStatus status = new DisabledStatus(null);
@@ -141,12 +141,12 @@ public class PersonaCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Set information about your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
-	public BaseCommand Set() {
+	public BaseCommand set() {
 		return personaSetCommands;
 	}
 
 	@Cmd(value = "Update the description of your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
-	public BaseCommand Desc() {
+	public BaseCommand desc() {
 		return personaDescCommands;
 	}
 }

@@ -20,7 +20,7 @@ public class PersonaSetCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Set the display name of your current persona.")
-	public void Name(CommandSender sender,
+	public void name(CommandSender sender,
 					 @Arg(value = "Name", description = "The new display name of your persona.") String[] name) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -53,7 +53,7 @@ public class PersonaSetCommands extends BaseCommand {
 	}
 
 	@Cmd(value = "Set the prefix for your current persona.")
-	public void Prefix(CommandSender sender,
+	public void prefix(CommandSender sender,
 					   @Arg(value = "Prefix", description = "The prefix to use (no brackets needed). Leave empty to clear.") @Default(value = "") String prefix) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
