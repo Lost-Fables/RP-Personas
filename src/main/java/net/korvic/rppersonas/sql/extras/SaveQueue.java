@@ -126,4 +126,8 @@ public class SaveQueue {
 
 		plugin.getLogger().info(RPPersonas.PRIMARY_DARK + "Saved " + RPPersonas.SECONDARY_LIGHT + queue.size() + " row(s) " + RPPersonas.PRIMARY_DARK + "in " + RPPersonas.SECONDARY_LIGHT + (System.currentTimeMillis() - startMillis) + "ms");
 	}
+
+	public boolean isEmpty() {
+		return queue.size() == 0;
+	}
 }

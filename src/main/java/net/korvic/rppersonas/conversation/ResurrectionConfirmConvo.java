@@ -88,8 +88,6 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 			personaData.put(PersonasSQL.LIVES, ((int) data.get(PersonasSQL.LIVES) - 1));
 			personaData.put(PersonasSQL.ALTARID, altar.getAltarID());
 			personaData.put(PersonasSQL.CORPSEINV, InventoryUtil.serializeItems(corpse.getInventory()));
-			personaData.put(PersonasSQL.ALIVE, true);
-			personaData.put(PersonasSQL.LOCATION, altar.getTPLocation());
 
 			plugin.getPersonasSQL().registerOrUpdate(personaData);
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
@@ -99,11 +97,18 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 			if (pers != null && pers.getUsingPlayer().isOnline()) {
 				pers.getUsingPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
 				new BukkitRunnable() {
+					private int passes = 0;
+
 					@Override
 					public void run() {
-						plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), personaID, false); // Reload the force-saved data from above.
+						if (plugin.getSaveQueue().isEmpty() || passes > 3) {
+							plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), personaID, false); // Reload the force-saved data from above.
+							this.cancel();
+						} else {
+							passes++;
+						}
 					}
-				}.runTaskLaterAsynchronously(plugin, 40);
+				}.runTaskTimer(plugin, 20, 20);
 			} else {
 				int accountID = plugin.getPersonaAccountMapSQL().getAccountOf(personaID);
 				for (UUID uuid : plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID)) {
