@@ -46,9 +46,10 @@ public class DeathRequest {
 
 	public void ping() {
 		if (victim.isOnline()) {
-			BaseComponent command = MessageUtil.CommandButton(RPPersonas.SECONDARY_DARK + "/persona ExecuteAccept " + killer.getName(), "/persona ExecuteAccept " + killer.getName());
-			victim.sendMessage(RPPersonas.SECONDARY_DARK + killerPersona.getNickName() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.\n" +
-							   RPPersonas.PRIMARY_DARK + "Use " + command + RPPersonas.PRIMARY_DARK + " to accept.");
+			BaseComponent command = MessageUtil.CommandButton(RPPersonas.SECONDARY_DARK + killerPersona.getNickName() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.\n" +
+															  RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_DARK + "/persona executeaccept " + killer.getName() + RPPersonas.PRIMARY_DARK + " to accept.",
+															  "/persona executeaccept " + killer.getName());
+			victim.sendMessage(command);
 		}
 	}
 
