@@ -303,4 +303,8 @@ public class Persona {
 			status.refreshEffect(usingPlayer);
 		}
 	}
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
+	}
 }

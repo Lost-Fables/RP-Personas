@@ -166,6 +166,8 @@ public class PersonaHandler {
 
 		if (!isAlive) {
 			if (data.containsKey(PersonasSQL.ALTARID) && ((int) data.get(PersonasSQL.ALTARID)) > 0) {
+				persona.setAlive(true);
+
 				Altar altar = plugin.getAltarHandler().getAltar((int) data.get(PersonasSQL.ALTARID));
 				if (altar != null) {
 					p.teleport(altar.getTPLocation());
@@ -238,11 +240,10 @@ public class PersonaHandler {
 				DataMapFilter data = new DataMapFilter();
 				data.put(PersonaAccountsMapSQL.PERSONAID, originalPersona.getPersonaID())
 					.put(PersonaAccountsMapSQL.ACCOUNTID, accountID)
-					.put(PersonaAccountsMapSQL.ALIVE, originalPersona.isAlive())
 					.put(PersonaAccountsMapSQL.ACTIVEUUID, null);
 				plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 			}
-			unloadPersona(originalPersona.getPersonaID(), false);
+			unloadPersona(originalPersona, false);
 		}
 
 		DataMapFilter data = new DataMapFilter();
@@ -280,14 +281,13 @@ public class PersonaHandler {
 			DataMapFilter data = new DataMapFilter();
 			data.put(PersonaAccountsMapSQL.PERSONAID, pers.getPersonaID())
 				.put(PersonaAccountsMapSQL.ACCOUNTID, pers.getAccountID())
-				.put(PersonaAccountsMapSQL.ALIVE, pers.isAlive())
 				.put(PersonaAccountsMapSQL.ACTIVEUUID, uuid);
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
-			removeFromMemory(pers.getPersonaID(), pers.getUsingPlayer(), keepLinked);
+			removeFromMemory(pers.getPersonaID(), pers.getUsingPlayer());
 		}
 	}
 
-	private void removeFromMemory(int personaID, Player p, boolean keepLinked) {
+	private void removeFromMemory(int personaID, Player p) {
 		loadedPersonas.remove(personaID);
 		playerObjectToID.remove(p);
 	}
