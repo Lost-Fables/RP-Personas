@@ -86,6 +86,7 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 			personaData.put(PersonasSQL.LIVES, ((int) data.get(PersonasSQL.LIVES) - 1));
 			personaData.put(PersonasSQL.ALTARID, altar.getAltarID());
 			personaData.put(PersonasSQL.CORPSEINV, InventoryUtil.serializeItems(corpse.getInventory()));
+			personaData.put(PersonasSQL.ALIVE, true);
 
 			plugin.getPersonasSQL().registerOrUpdate(personaData);
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);

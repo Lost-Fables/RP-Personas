@@ -293,9 +293,9 @@ public class Persona {
 
 	public void clearAllStatuses() {
 		for (Status status : activeStatuses) {
-			activeStatuses.remove(status);
 			status.clearEffect(usingPlayer);
 		}
+		activeStatuses.clear();
 	}
 
 	public void refreshStatuses() {

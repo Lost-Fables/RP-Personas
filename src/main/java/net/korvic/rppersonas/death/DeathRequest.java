@@ -10,6 +10,7 @@ import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.EtherealStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -46,9 +47,12 @@ public class DeathRequest {
 
 	public void ping() {
 		if (victim.isOnline()) {
-			BaseComponent command = MessageUtil.CommandButton(RPPersonas.SECONDARY_DARK + killerPersona.getNickName() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.\n" +
-															  RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_DARK + "/persona executeaccept " + killer.getName() + RPPersonas.PRIMARY_DARK + " to accept.",
-															  "/persona executeaccept " + killer.getName());
+			victim.sendMessage(RPPersonas.SECONDARY_DARK + killerPersona.getNickName() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.");
+			BaseComponent command = MessageUtil.CommandButton("Use " + RPPersonas.SECONDARY_DARK + "/persona executeaccept " + killer.getName() + RPPersonas.PRIMARY_DARK + " to accept.",
+															  "/persona executeaccept " + killer.getName(),
+															  RPPersonas.SECONDARY_LIGHT + "Click here!",
+															  RPPersonas.PRIMARY_DARK,
+															  RPPersonas.SECONDARY_DARK);
 			victim.sendMessage(command);
 		}
 	}
