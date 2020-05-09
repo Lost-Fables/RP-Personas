@@ -173,6 +173,7 @@ public class PersonaHandler {
 				}
 
 				persona.clearStatus(EtherealStatus.NAME);
+				new EtherealStatus(-1).clearEffect(p);
 
 				if (data.containsKey(PersonasSQL.CORPSEINV) && data.get(PersonasSQL.CORPSEINV) != null) {
 					ItemStack[] items = InventoryUtil.deserializeItemsToArray((String) data.get(PersonasSQL.CORPSEINV));
