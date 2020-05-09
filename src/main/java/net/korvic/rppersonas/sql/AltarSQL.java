@@ -32,6 +32,7 @@ public class AltarSQL extends BaseSQL {
 						  "    LocationX INT NOT NULL,\n" +
 						  "    LocationY INT NOT NULL,\n" +
 						  "    LocationZ INT NOT NULL,\n" +
+						  "    LocationYaw INT NOT NULL,\n" +
 						  "    IconID TEXT\n" +
 						  ");";
 		load(SQLTable, SQL_TABLE_NAME);
@@ -59,7 +60,7 @@ public class AltarSQL extends BaseSQL {
 			while (rs.next()) {
 				World world = Bukkit.getWorld(rs.getString("World"));
 				if (world != null) {
-					Location loc = new Location(world, rs.getDouble("LocationX"), rs.getDouble("LocationY"), rs.getDouble("LocationZ"));
+					Location loc = new Location(world, rs.getDouble("LocationX"), rs.getDouble("LocationY"), rs.getDouble("LocationZ"), rs.getInt("LocationYaw"), 0);
 					plugin.getAltarHandler().loadAltar(rs.getInt("AltarID"), rs.getString("Name"), loc, rs.getString("IconID"));
 				}
 			}
@@ -91,7 +92,7 @@ public class AltarSQL extends BaseSQL {
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (AltarID,Name,World,LocationX,LocationY,LocationZ,IconID) VALUES(?,?,?,?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (AltarID,Name,World,LocationX,LocationY,LocationZ,LocationYaw,IconID) VALUES(?,?,?,?,?,?,?,?)");
 
 
 		// Required
@@ -111,24 +112,27 @@ public class AltarSQL extends BaseSQL {
 			replaceStatement.setInt(4, loc.getBlockX());
 			replaceStatement.setInt(5, loc.getBlockY());
 			replaceStatement.setInt(6, loc.getBlockZ());
+			replaceStatement.setInt(7, (int) loc.getYaw());
 		} else if (resultPresent) {
 			replaceStatement.setString(3, result.getString("World"));
 			replaceStatement.setInt(4, result.getInt("LocationX"));
 			replaceStatement.setInt(5, result.getInt("LocationY"));
 			replaceStatement.setInt(6, result.getInt("LocationZ"));
+			replaceStatement.setInt(7, result.getInt("LocationYaw"));
 		} else {
 			replaceStatement.setString(3, null);
 			replaceStatement.setInt(4, 0);
 			replaceStatement.setInt(5, 0);
 			replaceStatement.setInt(6, 0);
+			replaceStatement.setInt(7, 0);
 		}
 
 		if (data.containsKey(ICONID)) {
-			replaceStatement.setString(7, (String) data.get(ICONID));
+			replaceStatement.setString(8, (String) data.get(ICONID));
 		} else if (resultPresent) {
-			replaceStatement.setString(7, result.getString("IconID"));
+			replaceStatement.setString(8, result.getString("IconID"));
 		} else {
-			replaceStatement.setString(7, null);
+			replaceStatement.setString(8, null);
 		}
 
 		grabStatement.close();

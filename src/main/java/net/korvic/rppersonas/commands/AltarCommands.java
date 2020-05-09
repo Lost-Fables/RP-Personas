@@ -30,7 +30,7 @@ public class AltarCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			float yaw = roundYaw(p.getLocation().getYaw());
-			Location blockLoc = p.getLocation().toBlockLocation().subtract(0, 1, 0);
+			Location blockLoc = p.getLocation().toBlockLocation();
 			blockLoc.setYaw(yaw);
 			blockLoc.setPitch(0);
 

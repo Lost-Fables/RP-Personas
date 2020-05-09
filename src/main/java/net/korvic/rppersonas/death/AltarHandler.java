@@ -45,8 +45,8 @@ public class AltarHandler {
 	}
 
 	public Altar createAltar(String label, Location loc) {
-		Altar output = getAltar(label);
-		if (output == null) {
+		Altar output = getAltarOfBlock(loc.clone().subtract(0, 1, 0).getBlock());
+		if (output == null && !allAltars.containsKey(label)) {
 			output = Altar.createAltar(label, loc);
 			allAltars.put(label, output);
 		} else {

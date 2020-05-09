@@ -104,6 +104,7 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 						if (plugin.getSaveQueue().isEmpty() || passes > 3) {
 							if (pers.getUsingPlayer().isOnline()) {
 								plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), personaID, false); // Reload the force-saved data from above.
+								pers.getUsingPlayer().teleportAsync(altar.getTPLocation());
 							}
 							this.cancel();
 						} else {

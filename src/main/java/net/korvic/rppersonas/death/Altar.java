@@ -20,20 +20,24 @@ public class Altar {
 
 	// STATIC //
 	public static Altar createAltar(String label, Location loc) {
-		int altarID = maxAltarID;
-		updateMaxAltarID(altarID);
-		String iconID = formatIconID(altarID);
+		Altar altar = RPPersonas.get().getAltarHandler().getAltarOfBlock(loc.clone().subtract(0, 1, 0).getBlock());
+		if (altar == null) {
+			int altarID = maxAltarID;
+			updateMaxAltarID(altarID);
 
-		DataMapFilter data = new DataMapFilter();
-		data.put(AltarSQL.ALTARID, altarID)
-			.put(AltarSQL.ICONID, iconID)
-			.put(AltarSQL.NAME, label)
-			.put(AltarSQL.LOCATION, loc);
-		RPPersonas.get().getAltarSQL().registerOrUpdate(data);
+			String iconID = formatIconID(altarID);
+			altar = new Altar(altarID, label, loc, iconID);
 
-		// TODO add altar icon to Dynmap
+			DataMapFilter data = new DataMapFilter();
+			data.put(AltarSQL.ALTARID, altarID)
+				.put(AltarSQL.ICONID, iconID)
+				.put(AltarSQL.NAME, label)
+				.put(AltarSQL.LOCATION, altar.getTPLocation());
+			RPPersonas.get().getAltarSQL().registerOrUpdate(data);
 
-		return new Altar(altarID, label, loc, iconID);
+			// TODO add altar icon to Dynmap
+		}
+		return altar;
 	}
 
 	public static Altar loadAltar(int altarID, String label, Location loc, String iconID) {
@@ -58,8 +62,8 @@ public class Altar {
 	private Altar(int altarID, String label, Location loc, String iconID) {
 		this.altarID = altarID;
 		this.label = label;
-		this.altarBase = loc.getBlock();
-		this.teleportLocation = loc.add(0.5, 1, 0.5);
+		this.altarBase = loc.clone().subtract(0, 1, 0).getBlock();
+		this.teleportLocation = loc.add(0.5, 0, 0.5);
 		this.iconID = iconID;
 	}
 
