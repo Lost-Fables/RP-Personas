@@ -13,13 +13,15 @@ public class PersonaCreationAbandonedListener implements ConversationAbandonedLi
 
 	@Override
 	public void conversationAbandoned(ConversationAbandonedEvent abandonedEvent) {
-		Player p = (Player) abandonedEvent.getContext().getForWhom();
+		if (!abandonedEvent.gracefulExit()) {
+			Player p = (Player) abandonedEvent.getContext().getForWhom();
 
-		p.hideTitle();
-		PersonaHandler.stopSkipping(p);
-		new DisabledStatus(null).clearEffect(p);
-		p.sendMessage("\n" + RPPersonas.PRIMARY_DARK + "Persona creation cancelled.");
-		JoinQuitListener.loadIntoPersona(p);
+			p.hideTitle();
+			PersonaHandler.stopSkipping(p);
+			new DisabledStatus(null).clearEffect(p);
+			p.sendMessage("\n" + RPPersonas.PRIMARY_DARK + "Persona creation cancelled.");
+			JoinQuitListener.loadIntoPersona(p);
+		}
 	}
 
 }
