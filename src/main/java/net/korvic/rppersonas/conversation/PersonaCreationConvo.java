@@ -461,8 +461,6 @@ public class PersonaCreationConvo extends BaseConvo {
 
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
 
-
-
 		return Prompt.END_OF_CONVERSATION;
 	}
 }

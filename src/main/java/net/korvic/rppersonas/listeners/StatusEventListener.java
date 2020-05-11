@@ -42,13 +42,19 @@ public class StatusEventListener implements Listener {
 		blockMovement(player, loc);
 	}
 	public static void blockItems(Player player) {
-		itemBlocked.add(player);
+		if (!itemBlocked.contains(player)) {
+			itemBlocked.add(player);
+		}
 	}
 	public static void blockInteractions(Player player) {
-		interactBlocked.add(player);
+		if (!interactBlocked.contains(player)) {
+			interactBlocked.add(player);
+		}
 	}
 	public static void blockMovement(Player player, Location loc) {
-		movementBlocked.put(player, loc);
+		if (!movementBlocked.containsKey(player)) {
+			movementBlocked.put(player, loc);
+		}
 	}
 
 	// REMOVE //
