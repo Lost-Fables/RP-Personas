@@ -105,6 +105,8 @@ public class DeathRequest {
 		//data.put(PersonaAccountsMapSQL.PERSONAID, victimPersona.getPersonaID());
 		plugin.getPersonasSQL().registerOrUpdate(data);
 		plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
+
+		victimPersona.setAlive(false);
 	}
 
 }
