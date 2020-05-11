@@ -356,7 +356,7 @@ public class PersonasSQL extends BaseSQL {
 		try {
 			conn = getSQLConnection();
 			String stmt;
-			stmt = "SELECT NickName, Name, Age, Race, Gender, Description, PersonaID FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
+			stmt = "SELECT NickName, Name, Age, Race, Gender, Description, PersonaID, RezToAltar FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
 
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
@@ -374,6 +374,10 @@ public class PersonasSQL extends BaseSQL {
 
 				if (rs.getString("Description") != null && rs.getString("Description").length() > 0) {
 					output.put(DESCRIPTION, rs.getString("Description"));
+				}
+
+				if (rs.getInt("RezToAltar") > 0) {
+					output.put(ALTARID, rs.getInt("RezToAltar"));
 				}
 			}
 

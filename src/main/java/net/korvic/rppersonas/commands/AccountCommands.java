@@ -20,6 +20,7 @@ import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.conversation.PersonaSkinConvo;
 import net.korvic.rppersonas.sql.AccountsSQL;
+import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -476,21 +477,26 @@ public class AccountCommands extends BaseCommand {
 
 						ItemMeta meta = item.getItemMeta();
 						String currentName;
-						if (data.containsKey("nickname")) {
-							currentName = (String) data.get("nickname");
+						if (data.containsKey(PersonasSQL.NICKNAME)) {
+							currentName = (String) data.get(PersonasSQL.NICKNAME);
 						} else {
-							currentName = (String) data.get("name");
+							currentName = (String) data.get(PersonasSQL.NAME);
 						}
 						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + currentName + "(Dead)");
 
 						ArrayList<String> lore = new ArrayList<>();
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to request ressurection, Right Click to delete.");
+
+						if (data.containsKey(PersonasSQL.ALTARID)) {
+							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
+						} else {
+							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to request ressurection, Right Click to delete.");
+						}
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Persona ID: " + RPPersonas.SECONDARY_DARK + String.format("%06d", personaID));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " + RPPersonas.SECONDARY_DARK + data.get("name"));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) data.get("age")));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Race: " + RPPersonas.SECONDARY_DARK + data.get("race"));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Gender: " + RPPersonas.SECONDARY_DARK + data.get("gender"));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " + RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.NAME));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) data.get(PersonasSQL.AGE)));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Race: " + RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.RACE));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Gender: " + RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.GENDER));
 
 						meta.setLore(lore);
 						item.setItemMeta(meta);
@@ -500,16 +506,23 @@ public class AccountCommands extends BaseCommand {
 					@Override
 					public void click(MenuAction menuAction) {
 						ClickType click = menuAction.getClick();
+						Map<String, Object> personaData = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
 						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Opening Ressurection Application...");
+							if (personaData.containsKey(PersonasSQL.ALTARID)) {
+								menuAction.getPlayer().closeInventory();
+								plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
+								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + personaData.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + ".");
+							} else {
+								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Opening Ressurection Application...");
+							}
 
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().closeInventory();
 
-							Map<Object, Object> data = new HashMap<>();
-							data.put("personaid", personaID);
-							new PersonaDeleteConvo(plugin).startConvo(menuAction.getPlayer(), data, true);
+							Map<Object, Object> deleteData = new HashMap<>();
+							deleteData.put(PersonasSQL.PERSONAID, personaID);
+							new PersonaDeleteConvo(plugin).startConvo(menuAction.getPlayer(), deleteData, true);
 						}
 					}
 				});
