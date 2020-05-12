@@ -5,6 +5,7 @@ import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -35,11 +36,12 @@ public class PersonaSetCommands extends BaseCommand {
 			}
 
 			if ((p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && builder.length() <= 48) || builder.length() <= 32) {
-				final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?|\\b[^A-Z ].*?\\b";
+				final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?";
 				final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 				final Matcher matcher = pattern.matcher(builder.toString());
 				if (!matcher.find()) {
-					pers.setNickName(p, builder.toString());
+					String finalName = WordUtils.capitalizeFully(builder.toString());
+					pers.setNickName(p, finalName);
 					msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + builder.toString() + RPPersonas.PRIMARY_DARK + ".");
 				} else {
 					msg(RPPersonas.PRIMARY_DARK + "That name contained illegal lettering.");
