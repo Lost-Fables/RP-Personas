@@ -2,6 +2,7 @@ package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.conversation.BaseConvo;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
@@ -28,6 +29,7 @@ public class Persona {
 	private int accountID;
 	private String prefix;
 	private String nickName;
+	private String[] namePieces = new String[3];
 	private String inventory;
 	private Inventory enderInventory;
 	private boolean isAlive;
@@ -42,7 +44,7 @@ public class Persona {
 		this.personaID = personaID;
 		this.accountID = accountID;
 		this.prefix = prefix;
-		this.nickName = nickName;
+		setNickName(usingPlayer, nickName);
 		this.inventory = personaInvData;
 
 		this.enderInventory = Bukkit.createInventory(new PersonaEnderHolder(), InventoryType.ENDER_CHEST, nickName + "'s Stash");
@@ -70,6 +72,9 @@ public class Persona {
 	}
 	public String getNickName() {
 		return nickName;
+	}
+	public String[] getNamePieces() {
+		return namePieces;
 	}
 	public String getChatName() {
 		if (prefix != null) {
@@ -99,7 +104,9 @@ public class Persona {
 		output.put(PersonasSQL.PERSONAID, personaID);
 		output.put(PersonasSQL.ALIVE, isAlive);
 		output.put(PersonasSQL.INVENTORY, inventory);
-		output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderInventory));
+		if (enderInventory != null) {
+			output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderInventory));
+		}
 		output.put(PersonasSQL.NICKNAME, nickName);
 		output.put(PersonasSQL.PREFIX, prefix);
 
@@ -205,7 +212,25 @@ public class Persona {
 		} else {
 			this.nickName = (String) getBasicInfo().get(PersonasSQL.NAME);
 		}
+
+		namePieces = new String[3];
+
+		String personaName = this.nickName;
+		int maxSize = 16;
+		int pieces = (int) Math.ceil(((double) personaName.length()) / maxSize);
+
+		if (pieces > 1) {
+			for (int i = 0; i < pieces && i < namePieces.length; i++) {
+				int end = Math.min(maxSize * (i + 1), personaName.length());
+				namePieces[i] = personaName.substring(maxSize * i, end);
+			}
+		} else {
+			namePieces[1] = personaName;
+		}
+
 		queueSave(p);
+
+		BoardManager.addPlayer(usingPlayer, namePieces);
 	}
 
 	public void setPrefix(Player p, String prefix) {

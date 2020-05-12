@@ -34,7 +34,7 @@ public class PersonaSetCommands extends BaseCommand {
 				builder.append(s);
 			}
 
-			if ((p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && builder.length() <= 64) || builder.length() <= 32) {
+			if ((p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && builder.length() <= 48) || builder.length() <= 32) {
 				final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?|\\b[^A-Z ].*?\\b";
 				final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 				final Matcher matcher = pattern.matcher(builder.toString());

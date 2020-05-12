@@ -13,7 +13,7 @@ import net.korvic.rppersonas.death.DeathHandler;
 import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.listeners.PlayerDisplayListener;
+import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.extras.SaveQueue;
 import net.md_5.bungee.api.ChatColor;
@@ -100,6 +100,9 @@ public final class RPPersonas extends JavaPlugin {
 				}
 			}.runTaskTimerAsynchronously(this, 0, 36000);
 
+			// Start auto-clean for nameplate scoreboards.
+			BoardManager.toggleAutoClean();
+
 			// Register our Listeners
 			PluginManager manager = getServer().getPluginManager();
 			manager.registerEvents(new JoinQuitListener(this), this);
@@ -114,7 +117,7 @@ public final class RPPersonas extends JavaPlugin {
 			}
 
 			// Packet Listener for skins
-			PlayerDisplayListener.listen();
+			SkinDisplayListener.listen();
 
 			// Register our handlers
 			accountHandler = new AccountHandler(this);

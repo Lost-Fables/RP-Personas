@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
 
-public class PlayerDisplayListener {
+public class SkinDisplayListener {
 
 	public static void listen() {
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
@@ -43,7 +43,7 @@ public class PlayerDisplayListener {
 								if (player != null) {
 									Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
 									if (pers != null) {
-										WrappedGameProfile profile = new WrappedGameProfile(uuid, pers.getNickName());
+										WrappedGameProfile profile = new WrappedGameProfile(uuid, pers.getNamePieces()[1]);
 
 										if (pers.getActiveSkinID() > 0) {
 											if (RPPersonas.DEBUGGING) {
@@ -62,7 +62,7 @@ public class PlayerDisplayListener {
 											properties.putAll("textures", oldProperties.get("textures"));
 										}
 
-										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), playerInfo.getDisplayName());
+										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), WrappedChatComponent.fromText(player.getName()));
 										iterator.set(playerInfo);
 										changed = true;
 									}
