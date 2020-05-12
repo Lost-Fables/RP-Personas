@@ -2,6 +2,7 @@ package net.korvic.rppersonas;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.PersonaSkin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -66,9 +67,14 @@ public class BoardManager {
 
 		if (namePieces[0] != null) {
 			team.setPrefix(namePieces[0]);
+		} else {
+			team.setPrefix("");
 		}
+
 		if (namePieces[2] != null) {
 			team.setSuffix(namePieces[2]);
+		} else {
+			team.setSuffix("");
 		}
 
 		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
@@ -76,6 +82,7 @@ public class BoardManager {
 
 		team.addEntry(namePieces[1]);
 		p.setScoreboard(nameBoard);
+		PersonaSkin.refreshPlayer(p);
 	}
 
 }
