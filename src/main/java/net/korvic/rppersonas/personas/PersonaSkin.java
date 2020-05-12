@@ -61,6 +61,10 @@ public class PersonaSkin {
 
 	// ProtocolLib Refreshing
 	public static void refreshPlayer(Player p) {
+		if (p.isInsideVehicle()) {
+			p.leaveVehicle();
+		}
+
 		Bukkit.getOnlinePlayers().stream()
 			  .filter(x -> (x != p))
 			  .filter(x -> x.canSee(p))
