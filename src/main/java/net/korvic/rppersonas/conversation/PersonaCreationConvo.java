@@ -12,6 +12,7 @@ import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
@@ -65,7 +66,7 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			String output = RPPersonas.PRIMARY_DARK + "Type in the name for your persona now." +
-							NOTE + RPPersonas.SECONDARY_DARK + ChatColor.ITALIC + "A name is limited to letters(A-z), spaces, quotations(' \"), and dashes(-).\n";
+							NOTE + RPPersonas.SECONDARY_DARK + ChatColor.ITALIC + "A name is limited to letters(A-z), spaces, quotations(' \"), dashes(-), and 32 letters long.\n";
 			if (!firstPersona) {
 				output  +=  NOTE + RPPersonas.SECONDARY_DARK + ChatColor.ITALIC + "Type 'CANCEL' at any time to exit persona creation.";
 			}
@@ -80,20 +81,20 @@ public class PersonaCreationConvo extends BaseConvo {
 				return false;
 			}
 
-			final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?|\\b[^A-Z ].*?\\b";
+			final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?";
 			final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 			final Matcher matcher = pattern.matcher(input);
 			if (matcher.find()) {
 				return false;
 			}
 
-			return (p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && input.length() <= 64) || input.length() <= 32;
+			return (p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && input.length() <= 48) || input.length() <= 32;
 		}
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			((Player) context.getForWhom()).hideTitle();
-			return new ConfirmNamePrompt(input, returnToEnd, firstPersona);
+			return new ConfirmNamePrompt(WordUtils.capitalizeFully(input), returnToEnd, firstPersona);
 		}
 	}
 
