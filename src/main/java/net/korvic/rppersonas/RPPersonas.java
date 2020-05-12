@@ -262,17 +262,17 @@ public final class RPPersonas extends JavaPlugin {
 	}
 
 	public static long getMillisFromAge(int ages) {
-		return (getCurrentTime() - (ages * 3 * MONTH_IN_MILLIS));
+		return (getCurrentTime() - (ages * 2 * WEEK_IN_MILLIS));
 	}
 	public static long getMillisFromEra(int eras) {
-		return (getCurrentTime() - (eras * YEAR_IN_MILLIS));
+		return (getCurrentTime() - (eras * 8 * WEEK_IN_MILLIS));
 	}
 
 	public static int getRelativeAges(long millis) {
-		return (int) (((getCurrentTime() - millis) / MONTH_IN_MILLIS) / 3);
+		return (int) (((getCurrentTime() - millis) / WEEK_IN_MILLIS) / 2);
 	}
 	public static int getRelativeEras(long millis) {
-		return (int) ((getCurrentTime() - millis) / YEAR_IN_MILLIS);
+		return (int) (((getCurrentTime() - millis) / WEEK_IN_MILLIS) / 8);
 	}
 	public static String getRelativeTimeString(long millis) {
 		return (getRelativeAges(millis) + " Ages; (" + getRelativeEras(millis) + " Eras)");
