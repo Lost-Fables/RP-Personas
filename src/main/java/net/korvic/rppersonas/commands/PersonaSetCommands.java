@@ -42,7 +42,7 @@ public class PersonaSetCommands extends BaseCommand {
 				if (!matcher.find()) {
 					String finalName = WordUtils.capitalizeFully(builder.toString());
 					pers.setNickName(p, finalName);
-					msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + builder.toString() + RPPersonas.PRIMARY_DARK + ".");
+					msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + finalName + RPPersonas.PRIMARY_DARK + ".");
 				} else {
 					msg(RPPersonas.PRIMARY_DARK + "That name contained illegal lettering.");
 				}
