@@ -41,4 +41,14 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
+	@Cmd(value="Get the current time of the world you're in.")
+	public void info(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			msg(RPPersonas.PRIMARY_DARK + "The time is: " + RPPersonas.SECONDARY_DARK + p.getWorld().getTime());
+		} else {
+			msg("Stahp it console.");
+		}
+	}
+
 }
