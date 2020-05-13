@@ -49,7 +49,7 @@ public class SkinDisplayListener {
 											properties.put("textures", pers.getActiveSkin().getMojangData());
 										}
 
-										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), playerInfo.getDisplayName());
+										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), WrappedChatComponent.fromText(player.getName()));
 										iterator.set(playerInfo);
 										changed = true;
 									}
