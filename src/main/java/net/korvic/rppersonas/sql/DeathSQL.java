@@ -7,8 +7,8 @@ import org.bukkit.Location;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -30,6 +30,8 @@ public class DeathSQL extends BaseSQL {
 	public static final String CREATED = "created";
 	public static final String STAFF = "staff";
 	public static final String REFUNDER = "refunder";
+
+	private int highestDeathID = 1;
 
 	public DeathSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
@@ -57,7 +59,21 @@ public class DeathSQL extends BaseSQL {
 
 	@Override
 	protected boolean customStatement() {
-		return false;
+		connection = getSQLConnection();
+		try {
+			String stmt;
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE DeathID=(SELECT MAX(DeathID) FROM " + SQL_TABLE_NAME + ");";
+			PreparedStatement ps = connection.prepareStatement(stmt);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				updateHighestDeathID(rs.getInt("DeathID"));
+			}
+			close(ps, rs);
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+
+		return true;
 	}
 
 	protected void addDataMappings() {
@@ -77,24 +93,26 @@ public class DeathSQL extends BaseSQL {
 		DataMapFilter.addFilter(REFUNDER, REFUNDER, UUID.class);
 	}
 
+	private void updateHighestDeathID(int deathID) {
+		if (deathID >= highestDeathID) {
+			highestDeathID = deathID + 1;
+		}
+	}
+
 	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(DataMapFilter data) {
-		if (data.containsKey(DEATHID)) {
-			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			}
+		data.put(DEATHID, highestDeathID);
+		updateHighestDeathID(highestDeathID);
+		try {
+			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
-		Connection conn = null;
-		PreparedStatement replaceStatement = null;
-		conn = getSQLConnection();
-
-		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (DeathID,VictimPersona,VictimAccount,VictimUUID,KillerPersona,KillerAccount,KillerUUID,World,LocationX,LocationY,LocationZ,Time,StaffInflicted,Refunder) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		Connection conn = getSQLConnection();
+		PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (DeathID,VictimPersona,VictimAccount,VictimUUID,KillerPersona,KillerAccount,KillerUUID,World,LocationX,LocationY,LocationZ,Time,StaffInflicted,Refunder) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 
 		// Required
