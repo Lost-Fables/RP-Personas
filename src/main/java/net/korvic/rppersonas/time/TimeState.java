@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public enum TimeState {
 
-	NOON(       6000,  25, 25, 25, 25), // Noon-Sunset
-	ZENITH_FALL(12786, 25, 25, 25, 25), // Sunset-Midnight
-	MIDNIGHT(   18000, 25, 25, 25, 25), // Midnight-Sunrise
-	ZENITH_RISE(23215, 25, 25, 25, 25); // Sunrise-Noon
+	NOON(       6000,  35, 25, 20, 25), // Noon-Sunset (DAY)
+	ZENITH_FALL(12786, 15, 25, 30, 25), // Sunset-Midnight (NIGHT)
+	MIDNIGHT(   18000, 15, 25, 30, 25), // Midnight-Sunrise (NIGHT)
+	ZENITH_RISE(23215, 35, 25, 20, 25); // Sunrise-Noon (DAY)
 
 	public static final int ONE_DAY_TICKS = 24000;
 
