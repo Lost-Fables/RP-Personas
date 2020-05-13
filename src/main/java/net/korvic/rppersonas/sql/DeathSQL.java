@@ -157,7 +157,7 @@ public class DeathSQL extends BaseSQL {
 		if (data.containsKey(LOCATION)) {
 			Location loc = (Location) data.get(LOCATION);
 			replaceStatement.setString(8, loc.getWorld().getName());
-			replaceStatement.setInt(8, loc.getBlockX());
+			replaceStatement.setInt(9, loc.getBlockX());
 			replaceStatement.setInt(10, loc.getBlockY());
 			replaceStatement.setInt(11, loc.getBlockZ());
 		} else {
