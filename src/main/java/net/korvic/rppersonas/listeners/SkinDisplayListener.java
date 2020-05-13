@@ -27,9 +27,9 @@ public class SkinDisplayListener {
 					@Override
 					public void onPacketSending(PacketEvent event) {
 						PacketContainer container = event.getPacket();
-						EnumWrappers.PlayerInfoAction InfoAction = container.getPlayerInfoAction().read(0);
+						EnumWrappers.PlayerInfoAction infoAction = container.getPlayerInfoAction().read(0);
 
-						if (InfoAction == EnumWrappers.PlayerInfoAction.ADD_PLAYER) {
+						if (infoAction == EnumWrappers.PlayerInfoAction.ADD_PLAYER) {
 							boolean changed = false;
 							List<PlayerInfoData> allPlayerInfo = container.getPlayerInfoDataLists().read(0);
 

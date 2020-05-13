@@ -203,6 +203,15 @@ public class PersonaHandler {
 	}
 
 	// GET //
+	public Persona getLoadedPersona(String personaName) {
+		for (Persona pers : loadedPersonas.values()) {
+			if (pers.getNickName().equals(personaName) || pers.getNamePieces()[1].equals(personaName)) {
+				return pers;
+			}
+		}
+		return null;
+	}
+
 	public Persona getLoadedPersona(Player p) {
 		if (playerObjectToID.containsKey(p)) {
 			return getLoadedPersona(playerObjectToID.get(p));
