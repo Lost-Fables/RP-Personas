@@ -45,9 +45,10 @@ public class TimeManager {
 		return (getRelativeAges(millis) + " Ages; (" + getRelativeEras(millis) + " Eras)");
 	}
 
-	public static void registerWorld(World world) {
-		TimeManager output = new TimeManager(world);
+	public static TimeManager registerWorld(World world, boolean save) {
+		TimeManager output = new TimeManager(world, "Summer", 240, save);
 		managers.put(world, output);
+		return output;
 	}
 
 	public static TimeManager getManagerOfWorld(World world) {
@@ -62,7 +63,7 @@ public class TimeManager {
 		if (manager == null) {
 			return false;
 		}
-		manager.addSyncedWorld(toBeSynced);
+		manager.addSyncedWorld(toBeSynced, true);
 		managers.put(toBeSynced, manager);
 		return true;
 	}
@@ -71,23 +72,56 @@ public class TimeManager {
 		getManagerOfWorld(world).unregister(world);
 	}
 
+	//////////////
 	// INSTANCE //
+	//////////////
 	@Getter private List<World> worlds = new ArrayList<>();
+	@Getter private int timeScale;
+	@Getter private String season;
 	@Setter @Getter private TimeState currentState;
+
 	private BukkitRunnable currentRunnable;
 
-	public TimeManager(World world) {
+	public TimeManager(World world, String season, int timeScale, boolean save) {
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		this.timeScale = timeScale;
+		this.season = season;
 
-		// TODO - CONFIG SAVING
+		if (save) {
+			RPPersonas.get().updateConfigForWorld(world.getName(), season, this.timeScale, null);
+		}
 
 		worlds.add(world);
 		this.currentState = TimeState.getState((int) world.getTime());
 		startRunnable();
 	}
 
-	public void addSyncedWorld(World world) {
+	public void addSyncedWorld(World world, boolean save) {
 		worlds.add(world);
+
+		if (save) {
+			List<String> syncedWorldNames = new ArrayList<>();
+			for (World syncedWorld : worlds) {
+				if (!syncedWorld.equals(worlds.get(0))) {
+					syncedWorldNames.add(syncedWorld.getName());
+				}
+			}
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), null, 0, syncedWorldNames);
+		}
+	}
+
+	public void setTimeScale(int timeScale, boolean save) {
+		this.timeScale = timeScale;
+		if (save) {
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), null, this.timeScale, null);
+		}
+	}
+
+	public void setSeason(String season, boolean save) {
+		this.season = season;
+		if (save) {
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), season, 0, null);
+		}
 	}
 
 	protected void unregister(World world) {
@@ -99,7 +133,7 @@ public class TimeManager {
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 		managers.remove(world);
 
-		// TODO - CONFIG UPDATE
+		RPPersonas.get().deleteConfigForWorld(world.getName());
 	}
 
 	protected void stopRunnable() {
@@ -141,7 +175,7 @@ public class TimeManager {
 		float dayPercentage = (float) currentState.getSummerPrecent();
 		dayPercentage /= 100;
 
-		int delay = Math.round((TimeState.CYCLE_TICKS * dayPercentage) / TimeState.getTicksToNextState(currentState));
+		int delay = Math.round((timeScale * 1200 * dayPercentage) / TimeState.getTicksToNextState(currentState));
 		currentRunnable.runTaskLater(RPPersonas.get(), delay);
 	}
 }

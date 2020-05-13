@@ -17,13 +17,18 @@ import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.extras.SaveQueue;
+import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.List;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -163,14 +168,57 @@ public final class RPPersonas extends JavaPlugin {
 
 	// CONFIG //
 	private void loadFromConfig() {
+		// Save Queue
 		saveQueueSQL = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
-		String world = config.getString("spawn.world");
-		if (world != null && Bukkit.getWorld(world) != null) {
+
+		// Spawn
+		String spawnWorldName = config.getString("spawn.world");
+		if (spawnWorldName != null && Bukkit.getWorld(spawnWorldName) != null) {
 			String facing = config.getString("spawn.facing");
 			if (facing != null) {
-				spawnLocation = new Location(Bukkit.getWorld(world), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), getYawFromFacing(facing), 0);
+				spawnLocation = new Location(Bukkit.getWorld(spawnWorldName), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), getYawFromFacing(facing), 0);
 			}
 		}
+
+		// World Time
+		ConfigurationSection section = config.getConfigurationSection("worlds");
+		if (section != null) {
+			for (String worldName : section.getKeys(false)) {
+				World world = Bukkit.getWorld(worldName);
+
+				TimeManager manager = TimeManager.registerWorld(world, false);
+				manager.setSeason(config.getString("worlds." + worldName + ".season"), false);
+				manager.setTimeScale(config.getInt("worlds." + worldName + ".timescale"), false);
+
+				List<String> syncedWorlds = section.getStringList(worldName + ".synced");
+				for (String str : syncedWorlds) {
+					World syncedWorld = Bukkit.getWorld(str);
+					manager.addSyncedWorld(syncedWorld, false);
+				}
+			}
+		}
+	}
+
+	public void updateConfigForWorld(String worldName, String season, int timeScale, List<String> syncedWorlds) {
+		String configPath = "worlds." + worldName;
+		config = getConfig();
+		if (season != null) {
+			config.set(configPath + ".season", season);
+		}
+		if (timeScale > 20) {
+			config.set(configPath + ".timescale", timeScale);
+		}
+		if (syncedWorlds != null) {
+			config.set(configPath + ".synced", syncedWorlds);
+		}
+		saveConfig();
+	}
+
+	public void deleteConfigForWorld(String worldName) {
+		String configPath = "worlds." + worldName;
+		config = getConfig();
+		config.set(configPath, null);
+		saveConfig();
 	}
 
 	// PARAMETERS //

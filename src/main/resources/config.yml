@@ -23,3 +23,15 @@ spawn:
   x: 0
   y: 64
   z: 0
+
+# World Time Settings
+# season; Summer, Autumn, Winter, Spring
+# timescale; Day/night cycle in minutes.
+# synced; List of worlds to sync to this one.
+#worlds:
+#  world:
+#    season: Summer
+#    timescale: 240
+#    synced:
+#      - build_world
+worlds:

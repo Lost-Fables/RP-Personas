@@ -10,7 +10,6 @@ public enum TimeState {
 	MIDNIGHT(   18000, 25, 25, 25, 25), // Midnight-Sunrise
 	ZENITH_RISE(23215, 25, 25, 25, 25); // Sunrise-Noon
 
-	public static final int CYCLE_TICKS = 288000;
 	public static final int ONE_DAY_TICKS = 24000;
 
 	@Getter private int minecraftTime;
