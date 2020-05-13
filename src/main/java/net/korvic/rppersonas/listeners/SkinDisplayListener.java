@@ -26,9 +26,6 @@ public class SkinDisplayListener {
 				new PacketAdapter(RPPersonas.get(), ListenerPriority.LOWEST, PacketType.Play.Server.PLAYER_INFO) {
 					@Override
 					public void onPacketSending(PacketEvent event) {
-						if (RPPersonas.DEBUGGING) {
-							RPPersonas.get().getLogger().info("Player Packet Being Sent...");
-						}
 						PacketContainer container = event.getPacket();
 						EnumWrappers.PlayerInfoAction InfoAction = container.getPlayerInfoAction().read(0);
 
@@ -43,26 +40,16 @@ public class SkinDisplayListener {
 								if (player != null) {
 									Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
 									if (pers != null) {
-										WrappedGameProfile profile = new WrappedGameProfile(uuid, pers.getNamePieces()[1]);
+										WrappedGameProfile profile = playerInfo.getProfile();
+										profile = profile.withName(pers.getNamePieces()[1]);
 
 										if (pers.getActiveSkinID() > 0) {
-											if (RPPersonas.DEBUGGING) {
-												RPPersonas.get().getLogger().info("New Skin Found...");
-											}
-
 											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
 											properties.removeAll("textures");
 											properties.put("textures", pers.getActiveSkin().getMojangData());
-										} else {
-											WrappedGameProfile oldProfile = WrappedGameProfile.fromPlayer(player);
-											Multimap<String, WrappedSignedProperty> oldProperties = oldProfile.getProperties();
-
-											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
-											properties.removeAll("textures");
-											properties.putAll("textures", oldProperties.get("textures"));
 										}
 
-										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), WrappedChatComponent.fromText(player.getName()));
+										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), playerInfo.getDisplayName());
 										iterator.set(playerInfo);
 										changed = true;
 									}
