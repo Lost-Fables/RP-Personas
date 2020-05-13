@@ -71,7 +71,12 @@ public class TimeCommands extends BaseCommand {
 	public void sethour(CommandSender sender, @Range(min=0, max=23) int time) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			TimeManager.getManagerOfWorld(p.getWorld()).setTime(time*1000);
+			TimeManager manager = TimeManager.getManagerOfWorld(p.getWorld());
+			if (manager != null) {
+				manager.setTime(time * 1000);
+			} else {
+				p.getWorld().setTime(time * 1000);
+			}
 		} else {
 			msg("Stahp it console.");
 		}
