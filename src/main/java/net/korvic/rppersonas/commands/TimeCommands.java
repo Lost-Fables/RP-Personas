@@ -21,6 +21,23 @@ public class TimeCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			TimeManager.registerWorld(p.getWorld());
+			msg(RPPersonas.PRIMARY_DARK + "Your current world is now using custom time.");
+		} else {
+			msg("Stahp it console.");
+		}
+	}
+
+	@Cmd(value="Sync two worlds' times that are using custom time.")
+	public void syncWorld(CommandSender sender, World world) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			if (TimeManager.syncWorldTimes(world, p.getWorld())) {
+				msg(RPPersonas.PRIMARY_DARK + "Your current world time is now synced to " + RPPersonas.SECONDARY_DARK + world.getName() + RPPersonas.PRIMARY_DARK + ".");
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "Either you specified the world you're in, or the specified world does not have a custom time set.");
+			}
+		} else {
+			msg("Stahp it console.");
 		}
 	}
 

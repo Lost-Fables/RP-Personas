@@ -6,8 +6,11 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.junit.runner.notification.StoppedByUserException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TimeManager {
@@ -42,22 +45,34 @@ public class TimeManager {
 		return (getRelativeAges(millis) + " Ages; (" + getRelativeEras(millis) + " Eras)");
 	}
 
-	public static TimeManager registerWorld(World world) {
+	public static void registerWorld(World world) {
 		TimeManager output = new TimeManager(world);
 		managers.put(world, output);
-		return output;
-	}
-
-	public static void unregisterWorld(World world) {
-		getManagerOfWorld(world).unregister();
 	}
 
 	public static TimeManager getManagerOfWorld(World world) {
 		return managers.get(world);
 	}
 
+	public static boolean syncWorldTimes(World toSyncTo, World toBeSynced) {
+		if (toSyncTo.equals(toBeSynced)) {
+			return false;
+		}
+		TimeManager manager = getManagerOfWorld(toSyncTo);
+		if (manager == null) {
+			return false;
+		}
+		manager.addSyncedWorld(toBeSynced);
+		managers.put(toBeSynced, manager);
+		return true;
+	}
+
+	public static void unregisterWorld(World world) {
+		getManagerOfWorld(world).unregister(world);
+	}
+
 	// INSTANCE //
-	@Getter private World world;
+	@Getter private List<World> worlds = new ArrayList<>();
 	@Setter @Getter private TimeState currentState;
 	private BukkitRunnable currentRunnable;
 
@@ -66,15 +81,23 @@ public class TimeManager {
 
 		// TODO - CONFIG SAVING
 
-		this.world = world;
+		worlds.add(world);
 		this.currentState = TimeState.getState((int) world.getTime());
 		startRunnable();
 	}
 
-	protected void unregister() {
-		stopRunnable();
+	public void addSyncedWorld(World world) {
+		worlds.add(world);
+	}
+
+	protected void unregister(World world) {
+		worlds.remove(world);
+		if (worlds.size() <= 0) {
+			stopRunnable();
+		}
+
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
-		managers.remove(this.world);
+		managers.remove(world);
 
 		// TODO - CONFIG UPDATE
 	}
@@ -100,13 +123,14 @@ public class TimeManager {
 
 			@Override
 			public void run() {
-				World world = timeManager.getWorld();
-				int newTime = (world.getTime() + 1 >= TimeState.ONE_DAY_TICKS) ? 0 : (int) (world.getTime() + 1);
-				world.setTime(newTime);
+				for (World world : timeManager.getWorlds()) {
+					int newTime = (world.getTime() + 1 >= TimeState.ONE_DAY_TICKS) ? 0 : (int) (world.getTime() + 1);
+					world.setTime(newTime);
 
-				TimeState nextState = TimeState.getNext(timeManager.getCurrentState());
-				if (world.getTime() >= nextState.getMinecraftTime() || world.getTime() == 0) {
-					timeManager.setCurrentState(nextState);
+					TimeState nextState = TimeState.getNext(timeManager.getCurrentState());
+					if (world.getTime() >= nextState.getMinecraftTime() || world.getTime() == 0) {
+						timeManager.setCurrentState(nextState);
+					}
 				}
 
 				timeManager.startRunnable();
