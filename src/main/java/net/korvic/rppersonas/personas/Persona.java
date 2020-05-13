@@ -8,6 +8,7 @@ import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.Status;
+import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -136,7 +137,7 @@ public class Persona {
 			output += RPPersonas.PRIMARY_DARK + "Nickname: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.NICKNAME) + "\n";
 		}
 		output += RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.NAME) + "\n" +
-				  RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_LIGHT + RPPersonas.getRelativeTimeString((long) data.get(PersonasSQL.AGE)) + "\n" +
+				  RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_LIGHT + TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE)) + "\n" +
 				  RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.RACE) + "\n" +
 				  RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.GENDER) + "\n";
 		if (data.containsKey(PersonasSQL.DESCRIPTION)) {

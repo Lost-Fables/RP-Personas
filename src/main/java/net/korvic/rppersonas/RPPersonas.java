@@ -36,9 +36,6 @@ public final class RPPersonas extends JavaPlugin {
 	public static final int DEFAULT_PERSONAS = 2;
 	public static final String PERMISSION_START = "rppersonas";
 	public static final long DAY_IN_MILLIS = 1000L * 60 * 60 * 24;
-	public static final long WEEK_IN_MILLIS = DAY_IN_MILLIS * 7;
-	public static final long MONTH_IN_MILLIS = DAY_IN_MILLIS * 30;
-	public static final long YEAR_IN_MILLIS = DAY_IN_MILLIS * 365;
 
 	public static FileConfiguration config;
 	private static RPPersonas instance;
@@ -254,27 +251,5 @@ public final class RPPersonas extends JavaPlugin {
 	}
 	public SaveQueue getSaveQueue() {
 		return saveQueueSQL;
-	}
-
-	// TIME //
-	public static long getCurrentTime() {
-		return (BASE_LONG_VALUE + System.currentTimeMillis());
-	}
-
-	public static long getMillisFromAge(int ages) {
-		return (getCurrentTime() - (ages * 2 * WEEK_IN_MILLIS));
-	}
-	public static long getMillisFromEra(int eras) {
-		return (getCurrentTime() - (eras * 8 * WEEK_IN_MILLIS));
-	}
-
-	public static int getRelativeAges(long millis) {
-		return (int) (((getCurrentTime() - millis) / WEEK_IN_MILLIS) / 2);
-	}
-	public static int getRelativeEras(long millis) {
-		return (int) (((getCurrentTime() - millis) / WEEK_IN_MILLIS) / 8);
-	}
-	public static String getRelativeTimeString(long millis) {
-		return (getRelativeAges(millis) + " Ages; (" + getRelativeEras(millis) + " Eras)");
 	}
 }

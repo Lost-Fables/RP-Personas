@@ -14,6 +14,9 @@ commands:
   altar:
     command: /<command>
     description: "Test command. Remove later."
+  time:
+    command: /<command>
+    description: "Retrieve or adjust the time."
 permissions:
   rppersonas.accepted:
     default: op

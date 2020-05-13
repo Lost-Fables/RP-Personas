@@ -6,10 +6,10 @@ import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaRace;
 import net.korvic.rppersonas.personas.PersonaSubRace;
-import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
+import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.WordUtils;
@@ -313,7 +313,7 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
-				context.setSessionData(PersonasSQL.AGE, RPPersonas.getMillisFromAge(age));
+				context.setSessionData(PersonasSQL.AGE, TimeManager.getMillisFromAge(age));
 				if (returnToEnd) {
 					return new PersonaConfirmPrompt();
 				} else {
@@ -377,7 +377,7 @@ public class PersonaCreationConvo extends BaseConvo {
 														   RPPersonas.PRIMARY_DARK + "Let's review your persona details...\n" +
 														   RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_DARK + context.getSessionData(PersonasSQL.NAME) + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_DARK + raceString + "\n" +
-														   RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) context.getSessionData(PersonasSQL.AGE)) + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_DARK + TimeManager.getRelativeTimeString((long) context.getSessionData(PersonasSQL.AGE)) + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_DARK + genderString + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Does everything look to be in order?\n" +
 														   DIVIDER);

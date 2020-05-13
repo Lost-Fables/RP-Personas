@@ -6,6 +6,7 @@ import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaSkin;
+import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -73,7 +74,7 @@ public class CorpseHandler {
 	}
 
 	public Corpse loadCorpse(int id, String name, String texture, ItemStack[] inventory, long created, int personaID) {
-		if (System.currentTimeMillis() - created < RPPersonas.MONTH_IN_MILLIS) {
+		if (System.currentTimeMillis() - created < TimeManager.MONTH_IN_MILLIS) {
 			Inventory inv = Bukkit.createInventory(holder, 9 * 5, ChatColor.stripColor(name));
 			if (inventory != null) {
 				inv.setContents(inventory);

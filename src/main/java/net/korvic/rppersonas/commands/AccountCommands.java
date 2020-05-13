@@ -14,7 +14,6 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.conversation.PersonaDeleteConvo;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
@@ -23,12 +22,12 @@ import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -429,7 +428,7 @@ public class AccountCommands extends BaseCommand {
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Persona ID: " + RPPersonas.SECONDARY_DARK + String.format("%06d", personaID));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " + RPPersonas.SECONDARY_DARK + data.get("name"));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) data.get("age")));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " + RPPersonas.SECONDARY_DARK + TimeManager.getRelativeTimeString((long) data.get("age")));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Race: " + RPPersonas.SECONDARY_DARK + data.get("race"));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Gender: " + RPPersonas.SECONDARY_DARK + data.get("gender"));
 
@@ -494,7 +493,7 @@ public class AccountCommands extends BaseCommand {
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Persona ID: " + RPPersonas.SECONDARY_DARK + String.format("%06d", personaID));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " + RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.NAME));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " + RPPersonas.SECONDARY_DARK + RPPersonas.getRelativeTimeString((long) data.get(PersonasSQL.AGE)));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " + RPPersonas.SECONDARY_DARK + TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE)));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Race: " + RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.RACE));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Gender: " + RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.GENDER));
 
