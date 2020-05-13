@@ -20,7 +20,7 @@ public class TimeCommands extends BaseCommand {
 	public void registerWorld(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			TimeManager.registerWorld(p.getWorld());
+			TimeManager.registerWorld(p.getWorld(), true);
 			msg(RPPersonas.PRIMARY_DARK + "Your current world is now using custom time.");
 		} else {
 			msg("Stahp it console.");
