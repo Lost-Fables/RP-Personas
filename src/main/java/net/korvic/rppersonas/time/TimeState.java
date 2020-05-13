@@ -5,41 +5,53 @@ import lombok.Getter;
 @Getter
 public enum TimeState {
 
-	NOON(       6000,  25, 25, 25, 25),
-	ZENITH_FALL(12786, 25, 25, 25, 25),
-	MIDNIGHT(   18000, 25, 25, 25, 25),
-	ZENITH_RISE(23215, 25, 25, 25, 25);
+	NOON(       6000,  25, 25, 25, 25), // Noon-Sunset
+	ZENITH_FALL(12786, 25, 25, 25, 25), // Sunset-Midnight
+	MIDNIGHT(   18000, 25, 25, 25, 25), // Midnight-Sunrise
+	ZENITH_RISE(23215, 25, 25, 25, 25); // Sunrise-Noon
 
-	private static long cycleTicks = 288000;
-	private static long maxTicks = 24000;
+	public static final int CYCLE_TICKS = 288000;
+	public static final int ONE_DAY_TICKS = 24000;
 
-	@Getter private long minecraftTicks;
+	@Getter private int minecraftTime;
 
 	@Getter private int summerPrecent;
 	@Getter private int autumnPercent;
 	@Getter private int winterPercent;
 	@Getter private int springPercent;
 
-	private TimeState(long minecraftTicks, int summerPrecent, int autumnPercent, int winterPercent, int springPercent) {
-		this.minecraftTicks = minecraftTicks;
+	private TimeState(int minecraftTime, int summerPrecent, int autumnPercent, int winterPercent, int springPercent) {
+		this.minecraftTime = minecraftTime;
 		this.summerPrecent = summerPrecent;
 		this.autumnPercent = autumnPercent;
 		this.winterPercent = winterPercent;
 		this.springPercent = springPercent;
 	}
 
-	public static long getTicksToNextState(TimeState state) {
+	public static TimeState getState(int time) {
+		TimeState output = ZENITH_RISE;
+		for (TimeState value : values()) {
+			if (value.getMinecraftTime() < time) {
+				output = value;
+			} else {
+				break;
+			}
+		}
+		return output;
+	}
+
+	public static int getTicksToNextState(TimeState state) {
 		TimeState nextState = getNext(state);
-		long output = nextState.getMinecraftTicks() - state.getMinecraftTicks();
+		int output = nextState.getMinecraftTime() - state.getMinecraftTime();
 		if (output < 0) {
-			output = (maxTicks - nextState.getMinecraftTicks()) + state.getMinecraftTicks();
+			output = (ONE_DAY_TICKS - nextState.getMinecraftTime()) + state.getMinecraftTime();
 		}
 		return output;
 	}
 
 	public static TimeState getNext(TimeState state) {
 		for (TimeState value : values()) {
-			if (value.getMinecraftTicks() > state.getMinecraftTicks()) {
+			if (value.getMinecraftTime() > state.getMinecraftTime()) {
 				return value;
 			}
 		}
