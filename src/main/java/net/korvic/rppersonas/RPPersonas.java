@@ -3,6 +3,7 @@ package net.korvic.rppersonas;
 import co.lotc.core.bukkit.command.Commands;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.accounts.UnregisteredHandler;
+import net.korvic.rppersonas.commands.TimeCommands;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.AltarHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
@@ -135,6 +136,7 @@ public final class RPPersonas extends JavaPlugin {
 			Commands.build(getCommand("account"), () -> new AccountCommands(this));
 			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
 			Commands.build(getCommand("altar"), () -> new AltarCommands(this)); // TODO move this under staff commands
+			Commands.build(getCommand("time"), () -> new TimeCommands(this));
 		} else {
 			this.onDisable();
 		}
