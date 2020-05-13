@@ -17,6 +17,7 @@ import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.extras.SaveQueue;
+import net.korvic.rppersonas.time.Season;
 import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -223,7 +224,6 @@ public final class RPPersonas extends JavaPlugin {
 
 	// PARAMETERS //
 	private void registerParameters() {
-
 		Commands.defineArgumentType(Altar.class)
 				.defaultName("Altar")
 				.defaultError("Failed to find an altar by that name.")
@@ -231,6 +231,11 @@ public final class RPPersonas extends JavaPlugin {
 				.mapperWithSender((sender, name) -> altarHandler.getAltar(name))
 				.register();
 
+		Commands.defineArgumentType(Season.class)
+				.defaultName("Season")
+				.completer((s,$) -> Season.getAvailable(s))
+				.mapperWithSender((sender, season) -> Season.getByName(season))
+				.register();
 	}
 
 	private float getYawFromFacing(String facing) {

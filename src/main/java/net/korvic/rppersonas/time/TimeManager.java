@@ -20,24 +20,24 @@ public class TimeManager {
 	private static Map<World, TimeManager> managers = new HashMap<>();
 
 	// STATIC CONVERTERS //
-	public static long getCurrentTime() {
+	public static long getCurrentMillisTime() {
 		return (RPPersonas.BASE_LONG_VALUE + System.currentTimeMillis());
 	}
 
 	public static long getMillisFromAge(int ages) {
-		return (getCurrentTime() - (ages * 2 * WEEK_IN_MILLIS));
+		return (getCurrentMillisTime() - (ages * 2 * WEEK_IN_MILLIS));
 	}
 
 	public static long getMillisFromEra(int eras) {
-		return (getCurrentTime() - (eras * 8 * WEEK_IN_MILLIS));
+		return (getCurrentMillisTime() - (eras * 8 * WEEK_IN_MILLIS));
 	}
 
 	public static int getRelativeAges(long millis) {
-		return (int) (((getCurrentTime() - millis) / WEEK_IN_MILLIS) / 2);
+		return (int) (((getCurrentMillisTime() - millis) / WEEK_IN_MILLIS) / 2);
 	}
 
 	public static int getRelativeEras(long millis) {
-		return (int) (((getCurrentTime() - millis) / WEEK_IN_MILLIS) / 8);
+		return (int) (((getCurrentMillisTime() - millis) / WEEK_IN_MILLIS) / 8);
 	}
 
 	public static String getRelativeTimeString(long millis) {
@@ -67,8 +67,11 @@ public class TimeManager {
 		return true;
 	}
 
-	public static void unregisterWorld(World world) {
-		getManagerOfWorld(world).unregister(world);
+	public static void unregisterWorld(World world, boolean save) {
+		TimeManager manager = getManagerOfWorld(world);
+		if (manager != null) {
+			manager.unregister(world, save);
+		}
 	}
 
 	//////////////
@@ -109,6 +112,13 @@ public class TimeManager {
 		}
 	}
 
+	public void setTime(int time) {
+		for (World world : worlds) {
+			world.setTime(time);
+		}
+		currentState = TimeState.getState(time);
+	}
+
 	public void setTimeScale(int timeScale, boolean save) {
 		this.timeScale = timeScale;
 		if (save) {
@@ -123,7 +133,7 @@ public class TimeManager {
 		}
 	}
 
-	protected void unregister(World world) {
+	protected void unregister(World world, boolean save) {
 		worlds.remove(world);
 		if (worlds.size() <= 0) {
 			stopRunnable();
@@ -132,7 +142,9 @@ public class TimeManager {
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 		managers.remove(world);
 
-		RPPersonas.get().deleteConfigForWorld(world.getName());
+		if (save) {
+			RPPersonas.get().deleteConfigForWorld(world.getName());
+		}
 	}
 
 	protected void stopRunnable() {
