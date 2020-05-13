@@ -17,7 +17,7 @@ public class TimeCommands extends BaseCommand {
 		this.plugin = plugin;
 	}
 
-	@Cmd(value="Get the current time of the world you're in.")
+	@Cmd(value="Get the current time of the world you're in.", permission=RPPersonas.PERMISSION_START + ".time.info")
 	public void info(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -31,7 +31,7 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Register the current world to use custom time.")
+	@Cmd(value="Register the current world to use custom time.", permission=RPPersonas.PERMISSION_START + ".time.register")
 	public void registerworld(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -42,7 +42,7 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Unregister the current world from using custom time.")
+	@Cmd(value="Unregister the current world from using custom time.", permission=RPPersonas.PERMISSION_START + "time.unregister")
 	public void unregisterworld(CommandSender sender, World world) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -53,7 +53,7 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Sync two worlds' times that are using custom time.")
+	@Cmd(value="Sync two worlds' times that are using custom time.", permission=RPPersonas.PERMISSION_START + ".time.synctoworld")
 	public void syncworld(CommandSender sender, World world) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -67,7 +67,7 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Update the time for the world you're in and all synced worlds.")
+	@Cmd(value="Update the time for the world you're in and all synced worlds.", permission=RPPersonas.PERMISSION_START + ".time.sethour")
 	public void sethour(CommandSender sender, @Range(min=0, max=23) int time) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -82,7 +82,7 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Update the season for the world you're in and all synced worlds.")
+	@Cmd(value="Update the season for the world you're in and all synced worlds.", permission=RPPersonas.PERMISSION_START + ".time.season")
 	public void setseason(CommandSender sender, Season season) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -98,7 +98,7 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Update the time scale for the world you're in and all synced worlds.")
+	@Cmd(value="Update the time scale for the world you're in and all synced worlds.", permission=RPPersonas.PERMISSION_START + ".time.timescale")
 	public void settimescale(CommandSender sender, @Range(min=20, max=720) int scale) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
