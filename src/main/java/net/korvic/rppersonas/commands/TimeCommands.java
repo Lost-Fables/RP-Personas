@@ -98,4 +98,20 @@ public class TimeCommands extends BaseCommand {
 		}
 	}
 
+	@Cmd(value="Update the time scale for the world you're in and all synced worlds.")
+	public void settimescale(CommandSender sender, @Range(min=20, max=720) int scale) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			TimeManager manager = TimeManager.getManagerOfWorld(p.getWorld());
+			if (manager != null) {
+				manager.setTimeScale(scale, true);
+				msg(RPPersonas.PRIMARY_DARK + "Time scale updated!");
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You must register this world before you can set the time scale.");
+			}
+		} else {
+			msg("Stahp it console.");
+		}
+	}
+
 }

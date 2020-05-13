@@ -237,20 +237,6 @@ public final class RPPersonas extends JavaPlugin {
 				.completer((s,$) -> Season.getAvailable(s))
 				.mapperWithSender((sender, season) -> Season.getByName(season))
 				.register();
-
-		Commands.defineArgumentType(World.class)
-				.defaultName("World")
-				.completer((s,$) -> getWorldStringList())
-				.mapperWithSender((sender, world) -> Bukkit.getWorld(world))
-				.register();
-	}
-
-	private List<String> getWorldStringList() {
-		List<String> output = new ArrayList<>();
-		for (World world : Bukkit.getWorlds()) {
-			output.add(world.getName());
-		}
-		return output;
 	}
 
 	private float getYawFromFacing(String facing) {
