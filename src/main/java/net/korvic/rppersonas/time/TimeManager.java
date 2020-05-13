@@ -80,7 +80,9 @@ public class TimeManager {
 	}
 
 	protected void stopRunnable() {
-		currentRunnable.cancel();
+		if (!currentRunnable.isCancelled()) {
+			currentRunnable.cancel();
+		}
 		new BukkitRunnable() {
 			@Override
 			public void run() {
