@@ -14,14 +14,14 @@ public enum TimeState {
 
 	@Getter private int minecraftTime;
 
-	@Getter private int summerPrecent;
+	@Getter private int summerPercent;
 	@Getter private int autumnPercent;
 	@Getter private int winterPercent;
 	@Getter private int springPercent;
 
-	private TimeState(int minecraftTime, int summerPrecent, int autumnPercent, int winterPercent, int springPercent) {
+	private TimeState(int minecraftTime, int summerPercent, int autumnPercent, int winterPercent, int springPercent) {
 		this.minecraftTime = minecraftTime;
-		this.summerPrecent = summerPrecent;
+		this.summerPercent = summerPercent;
 		this.autumnPercent = autumnPercent;
 		this.winterPercent = winterPercent;
 		this.springPercent = springPercent;

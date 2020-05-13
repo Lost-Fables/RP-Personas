@@ -6,7 +6,6 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.junit.runner.notification.StoppedByUserException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -171,8 +170,17 @@ public class TimeManager {
 			}
 		};
 
-		// TODO - Process based on season.
-		float dayPercentage = (float) currentState.getSummerPrecent();
+		float dayPercentage = 25;
+		if (season.equalsIgnoreCase("Summer")) {
+			dayPercentage = (float) currentState.getSummerPercent();
+		} else if (season.equalsIgnoreCase("Autumn")) {
+			dayPercentage = (float) currentState.getAutumnPercent();
+		} else if (season.equalsIgnoreCase("Winter")) {
+			dayPercentage = (float) currentState.getWinterPercent();
+		} else if (season.equalsIgnoreCase("Spring")) {
+			dayPercentage = (float) currentState.getSpringPercent();
+		}
+
 		dayPercentage /= 100;
 
 		int delay = Math.round((timeScale * 1200 * dayPercentage) / TimeState.getTicksToNextState(currentState));
