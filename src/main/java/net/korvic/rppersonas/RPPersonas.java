@@ -15,6 +15,9 @@ import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
+import net.korvic.rppersonas.placeholders.AccountIDPlaceholder;
+import net.korvic.rppersonas.placeholders.PersonaIDPlaceholder;
+import net.korvic.rppersonas.placeholders.PersonaNamePlaceholder;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.extras.SaveQueue;
 import net.korvic.rppersonas.time.Season;
@@ -138,6 +141,13 @@ public final class RPPersonas extends JavaPlugin {
 
 			// Register parameters
 			registerParameters();
+
+			// Register our Placeholders if PlaceholderAPI is enabled.
+			if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+				new PersonaNamePlaceholder(this).register();
+				new PersonaIDPlaceholder(this).register();
+				new AccountIDPlaceholder(this).register();
+			}
 
 			// Build our commands
 			Commands.build(getCommand("account"), () -> new AccountCommands(this));

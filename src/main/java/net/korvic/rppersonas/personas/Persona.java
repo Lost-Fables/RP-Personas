@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.conversation.BaseConvo;
@@ -24,17 +25,16 @@ public class Persona {
 
 	private RPPersonas plugin;
 
-	private Player usingPlayer;
-
-	private int personaID;
-	private int accountID;
-	private String prefix;
-	private String nickName;
-	private String[] namePieces = new String[3];
+	@Getter private Player usingPlayer;
+	@Getter private int personaID;
+	@Getter private int accountID;
+	@Getter private String prefix;
+	@Getter private String nickName;
+	@Getter private String[] namePieces = new String[3];
+	@Getter private Inventory enderChest;
+	@Getter private boolean isAlive;
+	@Getter private PersonaSkin activeSkin = null;
 	private String inventory;
-	private Inventory enderInventory;
-	private boolean isAlive;
-	private PersonaSkin activeSkin = null;
 	private List<Status> activeStatuses = new ArrayList<>();
 
 	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean isAlive, int activeSkinID) {
@@ -48,10 +48,10 @@ public class Persona {
 		setNickName(usingPlayer, nickName);
 		this.inventory = personaInvData;
 
-		this.enderInventory = Bukkit.createInventory(new PersonaEnderHolder(), InventoryType.ENDER_CHEST, nickName + "'s Stash");
+		this.enderChest = Bukkit.createInventory(new PersonaEnderHolder(), InventoryType.ENDER_CHEST, nickName + "'s Stash");
 		ItemStack[] items = deserializeToArray(personaEnderData);
 		if (items != null) {
-			this.enderInventory.setContents(items);
+			this.enderChest.setContents(items);
 		}
 
 		this.isAlive = isAlive;
@@ -59,36 +59,12 @@ public class Persona {
 	}
 
 	// GET //
-	public Player getUsingPlayer() {
-		return usingPlayer;
-	}
-	public int getPersonaID() {
-		return personaID;
-	}
-	public int getAccountID() {
-		return accountID;
-	}
-	public String getPrefix() {
-		return prefix;
-	}
-	public String getNickName() {
-		return nickName;
-	}
-	public String[] getNamePieces() {
-		return namePieces;
-	}
 	public String getChatName() {
 		if (prefix != null) {
 			return "[" + prefix + "] " + nickName;
 		} else {
 			return nickName;
 		}
-	}
-	public boolean isAlive() {
-		return isAlive;
-	}
-	public PersonaSkin getActiveSkin() {
-		return activeSkin;
 	}
 	public int getActiveSkinID() {
 		if (activeSkin != null) {
@@ -105,8 +81,8 @@ public class Persona {
 		output.put(PersonasSQL.PERSONAID, personaID);
 		output.put(PersonasSQL.ALIVE, isAlive);
 		output.put(PersonasSQL.INVENTORY, inventory);
-		if (enderInventory != null) {
-			output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderInventory));
+		if (enderChest != null) {
+			output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderChest));
 		}
 		output.put(PersonasSQL.NICKNAME, nickName);
 		output.put(PersonasSQL.PREFIX, prefix);
@@ -146,10 +122,6 @@ public class Persona {
 		output += BaseConvo.DIVIDER;
 
 		return output;
-	}
-
-	public Inventory getEnderchest() {
-		return enderInventory;
 	}
 
 	public ItemStack[] getInventory() {
