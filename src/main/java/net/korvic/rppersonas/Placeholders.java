@@ -114,7 +114,7 @@ public class Placeholders extends PlaceholderExpansion {
 				case "accountid":
 					return "" + pers.getAccountID();
 				default:
-					return null;
+					return "";
 			}
 		}
 	}
