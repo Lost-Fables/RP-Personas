@@ -2,6 +2,7 @@ package net.korvic.rppersonas;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.sql.PersonasSQL;
 import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -110,9 +111,9 @@ public class Placeholders extends PlaceholderExpansion {
 				case "personaname":
 					return pers.getNickName();
 				case "personaid":
-					return "" + pers.getPersonaID();
+					return "" + String.format("%06d", pers.getPersonaID());
 				case "accountid":
-					return "" + pers.getAccountID();
+					return "" + String.format("%06d", pers.getAccountID());
 				default:
 					return "";
 			}
