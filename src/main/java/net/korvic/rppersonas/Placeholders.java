@@ -110,15 +110,13 @@ public class Placeholders extends PlaceholderExpansion {
 			switch (identifier) {
 				case "personaname":
 					return pers.getNickName();
-				case "accountid":
-					return "" + pers.getAccountID();
 				case "personaid":
 					return "" + pers.getPersonaID();
+				case "accountid":
+					return "" + pers.getAccountID();
+				default:
+					return null;
 			}
 		}
-
-		// We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
-		// was provided
-		return null;
 	}
 }
