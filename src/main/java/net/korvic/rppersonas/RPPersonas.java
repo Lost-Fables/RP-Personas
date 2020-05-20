@@ -15,9 +15,6 @@ import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
-import net.korvic.rppersonas.placeholders.AccountIDPlaceholder;
-import net.korvic.rppersonas.placeholders.PersonaIDPlaceholder;
-import net.korvic.rppersonas.placeholders.PersonaNamePlaceholder;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.extras.SaveQueue;
 import net.korvic.rppersonas.time.Season;
@@ -32,7 +29,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class RPPersonas extends JavaPlugin {
@@ -144,9 +140,7 @@ public final class RPPersonas extends JavaPlugin {
 
 			// Register our Placeholders if PlaceholderAPI is enabled.
 			if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
-				new PersonaNamePlaceholder(this).register();
-				new PersonaIDPlaceholder(this).register();
-				new AccountIDPlaceholder(this).register();
+				new Placeholders(this).register();
 			}
 
 			// Build our commands

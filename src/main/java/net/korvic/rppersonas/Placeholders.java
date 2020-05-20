@@ -1,4 +1,4 @@
-package net.korvic.rppersonas.placeholders;
+package net.korvic.rppersonas;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  * This class will be registered through the register-method in the
  * plugins onEnable-method.
  */
-public class PersonaIDPlaceholder extends PlaceholderExpansion {
+public class Placeholders extends PlaceholderExpansion {
 
 	private RPPersonas plugin;
 
@@ -22,7 +22,7 @@ public class PersonaIDPlaceholder extends PlaceholderExpansion {
 	 * @param plugin
 	 *        The instance of our plugin.
 	 */
-	public PersonaIDPlaceholder(RPPersonas plugin) {
+	public Placeholders(RPPersonas plugin) {
 		this.plugin = plugin;
 	}
 
@@ -105,9 +105,16 @@ public class PersonaIDPlaceholder extends PlaceholderExpansion {
 
 		if(player == null) {
 			return "";
-		} else if (identifier.equals("personaid")) {
+		} else {
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
-			return "" + pers.getPersonaID();
+			switch (identifier) {
+				case "personaname":
+					return pers.getNickName();
+				case "accountid":
+					return "" + pers.getAccountID();
+				case "personaid":
+					return "" + pers.getPersonaID();
+			}
 		}
 
 		// We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
