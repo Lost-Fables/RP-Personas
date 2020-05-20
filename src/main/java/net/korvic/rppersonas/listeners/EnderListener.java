@@ -31,7 +31,7 @@ public class EnderListener implements Listener {
 			Player p = e.getPlayer();
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			if (pers != null) {
-				Inventory inv = pers.getEnderchest();
+				Inventory inv = pers.getEnderChest();
 				if (inv != null) {
 					e.setCancelled(true);
 					p.openInventory(inv);
