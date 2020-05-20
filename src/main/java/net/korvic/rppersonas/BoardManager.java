@@ -42,21 +42,36 @@ public class BoardManager {
 	}
 
 	public static void clean() {
-		for (Team team : nameBoard.getTeams()) {
-			if (Bukkit.getPlayer(team.getName()) == null) {
-				team.unregister();
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			boolean registered = false;
+			for (Team team : nameBoard.getTeams()) {
+				if (team.getName().equalsIgnoreCase(p.getName())) {
+					registered = true;
+					break;
+				}
+			}
+			if (!registered) {
+				addPlayer(p);
 			}
 		}
 
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			addPlayer(p);
+		for (Team team : nameBoard.getTeams()) {
+			boolean registered = false;
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (team.getName().equalsIgnoreCase(p.getName())) {
+					registered = true;
+					break;
+				}
+			}
+			if (!registered) {
+				team.unregister();
+			}
 		}
 	}
 
 	public static void addPlayer(Player p) {
 		Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(p);
-		String[] namePieces = pers.getNamePieces();
-		addPlayer(p, namePieces);
+		addPlayer(p, pers.getNamePieces());
 	}
 
 	public static void addPlayer(Player p, String[] namePieces) {

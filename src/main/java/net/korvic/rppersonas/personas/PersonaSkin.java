@@ -76,9 +76,9 @@ public class PersonaSkin {
 		List<PlayerInfoData> playerInfoList = Lists.newArrayList();
 
 		playerInfoList.add(new PlayerInfoData(profile,
-									1, //who cares honestly
-									EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode()),
-									WrappedChatComponent.fromText(p.getDisplayName())));
+											  1, //who cares honestly
+											  EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode()),
+											  WrappedChatComponent.fromText(p.getDisplayName())));
 
 		final PacketContainer packetDel = manager.createPacket(PacketType.Play.Server.PLAYER_INFO);
 		final PacketContainer packetAdd = manager.createPacket(PacketType.Play.Server.PLAYER_INFO);
@@ -120,7 +120,7 @@ public class PersonaSkin {
 		try {
 			manager.sendServerPacket(p, packet);
 			manager.sendServerPacket(p, teleport);
-			//Some wizardry here to make the right amount of hearts how up
+			//Some wizardry here to make the right amount of hearts show up
 			if(p.getGameMode() == GameMode.ADVENTURE || p.getGameMode() == GameMode.SURVIVAL) {
 				boolean toggle = p.isHealthScaled();
 				p.setHealthScaled(!toggle);
