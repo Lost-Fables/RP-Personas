@@ -103,20 +103,20 @@ public class Placeholders extends PlaceholderExpansion {
 	 */
 	@Override
 	public String onPlaceholderRequest(Player player, String identifier){
-		if(player == null) {
-			return "";
-		} else {
+		if(player != null) {
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
-			switch (identifier) {
-				case "personaname":
-					return pers.getNickName();
-				case "personaid":
-					return "" + String.format("%06d", pers.getPersonaID());
-				case "accountid":
-					return "" + String.format("%06d", pers.getAccountID());
-				default:
-					return "";
+			if (pers != null) {
+				switch (identifier) {
+					case "personaname":
+						return pers.getNickName();
+					case "personaid":
+						return "" + String.format("%06d", pers.getPersonaID());
+					case "accountid":
+						return "" + String.format("%06d", pers.getAccountID());
+				}
 			}
 		}
+
+		return "";
 	}
 }
