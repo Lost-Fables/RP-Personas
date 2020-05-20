@@ -71,7 +71,7 @@ public class AccountIDPlaceholder extends PlaceholderExpansion {
 	 */
 	@Override
 	public String getIdentifier() {
-		return "accountid";
+		return "rppersonas";
 	}
 
 	/**

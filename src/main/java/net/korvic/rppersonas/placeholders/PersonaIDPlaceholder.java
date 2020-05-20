@@ -71,7 +71,7 @@ public class PersonaIDPlaceholder extends PlaceholderExpansion {
 	 */
 	@Override
 	public String getIdentifier() {
-		return "personaid";
+		return "rppersonas";
 	}
 
 	/**
