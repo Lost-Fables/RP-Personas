@@ -6,8 +6,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class BlindStatus extends Status {
 
-	public BlindStatus(long duration) {
-		super("Blindness", '⩹', ChatColor.DARK_PURPLE, duration, "How are you reading this? You're unable to see anything in front of you.", true);
+	public BlindStatus() {
+		super("Blindness", '⩹', ChatColor.DARK_PURPLE, "How are you reading this? You're unable to see anything in front of you.", true);
 	}
 
 	@Override

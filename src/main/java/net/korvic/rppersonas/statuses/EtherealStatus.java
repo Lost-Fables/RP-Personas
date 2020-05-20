@@ -12,8 +12,8 @@ public class EtherealStatus extends Status {
 	public static final String NAME = "Ethereal";
 	public static final String DESC = "A ghost, a specter, a spookmeister themselves. This person is an ethereal being!";
 
-	public EtherealStatus(long duration) {
-		super(NAME, '☠', ChatColor.WHITE, duration, DESC, false);
+	public EtherealStatus() {
+		super(NAME, '☠', ChatColor.WHITE, DESC, false);
 	}
 
 	@Override

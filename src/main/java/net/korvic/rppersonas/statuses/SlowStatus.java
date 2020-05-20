@@ -8,8 +8,8 @@ public class SlowStatus extends Status {
 
 	private int severity;
 
-	public SlowStatus(long duration, int severity) {
-		super("Slowness", '❄', ChatColor.AQUA, duration, "Your feet are heavy and your arms slow, all movements are more sluggish than normal.", true);
+	public SlowStatus(int severity) {
+		super("Slowness", '❄', ChatColor.AQUA, "Your feet are heavy and your arms slow, all movements are more sluggish than normal.", true);
 		this.severity = severity;
 	}
 

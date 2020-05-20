@@ -267,7 +267,7 @@ public class Persona {
 		return false;
 	}
 
-	public void addStatus(Status status) {
+	public void addStatus(Status status, int duration) {
 		if (!hasStatus(status)) {
 			activeStatuses.add(status);
 			status.applyEffect(usingPlayer);

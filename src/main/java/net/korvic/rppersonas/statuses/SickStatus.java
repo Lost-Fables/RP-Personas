@@ -6,8 +6,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class SickStatus extends Status {
 
-	public SickStatus(long duration) {
-		super("Sickness", '☣', ChatColor.DARK_GREEN, duration, "The world spins around you, and you feel sick to your stomach.", true);
+	public SickStatus() {
+		super("Sickness", '☣', ChatColor.DARK_GREEN, "The world spins around you, and you feel sick to your stomach.", true);
 	}
 
 	@Override

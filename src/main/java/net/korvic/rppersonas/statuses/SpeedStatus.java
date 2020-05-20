@@ -8,8 +8,8 @@ public class SpeedStatus extends Status {
 
 	private int severity;
 
-	public SpeedStatus(long duration, int severity) {
-		super("Speed", '➟', ChatColor.GREEN, duration, "You eat lightning and crap thunder. Run like the wind!", true);
+	public SpeedStatus(int severity) {
+		super("Speed", '➟', ChatColor.GREEN, "You eat lightning and crap thunder. Run like the wind!", true);
 		this.severity = severity;
 	}
 

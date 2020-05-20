@@ -16,7 +16,7 @@ public class DisabledStatus extends Status {
 	private final Title title;
 
 	public DisabledStatus(Title title) {
-		super(NAME, '✖', ChatColor.DARK_RED, -1, DESC, false);
+		super(NAME, '✖', ChatColor.DARK_RED, DESC, false);
 		this.title = title;
 	}
 

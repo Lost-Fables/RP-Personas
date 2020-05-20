@@ -1,10 +1,14 @@
 package net.korvic.rppersonas.statuses;
 
+import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.HashMap;
 
 public abstract class Status {
 
@@ -12,61 +16,18 @@ public abstract class Status {
 	protected static final RPPersonas plugin = RPPersonas.get();
 	private static final int INFINITE_POTION_DURATION = 100000;
 
-	public static void applyStatus(Status status, Player player) {
-		plugin.getPersonaHandler().getLoadedPersona(player).addStatus(status);
+	public static void applyStatus(Status status, Player player, int duration) {
+		applyStatus(status, plugin.getPersonaHandler().getLoadedPersona(player), duration);
 	}
-	public static void clearStatus(Status status, Player player) {
-		plugin.getPersonaHandler().getLoadedPersona(player).clearStatus(status);
-	}
-
-	// INSTANCE //
-	private final String name;
-	private final char icon;
-	private final ChatColor color;
-	private final long expiry;
-	private final String description;
-
-	private final boolean toggleable;
-
-	public Status(String name, char icon, ChatColor color, long duration, String description, boolean toggleable) {
-		this.name = name;
-		this.icon = icon;
-		this.color = color;
-		if (duration > 0) {
-			this.expiry = System.currentTimeMillis() + duration;
-		} else {
-			this.expiry = -1;
-		}
-		this.description = description;
-
-		this.toggleable = toggleable;
+	public static void applyStatus(Status status, Persona pers, int duration) {
+		pers.addStatus(status, duration);
 	}
 
-	public String getName() {
-		return name;
+	public static void clearStatus(String name, Player player) {
+		clearStatus(name, plugin.getPersonaHandler().getLoadedPersona(player));
 	}
-	public char getIcon() {
-		return icon;
-	}
-	public ChatColor getColor() {
-		return color;
-	}
-	public long getExpiry() {
-		return expiry;
-	}
-	public String getDescription() {
-		return description;
-	}
-
-	public boolean isToggleable() {
-		return toggleable;
-	}
-
-	public void applyTo(Player player) {
-		applyStatus(this, player);
-	}
-	public void clearFrom(Player player) {
-		clearStatus(this, player);
+	public static void clearStatus(String name, Persona pers) {
+		pers.clearStatus(name);
 	}
 
 	// UTIL //
@@ -75,6 +36,30 @@ public abstract class Status {
 	}
 	public static PotionEffect createInfiniteEffect(PotionEffectType type, int amplifier) {
 		return new PotionEffect(type, INFINITE_POTION_DURATION, amplifier, false , false, false);
+	}
+
+	// INSTANCE //
+	@Getter private final String name;
+	@Getter private final char icon;
+	@Getter private final ChatColor color;
+	@Getter private final String description;
+
+	@Getter private final boolean toggleable;
+
+	public Status(String name, char icon, ChatColor color, String description, boolean toggleable) {
+		this.name = name;
+		this.icon = icon;
+		this.color = color;
+		this.description = description;
+		this.toggleable = toggleable;
+	}
+
+	public void applyTo(Player player, int duration) {
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		applyStatus(this, pers, duration);
+	}
+	public void clearFrom(Player player) {
+		clearStatus(name, player);
 	}
 
 	// ABSTRACT //

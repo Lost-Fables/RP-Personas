@@ -17,6 +17,7 @@ import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.extras.SaveQueue;
+import net.korvic.rppersonas.statuses.*;
 import net.korvic.rppersonas.time.Season;
 import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.ChatColor;
@@ -74,7 +75,7 @@ public final class RPPersonas extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 
-		// Get a copy of the default config if it doesn't already exist.
+		// Get a copy of the default config if it doesn't already exist
 		saveDefaultConfig();
 		config = getConfig();
 
@@ -91,7 +92,7 @@ public final class RPPersonas extends JavaPlugin {
 		}
 
 		if (sqlSuccessful) {
-			// Load data from our configs.
+			// Load data from our configs
 			loadFromConfig();
 
 			// Start Auto-Save every 30 mins
@@ -104,7 +105,7 @@ public final class RPPersonas extends JavaPlugin {
 				}
 			}.runTaskTimerAsynchronously(this, 0, 36000);
 
-			// Start auto-clean for nameplate scoreboards.
+			// Start auto-clean for nameplate scoreboards
 			BoardManager.toggleAutoClean();
 
 			// Register our Listeners
@@ -131,15 +132,15 @@ public final class RPPersonas extends JavaPlugin {
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
 
-			// Load up existing altars & corpses. Must be done after the alter handler is created.
+			// Load up existing altars & corpses. Must be done after the alter handler is created
 			altarsSQL.loadAltars();
 			corpseSQL.loadCorpses();
 
 			// Register parameters
 			registerParameters();
 
-			// Register our Placeholders if PlaceholderAPI is enabled.
-			if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+			// Register our Placeholders if PlaceholderAPI is enabled
+			if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 				new Placeholders(this).register();
 			}
 
