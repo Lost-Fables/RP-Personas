@@ -62,7 +62,7 @@ public abstract class BaseSQL {
 			if (connection != null && !connection.isClosed()) {
 				return connection;
 			}
-			String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?useSSL=false";
+			String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
 			return DriverManager.getConnection(url, USER, PASSWORD);
 		} catch (SQLException ex) {
 			if (RPPersonas.DEBUGGING) {
