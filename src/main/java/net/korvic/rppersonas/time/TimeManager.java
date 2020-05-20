@@ -100,6 +100,7 @@ public class TimeManager {
 
 	public void addSyncedWorld(World world, boolean save) {
 		worlds.add(world);
+		world.setTime(worlds.get(0).getTime());
 
 		if (save) {
 			List<String> syncedWorldNames = new ArrayList<>();
