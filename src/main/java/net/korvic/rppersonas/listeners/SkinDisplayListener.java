@@ -47,11 +47,15 @@ public class SkinDisplayListener {
 											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
 											properties.removeAll("textures");
 											properties.put("textures", pers.getActiveSkin().getMojangData());
+											changed = true;
 										}
 
 										playerInfo = new PlayerInfoData(profile, playerInfo.getLatency(), playerInfo.getGameMode(), WrappedChatComponent.fromText(player.getName()));
 										iterator.set(playerInfo);
-										changed = true;
+
+										if (!player.equals(event.getPlayer())) {
+											changed = true;
+										}
 									}
 								}
 							}
