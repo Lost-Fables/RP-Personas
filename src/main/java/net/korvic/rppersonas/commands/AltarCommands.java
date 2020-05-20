@@ -71,7 +71,7 @@ public class AltarCommands extends BaseCommand {
 			if (pers.hasStatus(EtherealStatus.NAME)) {
 				pers.clearStatus(EtherealStatus.NAME);
 			} else {
-				pers.addStatus(new EtherealStatus(-1));
+				pers.addStatus(new EtherealStatus(), -1);
 			}
 		}
 	}
