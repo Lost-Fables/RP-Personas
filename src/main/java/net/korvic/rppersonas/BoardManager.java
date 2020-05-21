@@ -71,7 +71,9 @@ public class BoardManager {
 
 	public static void addPlayer(Player p) {
 		Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(p);
-		addPlayer(p, pers.getNamePieces());
+		if (pers != null) {
+			addPlayer(p, pers.getNamePieces());
+		}
 	}
 
 	public static void addPlayer(Player p, String[] namePieces) {
