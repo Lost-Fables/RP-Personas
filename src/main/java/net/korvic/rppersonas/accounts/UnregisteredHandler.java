@@ -37,12 +37,17 @@ public class UnregisteredHandler {
 	}
 
 	public void pingUnregistered() {
+		List<Player> toRemove = new ArrayList<>();
 		for (Player p : players) {
 			if (p.isOnline()) {
 				ping(p);
 			} else {
-				players.remove(p);
+				toRemove.add(p);
 			}
+		}
+
+		for (Player p : toRemove) {
+			players.remove(p);
 		}
 	}
 
