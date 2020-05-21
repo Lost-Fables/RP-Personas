@@ -19,8 +19,12 @@ public class PersonaDescCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
-			String newDesc = pers.addToDescription(p, text);
-			msg(RPPersonas.PRIMARY_DARK + "Your persona's description is now:\n " + RPPersonas.SECONDARY_LIGHT + newDesc);
+			if (pers != null) {
+				String newDesc = pers.addToDescription(p, text);
+				msg(RPPersonas.PRIMARY_DARK + "Your persona's description is now:\n " + RPPersonas.SECONDARY_LIGHT + newDesc);
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You need to register a persona first! Be sure to link your account to get started.");
+			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}
@@ -31,8 +35,12 @@ public class PersonaDescCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
-			pers.clearDescription(p);
-			msg(RPPersonas.PRIMARY_DARK + "Your persona's description has been cleared.");
+			if (pers != null) {
+				pers.clearDescription(p);
+				msg(RPPersonas.PRIMARY_DARK + "Your persona's description has been cleared.");
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You need to register a persona first! Be sure to link your account to get started.");
+			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}

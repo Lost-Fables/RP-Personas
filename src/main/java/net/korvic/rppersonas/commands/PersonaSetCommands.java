@@ -27,27 +27,31 @@ public class PersonaSetCommands extends BaseCommand {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 
-			StringBuilder builder = new StringBuilder();
-			for (String s : name) {
-				if (builder.length() > 0) {
-					builder.append(" ");
+			if (pers != null) {
+				StringBuilder builder = new StringBuilder();
+				for (String s : name) {
+					if (builder.length() > 0) {
+						builder.append(" ");
+					}
+					builder.append(s);
 				}
-				builder.append(s);
-			}
 
-			if ((p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && builder.length() <= 48) || builder.length() <= 32) {
-				final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?";
-				final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-				final Matcher matcher = pattern.matcher(builder.toString());
-				if (!matcher.find()) {
-					String finalName = WordUtils.capitalizeFully(builder.toString());
-					pers.setNickName(p, finalName);
-					msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + finalName + RPPersonas.PRIMARY_DARK + ".");
+				if ((p.hasPermission(RPPersonas.PERMISSION_START + ".longname") && builder.length() <= 48) || builder.length() <= 32) {
+					final String regex = ".*[^A-Za-zÀ-ÿ \\-'\"].*?";
+					final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+					final Matcher matcher = pattern.matcher(builder.toString());
+					if (!matcher.find()) {
+						String finalName = WordUtils.capitalizeFully(builder.toString());
+						pers.setNickName(p, finalName);
+						msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + finalName + RPPersonas.PRIMARY_DARK + ".");
+					} else {
+						msg(RPPersonas.PRIMARY_DARK + "That name contained illegal lettering.");
+					}
 				} else {
-					msg(RPPersonas.PRIMARY_DARK + "That name contained illegal lettering.");
+					msg(RPPersonas.PRIMARY_DARK + "That name is too long! Please enter something shorter.");
 				}
 			} else {
-				msg(RPPersonas.PRIMARY_DARK + "That name is too long! Please enter something shorter.");
+				msg(RPPersonas.PRIMARY_DARK + "You need to register a persona first! Be sure to link your account to get started.");
 			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
@@ -60,8 +64,12 @@ public class PersonaSetCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
-			pers.setPrefix(p, prefix);
-			msg(RPPersonas.PRIMARY_DARK + "Prefix updated to " + RPPersonas.SECONDARY_LIGHT + "[" + prefix + "]" + RPPersonas.PRIMARY_DARK + ".");
+			if (pers != null) {
+				pers.setPrefix(p, prefix);
+				msg(RPPersonas.PRIMARY_DARK + "Prefix updated to " + RPPersonas.SECONDARY_LIGHT + "[" + prefix + "]" + RPPersonas.PRIMARY_DARK + ".");
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You need to register a persona first! Be sure to link your account to get started.");
+			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}
