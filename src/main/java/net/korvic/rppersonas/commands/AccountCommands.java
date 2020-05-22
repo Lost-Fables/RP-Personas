@@ -15,6 +15,7 @@ import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaDeleteConvo;
+import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.conversation.PersonaSkinConvo;
@@ -139,6 +140,7 @@ public class AccountCommands extends BaseCommand {
 			icons.add(getDiscordIcon(data));
 			icons.add(getSkinsIcon(data));
 			icons.add(getPersonasIcon(accountID));
+			icons.add(getStatusIcon());
 
 			homeMenu = Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
 			return homeMenu;
@@ -555,6 +557,32 @@ public class AccountCommands extends BaseCommand {
 
 			return MenuUtil.createMultiPageMenu(homeMenu, ChatColor.BOLD + "Personas", icons);
 		}
+
+		// STATUS
+		private Icon getStatusIcon() {
+			return new Button() {
+				@Override
+				public ItemStack getItemStack(MenuAgent menuAgent) {
+					ItemStack item = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
+					ItemMeta meta = item.getItemMeta();
+					meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Status Effects");
+
+					List<String> lore = new ArrayList<>();
+					lore.add(RPPersonas.SECONDARY_DARK + "Add or modify active statuses.");
+
+					meta.setLore(lore);
+					item.setItemMeta(meta);
+					return item;
+				}
+
+				@Override
+				public void click(MenuAction menuAction) {
+					Persona pers = plugin.getPersonaHandler().getLoadedPersona(menuAction.getPlayer());
+					StatusCommands.buildMainMenu(homeMenu, pers).openSession(menuAction.getPlayer());
+				}
+			};
+		}
+
 	}
 
 }

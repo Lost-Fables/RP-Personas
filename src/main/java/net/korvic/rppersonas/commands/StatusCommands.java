@@ -3,6 +3,7 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.bukkit.menu.Menu;
 import co.lotc.core.bukkit.menu.MenuAction;
 import co.lotc.core.bukkit.menu.MenuAgent;
+import co.lotc.core.bukkit.menu.MenuUtil;
 import co.lotc.core.bukkit.menu.icon.Button;
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.command.annotate.Cmd;
@@ -48,7 +49,7 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	// MAIN MENU //
-	private Menu buildMainMenu(Menu menu, Persona pers) {
+	public static Menu buildMainMenu(Menu menu, Persona pers) {
 		List<Icon> icons = new ArrayList<>();
 
 		// Available Button
@@ -70,7 +71,7 @@ public class StatusCommands extends BaseCommand {
 
 			@Override
 			public void click(MenuAction menuAction) {
-				buildAvailableStatusMenu(menuAction.getMenuAgent().getMenu()).openSession(menuAction.getPlayer());
+				//buildAvailableStatusMenu(menuAction.getMenuAgent().getMenu()).openSession(menuAction.getPlayer());
 			}
 		});
 
@@ -97,6 +98,7 @@ public class StatusCommands extends BaseCommand {
 			}
 		});
 
+		// Build Menu
 		if (menu != null) {
 			return Menu.fromIcons(menu, "Status Effects", icons);
 		} else {
@@ -105,20 +107,20 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	// AVAILABLE STATUSES //
-	private Menu buildAvailableStatusMenu(Menu menu) {
+	private static Menu buildAvailableStatusMenu(Menu menu) {
 		return null;
 	}
 
 	// ACTIVE STATUSES //
-	private Menu buildActiveStatusMenu(Menu menu, Persona pers) {
+	private static Menu buildActiveStatusMenu(Menu menu, Persona pers) {
 		List<Icon> icons = new ArrayList<>();
 		for (Status status : pers.getActiveStatuses()) {
 			icons.add(buildActiveStatusIcon(menu, pers, status));
 		}
-		return Menu.fromIcons(menu, "Active Statuses", icons);
+		return MenuUtil.createMultiPageMenu(menu, "Active Statuses", icons).get(0);
 	}
 
-	private Icon buildActiveStatusIcon(Menu menu, Persona pers, Status status) {
+	private static Icon buildActiveStatusIcon(Menu menu, Persona pers, Status status) {
 		return new Button() {
 			@Override
 			public ItemStack getItemStack(MenuAgent menuAgent) {
