@@ -1,14 +1,14 @@
 package net.korvic.rppersonas.statuses;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.HashMap;
 
 public abstract class Status {
 
@@ -43,12 +43,15 @@ public abstract class Status {
 	@Getter private final char icon;
 	@Getter private final ChatColor color;
 	@Getter private final String description;
+	@Getter private final Material material;
 
 	@Getter private final boolean toggleable;
+	@Getter @Setter	private boolean active = true;
 
-	public Status(String name, char icon, ChatColor color, String description, boolean toggleable) {
+	public Status(String name, char icon, Material material, ChatColor color, String description, boolean toggleable) {
 		this.name = name;
 		this.icon = icon;
+		this.material = material;
 		this.color = color;
 		this.description = description;
 		this.toggleable = toggleable;
