@@ -10,6 +10,7 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.statuses.Status;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -41,18 +42,83 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	private void openStatusMenu(Player p) {
-		buildActiveStatusMenu(plugin.getPersonaHandler().getLoadedPersona(p)).openSession(p);
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		buildMainMenu(null, pers).openSession(p);
+
 	}
 
-	private Menu buildActiveStatusMenu(Persona pers) {
+	// MAIN MENU //
+	private Menu buildMainMenu(Menu menu, Persona pers) {
+		List<Icon> icons = new ArrayList<>();
+
+		// Available Button
+		icons.add(new Button() {
+			@Override
+			public ItemStack getItemStack(MenuAgent menuAgent) {
+				ItemStack item = new ItemStack(Material.ENDER_EYE);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Add Status");
+
+				List<String> lore = new ArrayList<>();
+				lore.add(RPPersonas.SECONDARY_DARK + "Click here to browse all statuses.");
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+
+				return item;
+			}
+
+			@Override
+			public void click(MenuAction menuAction) {
+				buildAvailableStatusMenu(menuAction.getMenuAgent().getMenu()).openSession(menuAction.getPlayer());
+			}
+		});
+
+		// Active Button
+		icons.add(new Button() {
+			@Override
+			public ItemStack getItemStack(MenuAgent menuAgent) {
+				ItemStack item = new ItemStack(Material.TOTEM_OF_UNDYING);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Current Statuses");
+
+				List<String> lore = new ArrayList<>();
+				lore.add(RPPersonas.SECONDARY_DARK + "Click here to browse active statuses.");
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+
+				return item;
+			}
+
+			@Override
+			public void click(MenuAction menuAction) {
+				buildActiveStatusMenu(menuAction.getMenuAgent().getMenu(), pers).openSession(menuAction.getPlayer());
+			}
+		});
+
+		if (menu != null) {
+			return Menu.fromIcons(menu, "Status Effects", icons);
+		} else {
+			return Menu.fromIcons("Status Effects", icons);
+		}
+	}
+
+	// AVAILABLE STATUSES //
+	private Menu buildAvailableStatusMenu(Menu menu) {
+		return null;
+	}
+
+	// ACTIVE STATUSES //
+	private Menu buildActiveStatusMenu(Menu menu, Persona pers) {
 		List<Icon> icons = new ArrayList<>();
 		for (Status status : pers.getActiveStatuses()) {
-			icons.add(buildActiveStatusIcon(status));
+			icons.add(buildActiveStatusIcon(menu, pers, status));
 		}
-		return Menu.fromIcons("Active Statuses", icons);
+		return Menu.fromIcons(menu, "Active Statuses", icons);
 	}
 
-	private Icon buildActiveStatusIcon(Status status) {
+	private Icon buildActiveStatusIcon(Menu menu, Persona pers, Status status) {
 		return new Button() {
 			@Override
 			public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -98,10 +164,12 @@ public class StatusCommands extends BaseCommand {
 				}
 
 				if (status.isActive()) {
-					status.applyEffect(menuAction.getPlayer());
+					status.applyTo(menuAction.getPlayer(), -1);
 				} else {
-					status.clearEffect(menuAction.getPlayer());
+					pers.clearStatus(status);
 				}
+
+				buildActiveStatusMenu(menu, pers);
 			}
 		};
 	}
