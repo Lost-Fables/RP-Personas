@@ -54,7 +54,7 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	@Cmd(value="Apply a set status to another player.")
-	public void applytoother(CommandSender sender,
+	public void applyother(CommandSender sender,
 							 Player player,
 							 @Arg(value="Status", description="The status you wish to apply.") Status status,
 							 @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
