@@ -189,7 +189,7 @@ public class StatusCommands extends BaseCommand {
 				lore.add("");
 
 				// Add description broken down into 35 width pieces.
-				double charsPerLine = 35d;
+				double charsPerLine = 40d;
 				int pages = (int) Math.ceil(status.getDescription().length()/charsPerLine);
 				for (int i = 1; i <= pages; i++) {
 					int j = (int) ((i - 1) * charsPerLine);
@@ -198,7 +198,7 @@ public class StatusCommands extends BaseCommand {
 					if (status.getDescription().length() < k) {
 						k = status.getDescription().length();
 					}
-					lore.add(status.getDescription().substring(j, k));
+					lore.add(RPPersonas.SECONDARY_DARK + status.getDescription().substring(j, k));
 				}
 
 				meta.setLore(lore);
