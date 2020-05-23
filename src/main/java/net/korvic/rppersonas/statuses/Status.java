@@ -10,11 +10,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Status {
 
 	// STATIC //
 	protected static final RPPersonas plugin = RPPersonas.get();
 	private static final int INFINITE_POTION_DURATION = 100000;
+
+	@Getter private static List<Status> statuses = new ArrayList<>();
+
+	public static void registerStatus(Status status) {
+		if (!statuses.contains(status)) {
+			statuses.add(status);
+		}
+	}
 
 	public static void applyStatus(Status status, Player player, int duration) {
 		applyStatus(status, plugin.getPersonaHandler().getLoadedPersona(player), duration);
@@ -44,17 +55,19 @@ public abstract class Status {
 	@Getter private final ChatColor color;
 	@Getter private final String description;
 	@Getter private final Material material;
+	@Getter private final int defaultDuration;
 
 	@Getter private final boolean toggleable;
 	@Getter @Setter	private boolean active = true;
 
-	public Status(String name, char icon, Material material, ChatColor color, String description, boolean toggleable) {
+	public Status(String name, char icon, Material material, ChatColor color, String description, boolean toggleable, int defaultDuration) {
 		this.name = name;
 		this.icon = icon;
 		this.material = material;
 		this.color = color;
 		this.description = description;
 		this.toggleable = toggleable;
+		this.defaultDuration = defaultDuration;
 	}
 
 	public void applyTo(Player player, int duration) {
@@ -66,7 +79,7 @@ public abstract class Status {
 	}
 
 	// ABSTRACT //
-	public abstract void applyEffect(Player player);
+	public abstract void applyEffect(Player player, int severity, int expiration);
 	public abstract void clearEffect(Player player);
-	public abstract void refreshEffect(Player player);
+	public abstract void refreshEffect(Player player, int severity, int expiration);
 }

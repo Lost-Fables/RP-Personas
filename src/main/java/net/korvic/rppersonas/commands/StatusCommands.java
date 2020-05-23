@@ -108,7 +108,25 @@ public class StatusCommands extends BaseCommand {
 
 	// AVAILABLE STATUSES //
 	private static Menu buildAvailableStatusMenu(Menu menu) {
-		return null;
+		List<Icon> icons = new ArrayList<>();
+		for (Status status : Status.getStatuses()) {
+			icons.add(buildAvailableStatusIcon(status));
+		}
+		return MenuUtil.createMultiPageMenu(menu, "Active Statuses", icons).get(0);
+	}
+
+	private static Icon buildAvailableStatusIcon(Status status) {
+		return new Button() {
+			@Override
+			public ItemStack getItemStack(MenuAgent menuAgent) {
+				return null;
+			}
+
+			@Override
+			public void click(MenuAction menuAction) {
+
+			}
+		};
 	}
 
 	// ACTIVE STATUSES //
