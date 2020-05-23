@@ -1,21 +1,22 @@
 package net.korvic.rppersonas.statuses;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class SlowStatus extends Status {
 
-	private int severity;
+	public static final String NAME = "Slowness";
+	public static final String DESC = "Palms are sweaty, knees weak, arms are heavy. All movements are more sluggish than normal.";
 
-	public SlowStatus(int severity) {
-		super("Slowness", '❄', ChatColor.AQUA, "Your feet are heavy and your arms slow, all movements are more sluggish than normal.", true);
-		this.severity = severity;
+	public SlowStatus() {
+		super(NAME, '❄', Material.ICE, ChatColor.AQUA, DESC, true, DEFAULT_DURATION);
 	}
 
 	@Override
-	public void applyEffect(Player player) {
-		refreshEffect(player);
+	public void applyEffect(Player player, byte severity) {
+		refreshEffect(player, severity);
 	}
 
 	@Override
@@ -25,7 +26,7 @@ public class SlowStatus extends Status {
 	}
 
 	@Override
-	public void refreshEffect(Player player) {
+	public void refreshEffect(Player player, byte severity) {
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.SLOW, severity));
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.SLOW_DIGGING, severity));
 	}

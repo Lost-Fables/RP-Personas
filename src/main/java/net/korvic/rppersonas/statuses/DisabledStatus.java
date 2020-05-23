@@ -5,24 +5,25 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class DisabledStatus extends Status {
 
-	public static final String NAME = "Disabled";
+	public static final String NAME = "";
 	public static final String DESC = "You are currently disabled from interacting with the world.";
 
 	private final Title title;
 
 	public DisabledStatus(Title title) {
-		super(NAME, '✖', ChatColor.DARK_RED, DESC, false);
+		super(NAME, '✖', Material.BARRIER, ChatColor.DARK_RED, DESC, false, DEFAULT_DURATION);
 		this.title = title;
 	}
 
 	@Override
-	public void applyEffect(Player player) {
-		refreshEffect(player);
+	public void applyEffect(Player player, byte severity) {
+		refreshEffect(player, severity);
 		if (title != null) {
 			player.sendTitle(title);
 		}
@@ -42,7 +43,7 @@ public class DisabledStatus extends Status {
 	}
 
 	@Override
-	public void refreshEffect(Player player) {
+	public void refreshEffect(Player player, byte severity) {
 		StatusEventListener.blockAll(player, plugin.getSpawnLocation());
 
 		player.setInvulnerable(true);

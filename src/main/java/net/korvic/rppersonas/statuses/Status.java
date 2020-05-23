@@ -17,6 +17,8 @@ public abstract class Status {
 
 	// STATIC //
 	protected static final RPPersonas plugin = RPPersonas.get();
+	protected static final int DEFAULT_DURATION = 1000*15;
+
 	private static final int INFINITE_POTION_DURATION = 100000;
 
 	@Getter private static List<Status> statuses = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.comphenix.packetwrapper.WrapperPlayServerWorldBorder;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
@@ -13,12 +14,12 @@ public class EtherealStatus extends Status {
 	public static final String DESC = "A ghost, a specter, a spookmeister themselves. This person is an ethereal being!";
 
 	public EtherealStatus() {
-		super(NAME, '☠', ChatColor.WHITE, DESC, false);
+		super(NAME, '☠', Material.STRUCTURE_VOID, ChatColor.WHITE, DESC, false, DEFAULT_DURATION);
 	}
 
 	@Override
-	public void applyEffect(Player player) {
-		refreshEffect(player);
+	public void applyEffect(Player player, byte severity) {
+		refreshEffect(player, severity);
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class EtherealStatus extends Status {
 	}
 
 	@Override
-	public void refreshEffect(Player player) {
+	public void refreshEffect(Player player, byte severity) {
 		StatusEventListener.blockItems(player);
 		StatusEventListener.blockInteractions(player);
 		getRedBorderPacket(true).sendPacket(player);
