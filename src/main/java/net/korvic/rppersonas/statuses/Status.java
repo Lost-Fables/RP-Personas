@@ -23,12 +23,6 @@ public abstract class Status {
 
 	@Getter private static List<Status> statuses = new ArrayList<>();
 
-	public static void registerStatus(Status status) {
-		if (!statuses.contains(status)) {
-			statuses.add(status);
-		}
-	}
-
 	public static void applyStatus(Status status, Player player, byte severity, long duration) {
 		applyStatus(status, plugin.getPersonaHandler().getLoadedPersona(player), severity, duration);
 	}
@@ -69,6 +63,12 @@ public abstract class Status {
 		this.description = description;
 		this.toggleable = toggleable;
 		this.defaultDuration = defaultDuration;
+	}
+
+	public void registerStatus() {
+		if (!statuses.contains(this)) {
+			statuses.add(this);
+		}
 	}
 
 	public void applyTo(Player player, byte severity, long duration) {

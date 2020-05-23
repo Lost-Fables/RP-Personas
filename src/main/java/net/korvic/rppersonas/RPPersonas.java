@@ -151,6 +151,12 @@ public final class RPPersonas extends JavaPlugin {
 			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
 			Commands.build(getCommand("altar"), () -> new AltarCommands(this)); // TODO move this under staff commands
 			Commands.build(getCommand("time"), () -> new TimeCommands(this));
+
+			// Register statuses we want on the list of statuses
+			new SpeedStatus().registerStatus();
+			new SlowStatus().registerStatus();
+			new SickStatus().registerStatus();
+			new BlindStatus().registerStatus();
 		} else {
 			this.onDisable();
 		}
