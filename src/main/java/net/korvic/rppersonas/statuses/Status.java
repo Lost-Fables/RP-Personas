@@ -79,7 +79,7 @@ public abstract class Status {
 	}
 
 	// ABSTRACT //
-	public abstract void applyEffect(Player player, int severity, int expiration);
+	public abstract void applyEffect(Player player, int severity);
 	public abstract void clearEffect(Player player);
-	public abstract void refreshEffect(Player player, int severity, int expiration);
+	public abstract void refreshEffect(Player player, int severity);
 }

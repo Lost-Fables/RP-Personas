@@ -1,6 +1,7 @@
 package net.korvic.rppersonas;
 
 import co.lotc.core.bukkit.command.Commands;
+import lombok.Getter;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.accounts.UnregisteredHandler;
 import net.korvic.rppersonas.commands.TimeCommands;
@@ -49,27 +50,28 @@ public final class RPPersonas extends JavaPlugin {
 	private static RPPersonas instance;
 
 	// Handlers
-	private AccountHandler accountHandler;
-	private PersonaHandler personaHandler;
-	private DeathHandler deathHandler;
-	private CorpseHandler corpseHandler;
-	private AltarHandler altarHandler;
-	private UnregisteredHandler unregisteredHandler;
+	@Getter private AccountHandler accountHandler;
+	@Getter private PersonaHandler personaHandler;
+	@Getter private DeathHandler deathHandler;
+	@Getter private CorpseHandler corpseHandler;
+	@Getter private AltarHandler altarHandler;
+	@Getter private UnregisteredHandler unregisteredHandler;
 
 	// SQL
-	private SaveQueue saveQueueSQL;
-	private UUIDAccountMapSQL uuidAccountMapSQL;
-	private AccountsSQL accountsSQL;
-	private PersonaAccountsMapSQL personaAccountMapSQL;
-	private PersonasSQL personasSQL;
-	private CurrencySQL currencySQL;
-	private SkinsSQL skinsSQL;
-	private DeathSQL deathSQL;
-	private CorpseSQL corpseSQL;
-	private AltarSQL altarsSQL;
+	@Getter private SaveQueue saveQueue;
+	@Getter private UUIDAccountMapSQL uuidAccountMapSQL;
+	@Getter private AccountsSQL accountsSQL;
+	@Getter private PersonaAccountsMapSQL personaAccountMapSQL;
+	@Getter private PersonasSQL personasSQL;
+	@Getter private CurrencySQL currencySQL;
+	@Getter private SkinsSQL skinsSQL;
+	@Getter private DeathSQL deathSQL;
+	@Getter private CorpseSQL corpseSQL;
+	@Getter private AltarSQL altarsSQL;
+	@Getter private StatusSQL statusSQL;
 
 	// Default Location
-	private Location spawnLocation;
+	@Getter private Location spawnLocation;
 
 	@Override
 	public void onEnable() {
@@ -156,8 +158,13 @@ public final class RPPersonas extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		saveQueueSQL.completeAllSaves();
+		saveQueue.completeAllSaves();
 		BaseSQL.cancelConnectionMaintainer();
+	}
+
+	// Get Plugin Instance
+	public static RPPersonas get() {
+		return instance;
 	}
 
 	// SQL //
@@ -171,12 +178,13 @@ public final class RPPersonas extends JavaPlugin {
 		deathSQL = new DeathSQL(this);
 		corpseSQL = new CorpseSQL(this);
 		altarsSQL = new AltarSQL(this);
+		statusSQL = new StatusSQL(this);
 	}
 
 	// CONFIG //
 	private void loadFromConfig() {
 		// Save Queue
-		saveQueueSQL = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
+		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
 
 		// Spawn
 		String spawnWorldName = config.getString("spawn.world");
@@ -254,63 +262,5 @@ public final class RPPersonas extends JavaPlugin {
 			output = -90;
 		}
 		return output;
-	}
-
-	// GET //
-	public static RPPersonas get() {
-		return instance;
-	}
-	public AccountHandler getAccountHandler() {
-		return accountHandler;
-	}
-	public PersonaHandler getPersonaHandler() {
-		return personaHandler;
-	}
-	public DeathHandler getDeathHandler() {
-		return deathHandler;
-	}
-	public CorpseHandler getCorpseHandler() {
-		return corpseHandler;
-	}
-	public AltarHandler getAltarHandler() {
-		return altarHandler;
-	}
-	public UnregisteredHandler getUnregisteredHandler() {
-		return unregisteredHandler;
-	}
-
-	public Location getSpawnLocation() {
-		return spawnLocation;
-	}
-
-	public UUIDAccountMapSQL getUUIDAccountMapSQL() {
-		return uuidAccountMapSQL;
-	}
-	public AccountsSQL getAccountsSQL() {
-		return accountsSQL;
-	}
-	public PersonaAccountsMapSQL getPersonaAccountMapSQL() {
-		return personaAccountMapSQL;
-	}
-	public PersonasSQL getPersonasSQL() {
-		return personasSQL;
-	}
-	public CurrencySQL getCurrencySQL() {
-		return currencySQL;
-	}
-	public SkinsSQL getSkinsSQL() {
-		return skinsSQL;
-	}
-	public DeathSQL getDeathSQL() {
-		return deathSQL;
-	}
-	public CorpseSQL getCorpseSQL() {
-		return corpseSQL;
-	}
-	public AltarSQL getAltarSQL() {
-		return altarsSQL;
-	}
-	public SaveQueue getSaveQueue() {
-		return saveQueueSQL;
 	}
 }
