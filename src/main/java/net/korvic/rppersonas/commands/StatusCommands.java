@@ -113,7 +113,7 @@ public class StatusCommands extends BaseCommand {
 		for (Status status : Status.getStatuses()) {
 			icons.add(buildAvailableStatusIcon(status, pers));
 		}
-		return MenuUtil.createMultiPageMenu(menu, "Active Statuses", icons).get(0);
+		return MenuUtil.createMultiPageMenu(menu, ChatColor.BOLD + "Available Statuses", icons).get(0);
 	}
 
 	private static Icon buildAvailableStatusIcon(Status status, Persona pers) {
@@ -161,7 +161,7 @@ public class StatusCommands extends BaseCommand {
 		for (StatusEntry entry : pers.getActiveStatuses()) {
 			icons.add(buildActiveStatusIcon(menu, pers, entry));
 		}
-		return MenuUtil.createMultiPageMenu(menu, "Active Statuses", icons).get(0);
+		return MenuUtil.createMultiPageMenu(menu, ChatColor.BOLD + "Active Statuses", icons).get(0);
 	}
 
 	private static Icon buildActiveStatusIcon(Menu menu, Persona pers, StatusEntry entry) {
