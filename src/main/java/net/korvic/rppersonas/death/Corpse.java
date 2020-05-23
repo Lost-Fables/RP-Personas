@@ -4,7 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.CorpseSQL;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

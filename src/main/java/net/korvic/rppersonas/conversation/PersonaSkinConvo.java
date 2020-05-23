@@ -5,7 +5,7 @@ import co.lotc.core.util.MojangCommunicator;
 import com.google.gson.JsonObject;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.SkinsSQL;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;

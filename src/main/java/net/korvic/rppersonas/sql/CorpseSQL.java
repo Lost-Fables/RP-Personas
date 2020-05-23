@@ -1,16 +1,13 @@
 package net.korvic.rppersonas.sql;
 
-import co.lotc.core.bukkit.util.InventoryUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
-import net.korvic.rppersonas.sql.extras.Errors;
-import org.bukkit.inventory.Inventory;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
+import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.logging.Level;
 
 public class CorpseSQL extends BaseSQL {

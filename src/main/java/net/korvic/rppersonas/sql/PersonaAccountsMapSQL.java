@@ -2,8 +2,8 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
-import net.korvic.rppersonas.sql.extras.Errors;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
+import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.*;
 import java.util.*;

@@ -22,7 +22,7 @@ import net.korvic.rppersonas.conversation.PersonaSkinConvo;
 import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;

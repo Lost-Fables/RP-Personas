@@ -7,7 +7,7 @@ import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.PersonasSQL;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.conversations.BooleanPrompt;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

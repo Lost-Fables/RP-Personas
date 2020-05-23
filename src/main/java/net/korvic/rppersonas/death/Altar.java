@@ -2,7 +2,7 @@ package net.korvic.rppersonas.death;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.AltarSQL;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 

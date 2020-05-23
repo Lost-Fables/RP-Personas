@@ -1,16 +1,13 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
-import net.korvic.rppersonas.sql.extras.Errors;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
+import net.korvic.rppersonas.sql.util.Errors;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
-import org.apache.commons.lang.ObjectUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class StatusSQL extends BaseSQL {
@@ -47,8 +44,8 @@ public class StatusSQL extends BaseSQL {
 			String stmt;
 			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE Expiration<='" + currentTime + "';";
 			PreparedStatement ps = connection.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
-			close(ps, rs);
+			ps.executeUpdate();
+			ps.close();
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

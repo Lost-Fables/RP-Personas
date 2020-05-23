@@ -4,8 +4,8 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaSubRace;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
-import net.korvic.rppersonas.sql.extras.Errors;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
+import net.korvic.rppersonas.sql.util.Errors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 

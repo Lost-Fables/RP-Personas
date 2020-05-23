@@ -1,10 +1,6 @@
 package net.korvic.rppersonas.death;
 
-import co.lotc.core.bukkit.util.InventoryUtil;
-import co.lotc.core.bukkit.util.LocationUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.PersonasSQL;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

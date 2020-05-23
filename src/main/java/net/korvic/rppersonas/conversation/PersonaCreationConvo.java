@@ -7,7 +7,7 @@ import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaRace;
 import net.korvic.rppersonas.personas.PersonaSubRace;
 import net.korvic.rppersonas.sql.PersonasSQL;
-import net.korvic.rppersonas.sql.extras.DataMapFilter;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.chat.BaseComponent;

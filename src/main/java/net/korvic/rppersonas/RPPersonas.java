@@ -17,7 +17,7 @@ import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.sql.*;
-import net.korvic.rppersonas.sql.extras.SaveQueue;
+import net.korvic.rppersonas.sql.util.SaveQueue;
 import net.korvic.rppersonas.statuses.*;
 import net.korvic.rppersonas.time.Season;
 import net.korvic.rppersonas.time.TimeManager;
