@@ -2,6 +2,7 @@ package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import lombok.Getter;
+import lombok.Setter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.conversation.BaseConvo;
@@ -34,13 +35,13 @@ public class Persona {
 	@Getter private String nickName;
 	@Getter private String[] namePieces = new String[3];
 	@Getter private Inventory enderChest;
-	@Getter private boolean isAlive;
+	@Getter @Setter private boolean alive;
 	@Getter private PersonaSkin activeSkin = null;
 	@Getter private List<StatusEntry> activeStatuses = new ArrayList<>();
 
 	private String inventory;
 
-	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean isAlive, int activeSkinID) {
+	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean alive, int activeSkinID) {
 		this.plugin = plugin;
 
 		this.usingPlayer = usingPlayer;
@@ -57,7 +58,7 @@ public class Persona {
 			this.enderChest.setContents(items);
 		}
 
-		this.isAlive = isAlive;
+		this.alive = alive;
 		this.activeSkin = PersonaSkin.getFromID(activeSkinID);
 	}
 
@@ -82,7 +83,7 @@ public class Persona {
 
 		output.put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
 		output.put(PersonasSQL.PERSONAID, personaID);
-		output.put(PersonasSQL.ALIVE, isAlive);
+		output.put(PersonasSQL.ALIVE, alive);
 		output.put(PersonasSQL.INVENTORY, inventory);
 		if (enderChest != null) {
 			output.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderChest));
@@ -148,15 +149,12 @@ public class Persona {
 	public void queueSave() {
 		queueSave(usingPlayer, null);
 	}
-
 	public void queueSave(Player p) {
 		queueSave(p, null);
 	}
-
 	public void queueSave(DataMapFilter data) {
 		queueSave(usingPlayer, data);
 	}
-
 	public void queueSave(Player p, DataMapFilter data) {
 		this.inventory = InventoryUtil.serializeItems(p.getInventory());
 		try {
@@ -256,7 +254,6 @@ public class Persona {
 	public boolean hasStatus(Status status) {
 		return hasStatus(status.getName());
 	}
-
 	public boolean hasStatus(String name) {
 		for (StatusEntry entry : activeStatuses) {
 			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
@@ -266,17 +263,16 @@ public class Persona {
 		return false;
 	}
 
-	public StatusEntry getStatusEntryFor(Status status) {
-		return getStatusEntryFor(status.getName());
+	public boolean isStatusEnabled(Status status) {
+		return isStatusEnabled(status.getName());
 	}
-
-	public StatusEntry getStatusEntryFor(String name) {
+	public boolean isStatusEnabled(String name) {
 		for (StatusEntry entry : activeStatuses) {
 			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
-				return entry;
+				return entry.isEnabled();
 			}
 		}
-		return null;
+		return false;
 	}
 
 	public void addStatus(Status status, byte severity, long duration) {
@@ -297,7 +293,6 @@ public class Persona {
 	public void disableStatus(Status status) {
 		disableStatus(status.getName());
 	}
-
 	public void disableStatus(String name) {
 		for (StatusEntry entry : activeStatuses) {
 			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
@@ -320,7 +315,6 @@ public class Persona {
 	public void clearStatus(Status status) {
 		clearStatus(status.getName());
 	}
-
 	public void clearStatus(String name) {
 		StatusEntry entryForRemoval = null;
 		for (StatusEntry entry : activeStatuses) {
@@ -333,6 +327,7 @@ public class Persona {
 		if (entryForRemoval != null) {
 			activeStatuses.remove(entryForRemoval);
 			entryForRemoval.getStatus().clearEffect(usingPlayer);
+			plugin.getStatusSQL().deleteStatus(personaID, entryForRemoval);
 			refreshStatuses();
 		}
 	}
@@ -342,9 +337,5 @@ public class Persona {
 			entry.getStatus().clearEffect(usingPlayer);
 		}
 		activeStatuses.clear();
-	}
-
-	public void setAlive(boolean isAlive) {
-		this.isAlive = isAlive;
 	}
 }

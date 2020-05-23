@@ -4,6 +4,7 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.sql.extras.Errors;
 import net.korvic.rppersonas.statuses.Status;
+import net.korvic.rppersonas.statuses.StatusEntry;
 import org.apache.commons.lang.ObjectUtils;
 
 import java.sql.Connection;
@@ -99,13 +100,13 @@ public class StatusSQL extends BaseSQL {
 		return insertStatement;
 	}
 
-	public void deleteStatus(int personaID, String statusName) {
+	public void deleteStatus(int personaID, StatusEntry entry) {
 		Connection conn = getSQLConnection();
 		try {
 			if (conn == null) {
 				throw new NullPointerException();
 			}
-			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "' AND Status='" + statusName + "'");
+			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "' AND Status='" + entry.getStatus().getName() + "' AND Severity='" + entry.getSeverity() + "' AND Expiration='" + entry.getExpiration() + "'");
 			statement.executeUpdate();
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);

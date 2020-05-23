@@ -6,7 +6,6 @@ import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.death.Altar;
-import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
