@@ -215,7 +215,7 @@ public class StatusCommands extends BaseCommand {
 				if (entry.isEnabled()) {
 					status.applyEffect(menuAction.getPlayer(), entry.getSeverity());
 				} else {
-					pers.clearStatus(status);
+					pers.disableStatus(status);
 				}
 
 				buildActiveStatusMenu(menu, pers);
