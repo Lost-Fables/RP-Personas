@@ -114,7 +114,7 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 				}.runTaskTimer(plugin, 20, 20);
 			} else {
 				int accountID = plugin.getPersonaAccountMapSQL().getAccountOf(personaID);
-				for (UUID uuid : plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID)) {
+				for (UUID uuid : plugin.getUuidAccountMapSQL().getUUIDsOf(accountID)) {
 					Player p = Bukkit.getPlayer(uuid);
 					if (p != null && p.isOnline()) {
 						p.sendMessage(RPPersonas.PRIMARY_DARK + "Your persona " + RPPersonas.SECONDARY_DARK + (String) data.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + " has been resurrected.");

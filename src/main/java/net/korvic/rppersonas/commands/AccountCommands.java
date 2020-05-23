@@ -56,12 +56,12 @@ public class AccountCommands extends BaseCommand {
 						 @Arg(value="Forum ID", description="Your forum account ID.") int forumID) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			if (plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()) <= 0 && !plugin.getAccountsSQL().isRegistered(forumID)) {
+			if (plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId()) <= 0 && !plugin.getAccountsSQL().isRegistered(forumID)) {
 				//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the lines below.
 				DataMapFilter data = new DataMapFilter();
 				data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
 					.put(UUIDAccountMapSQL.PLAYER, p);
-				plugin.getUUIDAccountMapSQL().registerOrUpdate(data);
+				plugin.getUuidAccountMapSQL().registerOrUpdate(data);
 				msg(FORUM_LINK_SUCCESS);
 			} else {
 				msg(ALREADY_REGISTERED);
@@ -90,7 +90,7 @@ public class AccountCommands extends BaseCommand {
 			}
 
 			DataMapFilter data = new DataMapFilter();
-			data.put(AccountsSQL.ACCOUNTID, plugin.getUUIDAccountMapSQL().getAccountID(((Player) sender).getUniqueId()))
+			data.put(AccountsSQL.ACCOUNTID, plugin.getUuidAccountMapSQL().getAccountID(((Player) sender).getUniqueId()))
 				.put(AccountsSQL.DISCORDID, discordOutput);
 
 			plugin.getAccountsSQL().registerOrUpdate(data);
@@ -109,7 +109,7 @@ public class AccountCommands extends BaseCommand {
 	public void menu(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
+			int accountID = plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId());
 			if (accountID > 0) {
 				new AccountMenu().buildMainMenu(accountID).openSession(p);
 			} else {
@@ -327,7 +327,7 @@ public class AccountCommands extends BaseCommand {
 						p.closeInventory();
 
 						Map<Object, Object> data = new HashMap<>();
-						data.put("accountid", plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()));
+						data.put("accountid", plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId()));
 
 						new PersonaSkinConvo(plugin).startConvo(p, data, true);
 					}

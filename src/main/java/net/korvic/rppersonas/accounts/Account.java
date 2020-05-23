@@ -60,7 +60,7 @@ public class Account {
 	}
 
 	public List<UUID> getUUIDs() {
-		return plugin.getUUIDAccountMapSQL().getUUIDsOf(accountID);
+		return plugin.getUuidAccountMapSQL().getUUIDsOf(accountID);
 	}
 
 }

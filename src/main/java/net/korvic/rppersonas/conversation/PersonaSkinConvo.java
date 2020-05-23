@@ -98,7 +98,7 @@ public class PersonaSkinConvo extends BaseConvo {
 		Player p = (Player) context.getForWhom();
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Adding your skin now..."));
 
-		int accountID = RPPersonas.get().getUUIDAccountMapSQL().getAccountID(p.getUniqueId());
+		int accountID = RPPersonas.get().getUuidAccountMapSQL().getAccountID(p.getUniqueId());
 		String name = (String) context.getAllSessionData().get("name");
 		String texture = null;
 		String signature = null;

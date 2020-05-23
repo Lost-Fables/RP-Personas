@@ -40,7 +40,7 @@ public class JoinQuitListener implements Listener {
 	public void onQuit(PlayerQuitEvent event) {
 		Player p = event.getPlayer();
 		UUID uuid = event.getPlayer().getUniqueId();
-		int account = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
+		int account = plugin.getUuidAccountMapSQL().getAccountID(uuid);
 		refreshAccountPlaytime(p);
 		plugin.getAccountHandler().unloadAccount(account);
 		playerLoginTime.remove(p);
@@ -58,7 +58,7 @@ public class JoinQuitListener implements Listener {
 	// STATIC //
 	public static void loadIntoPersona(Player p) {
 		UUID uuid = p.getUniqueId();
-		int accountID = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
+		int accountID = plugin.getUuidAccountMapSQL().getAccountID(uuid);
 
 		if (accountID > 0) {
 			refreshAccountPlaytime(p);
@@ -83,7 +83,7 @@ public class JoinQuitListener implements Listener {
 		playerLoginTime.put(p, System.currentTimeMillis());
 
 		DataMapFilter data = new DataMapFilter();
-		data.put(AccountsSQL.ACCOUNTID, plugin.getUUIDAccountMapSQL().getAccountID(p.getUniqueId()))
+		data.put(AccountsSQL.ACCOUNTID, plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId()))
 			.put(AccountsSQL.PLAYTIME, playtime);
 
 		plugin.getAccountsSQL().registerOrUpdate(data);

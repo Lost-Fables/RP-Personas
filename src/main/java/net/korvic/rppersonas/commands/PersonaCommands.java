@@ -91,7 +91,7 @@ public class PersonaCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			DisabledStatus status = new DisabledStatus(null);
-			status.applyEffect(p);
+			status.applyEffect(p, (byte) 1);
 			ItemStack corpse = takeCorpseFromHand(p);
 			status.clearEffect(p);
 

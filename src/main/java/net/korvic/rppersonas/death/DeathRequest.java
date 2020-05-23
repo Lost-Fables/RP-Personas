@@ -59,7 +59,7 @@ public class DeathRequest {
 		RPPersonas plugin = RPPersonas.get();
 
 		saveDeathSQL(plugin, staffInflicted);
-		victimPersona.addStatus(new EtherealStatus(), -1); // Become Ghost
+		victimPersona.addStatus(new EtherealStatus(), (byte) 0, Long.MAX_VALUE); // Become Ghost
 		dropCorpse(plugin);
 		savePersona(plugin);
 		plugin.getDeathHandler().deleteRequest(victim);

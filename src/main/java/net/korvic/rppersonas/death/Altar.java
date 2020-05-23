@@ -33,7 +33,7 @@ public class Altar {
 				.put(AltarSQL.ICONID, iconID)
 				.put(AltarSQL.NAME, label)
 				.put(AltarSQL.LOCATION, altar.getTPLocation());
-			RPPersonas.get().getAltarSQL().registerOrUpdate(data);
+			RPPersonas.get().getAltarsSQL().registerOrUpdate(data);
 
 			// TODO add altar icon to Dynmap
 		}

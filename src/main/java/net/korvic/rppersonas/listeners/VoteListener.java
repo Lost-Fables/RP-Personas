@@ -29,7 +29,7 @@ public class VoteListener implements Listener {
 		}
 
 		if (uuid != null) {
-			int accountID = plugin.getUUIDAccountMapSQL().getAccountID(uuid);
+			int accountID = plugin.getUuidAccountMapSQL().getAccountID(uuid);
 			plugin.getAccountsSQL().incrementVotes(accountID);
 			plugin.getLogger().info(RPPersonas.PRIMARY_LIGHT + "Vote registered for " + RPPersonas.SECONDARY_LIGHT + username + RPPersonas.PRIMARY_LIGHT + ". Account ID: " + RPPersonas.SECONDARY_LIGHT + accountID);
 		}

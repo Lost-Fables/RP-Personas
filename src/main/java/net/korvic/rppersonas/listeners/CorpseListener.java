@@ -87,7 +87,7 @@ public class CorpseListener implements Listener {
 			Altar altar = plugin.getAltarHandler().getAltarOfBlock(e.getBlockAgainst());
 
 			if (altar != null) {
-				new DisabledStatus(null).applyEffect(p); // TODO make this not TP you to spawn on jump.
+				new DisabledStatus(null).applyEffect(p, (byte) 0); // TODO make this not TP you to spawn on jump.
 				ItemStack corpseItem = e.getItemInHand();
 				p.getInventory().setItem(getIndexFromInventory(p.getInventory(), e.getItemInHand()), null);
 

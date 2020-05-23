@@ -39,7 +39,7 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
-		new DisabledStatus(null).applyEffect(p);
+		new DisabledStatus(null).applyEffect(p, (byte) 0);
 
 		String welcomeText = "";
 		if (first) {
@@ -52,7 +52,7 @@ public class PersonaHandler {
 								RPPersonas.SECONDARY_LIGHT + "Type your Persona's name to continue.",
 								20, 60*20, 20);
 
-		new DisabledStatus(title).applyEffect(p);
+		new DisabledStatus(title).applyEffect(p, (byte) 0);
 		p.teleportAsync(plugin.getSpawnLocation());
 		p.getInventory().clear();
 
@@ -194,7 +194,7 @@ public class PersonaHandler {
 				plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 			} else {
 				if (!persona.hasStatus(EtherealStatus.NAME)) {
-					persona.addStatus(new EtherealStatus(), -1);
+					persona.addStatus(new EtherealStatus(), (byte) -1, Long.MAX_VALUE);
 				}
 			}
 		}
