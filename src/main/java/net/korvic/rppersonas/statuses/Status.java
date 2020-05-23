@@ -23,6 +23,23 @@ public abstract class Status {
 
 	@Getter private static List<Status> statuses = new ArrayList<>();
 
+	public static List<String> getRegisteredStatusNames() {
+		List<String> output = new ArrayList<>();
+		for (Status status : statuses) {
+			output.add(status.getName());
+		}
+		return output;
+	}
+
+	public static Status getByName(String name) {
+		for (Status status : statuses) {
+			if (status.getName().equalsIgnoreCase(name)) {
+				return status;
+			}
+		}
+		return null;
+	}
+
 	public static void applyStatus(Status status, Player player, byte severity, long duration) {
 		applyStatus(status, plugin.getPersonaHandler().getLoadedPersona(player), severity, duration);
 	}

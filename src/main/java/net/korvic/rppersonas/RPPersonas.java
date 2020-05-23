@@ -31,7 +31,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collector;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -255,6 +257,13 @@ public final class RPPersonas extends JavaPlugin {
 				.defaultName("Season")
 				.completer((s,$) -> Season.getAvailable(s))
 				.mapperWithSender((sender, season) -> Season.getByName(season))
+				.register();
+
+		Commands.defineArgumentType(Status.class)
+				.defaultName("Status")
+				.defaultError("Failed to find a status by that name.")
+				.completer(Status::getRegisteredStatusNames)
+				.mapperWithSender((sender, status) -> Status.getByName(status))
 				.register();
 	}
 
