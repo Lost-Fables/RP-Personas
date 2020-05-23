@@ -7,8 +7,10 @@ import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.conversation.BaseConvo;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.sql.StatusSQL;
 import net.korvic.rppersonas.sql.extras.DataMapFilter;
 import net.korvic.rppersonas.statuses.Status;
+import net.korvic.rppersonas.statuses.StatusEntry;
 import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,8 +36,9 @@ public class Persona {
 	@Getter private Inventory enderChest;
 	@Getter private boolean isAlive;
 	@Getter private PersonaSkin activeSkin = null;
+	@Getter private List<StatusEntry> activeStatuses = new ArrayList<>();
+
 	private String inventory;
-	private List<Status> activeStatuses = new ArrayList<>();
 
 	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean isAlive, int activeSkinID) {
 		this.plugin = plugin;
@@ -250,27 +253,67 @@ public class Persona {
 	}
 
 	// STATUS //
-	public List<Status> getActiveStatuses() {
-		return activeStatuses;
-	}
-
 	public boolean hasStatus(Status status) {
 		return hasStatus(status.getName());
 	}
 
 	public boolean hasStatus(String name) {
-		for (Status status : activeStatuses) {
-			if (status.getName().equalsIgnoreCase(name)) {
+		for (StatusEntry entry : activeStatuses) {
+			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void addStatus(Status status, int duration) {
-		if (!hasStatus(status)) {
-			activeStatuses.add(status);
-			status.applyEffect(usingPlayer);
+	public StatusEntry getStatusEntryFor(Status status) {
+		return getStatusEntryFor(status.getName());
+	}
+
+	public StatusEntry getStatusEntryFor(String name) {
+		for (StatusEntry entry : activeStatuses) {
+			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
+				return entry;
+			}
+		}
+		return null;
+	}
+
+	public void addStatus(Status status, byte severity, long duration) {
+		long expiration = System.currentTimeMillis() + duration;
+
+		activeStatuses.add(new StatusEntry(status, severity, expiration, true));
+		status.applyEffect(usingPlayer, severity);
+
+		DataMapFilter data = new DataMapFilter();
+		data.put(StatusSQL.PERSONAID, personaID)
+			.put(StatusSQL.STATUS, status)
+			.put(StatusSQL.SEVERITY, severity)
+			.put(StatusSQL.EXPIRATION, expiration);
+
+		plugin.getStatusSQL().saveStatus(data);
+	}
+
+	public void disableStatus(Status status) {
+		disableStatus(status.getName());
+	}
+
+	public void disableStatus(String name) {
+		for (StatusEntry entry : activeStatuses) {
+			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
+				entry.setEnabled(false);
+				entry.getStatus().clearEffect(usingPlayer);
+				refreshStatuses();
+				break;
+			}
+		}
+	}
+
+	public void refreshStatuses() {
+		for (StatusEntry entry : activeStatuses) {
+			if (entry.isEnabled()) {
+				entry.getStatus().refreshEffect(usingPlayer, entry.getSeverity());
+			}
 		}
 	}
 
@@ -279,27 +322,26 @@ public class Persona {
 	}
 
 	public void clearStatus(String name) {
-		for (Status status : activeStatuses) {
-			if (status.getName().equalsIgnoreCase(name)) {
-				activeStatuses.remove(status);
-				status.clearEffect(usingPlayer);
-				refreshStatuses();
+		StatusEntry entryForRemoval = null;
+		for (StatusEntry entry : activeStatuses) {
+			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
+				entryForRemoval = entry;
 				break;
 			}
+		}
+
+		if (entryForRemoval != null) {
+			activeStatuses.remove(entryForRemoval);
+			entryForRemoval.getStatus().clearEffect(usingPlayer);
+			refreshStatuses();
 		}
 	}
 
 	public void clearAllStatuses() {
-		for (Status status : activeStatuses) {
-			status.clearEffect(usingPlayer);
+		for (StatusEntry entry : activeStatuses) {
+			entry.getStatus().clearEffect(usingPlayer);
 		}
 		activeStatuses.clear();
-	}
-
-	public void refreshStatuses() {
-		for (Status status : activeStatuses) {
-			status.refreshEffect(usingPlayer);
-		}
 	}
 
 	public void setAlive(boolean isAlive) {

@@ -10,6 +10,7 @@ import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.statuses.Status;
+import net.korvic.rppersonas.statuses.StatusEntry;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -132,13 +133,14 @@ public class StatusCommands extends BaseCommand {
 	// ACTIVE STATUSES //
 	private static Menu buildActiveStatusMenu(Menu menu, Persona pers) {
 		List<Icon> icons = new ArrayList<>();
-		for (Status status : pers.getActiveStatuses()) {
-			icons.add(buildActiveStatusIcon(menu, pers, status));
+		for (StatusEntry entry : pers.getActiveStatuses()) {
+			icons.add(buildActiveStatusIcon(menu, pers, entry));
 		}
 		return MenuUtil.createMultiPageMenu(menu, "Active Statuses", icons).get(0);
 	}
 
-	private static Icon buildActiveStatusIcon(Menu menu, Persona pers, Status status) {
+	private static Icon buildActiveStatusIcon(Menu menu, Persona pers, StatusEntry entry) {
+		Status status = entry.getStatus();
 		return new Button() {
 			@Override
 			public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -151,7 +153,7 @@ public class StatusCommands extends BaseCommand {
 				// Toggleable text
 				if (status.isToggleable()) {
 					String active = "";
-					if (status.isActive()) {
+					if (entry.isEnabled()) {
 						active += ChatColor.GREEN + "" + ChatColor.BOLD + "Active " + RPPersonas.SECONDARY_DARK;
 					} else {
 						active += ChatColor.RED + "" + ChatColor.BOLD + "Inactive " + RPPersonas.SECONDARY_DARK;
@@ -180,11 +182,11 @@ public class StatusCommands extends BaseCommand {
 			@Override
 			public void click(MenuAction menuAction) {
 				if (status.isToggleable()) {
-					status.setActive(!status.isActive());
+					entry.setEnabled(!entry.isEnabled());
 				}
 
-				if (status.isActive()) {
-					status.applyTo(menuAction.getPlayer(), -1);
+				if (entry.isEnabled()) {
+					status.applyEffect(menuAction.getPlayer(), entry.getSeverity());
 				} else {
 					pers.clearStatus(status);
 				}

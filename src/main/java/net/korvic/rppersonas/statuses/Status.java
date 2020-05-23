@@ -27,11 +27,11 @@ public abstract class Status {
 		}
 	}
 
-	public static void applyStatus(Status status, Player player, int duration) {
-		applyStatus(status, plugin.getPersonaHandler().getLoadedPersona(player), duration);
+	public static void applyStatus(Status status, Player player, byte severity, long duration) {
+		applyStatus(status, plugin.getPersonaHandler().getLoadedPersona(player), severity, duration);
 	}
-	public static void applyStatus(Status status, Persona pers, int duration) {
-		pers.addStatus(status, duration);
+	public static void applyStatus(Status status, Persona pers, byte severity, long duration) {
+		pers.addStatus(status, severity, duration);
 	}
 
 	public static void clearStatus(String name, Player player) {
@@ -58,7 +58,6 @@ public abstract class Status {
 	@Getter private final int defaultDuration;
 
 	@Getter private final boolean toggleable;
-	@Getter @Setter	private boolean active = true;
 
 	public Status(String name, char icon, Material material, ChatColor color, String description, boolean toggleable, int defaultDuration) {
 		this.name = name;
@@ -70,16 +69,16 @@ public abstract class Status {
 		this.defaultDuration = defaultDuration;
 	}
 
-	public void applyTo(Player player, int duration) {
+	public void applyTo(Player player, byte severity, long duration) {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
-		applyStatus(this, pers, duration);
+		applyStatus(this, pers, severity, duration);
 	}
 	public void clearFrom(Player player) {
 		clearStatus(name, player);
 	}
 
 	// ABSTRACT //
-	public abstract void applyEffect(Player player, int severity);
+	public abstract void applyEffect(Player player, byte severity);
 	public abstract void clearEffect(Player player);
-	public abstract void refreshEffect(Player player, int severity);
+	public abstract void refreshEffect(Player player, byte severity);
 }
