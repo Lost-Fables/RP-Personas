@@ -53,6 +53,20 @@ public class StatusCommands extends BaseCommand {
 		}
 	}
 
+	@Cmd(value="Apply a set status to another player.")
+	public void applytoother(CommandSender sender,
+							 Player player,
+							 @Arg(value="Status", description="The status you wish to apply.") Status status,
+							 @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
+							 @Arg(value="Duration", description="The length in seconds that the effect will last.") int duration) {
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		if (pers != null) {
+			pers.addStatus(status, (byte) severity, 1000 * duration);
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + "Please make sure the player has a linked forum account before modifying their persona!");
+		}
+	}
+
 	@Cmd(value="Open the status management menu.")
 	public void menu(CommandSender sender) {
 		if (sender instanceof Player) {
