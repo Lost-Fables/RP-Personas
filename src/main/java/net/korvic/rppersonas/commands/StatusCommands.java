@@ -25,8 +25,12 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class StatusCommands extends BaseCommand {
 
@@ -229,6 +233,11 @@ public class StatusCommands extends BaseCommand {
 					}
 					lore.add(active + "Click to toggle this status on or off.");
 				}
+
+				long expiryTime = entry.getExpiration() - System.currentTimeMillis();
+				Date date = new Date(expiryTime);
+				DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+				lore.add(RPPersonas.SECONDARY_DARK + "Expires in: " + ChatColor.ITALIC + formatter.format(date));
 
 				lore.add("");
 
