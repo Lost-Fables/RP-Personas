@@ -12,10 +12,12 @@ import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.korvic.rppersonas.statuses.EtherealStatus;
 import net.korvic.rppersonas.statuses.Status;
+import net.korvic.rppersonas.statuses.StatusEntry;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -29,6 +31,7 @@ public class PersonaHandler {
 
 	public PersonaHandler(RPPersonas plugin) {
 		PersonaHandler.plugin = plugin;
+		startStatusRunnable();
 	}
 
 	public static void updateHighestPersonaID(int personaID) {
@@ -359,4 +362,23 @@ public class PersonaHandler {
 		return skipSave.containsValue(pers);
 	}
 
+	// STATUS UPDATES //
+	private void startStatusRunnable() {
+		new BukkitRunnable(){
+			@Override
+			public void run() {
+				for (Persona pers : loadedPersonas.values()) {
+					List<StatusEntry> entriesToClear = new ArrayList<>();
+					for (StatusEntry entry : pers.getActiveStatuses()) {
+						if (entry.getExpiration() <= System.currentTimeMillis()) {
+							entriesToClear.add(entry);
+						}
+					}
+					for (StatusEntry entry : entriesToClear) {
+						pers.clearStatusEntry(entry);
+					}
+				}
+			}
+		}.runTaskTimer(plugin, 0, 20);
+	}
 }

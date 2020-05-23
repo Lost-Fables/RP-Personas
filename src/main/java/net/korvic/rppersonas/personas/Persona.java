@@ -312,6 +312,7 @@ public class Persona {
 		}
 	}
 
+
 	public void clearStatus(Status status) {
 		clearStatus(status.getName());
 	}
@@ -325,11 +326,14 @@ public class Persona {
 		}
 
 		if (entryForRemoval != null) {
-			activeStatuses.remove(entryForRemoval);
-			entryForRemoval.getStatus().clearEffect(usingPlayer);
-			plugin.getStatusSQL().deleteStatus(personaID, entryForRemoval);
-			refreshStatuses();
+			clearStatusEntry(entryForRemoval);
 		}
+	}
+	public void clearStatusEntry(StatusEntry entry) {
+		activeStatuses.remove(entry);
+		entry.getStatus().clearEffect(usingPlayer);
+		plugin.getStatusSQL().deleteStatus(personaID, entry);
+		refreshStatuses();
 	}
 
 	public void clearAllStatuses() {

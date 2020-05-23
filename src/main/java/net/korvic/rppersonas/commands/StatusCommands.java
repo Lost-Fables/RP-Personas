@@ -188,7 +188,7 @@ public class StatusCommands extends BaseCommand {
 
 				lore.add("");
 
-				// Add description broken down into 35 width pieces.
+				// Add description broken down into 40 width pieces.
 				double charsPerLine = 40d;
 				int pages = (int) Math.ceil(status.getDescription().length()/charsPerLine);
 				for (int i = 1; i <= pages; i++) {
