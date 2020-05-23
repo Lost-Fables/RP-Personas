@@ -72,7 +72,7 @@ public class StatusCommands extends BaseCommand {
 
 			@Override
 			public void click(MenuAction menuAction) {
-				//buildAvailableStatusMenu(menuAction.getMenuAgent().getMenu()).openSession(menuAction.getPlayer());
+				buildAvailableStatusMenu(menuAction.getMenuAgent().getMenu(), pers).openSession(menuAction.getPlayer());
 			}
 		});
 
@@ -108,24 +108,49 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	// AVAILABLE STATUSES //
-	private static Menu buildAvailableStatusMenu(Menu menu) {
+	private static Menu buildAvailableStatusMenu(Menu menu, Persona pers) {
 		List<Icon> icons = new ArrayList<>();
 		for (Status status : Status.getStatuses()) {
-			icons.add(buildAvailableStatusIcon(status));
+			icons.add(buildAvailableStatusIcon(status, pers));
 		}
 		return MenuUtil.createMultiPageMenu(menu, "Active Statuses", icons).get(0);
 	}
 
-	private static Icon buildAvailableStatusIcon(Status status) {
+	private static Icon buildAvailableStatusIcon(Status status, Persona pers) {
 		return new Button() {
 			@Override
 			public ItemStack getItemStack(MenuAgent menuAgent) {
-				return null;
+				ItemStack item = new ItemStack(status.getMaterial());
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(status.getColor() + "" + status.getIcon() + " " + RPPersonas.SECONDARY_DARK + status.getName());
+
+				List<String> lore = new ArrayList<>();
+
+				lore.add(RPPersonas.SECONDARY_DARK + "Click to apply this to your persona.");
+
+				lore.add("");
+
+				// Add description broken down into 35 width pieces.
+				double charsPerLine = 35d;
+				int pages = (int) Math.ceil(status.getDescription().length()/charsPerLine);
+				for (int i = 1; i <= pages; i++) {
+					int j = (int) ((i - 1) * charsPerLine);
+					int k = (int) (i * charsPerLine);
+
+					if (status.getDescription().length() < k) {
+						k = status.getDescription().length();
+					}
+					lore.add(status.getDescription().substring(j, k));
+				}
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+				return item;
 			}
 
 			@Override
 			public void click(MenuAction menuAction) {
-
+				pers.addStatus(status, (byte) 1, 1000 * 15);
 			}
 		};
 	}
@@ -160,6 +185,8 @@ public class StatusCommands extends BaseCommand {
 					}
 					lore.add(active + "Click to toggle this status on or off.");
 				}
+
+				lore.add("");
 
 				// Add description broken down into 35 width pieces.
 				double charsPerLine = 35d;
