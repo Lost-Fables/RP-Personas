@@ -27,11 +27,13 @@ public class PersonaCommands extends BaseCommand {
 	private RPPersonas plugin;
 	private PersonaSetCommands personaSetCommands;
 	private PersonaDescCommands personaDescCommands;
+	private StatusCommands statusCommands;
 
 	public PersonaCommands (RPPersonas plugin) {
 		this.plugin = plugin;
 		this.personaSetCommands = new PersonaSetCommands(plugin);
 		this.personaDescCommands = new PersonaDescCommands(plugin);
+		this.statusCommands = new StatusCommands(plugin);
 	}
 
 	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
@@ -138,6 +140,11 @@ public class PersonaCommands extends BaseCommand {
 		} else {
 			return null;
 		}
+	}
+
+	@Cmd(value = "Commands to modify the statuses on your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
+	public BaseCommand status() {
+		return statusCommands;
 	}
 
 	@Cmd(value = "Set information about your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
