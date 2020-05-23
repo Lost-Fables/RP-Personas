@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.personas;
 
+import co.lotc.core.bukkit.menu.Menu;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
 import com.destroystokyo.paper.Title;
@@ -16,6 +17,7 @@ import net.korvic.rppersonas.statuses.StatusEntry;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -375,6 +377,10 @@ public class PersonaHandler {
 						}
 					}
 					for (StatusEntry entry : entriesToClear) {
+						Inventory inv = pers.getUsingPlayer().getOpenInventory().getTopInventory();
+						if (inv.getHolder() instanceof Menu) {
+							pers.getUsingPlayer().closeInventory();
+						}
 						pers.clearStatusEntry(entry);
 					}
 				}
