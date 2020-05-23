@@ -6,15 +6,22 @@ import co.lotc.core.bukkit.menu.MenuAgent;
 import co.lotc.core.bukkit.menu.MenuUtil;
 import co.lotc.core.bukkit.menu.icon.Button;
 import co.lotc.core.bukkit.menu.icon.Icon;
+import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
+import co.lotc.core.command.annotate.Range;
+import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -27,6 +34,23 @@ public class StatusCommands extends BaseCommand {
 
 	public StatusCommands(RPPersonas plugin) {
 		this.plugin = plugin;
+	}
+
+	@Cmd(value="Apply a set status to yourself.")
+	public void apply(CommandSender sender,
+					  @Arg(value="Status", description="The status you wish to apply.") Status status,
+					  @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
+					  @Arg(value="Duration", description="The length in seconds that the effect will last.") int duration) {
+		if (sender instanceof Player) {
+			Persona pers = plugin.getPersonaHandler().getLoadedPersona((Player) sender);
+			if (pers != null) {
+				pers.addStatus(status, (byte) severity, 1000 * duration);
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "Please make sure your forum account is linked before modifying your persona!");
+			}
+		} else {
+			msg("Stahp it, console.");
+		}
 	}
 
 	@Cmd(value="Open the status management menu.")
@@ -150,7 +174,13 @@ public class StatusCommands extends BaseCommand {
 
 			@Override
 			public void click(MenuAction menuAction) {
-				pers.addStatus(status, (byte) 1, 1000 * 15);
+				TextComponent message = new TextComponent();
+				message.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/persona status apply " + status.getName()));
+				message.setText(RPPersonas.PRIMARY_DARK + "Click here to auto fill the status command, or use " + RPPersonas.SECONDARY_DARK + "/persona status apply" + RPPersonas.PRIMARY_DARK + " to get started.");
+				message.setHoverEvent(MessageUtil.hoverEvent("Click here!"));
+
+				menuAction.getPlayer().closeInventory();
+				menuAction.getPlayer().sendMessage(message);
 			}
 		};
 	}
@@ -218,7 +248,7 @@ public class StatusCommands extends BaseCommand {
 					pers.disableStatus(status);
 				}
 
-				buildActiveStatusMenu(menu, pers);
+				buildActiveStatusMenu(menu, pers).openSession(menuAction.getPlayer());
 			}
 		};
 	}
