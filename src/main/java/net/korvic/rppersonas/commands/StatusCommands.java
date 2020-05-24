@@ -16,6 +16,7 @@ import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -25,12 +26,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class StatusCommands extends BaseCommand {
 
@@ -235,9 +232,7 @@ public class StatusCommands extends BaseCommand {
 				}
 
 				long expiryTime = entry.getExpiration() - System.currentTimeMillis();
-				Date date = new Date(expiryTime);
-				DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-				lore.add(RPPersonas.SECONDARY_DARK + "Expires in: " + ChatColor.ITALIC + formatter.format(date));
+				lore.add(RPPersonas.SECONDARY_DARK + "Expires in: " + ChatColor.ITALIC + DurationFormatUtils.formatDurationHMS(expiryTime));
 
 				lore.add("");
 
