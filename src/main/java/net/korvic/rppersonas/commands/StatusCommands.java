@@ -256,8 +256,14 @@ public class StatusCommands extends BaseCommand {
 					lore.add(active + "Left Click to toggle this status on or off.");
 				}
 
+				if (menuAgent.getPlayer().hasPermission(RPPersonas.PERMISSION_START + ".status.clear")) {
+					lore.add(RPPersonas.SECONDARY_DARK + "" + ChatColor.BOLD + "Right Click to clear.");
+				}
+
+				lore.add("");
+
 				long expiryTime = entry.getExpiration() - System.currentTimeMillis();
-				lore.add(RPPersonas.SECONDARY_DARK + "Expires in: " + ChatColor.ITALIC + DurationFormatUtils.formatDuration(expiryTime, "HH:mm:ss"));
+				lore.add(RPPersonas.SECONDARY_DARK + "Expires in: " + RPPersonas.SECONDARY_LIGHT + ChatColor.ITALIC + DurationFormatUtils.formatDuration(expiryTime, "HH:mm:ss"));
 
 				lore.add("");
 
@@ -282,7 +288,11 @@ public class StatusCommands extends BaseCommand {
 			@Override
 			public void click(MenuAction menuAction) {
 				ClickType click = menuAction.getClick();
-				if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
+
+				if ((click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) &&
+					menuAction.getPlayer().hasPermission(RPPersonas.PERMISSION_START + ".status.clear")) {
+					pers.clearStatusEntry(entry);
+				} else {
 					if (status.isToggleable()) {
 						entry.setEnabled(!entry.isEnabled());
 					}
@@ -292,9 +302,6 @@ public class StatusCommands extends BaseCommand {
 					} else {
 						pers.disableStatusEntry(entry);
 					}
-				} else if ((click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) &&
-						   menuAction.getPlayer().hasPermission(RPPersonas.PERMISSION_START + ".status.clear")) {
-					pers.clearStatusEntry(entry);
 				}
 
 				buildActiveStatusMenu(menu, pers).openSession(menuAction.getPlayer());
