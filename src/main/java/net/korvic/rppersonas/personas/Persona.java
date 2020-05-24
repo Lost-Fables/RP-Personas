@@ -290,26 +290,28 @@ public class Persona {
 		plugin.getStatusSQL().saveStatus(data);
 	}
 
-	public void disableStatus(Status status) {
-		disableStatus(status.getName());
-	}
-	public void disableStatus(String name) {
-		for (StatusEntry entry : activeStatuses) {
-			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
-				entry.setEnabled(false);
-				entry.getStatus().clearEffect(usingPlayer);
-				refreshStatuses();
-				break;
-			}
-		}
-	}
-
 	public void refreshStatuses() {
 		for (StatusEntry entry : activeStatuses) {
 			if (entry.isEnabled()) {
 				entry.getStatus().refreshEffect(usingPlayer, entry.getSeverity());
 			}
 		}
+	}
+
+	public void disableStatus(Status status) {
+		disableStatus(status.getName());
+	}
+	public void disableStatus(String name) {
+		for (StatusEntry entry : activeStatuses) {
+			if (entry.getStatus().getName().equalsIgnoreCase(name)) {
+				disableStatusEntry(entry);
+			}
+		}
+	}
+	public void disableStatusEntry(StatusEntry entry) {
+		entry.setEnabled(false);
+		entry.getStatus().clearEffect(usingPlayer);
+		refreshStatuses();
 	}
 
 

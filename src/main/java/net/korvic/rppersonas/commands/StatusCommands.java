@@ -23,6 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -252,7 +253,7 @@ public class StatusCommands extends BaseCommand {
 					} else {
 						active += ChatColor.RED + "" + ChatColor.BOLD + "Inactive " + RPPersonas.SECONDARY_DARK;
 					}
-					lore.add(active + "Click to toggle this status on or off.");
+					lore.add(active + "Left Click to toggle this status on or off.");
 				}
 
 				long expiryTime = entry.getExpiration() - System.currentTimeMillis();
@@ -280,14 +281,20 @@ public class StatusCommands extends BaseCommand {
 
 			@Override
 			public void click(MenuAction menuAction) {
-				if (status.isToggleable()) {
-					entry.setEnabled(!entry.isEnabled());
-				}
+				ClickType click = menuAction.getClick();
+				if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
+					if (status.isToggleable()) {
+						entry.setEnabled(!entry.isEnabled());
+					}
 
-				if (entry.isEnabled()) {
-					status.applyEffect(menuAction.getPlayer(), entry.getSeverity());
-				} else {
-					pers.disableStatus(status);
+					if (entry.isEnabled()) {
+						status.applyEffect(menuAction.getPlayer(), entry.getSeverity());
+					} else {
+						pers.disableStatusEntry(entry);
+					}
+				} else if ((click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) &&
+						   menuAction.getPlayer().hasPermission(RPPersonas.PERMISSION_START + ".status.clear")) {
+					pers.clearStatusEntry(entry);
 				}
 
 				buildActiveStatusMenu(menu, pers).openSession(menuAction.getPlayer());
