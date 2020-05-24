@@ -56,15 +56,39 @@ public class StatusCommands extends BaseCommand {
 
 	@Cmd(value="Apply a set status to another player.")
 	public void applyother(CommandSender sender,
-							 Player player,
-							 @Arg(value="Status", description="The status you wish to apply.") Status status,
-							 @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
-							 @Arg(value="Duration", description="The length in seconds that the effect will last.") int duration) {
+						   Player player,
+						   @Arg(value="Status", description="The status you wish to apply.") Status status,
+						   @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
+						   @Arg(value="Duration", description="The length in seconds that the effect will last.") int duration) {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
 			pers.addStatus(status, (byte) severity, 1000 * duration);
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + "Please make sure the player has a linked forum account before modifying their persona!");
+		}
+	}
+
+	@Cmd(value="Clear a status effect from yourself.")
+	public void clear(CommandSender sender, Status status) {
+		if (sender instanceof Player) {
+			Persona pers = plugin.getPersonaHandler().getLoadedPersona((Player) sender);
+			if (pers != null) {
+				pers.clearStatus(status);
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "Please make sure your forum account is linked before modifying your persona!");
+			}
+		} else {
+			msg("Stahp it, console.");
+		}
+	}
+
+	@Cmd(value="Clear a status effect from another player.")
+	public void clearother(CommandSender sender, Player player, Status status) {
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		if (pers != null) {
+			pers.clearStatus(status);
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + "Please make sure the player's forum account is linked before modifying their persona!");
 		}
 	}
 
