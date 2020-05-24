@@ -126,11 +126,13 @@ public class StatusSQL extends BaseSQL {
 			List<StatusEntry> output = new ArrayList<>();
 			while(rs.next()) {
 				Status status = Status.getByName(rs.getString("Status"));
-				StatusEntry entry = new StatusEntry(status, rs.getByte("Severity"), rs.getLong("Expiration"), true);
-				if (entry.getExpiration() > System.currentTimeMillis()) {
-					output.add(entry);
-				} else {
-					deleteStatus(personaID, entry);
+				if (status != null) {
+					StatusEntry entry = new StatusEntry(status, rs.getByte("Severity"), rs.getLong("Expiration"), true);
+					if (entry.getExpiration() > System.currentTimeMillis()) {
+						output.add(entry);
+					} else {
+						deleteStatus(personaID, entry);
+					}
 				}
 			}
 			return output;
