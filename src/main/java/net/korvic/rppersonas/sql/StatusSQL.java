@@ -107,7 +107,7 @@ public class StatusSQL extends BaseSQL {
 				throw new NullPointerException();
 			}
 			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "' AND Status='" + entry.getStatus().getName() + "' AND Severity='" + entry.getSeverity() + "' AND Expiration='" + entry.getExpiration() + "'");
-			statement.executeUpdate();
+			plugin.getSaveQueue().addToQueue(statement);
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
