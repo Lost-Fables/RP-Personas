@@ -127,7 +127,9 @@ public class StatusSQL extends BaseSQL {
 			while(rs.next()) {
 				Status status = Status.getByName(rs.getString("Status"));
 				StatusEntry entry = new StatusEntry(status, rs.getByte("Severity"), rs.getLong("Expiration"), true);
-				output.add(entry);
+				if (entry.getExpiration() > System.currentTimeMillis()) {
+					output.add(entry);
+				}
 			}
 			return output;
 		} catch (Exception ex) {
