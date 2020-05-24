@@ -179,7 +179,7 @@ public class StatusCommands extends BaseCommand {
 					if (status.getDescription().length() < k) {
 						k = status.getDescription().length();
 					}
-					lore.add(status.getDescription().substring(j, k));
+					lore.add(RPPersonas.SECONDARY_DARK + status.getDescription().substring(j, k));
 				}
 
 				meta.setLore(lore);
@@ -232,7 +232,7 @@ public class StatusCommands extends BaseCommand {
 				}
 
 				long expiryTime = entry.getExpiration() - System.currentTimeMillis();
-				lore.add(RPPersonas.SECONDARY_DARK + "Expires in: " + ChatColor.ITALIC + DurationFormatUtils.formatDurationHMS(expiryTime));
+				lore.add(RPPersonas.SECONDARY_DARK + "Expires in: " + ChatColor.ITALIC + DurationFormatUtils.formatDuration(expiryTime, "HH:mm:ss"));
 
 				lore.add("");
 
