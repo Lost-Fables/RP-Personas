@@ -8,6 +8,9 @@ import net.korvic.rppersonas.statuses.StatusEntry;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class StatusSQL extends BaseSQL {
@@ -108,6 +111,29 @@ public class StatusSQL extends BaseSQL {
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
+	}
+
+	public List<StatusEntry> getPersonaStatuses(int personaID) {
+		Connection conn = getSQLConnection();
+		try {
+			if (conn == null) {
+				throw new NullPointerException();
+			}
+
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			ResultSet rs = statement.executeQuery();
+
+			List<StatusEntry> output = new ArrayList<>();
+			while(rs.next()) {
+				Status status = Status.getByName(rs.getString("Status"));
+				StatusEntry entry = new StatusEntry(status, rs.getByte("Severity"), rs.getLong("Expiration"), true);
+				output.add(entry);
+			}
+			return output;
+		} catch (Exception ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+		return null;
 	}
 
 }

@@ -204,6 +204,10 @@ public class PersonaHandler {
 			}
 		}
 
+		List<StatusEntry> entries = plugin.getStatusSQL().getPersonaStatuses(personaID);
+		persona.getActiveStatuses().addAll(entries);
+		persona.refreshStatuses();
+
 		return persona;
 	}
 
