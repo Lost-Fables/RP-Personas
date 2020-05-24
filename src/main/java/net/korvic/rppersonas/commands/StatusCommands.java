@@ -253,11 +253,11 @@ public class StatusCommands extends BaseCommand {
 					} else {
 						active += ChatColor.RED + "" + ChatColor.BOLD + "Inactive " + RPPersonas.SECONDARY_DARK;
 					}
-					lore.add(active + "Left Click to toggle this status on or off.");
+					lore.add(active + "Click to toggle this status effect on or off.");
 				}
 
 				if (menuAgent.getPlayer().hasPermission(RPPersonas.PERMISSION_START + ".status.clear")) {
-					lore.add(RPPersonas.SECONDARY_DARK + "" + ChatColor.BOLD + "Right Click to clear.");
+					lore.add(RPPersonas.SECONDARY_DARK + "" + ChatColor.BOLD + "Right Click to clear this status effect completely.");
 				}
 
 				lore.add("");
