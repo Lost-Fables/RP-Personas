@@ -140,9 +140,9 @@ public class StatusCommands extends BaseCommand {
 
 		// Build Menu
 		if (menu != null) {
-			return Menu.fromIcons(menu, "Status Effects", icons);
+			return Menu.fromIcons(menu, ChatColor.BOLD + "Status Effects", icons);
 		} else {
-			return Menu.fromIcons("Status Effects", icons);
+			return Menu.fromIcons(ChatColor.BOLD + "Status Effects", icons);
 		}
 	}
 
