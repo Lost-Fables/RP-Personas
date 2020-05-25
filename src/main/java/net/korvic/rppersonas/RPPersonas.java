@@ -12,6 +12,7 @@ import net.korvic.rppersonas.commands.AltarCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.death.DeathHandler;
+import net.korvic.rppersonas.kits.KitHandler;
 import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
@@ -58,6 +59,7 @@ public final class RPPersonas extends JavaPlugin {
 	@Getter private CorpseHandler corpseHandler;
 	@Getter private AltarHandler altarHandler;
 	@Getter private UnregisteredHandler unregisteredHandler;
+	@Getter private KitHandler kitHandler;
 
 	// SQL
 	@Getter private SaveQueue saveQueue;
@@ -119,6 +121,7 @@ public final class RPPersonas extends JavaPlugin {
 			manager.registerEvents(new InspectListener(this), this);
 			manager.registerEvents(new EnderListener(this), this);
 			manager.registerEvents(new CorpseListener(this), this);
+			manager.registerEvents(new KitListener(), this);
 
 			// If Votifier is online
 			if (getServer().getPluginManager().isPluginEnabled("Votifier")) {
@@ -135,6 +138,7 @@ public final class RPPersonas extends JavaPlugin {
 			corpseHandler = new CorpseHandler(this);
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
+			kitHandler = new KitHandler(this);
 
 			// Load up existing altars & corpses. Must be done after the alter handler is created
 			altarsSQL.loadAltars();
