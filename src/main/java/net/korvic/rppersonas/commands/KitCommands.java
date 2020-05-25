@@ -38,6 +38,7 @@ public class KitCommands extends BaseCommand {
 	@Cmd(value="Delete a kit from existence.")
 	public void delete(CommandSender sender, Kit kit) {
 		plugin.getKitHandler().deleteKit(kit);
+		msg(RPPersonas.SECONDARY_DARK + kit.getName() + RPPersonas.PRIMARY_DARK + " has been successfully deleted.");
 	}
 
 }
