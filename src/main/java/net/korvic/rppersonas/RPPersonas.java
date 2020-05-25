@@ -12,6 +12,7 @@ import net.korvic.rppersonas.commands.RPPCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.death.DeathHandler;
+import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.kits.KitHandler;
 import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.listeners.StatusEventListener;
@@ -268,6 +269,14 @@ public final class RPPersonas extends JavaPlugin {
 				.completer(Status::getRegisteredStatusNames)
 				.mapperWithSender((sender, status) -> Status.getByName(status))
 				.register();
+
+		Commands.defineArgumentType(Kit.class)
+				.defaultName("Kit")
+				.defaultError("Failed to find a kit by that name.")
+				.completer(() -> kitHandler.getKitNameList())
+				.mapperWithSender((sender, kit) -> kitHandler.getKit(kit))
+				.register();
+
 	}
 
 	private float getYawFromFacing(String facing) {

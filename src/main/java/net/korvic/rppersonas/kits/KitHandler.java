@@ -26,15 +26,6 @@ public class KitHandler {
 		}
 	}
 
-	public Kit getKit(String name) {
-		for (Kit kit : allKits) {
-			if (kit.getName().equalsIgnoreCase(name)) {
-				return kit;
-			}
-		}
-		return null;
-	}
-
 	public void editKit(Player p, Kit kit) {
 		if (kit != null) {
 			Inventory inv = Bukkit.createInventory(new KitEditHolder(kit), KIT_SIZE);
@@ -46,6 +37,23 @@ public class KitHandler {
 
 	public void deleteKit(Kit kit) {
 		allKits.remove(kit);
+	}
+
+	public Kit getKit(String name) {
+		for (Kit kit : allKits) {
+			if (kit.getName().equalsIgnoreCase(name)) {
+				return kit;
+			}
+		}
+		return null;
+	}
+
+	public List<String> getKitNameList() {
+		List<String> names = new ArrayList<>();
+		for (Kit kit : allKits) {
+			names.add(kit.getName());
+		}
+		return names;
 	}
 
 }
