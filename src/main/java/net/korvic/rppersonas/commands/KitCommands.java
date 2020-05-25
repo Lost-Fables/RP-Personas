@@ -7,6 +7,7 @@ import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.kits.KitCreateHolder;
 import net.korvic.rppersonas.kits.KitHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -21,9 +22,10 @@ public class KitCommands extends BaseCommand {
 
 	@Cmd(value="Create a new kit and add it to the list.")
 	public void create(CommandSender sender,
-					   @Arg(value="Name", description="The name for the kit you're creating.") String name) {
+					   @Arg(value="Name", description="The name for the kit you're creating.") String name,
+					   @Arg(value="Icon", description="The material to represent this kit.") Material mat) {
 		if (sender instanceof Player) {
-			Inventory inv = Bukkit.createInventory(new KitCreateHolder(name), KitHandler.KIT_SIZE);
+			Inventory inv = Bukkit.createInventory(new KitCreateHolder(name, mat), KitHandler.KIT_SIZE);
 			((Player) sender).openInventory(inv);
 		}
 	}
