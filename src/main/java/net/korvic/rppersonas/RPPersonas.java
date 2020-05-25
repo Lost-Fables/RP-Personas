@@ -8,7 +8,7 @@ import net.korvic.rppersonas.commands.TimeCommands;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.AltarHandler;
 import net.korvic.rppersonas.commands.AccountCommands;
-import net.korvic.rppersonas.commands.AltarCommands;
+import net.korvic.rppersonas.commands.RPPCommands;
 import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.death.DeathHandler;
@@ -32,9 +32,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collector;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -121,7 +119,7 @@ public final class RPPersonas extends JavaPlugin {
 			manager.registerEvents(new InspectListener(this), this);
 			manager.registerEvents(new EnderListener(this), this);
 			manager.registerEvents(new CorpseListener(this), this);
-			manager.registerEvents(new KitListener(), this);
+			manager.registerEvents(new KitListener(this), this);
 
 			// If Votifier is online
 			if (getServer().getPluginManager().isPluginEnabled("Votifier")) {
@@ -153,10 +151,11 @@ public final class RPPersonas extends JavaPlugin {
 			}
 
 			// Build our commands
+			TimeCommands timeCommands = new TimeCommands(this);
 			Commands.build(getCommand("account"), () -> new AccountCommands(this));
 			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
-			Commands.build(getCommand("altar"), () -> new AltarCommands(this)); // TODO move this under staff commands
-			Commands.build(getCommand("time"), () -> new TimeCommands(this));
+			Commands.build(getCommand("rpp"), () -> new RPPCommands(this, timeCommands));
+			Commands.build(getCommand("time"), () -> timeCommands);
 
 			// Register statuses we want on the list of statuses
 			new SpeedStatus().registerStatus();

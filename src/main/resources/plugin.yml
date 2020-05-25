@@ -11,9 +11,9 @@ commands:
   persona:
     command: /<command>
     description: "Check, set, and update persona info."
-  altar:
+  rpp:
     command: /<command>
-    description: "Test command. Remove later."
+    description: "Misc Staff Commands."
   time:
     command: /<command>
     description: "Retrieve or adjust the time."
