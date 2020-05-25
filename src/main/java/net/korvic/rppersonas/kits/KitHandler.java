@@ -14,6 +14,7 @@ public class KitHandler {
 
 	private RPPersonas plugin;
 	@Getter private List<Kit> allKits = new ArrayList<>();
+	public static final int KIT_SIZE = 2*9;
 
 	public KitHandler(RPPersonas plugin) {
 		this.plugin = plugin;
@@ -34,13 +35,17 @@ public class KitHandler {
 		return null;
 	}
 
-	public void updateKit(Player p, Kit kit) {
+	public void editKit(Player p, Kit kit) {
 		if (kit != null) {
-			Inventory inv = Bukkit.createInventory(new KitEditHolder(kit), 2 * 9);
+			Inventory inv = Bukkit.createInventory(new KitEditHolder(kit), KIT_SIZE);
 			for (ItemStack item : kit.getItems()) {
 				inv.addItem(item);
 			}
 		}
+	}
+
+	public void deleteKit(Kit kit) {
+		allKits.remove(kit);
 	}
 
 }
