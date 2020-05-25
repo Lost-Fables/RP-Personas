@@ -69,63 +69,22 @@ public class KitHandler {
 	}
 
 	// KIT BROWSER MENU
+	public Menu getKitPreview(Kit kit) {
+		List<Icon> icons = new ArrayList<>();
 
-	public class KitBrowser {
-
-		private Menu homeMenu;
-
-		public Menu getBrowserMenu() {
-			List<Icon> icons = new ArrayList<>();
-
-			for (Kit kit : allKits) {
-				icons.add(buildKitIcon(kit));
-			}
-
-			homeMenu = Menu.fromIcons(ChatColor.BOLD + "Choose Your Background", icons);
-			return homeMenu;
-		}
-
-		public Icon buildKitIcon(Kit kit) {
-			return new Button() {
+		for (ItemStack item : kit.getItems()) {
+			icons.add(new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
-					ItemStack item = new ItemStack(kit.getIcon());
-					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + kit.getName());
-
-					List<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.SECONDARY_DARK + "Click here to preview the items.");
-					meta.setLore(lore);
-
-					item.setItemMeta(meta);
 					return item;
 				}
 
 				@Override
-				public void click(MenuAction menuAction) {
-					getKitPreview(kit).openSession(menuAction.getPlayer());
-				}
-			};
+				public void click(MenuAction menuAction) {}
+			});
 		}
 
-		public Menu getKitPreview(Kit kit) {
-			List<Icon> icons = new ArrayList<>();
-
-			for (ItemStack item : kit.getItems()) {
-				icons.add(new Button() {
-					@Override
-					public ItemStack getItemStack(MenuAgent menuAgent) {
-						return item;
-					}
-
-					@Override
-					public void click(MenuAction menuAction) {}
-				});
-			}
-
-			return MenuUtil.createMultiPageMenu(homeMenu, ChatColor.BOLD + kit.getName(), icons).get(0);
-		}
-
+		return Menu.fromIcons(ChatColor.BOLD + kit.getName(), icons);
 	}
 
 }
