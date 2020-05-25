@@ -30,7 +30,9 @@ public class KitHandler {
 		if (kit != null) {
 			Inventory inv = Bukkit.createInventory(new KitEditHolder(kit), KIT_SIZE);
 			for (ItemStack item : kit.getItems()) {
-				inv.addItem(item);
+				if (item != null) {
+					inv.addItem(item);
+				}
 			}
 		}
 	}
