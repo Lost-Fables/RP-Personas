@@ -34,6 +34,7 @@ public class KitHandler {
 					inv.addItem(item);
 				}
 			}
+			p.openInventory(inv);
 		}
 	}
 
