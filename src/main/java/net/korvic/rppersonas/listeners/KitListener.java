@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,8 +26,14 @@ public class KitListener implements Listener {
 	public void onKitEditClose(InventoryCloseEvent e) {
 		if (e.getInventory().getHolder() instanceof KitEditHolder) {
 			KitEditHolder holder = (KitEditHolder) e.getInventory().getHolder();
-			List<ItemStack> items = Arrays.asList(e.getInventory().getContents());
-			holder.getKit().setItems(items);
+			ItemStack[] items = e.getInventory().getContents();
+			List<ItemStack> output = new ArrayList<>();
+			for (ItemStack item : items) {
+				if (item != null) {
+					output.add(item);
+				}
+			}
+			holder.getKit().setItems(output);
 		}
 	}
 
