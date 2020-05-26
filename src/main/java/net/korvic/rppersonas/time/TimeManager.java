@@ -99,17 +99,19 @@ public class TimeManager {
 	}
 
 	public void addSyncedWorld(World world, boolean save) {
-		worlds.add(world);
-		world.setTime(worlds.get(0).getTime());
+		if (world != null) {
+			worlds.add(world);
+			world.setTime(worlds.get(0).getTime());
 
-		if (save) {
-			List<String> syncedWorldNames = new ArrayList<>();
-			for (World syncedWorld : worlds) {
-				if (!syncedWorld.equals(worlds.get(0))) {
-					syncedWorldNames.add(syncedWorld.getName());
+			if (save) {
+				List<String> syncedWorldNames = new ArrayList<>();
+				for (World syncedWorld : worlds) {
+					if (!syncedWorld.equals(worlds.get(0))) {
+						syncedWorldNames.add(syncedWorld.getName());
+					}
 				}
+				RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), null, 0, syncedWorldNames);
 			}
-			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), null, 0, syncedWorldNames);
 		}
 	}
 
