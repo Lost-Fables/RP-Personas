@@ -98,8 +98,12 @@ public class SaveQueue {
 		finalSave = true;
 		long startMillis = System.currentTimeMillis();
 
-		plugin.getCorpseHandler().saveAllCorpses();
-		plugin.getPersonaHandler().saveAllPersonas();
+		if (plugin.getCorpseHandler() != null) {
+			plugin.getCorpseHandler().saveAllCorpses();
+		}
+		if (plugin.getPersonaHandler() != null) {
+			plugin.getPersonaHandler().saveAllPersonas();
+		}
 		JoinQuitListener.refreshAllAccountPlaytime();
 
 		for (PreparedStatement ps : queue) {
