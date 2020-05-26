@@ -39,6 +39,7 @@ public class PersonasSQL extends BaseSQL {
 	public static final String FRESH = "fresh";
 	public static final String ALTARID = "altarid";
 	public static final String CORPSEINV = "corpseinv";
+	public static final String BACKGROUND = "background";
 
 	public PersonasSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {

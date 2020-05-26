@@ -157,18 +157,6 @@ public class PersonaHandler {
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 
 			plugin.getPersonaHandler().swapToPersona(p, accountID, personaID, saveCurrentPersona);
-
-			if (data.containsKey("Background")) {
-				Kit kit = (Kit) data.get("Background");
-				if (kit != null) {
-					Inventory inv = p.getInventory();
-					for (ItemStack item : kit.getItems()) {
-						if (item != null) {
-							inv.addItem(item.clone());
-						}
-					}
-				}
-			}
 		}
 
 		if (data.containsKey(PersonasSQL.LOCATION)) {
@@ -220,6 +208,17 @@ public class PersonaHandler {
 		List<StatusEntry> entries = plugin.getStatusSQL().getPersonaStatuses(personaID);
 		persona.getActiveStatuses().addAll(entries);
 		persona.refreshStatuses();
+
+		if (data.containsKey(PersonasSQL.BACKGROUND)) {
+			Kit kit = (Kit) data.get(PersonasSQL.BACKGROUND);
+			if (kit != null) {
+				for (ItemStack item : kit.getItems()) {
+					if (item != null) {
+						InventoryUtil.addOrDropItem(p, item);
+					}
+				}
+			}
+		}
 
 		return persona;
 	}

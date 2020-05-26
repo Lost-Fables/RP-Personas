@@ -12,6 +12,7 @@ import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
@@ -377,10 +378,23 @@ public class PersonaCreationConvo extends BaseConvo {
 													  DIVIDER);
 
 			for (Kit kit : RPPersonas.get().getKitHandler().getAllKits()) {
-				backgrounds.addExtra(MessageUtil.CommandButton("Preview " + kit.getName(), "Preview " + kit.getName(), "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
-				backgrounds.addExtra(BUTTON_SPACE);
+				TextComponent previewPart = new TextComponent(RPPersonas.PRIMARY_LIGHT + "[" + RPPersonas.SECONDARY_LIGHT + "Preview");
+				previewPart.setHoverEvent(MessageUtil.hoverEvent("Click to preview " + kit.getName()));
+				{
+					ClickEvent event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "Preview " + kit.getName());
+					previewPart.setClickEvent(event);
+				}
 
-				backgrounds.addExtra(MessageUtil.CommandButton(kit.getName(), kit.getName(), "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				TextComponent selectPart = new TextComponent(RPPersonas.SECONDARY_LIGHT + kit.getName() + RPPersonas.PRIMARY_LIGHT + "]");
+				selectPart.setHoverEvent(MessageUtil.hoverEvent("Click to select " + kit.getName()));
+				{
+					ClickEvent event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, kit.getName());
+					selectPart.setClickEvent(event);
+				}
+
+				backgrounds.addExtra(previewPart);
+				backgrounds.addExtra(RPPersonas.SECONDARY_DARK + " | ");
+				backgrounds.addExtra(selectPart);
 				backgrounds.addExtra(BUTTON_SPACE);
 			}
 
@@ -407,7 +421,7 @@ public class PersonaCreationConvo extends BaseConvo {
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
-			context.setSessionData("Background", RPPersonas.get().getKitHandler().getKit(input));
+			context.setSessionData(PersonasSQL.BACKGROUND, RPPersonas.get().getKitHandler().getKit(input));
 			return new PersonaConfirmPrompt();
 		}
 	}
@@ -420,7 +434,7 @@ public class PersonaCreationConvo extends BaseConvo {
 			Player p = (Player) context.getForWhom();
 			PersonaSubRace race = (PersonaSubRace) context.getSessionData(PersonasSQL.RACE);
 			PersonaGender gender = (PersonaGender) context.getSessionData(PersonasSQL.GENDER);
-			Kit kit = (Kit) context.getSessionData("Background");
+			Kit kit = (Kit) context.getSessionData(PersonasSQL.BACKGROUND);
 
 			String raceString = null;
 			if (race != null) {
