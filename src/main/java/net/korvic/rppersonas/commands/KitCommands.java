@@ -50,11 +50,12 @@ public class KitCommands extends BaseCommand {
 	@Cmd(value="Get a set of the items from a given kit.")
 	public void get(CommandSender sender, Kit kit) {
 		if (sender instanceof Player) {
-			List<ItemStack> items = kit.getItems();
-			while(items.contains(null)) {
-				items.remove(null);
+			Player p = (Player) sender;
+			for (ItemStack item : kit.getItems()) {
+				if (item != null) {
+					InventoryUtil.addOrDropItem(p, item);
+				}
 			}
-			InventoryUtil.addOrDropItem(((Player) sender), (ItemStack[]) items.toArray());
 			msg(RPPersonas.PRIMARY_DARK + "Items from the " + RPPersonas.SECONDARY_DARK + kit.getName() + RPPersonas.PRIMARY_DARK + " kit spawned.");
 		}
 	}
