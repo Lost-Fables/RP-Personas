@@ -26,10 +26,9 @@ public class KitCommands extends BaseCommand {
 
 	@Cmd(value="Create a new kit and add it to the list.")
 	public void create(CommandSender sender,
-					   @Arg(value="Name", description="The name for the kit you're creating.") String name,
-					   @Arg(value="Icon", description="The material to represent this kit.") Material mat) {
+					   @Arg(value="Name", description="The name for the kit you're creating.") String name) {
 		if (sender instanceof Player) {
-			Inventory inv = Bukkit.createInventory(new KitCreateHolder(name, mat), KitHandler.KIT_SIZE);
+			Inventory inv = Bukkit.createInventory(new KitCreateHolder(name), KitHandler.KIT_SIZE);
 			((Player) sender).openInventory(inv);
 		}
 	}

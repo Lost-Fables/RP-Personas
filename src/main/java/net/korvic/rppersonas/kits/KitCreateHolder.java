@@ -8,11 +8,9 @@ import org.bukkit.inventory.InventoryHolder;
 public class KitCreateHolder implements InventoryHolder {
 
 	@Getter private String name;
-	@Getter private Material mat;
 
-	public KitCreateHolder(String name, Material mat) {
+	public KitCreateHolder(String name) {
 		this.name = name;
-		this.mat = mat;
 	}
 
 	@Override
