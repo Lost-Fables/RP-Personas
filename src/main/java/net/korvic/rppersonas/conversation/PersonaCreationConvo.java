@@ -393,7 +393,7 @@ public class PersonaCreationConvo extends BaseConvo {
 				}
 
 				backgrounds.addExtra(previewPart);
-				backgrounds.addExtra(RPPersonas.SECONDARY_DARK + " | ");
+				backgrounds.addExtra(RPPersonas.PRIMARY_LIGHT + " | ");
 				backgrounds.addExtra(selectPart);
 				backgrounds.addExtra(BUTTON_SPACE);
 			}
