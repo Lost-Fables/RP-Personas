@@ -139,7 +139,6 @@ public final class RPPersonas extends JavaPlugin {
 			corpseHandler = new CorpseHandler(this);
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
-			kitHandler = new KitHandler(this);
 
 			// Load up existing altars & corpses. Must be done after the alter handler is created
 			altarsSQL.loadAltars();
@@ -246,6 +245,7 @@ public final class RPPersonas extends JavaPlugin {
 						}
 					}
 					Kit kit = new Kit(kitName, list);
+					kitHandler = new KitHandler(this);
 					kitHandler.addKit(kit);
 				}
 			}
