@@ -35,3 +35,8 @@ spawn:
 #    synced:
 #      - build_world
 worlds:
+
+# Saved Kits
+#kits:
+#  Huntsman: {Item Strings}
+kits:

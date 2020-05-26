@@ -226,6 +226,7 @@ public final class RPPersonas extends JavaPlugin {
 		}
 	}
 
+	// TIME
 	public void updateConfigForWorld(String worldName, String season, int timeScale, List<String> syncedWorlds) {
 		String configPath = "worlds." + worldName;
 		config = getConfig();
@@ -242,10 +243,26 @@ public final class RPPersonas extends JavaPlugin {
 	}
 
 	public void deleteConfigForWorld(String worldName) {
-		String configPath = "worlds." + worldName;
 		config = getConfig();
-		config.set(configPath, null);
+		config.set("worlds." + worldName, null);
 		saveConfig();
+	}
+
+	// KITS
+	public void updateConfigForKit(Kit kit) {
+		if (kit != null) {
+			config = getConfig();
+			config.set("kits." + kit.getName(), kit.getItems());
+			saveConfig();
+		}
+	}
+
+	public void deleteConfigForKit(Kit kit) {
+		if (kit != null) {
+			config = getConfig();
+			config.set("kits." + kit.getName(), null);
+			saveConfig();
+		}
 	}
 
 	// PARAMETERS //
