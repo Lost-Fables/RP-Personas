@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.commands;
 
+import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
@@ -11,6 +12,9 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class KitCommands extends BaseCommand {
 
@@ -41,6 +45,18 @@ public class KitCommands extends BaseCommand {
 	public void delete(CommandSender sender, Kit kit) {
 		plugin.getKitHandler().deleteKit(kit);
 		msg(RPPersonas.SECONDARY_DARK + kit.getName() + RPPersonas.PRIMARY_DARK + " has been successfully deleted.");
+	}
+
+	@Cmd(value="Get a set of the items from a given kit.")
+	public void get(CommandSender sender, Kit kit) {
+		if (sender instanceof Player) {
+			List<ItemStack> items = kit.getItems();
+			while(items.contains(null)) {
+				items.remove(null);
+			}
+			InventoryUtil.addOrDropItem(((Player) sender), (ItemStack[]) items.toArray());
+			msg(RPPersonas.PRIMARY_DARK + "Items from the " + RPPersonas.SECONDARY_DARK + kit.getName() + RPPersonas.PRIMARY_DARK + " kit spawned.");
+		}
 	}
 
 }

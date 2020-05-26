@@ -68,7 +68,6 @@ public class KitHandler {
 		return names;
 	}
 
-	// KIT BROWSER MENU
 	public Menu getKitPreview(Kit kit) {
 		List<Icon> icons = new ArrayList<>();
 
