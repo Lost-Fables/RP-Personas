@@ -29,10 +29,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class RPPersonas extends JavaPlugin {
@@ -199,28 +201,52 @@ public final class RPPersonas extends JavaPlugin {
 		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
 
 		// Spawn
-		String spawnWorldName = config.getString("spawn.world");
-		if (spawnWorldName != null && Bukkit.getWorld(spawnWorldName) != null) {
-			String facing = config.getString("spawn.facing");
-			if (facing != null) {
-				spawnLocation = new Location(Bukkit.getWorld(spawnWorldName), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), getYawFromFacing(facing), 0);
+		{
+			String spawnWorldName = config.getString("spawn.world");
+			if (spawnWorldName != null && Bukkit.getWorld(spawnWorldName) != null) {
+				String facing = config.getString("spawn.facing");
+				if (facing != null) {
+					spawnLocation = new Location(Bukkit.getWorld(spawnWorldName), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), getYawFromFacing(facing), 0);
+				}
 			}
 		}
 
 		// World Time
-		ConfigurationSection section = config.getConfigurationSection("worlds");
-		if (section != null) {
-			for (String worldName : section.getKeys(false)) {
-				World world = Bukkit.getWorld(worldName);
+		{
+			ConfigurationSection section = config.getConfigurationSection("worlds");
+			if (section != null) {
+				for (String worldName : section.getKeys(false)) {
+					World world = Bukkit.getWorld(worldName);
 
-				TimeManager manager = TimeManager.registerWorld(world, false);
-				manager.setSeason(config.getString("worlds." + worldName + ".season"), false);
-				manager.setTimeScale(config.getInt("worlds." + worldName + ".timescale"), false);
+					TimeManager manager = TimeManager.registerWorld(world, false);
+					manager.setSeason(config.getString("worlds." + worldName + ".season"), false);
+					manager.setTimeScale(config.getInt("worlds." + worldName + ".timescale"), false);
 
-				List<String> syncedWorlds = section.getStringList(worldName + ".synced");
-				for (String str : syncedWorlds) {
-					World syncedWorld = Bukkit.getWorld(str);
-					manager.addSyncedWorld(syncedWorld, false);
+					List<String> syncedWorlds = section.getStringList(worldName + ".synced");
+					for (String str : syncedWorlds) {
+						World syncedWorld = Bukkit.getWorld(str);
+						manager.addSyncedWorld(syncedWorld, false);
+					}
+				}
+			}
+		}
+
+		// Kits
+		{
+			ConfigurationSection section = config.getConfigurationSection("kits");
+			if (section != null) {
+				for (String kitName : section.getKeys(false)) {
+					List<ItemStack> list;
+					try {
+						list = (List<ItemStack>) config.getList("kits." + kitName);
+					} catch (Exception e) {
+						list = new ArrayList<>();
+						if (DEBUGGING) {
+							e.printStackTrace();
+						}
+					}
+					Kit kit = new Kit(kitName, list);
+					kitHandler.addKit(kit);
 				}
 			}
 		}
