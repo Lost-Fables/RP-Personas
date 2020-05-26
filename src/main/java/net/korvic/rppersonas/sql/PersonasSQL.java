@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaSubRace;
@@ -105,6 +106,7 @@ public class PersonasSQL extends BaseSQL {
 		DataMapFilter.addFilter(FRESH, FRESH, Object.class);
 		DataMapFilter.addFilter(ALTARID, ALTARID, Integer.class);
 		DataMapFilter.addFilter(CORPSEINV, CORPSEINV, String.class);
+		DataMapFilter.addFilter(BACKGROUND, BACKGROUND, Kit.class);
 	}
 
 	// Inserts a new mapping for a persona.
