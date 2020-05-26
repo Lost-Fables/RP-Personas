@@ -49,6 +49,7 @@ public class KitHandler {
 
 	public void deleteKit(Kit kit) {
 		allKits.remove(kit);
+		RPPersonas.get().deleteConfigForKit(kit);
 	}
 
 	public Kit getKit(String name) {

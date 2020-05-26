@@ -36,7 +36,7 @@ public class Kit {
 
 	public void setItems(List<ItemStack> items) {
 		this.items = items;
-		// TODO - Save to config.
+		RPPersonas.get().updateConfigForKit(this);
 	}
 
 	public Menu getPreview() {
