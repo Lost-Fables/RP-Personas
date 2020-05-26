@@ -20,11 +20,6 @@ public class Kit {
 	@Getter private String name;
 	@Getter private List<ItemStack> items;
 
-	public Kit(String name, String items) {
-		this.name = name;
-		setItems(InventoryUtil.deserializeItems(items));
-	}
-
 	public Kit(String name, List<ItemStack> items) {
 		this.name = name;
 		setItems(items);
@@ -35,6 +30,9 @@ public class Kit {
 	}
 
 	public void setItems(List<ItemStack> items) {
+		while(items.contains(null)) {
+			items.remove(null);
+		}
 		this.items = items;
 		RPPersonas.get().updateConfigForKit(this);
 	}
