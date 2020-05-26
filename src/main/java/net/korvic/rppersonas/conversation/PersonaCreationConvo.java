@@ -378,14 +378,14 @@ public class PersonaCreationConvo extends BaseConvo {
 													  DIVIDER);
 
 			for (Kit kit : RPPersonas.get().getKitHandler().getAllKits()) {
-				TextComponent previewPart = new TextComponent(RPPersonas.PRIMARY_LIGHT + "[" + RPPersonas.SECONDARY_LIGHT + "Preview");
+				TextComponent previewPart = new TextComponent(RPPersonas.PRIMARY_LIGHT + "[" + RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Preview");
 				previewPart.setHoverEvent(MessageUtil.hoverEvent("Click to preview " + kit.getName()));
 				{
 					ClickEvent event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "Preview " + kit.getName());
 					previewPart.setClickEvent(event);
 				}
 
-				TextComponent selectPart = new TextComponent(RPPersonas.SECONDARY_LIGHT + kit.getName() + RPPersonas.PRIMARY_LIGHT + "]");
+				TextComponent selectPart = new TextComponent(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + kit.getName() + RPPersonas.PRIMARY_LIGHT + "]");
 				selectPart.setHoverEvent(MessageUtil.hoverEvent("Click to select " + kit.getName()));
 				{
 					ClickEvent event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, kit.getName());
