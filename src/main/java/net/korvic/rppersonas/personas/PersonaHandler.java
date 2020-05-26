@@ -7,6 +7,7 @@ import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.death.Altar;
+import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -156,6 +157,18 @@ public class PersonaHandler {
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 
 			plugin.getPersonaHandler().swapToPersona(p, accountID, personaID, saveCurrentPersona);
+
+			if (data.containsKey("Background")) {
+				Kit kit = (Kit) data.get("Background");
+				if (kit != null) {
+					Inventory inv = p.getInventory();
+					for (ItemStack item : kit.getItems()) {
+						if (item != null) {
+							inv.addItem(item.clone());
+						}
+					}
+				}
+			}
 		}
 
 		if (data.containsKey(PersonasSQL.LOCATION)) {
