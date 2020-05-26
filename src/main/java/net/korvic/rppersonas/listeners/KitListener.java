@@ -41,7 +41,7 @@ public class KitListener implements Listener {
 	public void onKitCreateClose(InventoryCloseEvent e) {
 		if (e.getInventory().getHolder() instanceof KitCreateHolder) {
 			KitCreateHolder holder = (KitCreateHolder) e.getInventory().getHolder();
-			Kit kit = new Kit(holder.getName(), holder.getMat(), Arrays.asList(e.getInventory().getContents()));
+			Kit kit = new Kit(holder.getName(), Arrays.asList(e.getInventory().getContents()));
 			plugin.getKitHandler().addKit(kit);
 		}
 	}

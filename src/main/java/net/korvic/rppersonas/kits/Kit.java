@@ -11,18 +11,15 @@ import java.util.List;
 public class Kit {
 
 	@Getter private String name;
-	@Getter private Material icon;
 	@Getter private List<ItemStack> items;
 
-	public Kit(String name, Material icon, String items) {
+	public Kit(String name, String items) {
 		this.name = name;
-		this.icon = icon;
 		setItems(InventoryUtil.deserializeItems(items));
 	}
 
-	public Kit(String name, Material icon, List<ItemStack> items) {
+	public Kit(String name, List<ItemStack> items) {
 		this.name = name;
-		this.icon = icon;
 		setItems(items);
 	}
 
