@@ -68,22 +68,4 @@ public class KitHandler {
 		return names;
 	}
 
-	public Menu getKitPreview(Kit kit) {
-		List<Icon> icons = new ArrayList<>();
-
-		for (ItemStack item : kit.getItems()) {
-			icons.add(new Button() {
-				@Override
-				public ItemStack getItemStack(MenuAgent menuAgent) {
-					return item;
-				}
-
-				@Override
-				public void click(MenuAction menuAction) {}
-			});
-		}
-
-		return Menu.fromIcons(ChatColor.BOLD + kit.getName(), icons);
-	}
-
 }

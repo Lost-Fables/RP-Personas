@@ -2,6 +2,7 @@ package net.korvic.rppersonas.conversation;
 
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaRace;
@@ -317,7 +318,7 @@ public class PersonaCreationConvo extends BaseConvo {
 				if (returnToEnd) {
 					return new PersonaConfirmPrompt();
 				} else {
-					return new PersonaGenderPrompt();
+					return new PersonaGenderPrompt(false);
 				}
 			} else {
 				return new PersonaAgePrompt(returnToEnd);
@@ -327,6 +328,13 @@ public class PersonaCreationConvo extends BaseConvo {
 
 	// Gender //
 	private static class PersonaGenderPrompt extends FixedSetPrompt {
+
+		private boolean returnToEnd;
+
+		public PersonaGenderPrompt(boolean returnToEnd) {
+			this.returnToEnd = returnToEnd;
+		}
+
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
@@ -351,10 +359,60 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			context.setSessionData(PersonasSQL.GENDER, PersonaGender.getByName(input));
+			if (returnToEnd) {
+				return new PersonaConfirmPrompt();
+			} else {
+				return new PersonaBackgroundPrompt();
+			}
+		}
+	}
+
+	// Background //
+	private static class PersonaBackgroundPrompt extends FixedSetPrompt {
+		@Override
+		public String getPromptText(ConversationContext context) {
+			Player p = (Player) context.getForWhom();
+
+			BaseComponent backgrounds = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "Please select a Background Kit for your Persona.\n" +
+													  DIVIDER);
+
+			for (Kit kit : RPPersonas.get().getKitHandler().getAllKits()) {
+				backgrounds.addExtra(MessageUtil.CommandButton("Preview " + kit.getName(), "Preview " + kit.getName(), "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				backgrounds.addExtra(BUTTON_SPACE);
+
+				backgrounds.addExtra(MessageUtil.CommandButton(kit.getName(), kit.getName(), "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				backgrounds.addExtra(BUTTON_SPACE);
+			}
+
+			p.spigot().sendMessage(backgrounds);
+			return "";
+		}
+
+		@Override
+		protected boolean isInputValid(ConversationContext context, String input) {
+			if (input.startsWith("Preview")) {
+				RPPersonas plugin = RPPersonas.get();
+				String[] split = input.split(" ");
+				if (split.length > 1) {
+					Kit kit = plugin.getKitHandler().getKit(split[1]);
+					if (kit != null) {
+						kit.getPreview().openSession((Player) context.getForWhom());
+					}
+				}
+				return false;
+			} else {
+				return RPPersonas.get().getKitHandler().getKit(input) != null;
+			}
+		}
+
+		@Override
+		public Prompt acceptValidatedInput(ConversationContext context, String input) {
+			context.setSessionData("Background", RPPersonas.get().getKitHandler().getKit(input));
 			return new PersonaConfirmPrompt();
 		}
 	}
 
+	// Confirm Prompt //
 	private static class PersonaConfirmPrompt extends BooleanPrompt {
 
 		@Override
@@ -362,6 +420,7 @@ public class PersonaCreationConvo extends BaseConvo {
 			Player p = (Player) context.getForWhom();
 			PersonaSubRace race = (PersonaSubRace) context.getSessionData(PersonasSQL.RACE);
 			PersonaGender gender = (PersonaGender) context.getSessionData(PersonasSQL.GENDER);
+			Kit kit = (Kit) context.getSessionData("Background");
 
 			String raceString = null;
 			if (race != null) {
@@ -373,12 +432,18 @@ public class PersonaCreationConvo extends BaseConvo {
 				genderString = gender.getName();
 			}
 
+			String backgroundString = null;
+			if (kit != null) {
+				backgroundString = kit.getName();
+			}
+
 			BaseComponent confirmation = new TextComponent("\n" +
 														   RPPersonas.PRIMARY_DARK + "Let's review your persona details...\n" +
 														   RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_DARK + context.getSessionData(PersonasSQL.NAME) + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_DARK + raceString + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_DARK + TimeManager.getRelativeTimeString((long) context.getSessionData(PersonasSQL.AGE)) + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_DARK + genderString + "\n" +
+														   RPPersonas.PRIMARY_DARK + "Background: " + RPPersonas.SECONDARY_DARK + backgroundString + "\n" +
 														   RPPersonas.PRIMARY_DARK + "Does everything look to be in order?\n" +
 														   DIVIDER);
 
@@ -401,10 +466,10 @@ public class PersonaCreationConvo extends BaseConvo {
 
 	}
 
-	// Gender //
+	// Return //
 	private static class ReturnUpPrompt extends FixedSetPrompt {
 
-		private static String[] SECTION = new String[]{ "Name", "Race", "Age", "Gender", "Done" };
+		private static String[] SECTION = new String[]{ "Name", "Race", "Age", "Gender", "Background", "Done" };
 
 		@Override
 		public String getPromptText(ConversationContext context) {
@@ -440,7 +505,9 @@ public class PersonaCreationConvo extends BaseConvo {
 			} else if (input.equalsIgnoreCase("Age")) {
 				return new PersonaAgePrompt(true);
 			} else if (input.equalsIgnoreCase("Gender")) {
-				return new PersonaGenderPrompt();
+				return new PersonaGenderPrompt(true);
+			} else if (input.equalsIgnoreCase("Background")) {
+				return new PersonaBackgroundPrompt();
 			} else if (input.equalsIgnoreCase("Done")) {
 				return registerPersona(context);
 			} else {
