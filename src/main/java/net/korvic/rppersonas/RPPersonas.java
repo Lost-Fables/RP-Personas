@@ -74,6 +74,7 @@ public final class RPPersonas extends JavaPlugin {
 	@Getter private CorpseSQL corpseSQL;
 	@Getter private AltarSQL altarsSQL;
 	@Getter private StatusSQL statusSQL;
+	@Getter private LanguageSQL languageSQL;
 
 	// Default Location
 	@Getter private Location spawnLocation;
@@ -192,6 +193,7 @@ public final class RPPersonas extends JavaPlugin {
 		corpseSQL = new CorpseSQL(this);
 		altarsSQL = new AltarSQL(this);
 		statusSQL = new StatusSQL(this);
+		languageSQL = new LanguageSQL(this);
 	}
 
 	// CONFIG //
