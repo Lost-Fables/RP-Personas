@@ -1,30 +1,33 @@
 package net.korvic.rppersonas.personas;
 
+import lombok.Getter;
+
 public enum PersonaSubRace {
 
 	// HUMANS
-	ARMUSIAN("Armusian", 90, PersonaRace.HUMAN),
-	CARRIBARD("Carribard", 90, PersonaRace.HUMAN),
-	GRAVICAN("Gravican", 90, PersonaRace.HUMAN);
+	ARMUSIAN("Armusian", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.ARMUSIAN }),
+	CARRIBARD("Carribard", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CARRIB }),
+	GRAVICAN("Gravican", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GRAVICAN });
 
-	private String name;
-	private int maxAge;
-	private PersonaRace parentRace;
+	// DWARVES
 
-	PersonaSubRace(String name, int maxAge, PersonaRace parentRace) {
+
+	// REHK
+
+
+	// ELVES
+
+
+	@Getter private String name;
+	@Getter private int maxAge;
+	@Getter private PersonaRace parentRace;
+	@Getter private PersonaLanguage[] defaultLanguages;
+
+	PersonaSubRace(String name, int maxAge, PersonaRace parentRace, PersonaLanguage[] languages) {
 		this.name = name;
 		this.maxAge = maxAge;
 		this.parentRace = parentRace;
-	}
-
-	public String getName() {
-		return name;
-	}
-	public int getMaxAge() {
-		return maxAge;
-	}
-	public PersonaRace getParentRace() {
-		return parentRace;
+		this.defaultLanguages = languages;
 	}
 
 	public static PersonaSubRace getByName(String name) {
