@@ -5,9 +5,9 @@ import lombok.Getter;
 public enum PersonaSubRace {
 
 	// HUMANS
-	ARMUSIAN("Armusian", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.ARMUSIAN }),
+	ARMUSIAN( "Armusian",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.ARMUSIAN }),
 	CARRIBARD("Carribard", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CARRIB }),
-	GRAVICAN("Gravican", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GRAVICAN }),
+	GRAVICAN( "Gravican",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GRAVICAN }),
 
 	// DWARVES
 	CAVE_DWARF("Cave Dwarf", 90, PersonaRace.DWARF, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.YAZYK }),

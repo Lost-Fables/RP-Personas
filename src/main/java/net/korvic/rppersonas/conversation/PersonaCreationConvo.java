@@ -3,10 +3,8 @@ package net.korvic.rppersonas.conversation;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.kits.Kit;
-import net.korvic.rppersonas.personas.PersonaGender;
-import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.personas.PersonaRace;
-import net.korvic.rppersonas.personas.PersonaSubRace;
+import net.korvic.rppersonas.personas.*;
+import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
@@ -206,7 +204,7 @@ public class PersonaCreationConvo extends BaseConvo {
 				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 				subraces.addExtra(BUTTON_SPACE);
 
-				for (PersonaSubRace race : this.race.getSubRaces()) {
+				for (PersonaSubRace race : this.race.getSubRaceList()) {
 					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
 						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 						subraces.addExtra(BUTTON_SPACE);
@@ -537,10 +535,21 @@ public class PersonaCreationConvo extends BaseConvo {
 		DataMapFilter data = new DataMapFilter();
 		data.putAllObject(context.getAllSessionData());
 
-		PersonaHandler.registerPersona(data, p, false);
+		Persona pers = PersonaHandler.registerPersona(data, p, false);
+
+		try {
+			for (PersonaLanguage language : (PersonaSubRace.getByName((String) data.get(PersonasSQL.RACE)).getDefaultLanguages())) {
+				DataMapFilter languageData = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID()).put(LanguageSQL.LANGUAGE, language.getName()).put(LanguageSQL.LEVEL, 190);
+				RPPersonas.get().getLanguageSQL().registerOrUpdate(languageData);
+			}
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+
 		PersonaHandler.stopSkipping(p);
 		new DisabledStatus(null).clearEffect(p);
-
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
 
 		return Prompt.END_OF_CONVERSATION;
