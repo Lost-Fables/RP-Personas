@@ -21,7 +21,11 @@ public enum PersonaLanguage {
 	CELESTIAL("Celestial", "[C]"),
 	DRUII_TONGUE("Druii Tongue", "[DT]"),
 	HIEROPHANT("Hierophant", "[H]"),
-	TALIDURIAN("Talidurian", "[T]");
+	TALIDURIAN("Talidurian", "[T]"),
+	PYRAN("Pyran", "[PY]"),
+	AQUAN("Aquan", "[AQ]"),
+	ILLUMAN("Illuman", "[IL]"),
+	STYGAN("Stygan", "[SY]");
 
 	@Getter private String name;
 	@Getter private String tag;
