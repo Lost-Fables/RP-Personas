@@ -36,7 +36,12 @@ public enum PersonaLanguage {
 	JAVALI("Javali", "[JV]"),
 	MAKSHA("Maksha", "[MK]"),
 	GAHORIAN("Gahorian", "[GH]"),
-	VERIVAN("Verivan", "[VR]");
+	VERIVAN("Verivan", "[VR]"),
+
+	DRAKAN("Drakan", "[DK]"),
+	FEY_SPEAK("Fey Speak", "[FS]"),
+	FAR_TONGUE("Far Tongue", "[FT]"),
+	HORDESH("Hordesh", "[HD]");
 
 	@Getter private String name;
 	@Getter private String tag;
