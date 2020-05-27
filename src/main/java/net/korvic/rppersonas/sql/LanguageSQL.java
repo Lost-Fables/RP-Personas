@@ -101,13 +101,13 @@ public class LanguageSQL extends BaseSQL {
 		}
 	}
 
-	public void deleteByPersonaID(int personaID) {
+	public PreparedStatement getDeleteStatementByPersonaID(int personaID) {
 		Connection conn = getSQLConnection();
 		try {
-			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
-			statement.executeUpdate();
+			return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
+		return null;
 	}
 }

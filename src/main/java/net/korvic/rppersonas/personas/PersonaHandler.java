@@ -350,6 +350,7 @@ public class PersonaHandler {
 		try {
 			plugin.getSaveQueue().addToQueue(plugin.getPersonasSQL().getDeleteStatement(personaID));
 			plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getDeleteStatement(personaID));
+			plugin.getSaveQueue().addToQueue(plugin.getLanguageSQL().getDeleteStatementByPersonaID(personaID));
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
