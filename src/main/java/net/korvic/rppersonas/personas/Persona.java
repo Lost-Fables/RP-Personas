@@ -6,6 +6,7 @@ import lombok.Setter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.conversation.BaseConvo;
+import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.StatusSQL;
@@ -108,24 +109,38 @@ public class Persona {
 		return output;
 	}
 
+	public Map<String, Short> getLanguages() {
+		return plugin.getLanguageSQL().getLanguages(personaID);
+	}
+
 	public String getFormattedBasicInfo() {
 		Map<String, Object> data = getBasicInfo();
+		Map<String, Short> languages = getLanguages();
 
-		String output = BaseConvo.DIVIDER +
-						RPPersonas.PRIMARY_DARK + "Persona ID: " + RPPersonas.SECONDARY_LIGHT + String.format("%06d", (int) data.get(PersonasSQL.PERSONAID)) + "\n";
+		StringBuilder output = new StringBuilder(BaseConvo.DIVIDER +
+												 RPPersonas.PRIMARY_DARK + "Persona ID: " + RPPersonas.SECONDARY_LIGHT + String.format("%06d", (int) data.get(PersonasSQL.PERSONAID)) + "\n");
 		if (data.containsKey(PersonasSQL.NICKNAME)) {
-			output += RPPersonas.PRIMARY_DARK + "Nickname: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.NICKNAME) + "\n";
+			output.append(RPPersonas.PRIMARY_DARK).append("Nickname: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.NICKNAME)).append("\n");
 		}
-		output += RPPersonas.PRIMARY_DARK + "Name: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.NAME) + "\n" +
-				  RPPersonas.PRIMARY_DARK + "Age: " + RPPersonas.SECONDARY_LIGHT + TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE)) + "\n" +
-				  RPPersonas.PRIMARY_DARK + "Race: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.RACE) + "\n" +
-				  RPPersonas.PRIMARY_DARK + "Gender: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.GENDER) + "\n";
-		if (data.containsKey(PersonasSQL.DESCRIPTION)) {
-			output += RPPersonas.PRIMARY_DARK + "Description: " + RPPersonas.SECONDARY_LIGHT + data.get(PersonasSQL.DESCRIPTION) + "\n";
-		}
-		output += BaseConvo.DIVIDER;
+		output.append(RPPersonas.PRIMARY_DARK).append("Name: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.NAME)).append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Age: ").append(RPPersonas.SECONDARY_LIGHT).append(TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE))).append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Race: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.RACE)).append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Gender: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.GENDER)).append("\n");
 
-		return output;
+		if (languages != null && languages.size() > 0) {
+			StringBuilder language = new StringBuilder(RPPersonas.PRIMARY_DARK + "Languages: ");
+			for (String key : languages.keySet()) {
+				language.append(RPPersonas.SECONDARY_LIGHT).append(key).append(RPPersonas.SECONDARY_DARK).append("|").append(RPPersonas.SECONDARY_LIGHT).append(languages.get(key)).append(" ");
+			}
+			output.append(language).append("\n");
+		}
+
+		if (data.containsKey(PersonasSQL.DESCRIPTION)) {
+			output.append(RPPersonas.PRIMARY_DARK).append("Description: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.DESCRIPTION)).append("\n");
+		}
+		output.append(BaseConvo.DIVIDER);
+
+		return output.toString();
 	}
 
 	public ItemStack[] getInventory() {
