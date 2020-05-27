@@ -80,8 +80,8 @@ public class LanguageSQL extends BaseSQL {
 			replaceStatement = conn.prepareStatement("INSERT INTO " + SQL_TABLE_NAME + " (PersonaID,Language,Level) VALUES(?,?,?)");
 
 			replaceStatement.setInt(1, (int) data.get(PERSONAID));
-			replaceStatement.setString(1, (String) data.get(LANGUAGE));
-			replaceStatement.setShort(1, (short) data.get(LEVEL));
+			replaceStatement.setString(2, (String) data.get(LANGUAGE));
+			replaceStatement.setShort(3, (short) data.get(LEVEL));
 			return replaceStatement;
 		}
 		return null;
