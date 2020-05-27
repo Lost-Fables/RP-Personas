@@ -538,7 +538,7 @@ public class PersonaCreationConvo extends BaseConvo {
 		Persona pers = PersonaHandler.registerPersona(data, p, false);
 
 		try {
-			for (PersonaLanguage language : (PersonaSubRace.getByName((String) data.get(PersonasSQL.RACE)).getDefaultLanguages())) {
+			for (PersonaLanguage language : ((PersonaSubRace) data.get(PersonasSQL.RACE)).getDefaultLanguages()) {
 				DataMapFilter languageData = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID()).put(LanguageSQL.LANGUAGE, language.getName()).put(LanguageSQL.LEVEL, 190);
 				RPPersonas.get().getLanguageSQL().registerOrUpdate(languageData);
 			}
