@@ -67,6 +67,7 @@ public class LanguageSQL extends BaseSQL {
 
 	public void registerOrUpdate(DataMapFilter data) {
 		try {
+			plugin.getSaveQueue().addToQueue(getDeleteLanguageStatement(data));
 			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
@@ -87,18 +88,16 @@ public class LanguageSQL extends BaseSQL {
 		return null;
 	}
 
-	public void deleteLanguage(DataMapFilter data) {
+	public PreparedStatement getDeleteLanguageStatement(DataMapFilter data) {
 		if (data.containsKey(PERSONAID) && data.containsKey(LANGUAGE)) {
 			Connection conn = getSQLConnection();
 			try {
-				PreparedStatement purgeOldData = null;
-				purgeOldData = conn.prepareStatement("DELETE * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND Language='" + data.get(LANGUAGE) + "'");
-				purgeOldData.execute();
-				purgeOldData.close();
+				return conn.prepareStatement("DELETE * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND Language='" + data.get(LANGUAGE) + "'");
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
 		}
+		return null;
 	}
 
 	public PreparedStatement getDeleteStatementByPersonaID(int personaID) {
