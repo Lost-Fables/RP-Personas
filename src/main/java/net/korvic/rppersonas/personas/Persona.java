@@ -15,6 +15,7 @@ import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -130,7 +131,7 @@ public class Persona {
 		if (languages != null && languages.size() > 0) {
 			StringBuilder language = new StringBuilder(RPPersonas.PRIMARY_DARK + "Languages: ");
 			for (String key : languages.keySet()) {
-				language.append(RPPersonas.SECONDARY_LIGHT).append(key).append(RPPersonas.SECONDARY_DARK).append("|").append(RPPersonas.SECONDARY_LIGHT).append(languages.get(key)).append(" ");
+				language.append(RPPersonas.SECONDARY_LIGHT).append(key).append(RPPersonas.SECONDARY_DARK).append(ChatColor.BOLD).append(" | ").append(RPPersonas.SECONDARY_LIGHT).append(languages.get(key)).append("  ");
 			}
 			output.append(language).append("\n");
 		}
