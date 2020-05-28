@@ -66,12 +66,16 @@ public class LanguageSQL extends BaseSQL {
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
+		unregister(data);
 		try {
-			plugin.getSaveQueue().addToQueue(getDeleteLanguageStatement(data));
 			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
+	}
+
+	public void unregister(DataMapFilter data) {
+		plugin.getSaveQueue().addToQueue(getDeleteLanguageStatement(data));
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {

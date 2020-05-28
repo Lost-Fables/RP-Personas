@@ -26,16 +26,17 @@ public class LanguageCommands extends BaseCommand {
 		if (pers != null) {
 			Map<String, Short> languages = plugin.getLanguageSQL().getLanguages(pers.getPersonaID());
 			int level = languages.get(lang.getName()) + amount;
-			if (level < 0) {
-				level = 0;
-			} else if (level > 255) {
-				level = 255;
-			}
-
 			DataMapFilter data = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID())
-													.put(LanguageSQL.LANGUAGE, lang.getName())
-													.put(LanguageSQL.LEVEL, (short) level);
-			plugin.getLanguageSQL().registerOrUpdate(data);
+													.put(LanguageSQL.LANGUAGE, lang.getName());
+			if (level <= 0) {
+				plugin.getLanguageSQL().unregister(data);
+			} else {
+				if (level > 255) {
+					level = 255;
+				}
+				data.put(LanguageSQL.LEVEL, (short) level);
+				plugin.getLanguageSQL().registerOrUpdate(data);
+			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + "That player doesn't have a registered persona.");
 		}
