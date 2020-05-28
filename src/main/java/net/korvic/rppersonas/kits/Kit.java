@@ -30,10 +30,13 @@ public class Kit {
 	}
 
 	public void setItems(List<ItemStack> items) {
-		while(items.contains(null)) {
-			items.remove(null);
+		List<ItemStack> newItems = new ArrayList<>();
+		for (ItemStack item : items) {
+			if (item != null) {
+				newItems.add(item);
+			}
 		}
-		this.items = items;
+		this.items = newItems;
 		RPPersonas.get().updateConfigForKit(this);
 	}
 
