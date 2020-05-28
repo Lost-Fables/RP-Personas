@@ -42,4 +42,25 @@ public class LanguageCommands extends BaseCommand {
 		}
 	}
 
+	@Cmd(value="Manually set the language level of a given player.")
+	public void set(CommandSender sender, Player p, PersonaLanguage lang, @Range(min=0, max=255) int level) {
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		if (pers != null) {
+			Map<String, Short> languages = plugin.getLanguageSQL().getLanguages(pers.getPersonaID());
+			DataMapFilter data = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID())
+													.put(LanguageSQL.LANGUAGE, lang.getName());
+			if (level == 0) {
+				plugin.getLanguageSQL().unregister(data);
+			} else {
+				if (level > 255) {
+					level = 255;
+				}
+				data.put(LanguageSQL.LEVEL, (short) level);
+				plugin.getLanguageSQL().registerOrUpdate(data);
+			}
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + "That player doesn't have a registered persona.");
+		}
+	}
+
 }
