@@ -18,6 +18,7 @@ import net.korvic.rppersonas.listeners.*;
 import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
+import net.korvic.rppersonas.personas.PersonaLanguage;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.util.SaveQueue;
 import net.korvic.rppersonas.statuses.*;
@@ -322,6 +323,12 @@ public final class RPPersonas extends JavaPlugin {
 				.mapperWithSender((sender, kit) -> kitHandler.getKit(kit))
 				.register();
 
+		Commands.defineArgumentType(PersonaLanguage.class)
+				.defaultName("Language")
+				.defaultError("Failed to find a language by that name.")
+				.completer(PersonaLanguage::getNames)
+				.mapperWithSender((sender, lang) -> PersonaLanguage.getByName(lang))
+				.register();
 	}
 
 	private float getYawFromFacing(String facing) {

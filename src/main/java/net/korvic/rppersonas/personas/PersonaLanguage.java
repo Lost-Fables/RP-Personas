@@ -2,6 +2,9 @@ package net.korvic.rppersonas.personas;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum PersonaLanguage {
 
 	ANC_COMMON("Ancient Common", "[AC]"),
@@ -49,6 +52,23 @@ public enum PersonaLanguage {
 	PersonaLanguage(String name, String tag) {
 		this.name = name;
 		this.tag = tag;
+	}
+
+	public static List<String> getNames() {
+		List<String> list = new ArrayList<>();
+		for (PersonaLanguage lang : values()) {
+			list.add(lang.getName());
+		}
+		return list;
+	}
+
+	public static PersonaLanguage getByName(String name) {
+		for (PersonaLanguage lang : values()) {
+			if (name.equalsIgnoreCase(lang.getName())) {
+				return lang;
+			}
+		}
+		return null;
 	}
 
 }
