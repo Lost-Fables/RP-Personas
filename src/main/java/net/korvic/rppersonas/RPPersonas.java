@@ -237,6 +237,7 @@ public final class RPPersonas extends JavaPlugin {
 		{
 			ConfigurationSection section = config.getConfigurationSection("kits");
 			if (section != null) {
+				kitHandler = new KitHandler(this);
 				for (String kitName : section.getKeys(false)) {
 					List<ItemStack> list;
 					try {
@@ -248,7 +249,6 @@ public final class RPPersonas extends JavaPlugin {
 						}
 					}
 					Kit kit = new Kit(kitName, list);
-					kitHandler = new KitHandler(this);
 					kitHandler.addKit(kit);
 				}
 			}
