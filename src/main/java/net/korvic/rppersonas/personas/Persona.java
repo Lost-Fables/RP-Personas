@@ -130,14 +130,21 @@ public class Persona {
 
 		if (languages != null && languages.size() > 0) {
 			StringBuilder languageLine = new StringBuilder(RPPersonas.PRIMARY_DARK + "Languages: ");
+			boolean filled = false;
 			for (String key : languages.keySet()) {
+				if (filled) {
+					languageLine.append(RPPersonas.TERTIARY).append(ChatColor.BOLD).append(" | ");
+				} else {
+					filled = true;
+				}
+
 				PersonaLanguage lang = PersonaLanguage.getByName(key);
 				if (lang != null) {
 					languageLine.append(RPPersonas.SECONDARY_LIGHT);
 					if (lang.getTag().length() > 0) {
 						languageLine.append(lang.getTag()).append(" ");
 					}
-					languageLine.append(key).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key)).append(RPPersonas.TERTIARY).append(ChatColor.BOLD).append(" | ");
+					languageLine.append(key).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key));
 				}
 			}
 			output.append(languageLine).append("\n");
