@@ -133,7 +133,11 @@ public class Persona {
 			for (String key : languages.keySet()) {
 				PersonaLanguage lang = PersonaLanguage.getByName(key);
 				if (lang != null) {
-					languageLine.append(RPPersonas.SECONDARY_LIGHT).append(lang.getTag()).append(" ").append(key).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key)).append(RPPersonas.TERTIARY).append(ChatColor.BOLD).append(" |");
+					languageLine.append(RPPersonas.SECONDARY_LIGHT);
+					if (lang.getTag().length() > 0) {
+						languageLine.append(lang.getTag()).append(" ");
+					}
+					languageLine.append(key).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key)).append(RPPersonas.TERTIARY).append(ChatColor.BOLD).append(" | ");
 				}
 			}
 			output.append(languageLine).append("\n");
