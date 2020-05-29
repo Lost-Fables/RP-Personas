@@ -96,7 +96,7 @@ public class LanguageSQL extends BaseSQL {
 		if (data.containsKey(PERSONAID) && data.containsKey(LANGUAGE)) {
 			Connection conn = getSQLConnection();
 			try {
-				return conn.prepareStatement("DELETE * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND Language='" + data.get(LANGUAGE) + "'");
+				return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND Language='" + data.get(LANGUAGE) + "'");
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
