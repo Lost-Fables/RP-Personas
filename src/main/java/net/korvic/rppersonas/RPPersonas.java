@@ -45,6 +45,7 @@ public final class RPPersonas extends JavaPlugin {
 	public static final ChatColor PRIMARY_DARK = ChatColor.DARK_AQUA;
 	public static final ChatColor SECONDARY_LIGHT = ChatColor.WHITE;
 	public static final ChatColor SECONDARY_DARK = ChatColor.GRAY;
+	public static final ChatColor TERTIARY = ChatColor.DARK_GRAY;
 	public static final boolean DEBUGGING = true;
 	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
 	public static final int DEFAULT_PERSONAS = 2;

@@ -129,11 +129,14 @@ public class Persona {
 			  .append(RPPersonas.PRIMARY_DARK).append("Gender: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.GENDER)).append("\n");
 
 		if (languages != null && languages.size() > 0) {
-			StringBuilder language = new StringBuilder(RPPersonas.PRIMARY_DARK + "Languages: ");
+			StringBuilder languageLine = new StringBuilder(RPPersonas.PRIMARY_DARK + "Languages: ");
 			for (String key : languages.keySet()) {
-				language.append(RPPersonas.SECONDARY_LIGHT).append(key).append(RPPersonas.SECONDARY_DARK).append(ChatColor.BOLD).append(" | ").append(RPPersonas.SECONDARY_LIGHT).append(languages.get(key)).append("  ");
+				PersonaLanguage lang = PersonaLanguage.getByName(key);
+				if (lang != null) {
+					languageLine.append(RPPersonas.SECONDARY_LIGHT).append(lang.getTag()).append(" ").append(key).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key)).append(RPPersonas.TERTIARY).append(ChatColor.BOLD).append(" | ");
+				}
 			}
-			output.append(language).append("\n");
+			output.append(languageLine).append("\n");
 		}
 
 		if (data.containsKey(PersonasSQL.DESCRIPTION)) {
