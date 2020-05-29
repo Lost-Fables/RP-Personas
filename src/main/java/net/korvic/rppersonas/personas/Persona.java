@@ -144,7 +144,7 @@ public class Persona {
 					if (lang.getTag().length() > 0) {
 						languageLine.append(lang.getTag()).append(" ");
 					}
-					languageLine.append(key).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key));
+					languageLine.append(key.replace("_", " ")).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key));
 				}
 			}
 			output.append(languageLine).append("\n");

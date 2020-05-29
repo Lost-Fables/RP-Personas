@@ -7,28 +7,28 @@ import java.util.List;
 
 public enum PersonaLanguage {
 
-	ANC_COMMON("Ancient Common", "[AC]"),
+	ANC_COMMON("Ancient_Common", "[AC]"),
 	COMMON("Common", ""),
-	SIGN("Sign Language", "[SL]"),
+	SIGN("Sign_Language", "[SL]"),
 
 	GRAVICAN("Gravican", "[GR]"),
 	ARMUSIAN("Armusian", "[MS]"),
 	CARRIB("Carrib", "[CB]"),
 
-	ANC_REHKISH("Ancient Rehkish", "[AR]"),
+	ANC_REHKISH("Ancient_Rehkish", "[AR]"),
 	REHKISH("Rehkish", "[R]"),
 
-	ANC_ELVEN("Ancient Elven", "[AE]"),
-	CLASS_ELVEN("Classical Elven", "[E]"),
-	NEW_ELVEN("New Elven", "[NE]"),
+	ANC_ELVEN("Ancient_Elven", "[AE]"),
+	CLASS_ELVEN("Classical_Elven", "[E]"),
+	NEW_ELVEN("New_Elven", "[NE]"),
 
-	ANC_YAZYK("Ancient Yazyk", "[AY]"),
+	ANC_YAZYK("Ancient_Yazyk", "[AY]"),
 	YAZYK("Yazyk", "[Y]"),
 
 	DEMONIC("Demonic", "[D]"),
 	PRIMORDIAL("Primordial", "[P]"),
 	CELESTIAL("Celestial", "[C]"),
-	DRUII_TONGUE("Druii Tongue", "[DT]"),
+	DRUII_TONGUE("Druii_Tongue", "[DT]"),
 	HIEROPHANT("Hierophant", "[H]"),
 	TALIDURIAN("Talidurian", "[T]"),
 
@@ -43,8 +43,8 @@ public enum PersonaLanguage {
 	VERIVAN("Verivan", "[VR]"),
 
 	DRAKAN("Drakan", "[DK]"),
-	FEY_SPEAK("Fey Speak", "[FS]"),
-	FAR_TONGUE("Far Tongue", "[FT]"),
+	FEY_SPEAK("Fey_Speak", "[FS]"),
+	FAR_TONGUE("Far_Tongue", "[FT]"),
 	HORDESH("Hordesh", "[HD]");
 
 	@Getter private String name;
