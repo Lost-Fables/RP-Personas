@@ -9,6 +9,7 @@ public enum PersonaLanguage {
 
 	ANC_COMMON("Ancient Common", "[AC]"),
 	COMMON("Common", ""),
+	SIGN("Sign Language", "[SL]"),
 
 	GRAVICAN("Gravican", "[GR]"),
 	ARMUSIAN("Armusian", "[MS]"),
