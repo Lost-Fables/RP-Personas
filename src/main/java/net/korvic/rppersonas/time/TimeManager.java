@@ -85,23 +85,32 @@ public class TimeManager {
 	private BukkitRunnable currentRunnable;
 
 	public TimeManager(World world, String season, int timeScale, boolean save) {
-		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-		this.timeScale = timeScale;
-		this.season = season;
+		if (world != null) {
+			this.timeScale = timeScale;
+			this.season = season;
 
-		if (save) {
-			RPPersonas.get().updateConfigForWorld(world.getName(), season, this.timeScale, null);
+			addWorld(world);
+
+			if (save) {
+				RPPersonas.get().updateConfigForWorld(world.getName(), season, this.timeScale, null);
+			}
+
+			this.currentState = TimeState.getState((int) world.getTime());
+			startRunnable();
 		}
+	}
 
+	private void addWorld(World world) {
+		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		worlds.add(world);
-		this.currentState = TimeState.getState((int) world.getTime());
-		startRunnable();
+		if (!worlds.get(0).equals(world)) {
+			world.setTime(worlds.get(0).getTime());
+		}
 	}
 
 	public void addSyncedWorld(World world, boolean save) {
 		if (world != null) {
-			worlds.add(world);
-			world.setTime(worlds.get(0).getTime());
+			addWorld(world);
 
 			if (save) {
 				List<String> syncedWorldNames = new ArrayList<>();
