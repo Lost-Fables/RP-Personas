@@ -59,7 +59,9 @@ public class PersonaHandler {
 								20, 60*20, 20);
 
 		new DisabledStatus(title).applyEffect(p, (byte) 0);
-		p.teleportAsync(plugin.getSpawnLocation());
+		if (plugin.getSpawnLocation() != null) {
+			p.teleportAsync(plugin.getSpawnLocation());
+		}
 		p.getInventory().clear();
 
 		Map<Object, Object> data = new HashMap<>();
