@@ -87,7 +87,7 @@ public class KarmaSQL extends BaseSQL {
 		} else if (resultPresent) {
 			replaceStatement.setInt(4, result.getInt("Modifier"));
 		} else {
-			replaceStatement.setInt(4, 1);
+			replaceStatement.setInt(4, 0);
 		}
 
 		grabStatement.close();
@@ -104,6 +104,22 @@ public class KarmaSQL extends BaseSQL {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
 		}
+	}
+
+	public int calculateKarma(int personaID) {
+		int output = 0;
+		Connection conn = getSQLConnection();
+		try {
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				output += rs.getInt("Modifier");
+			}
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+		return output;
 	}
 
 }
