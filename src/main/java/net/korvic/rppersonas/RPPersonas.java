@@ -77,6 +77,7 @@ public final class RPPersonas extends JavaPlugin {
 	@Getter private AltarSQL altarsSQL;
 	@Getter private StatusSQL statusSQL;
 	@Getter private LanguageSQL languageSQL;
+	@Getter private KarmaSQL karmaSQL;
 
 	// Default Location
 	@Getter private Location spawnLocation;
@@ -196,6 +197,7 @@ public final class RPPersonas extends JavaPlugin {
 		altarsSQL = new AltarSQL(this);
 		statusSQL = new StatusSQL(this);
 		languageSQL = new LanguageSQL(this);
+		karmaSQL = new KarmaSQL(this);
 	}
 
 	// CONFIG //
