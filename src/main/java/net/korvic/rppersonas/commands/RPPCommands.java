@@ -19,6 +19,7 @@ public class RPPCommands extends BaseCommand {
 	TimeCommands timeCommands;
 	KitCommands kitCommands;
 	LanguageCommands langaugeCommands;
+	KarmaCommands karmaCommands;
 
 	public RPPCommands(RPPersonas plugin, TimeCommands timeCommands) {
 		this.plugin = plugin;
@@ -27,6 +28,7 @@ public class RPPCommands extends BaseCommand {
 		this.timeCommands = timeCommands;
 		this.kitCommands = new KitCommands(plugin);
 		this.langaugeCommands = new LanguageCommands(plugin);
+		this.karmaCommands = new KarmaCommands(plugin);
 	}
 
 	@Cmd(value="Commands for modifying altars.")
@@ -47,6 +49,11 @@ public class RPPCommands extends BaseCommand {
 	@Cmd(value="Language based commands.")
 	public BaseCommand language() {
 		return langaugeCommands;
+	}
+
+	@Cmd(value="Karma based commands.")
+	public BaseCommand karma() {
+		return karmaCommands;
 	}
 
 }
