@@ -2,6 +2,7 @@ package net.korvic.rppersonas.death;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
+import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.CorpseSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -15,13 +16,13 @@ import java.util.List;
 
 public class Corpse {
 
-	private int id;
-	private String name;
-	private Inventory inv;
-	private long created;
-	private int personaID;
-	private ItemStack itemstack;
-	private String texture;
+	@Getter	private int id;
+	@Getter private String name;
+	@Getter private Inventory inv;
+	@Getter private long created;
+	@Getter private int personaID;
+	@Getter private ItemStack itemstack;
+	@Getter private String texture;
 
 	public Corpse(int id, String name, String texture, Inventory inv, long created, int personaID) {
 		this.id = id;
@@ -39,10 +40,10 @@ public class Corpse {
 		}
 
 		List<String> lore = new ArrayList<>();
-		lore.add("Take this to a resurrection altar");
-		lore.add("to bring them back to life.");
+		lore.add(RPPersonas.SECONDARY_DARK + "Take this to a resurrection altar");
+		lore.add(RPPersonas.SECONDARY_DARK + "to bring them back to life.");
 		lore.add("");
-		lore.add("Crouch + Right Click to open.");
+		lore.add(RPPersonas.SECONDARY_DARK + "Crouch + Right Click to open.");
 
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
@@ -52,28 +53,6 @@ public class Corpse {
 		ItemUtil.setCustomTag(item, CorpseHandler.CORPSE_KEY, id + ":" + created);
 
 		this.itemstack = item;
-	}
-
-	public int getID() {
-		return id;
-	}
-	public String getName() {
-		return name;
-	}
-	public Inventory getInventory() {
-		return inv;
-	}
-	public long getCreated() {
-		return created;
-	}
-	public int getPersonaID() {
-		return personaID;
-	}
-	public String getTexture() {
-		return texture;
-	}
-	public ItemStack getItem() {
-		return itemstack;
 	}
 
 	public void save() {

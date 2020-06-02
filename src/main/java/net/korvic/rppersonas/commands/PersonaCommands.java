@@ -6,10 +6,14 @@ import co.lotc.core.bukkit.util.LocationUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.listeners.CorpseListener;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.sql.KarmaSQL;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -98,21 +102,26 @@ public class PersonaCommands extends BaseCommand {
 			status.clearEffect(p);
 
 			if (corpse != null) {
-				ItemUtil.removeCustomTag(corpse, CorpseHandler.CORPSE_KEY);
 				ItemMeta meta = corpse.getItemMeta();
-
 				String[] name = meta.getDisplayName().split(" ");
 				if (name.length > 0) {
-					meta.setDisplayName(name[0] + " Ruined Corpse");
+					meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + name[0] + " Ruined Corpse");
 				}
 
 				List<String> lore = new ArrayList<>();
-				lore.add("This corpse has been ruined!");
-				lore.add("It may no longer be resurrected, however");
-				lore.add("it may be placed on the ground now.");
+				lore.add(RPPersonas.SECONDARY_DARK + "This corpse has been ruined!");
+				lore.add(RPPersonas.SECONDARY_DARK + "It may no longer be resurrected, however");
+				lore.add(RPPersonas.SECONDARY_DARK + "it may be placed on the ground now.");
 				meta.setLore(lore);
-
 				corpse.setItemMeta(meta);
+
+				Corpse corpseObject = plugin.getCorpseHandler().getCorpse(ItemUtil.getCustomTag(corpse, CorpseHandler.CORPSE_KEY));
+				DataMapFilter data = new DataMapFilter().put(KarmaSQL.PERSONAID, corpseObject.getPersonaID())
+														.put(KarmaSQL.ACTION, "RUIN_CORPSE")
+														.put(KarmaSQL.MODIFIER, plugin.getKarmaSQL().calculateRuinModifier(corpseObject.getPersonaID()));
+				plugin.getKarmaSQL().registerOrUpdate(data);
+
+				ItemUtil.removeCustomTag(corpse, CorpseHandler.CORPSE_KEY);
 				InventoryUtil.addOrDropItem(p, corpse);
 			} else {
 				msg(RPPersonas.PRIMARY_DARK + "You must be holding a corpse in your hand in order to ruin it!");

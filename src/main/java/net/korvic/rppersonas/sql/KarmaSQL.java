@@ -16,7 +16,6 @@ public class KarmaSQL extends BaseSQL {
 
 	public static final int BASE_KARMA = 25; // How much to add/remove based on if the overall Karma output is + or -
 	public static final int EXPERIENCE_DIVISOR = 10000; // This is an arbitrary number used in the equation below to determine the rate at which Karma is gained/lost.
-	public static final int RUIN_CORPSE_DIFFERENTIAL = -400;
 
 	public static final String PERSONAID = "personaid";
 	public static final String KARMAID = "karmaid";
@@ -51,7 +50,10 @@ public class KarmaSQL extends BaseSQL {
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
-		if (data.containsKey(PERSONAID) && data.containsKey(KARMAID)) {
+		if (data.containsKey(PERSONAID)) {
+			if (!data.containsKey(KARMAID)) {
+				data.put(KARMAID, getMaxKarmaID((int) data.get(PERSONAID)) + 1);
+			}
 			try {
 				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 			} catch (SQLException ex) {
@@ -110,6 +112,22 @@ public class KarmaSQL extends BaseSQL {
 		}
 	}
 
+	private int getMaxKarmaID(int personaID) {
+		int output = 0;
+		Connection conn = getSQLConnection();
+		try {
+			PreparedStatement statement = conn.prepareStatement("SELECT MAX(KarmaID) FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			ResultSet rs = statement.executeQuery();
+
+			if (rs.next()) {
+				output = rs.getInt("KarmaID");
+			}
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+		return output;
+	}
+
 	public int calculateKarma(int personaID) {
 		int output = 0;
 		Connection conn = getSQLConnection();
@@ -133,7 +151,7 @@ public class KarmaSQL extends BaseSQL {
 
 	public float calculateRuinModifier(int personaID) {
 		int karma = calculateKarma(personaID);
-		return calculateKarma(karma, RUIN_CORPSE_DIFFERENTIAL);
+		return calculateKarma(karma, (int) (EXPERIENCE_DIVISOR / 5f));
 	}
 
 	private float calculateKarma(int karma, int differential) {
