@@ -89,11 +89,11 @@ public class KarmaSQL extends BaseSQL {
 		}
 
 		if (data.containsKey(MODIFIER)) {
-			replaceStatement.setInt(4, (int) data.get(MODIFIER));
+			replaceStatement.setFloat(4, (float) data.get(MODIFIER));
 		} else if (resultPresent) {
-			replaceStatement.setInt(4, result.getInt("Modifier"));
+			replaceStatement.setFloat(4, result.getFloat("Modifier"));
 		} else {
-			replaceStatement.setInt(4, 0);
+			replaceStatement.setFloat(4, 0);
 		}
 
 		grabStatement.close();
