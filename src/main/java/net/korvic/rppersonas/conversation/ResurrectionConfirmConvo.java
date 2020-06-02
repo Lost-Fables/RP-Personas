@@ -90,7 +90,7 @@ public class ResurrectionConfirmConvo extends BaseConvo {
 
 			plugin.getPersonasSQL().registerOrUpdate(personaData);
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
-			plugin.getCorpseSQL().deleteByCorpseID(corpse.getID());
+			plugin.getCorpseSQL().deleteByCorpseID(corpse.getId());
 
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
 			if (pers != null && pers.getUsingPlayer().isOnline()) {
