@@ -115,10 +115,10 @@ public class PersonaCommands extends BaseCommand {
 				meta.setLore(lore);
 				corpse.setItemMeta(meta);
 
-				Corpse corpseObject = plugin.getCorpseHandler().getCorpse(ItemUtil.getCustomTag(corpse, CorpseHandler.CORPSE_KEY));
-				DataMapFilter data = new DataMapFilter().put(KarmaSQL.PERSONAID, corpseObject.getPersonaID())
+				Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+				DataMapFilter data = new DataMapFilter().put(KarmaSQL.PERSONAID, pers.getPersonaID())
 														.put(KarmaSQL.ACTION, "RUIN_CORPSE")
-														.put(KarmaSQL.MODIFIER, plugin.getKarmaSQL().calculateRuinModifier(corpseObject.getPersonaID()));
+														.put(KarmaSQL.MODIFIER, plugin.getKarmaSQL().calculateRuinModifier(pers.getPersonaID()));
 				plugin.getKarmaSQL().registerOrUpdate(data);
 
 				ItemUtil.removeCustomTag(corpse, CorpseHandler.CORPSE_KEY);
