@@ -14,6 +14,10 @@ public class KarmaSQL extends BaseSQL {
 
 	private static final String SQL_TABLE_NAME = "rppersonas_karma";
 
+	public static final int BASE_KARMA = 25; // How much to add/remove based on if the overall Karma output is + or -
+	public static final int EXPERIENCE_DIVISOR = 10000; // This is an arbitrary number used in the equation below to determine the rate at which Karma is gained/lost.
+	public static final int RUIN_CORPSE_DIFFERENTIAL = -400;
+
 	public static final String PERSONAID = "personaid";
 	public static final String KARMAID = "karmaid";
 	public static final String ACTION = "action";
@@ -120,6 +124,32 @@ public class KarmaSQL extends BaseSQL {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
 		return output;
+	}
+
+	public float calculateExecuteModifier(int killerID, int victimID) {
+		int killerKarma = calculateKarma(killerID);
+		return calculateKarma(killerKarma, (killerKarma - calculateKarma(victimID)));
+	}
+
+	public float calculateRuinModifier(int personaID) {
+		int karma = calculateKarma(personaID);
+		return calculateKarma(karma, RUIN_CORPSE_DIFFERENTIAL);
+	}
+
+	private float calculateKarma(int karma, int differential) {
+		// Experience is an exponential for how far one is from neutral Karma.
+		float experience = (((float) (karma^2))/EXPERIENCE_DIVISOR);
+
+		float karmaChange = experience * (differential/(EXPERIENCE_DIVISOR / 5f));
+		if (karmaChange <= 0) {
+			karmaChange -= BASE_KARMA;
+		} else {
+			karmaChange += BASE_KARMA;
+		}
+
+		// This calculation is based on '(x^2 / 10000) * (z / 2000) +- 25' where x = Killer Karma and z = Killer-Victim Karma Difference
+		// If EXPERIENCE_DIVISOR or BASE_KARMA is updated the equation will change accordingly.
+		return karmaChange;
 	}
 
 }
