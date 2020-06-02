@@ -14,7 +14,7 @@ public class KarmaSQL extends BaseSQL {
 
 	private static final String SQL_TABLE_NAME = "rppersonas_karma";
 
-	public static final float BASE_KARMA = 25; // How much to add/remove based on if the overall Karma output is + or -
+	public static final float BASE_KARMA = 50; // How much to add/remove based on if the overall Karma output is + or -
 	public static final float EXPERIENCE_DIVISOR = 10000; // This is an arbitrary number used in the equation below to determine the rate at which Karma is gained/lost.
 
 	public static final String PERSONAID = "personaid";
