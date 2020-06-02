@@ -18,16 +18,16 @@ public class Corpse {
 
 	@Getter	private int id;
 	@Getter private String name;
-	@Getter private Inventory inv;
+	@Getter private Inventory inventory;
 	@Getter private long created;
 	@Getter private int personaID;
-	@Getter private ItemStack itemstack;
+	@Getter private ItemStack item;
 	@Getter private String texture;
 
-	public Corpse(int id, String name, String texture, Inventory inv, long created, int personaID) {
+	public Corpse(int id, String name, String texture, Inventory inventory, long created, int personaID) {
 		this.id = id;
 		this.name = name;
-		this.inv = inv;
+		this.inventory = inventory;
 		this.created = created;
 		this.personaID = personaID;
 		this.texture = texture;
@@ -52,14 +52,14 @@ public class Corpse {
 
 		ItemUtil.setCustomTag(item, CorpseHandler.CORPSE_KEY, id + ":" + created);
 
-		this.itemstack = item;
+		this.item = item;
 	}
 
 	public void save() {
 		DataMapFilter data = new DataMapFilter();
 		data.put(CorpseSQL.CORPSEID, id)
 			.put(CorpseSQL.NAME, name)
-			.put(CorpseSQL.INVENTORY, InventoryUtil.serializeItems(inv))
+			.put(CorpseSQL.INVENTORY, InventoryUtil.serializeItems(inventory))
 			.put(CorpseSQL.CREATED, created)
 			.put(CorpseSQL.PERSONAID, personaID)
 			.put(CorpseSQL.TEXTURE, texture);
