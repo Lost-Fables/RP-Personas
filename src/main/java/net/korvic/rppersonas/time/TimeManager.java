@@ -100,6 +100,15 @@ public class TimeManager {
 		}
 	}
 
+	public boolean hasWorld(World world) {
+		for (World synced : worlds) {
+			if (world.equals(synced)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void addWorld(World world) {
 		world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		worlds.add(world);
@@ -109,7 +118,7 @@ public class TimeManager {
 	}
 
 	public void addSyncedWorld(World world, boolean save) {
-		if (world != null) {
+		if (world != null && !hasWorld(world)) {
 			addWorld(world);
 
 			if (save) {
