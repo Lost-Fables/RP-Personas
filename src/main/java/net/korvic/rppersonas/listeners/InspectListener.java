@@ -29,7 +29,9 @@ public class InspectListener implements Listener {
 			Player target = (Player) e.getRightClicked();
 			if (!(recentInteractions.containsKey(inspector) && recentInteractions.get(inspector).contains(target))) {
 
-				inspector.sendMessage(plugin.getPersonaHandler().getPersonaInfo(target));
+				if (plugin.getPersonaHandler().getLoadedPersona(target) != null) {
+					inspector.sendMessage(plugin.getPersonaHandler().getPersonaInfo(target));
+				}
 
 				if (recentInteractions.containsKey(inspector)) {
 					recentInteractions.get(inspector).add(target);
