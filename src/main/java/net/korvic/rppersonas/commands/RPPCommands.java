@@ -7,6 +7,7 @@ import net.korvic.rppersonas.RPPersonas;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
+import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -99,7 +100,15 @@ public class RPPCommands extends BaseCommand {
 							return;
 						}
 					}
-					user.setPrimaryGroup("accepted");
+
+					Node accepted = Node.builder("group.accepted").build();
+					for (Node node : user.getNodes()) {
+						if (node.getKey().equalsIgnoreCase("group.default")) {
+							user.data().remove(node);
+						}
+					}
+					user.data().add(accepted);
+					api.getUserManager().saveUser(user);
 				});
 			}
 
