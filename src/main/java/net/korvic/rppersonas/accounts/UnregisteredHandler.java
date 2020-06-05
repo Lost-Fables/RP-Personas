@@ -9,8 +9,7 @@ import java.util.List;
 
 public class UnregisteredHandler {
 
-	private static final String REGISTER_REMINDER = RPPersonas.PRIMARY_DARK + "Please register your forum account with " + RPPersonas.SECONDARY_LIGHT + "/account forumlink Forum_ID" + RPPersonas.PRIMARY_DARK + "!\n" +
-													RPPersonas.PRIMARY_DARK + "If you need help, please use " + RPPersonas.SECONDARY_LIGHT + "/request new" + RPPersonas.PRIMARY_DARK + " and someone will swing by to give you a hand.";
+	private static final String REGISTER_REMINDER = RPPersonas.PRIMARY_DARK + "Your account has not been accepted yet. If you haven't put through a whitelist application, be sure to do so on the forums!";
 	private RPPersonas plugin;
 	private BukkitRunnable runnable;
 

@@ -238,7 +238,7 @@ public final class RPPersonas extends JavaPlugin {
 			if (spawnWorldName != null && Bukkit.getWorld(spawnWorldName) != null) {
 				String facing = config.getString("death.facing");
 				if (facing != null) {
-					spawnLocation = new Location(Bukkit.getWorld(spawnWorldName), config.getDouble("death.x"), config.getDouble("death.y"), config.getDouble("death.z"), getYawFromFacing(facing), 0);
+					deathLocation = new Location(Bukkit.getWorld(spawnWorldName), config.getDouble("death.x"), config.getDouble("death.y"), config.getDouble("death.z"), getYawFromFacing(facing), 0);
 				}
 			}
 		}
