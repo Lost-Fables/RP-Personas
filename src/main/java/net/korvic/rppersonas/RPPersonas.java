@@ -79,8 +79,9 @@ public final class RPPersonas extends JavaPlugin {
 	@Getter private LanguageSQL languageSQL;
 	@Getter private KarmaSQL karmaSQL;
 
-	// Default Location
+	// Default Locations
 	@Getter private Location spawnLocation;
+	@Getter private Location deathLocation;
 
 	@Override
 	public void onEnable() {
@@ -200,6 +201,21 @@ public final class RPPersonas extends JavaPlugin {
 		karmaSQL = new KarmaSQL(this);
 	}
 
+	// Spawn & Death Location
+	public void setSpawnLocation(Location loc) {
+		if (loc != null) {
+			spawnLocation = loc;
+			updateConfigForSpawn(loc);
+		}
+	}
+
+	public void setDeathLocation(Location loc) {
+		if (loc != null) {
+			deathLocation = loc;
+			updateConfigForDeath(loc);
+		}
+	}
+
 	// CONFIG //
 	private void loadFromConfig() {
 		// Save Queue
@@ -212,6 +228,17 @@ public final class RPPersonas extends JavaPlugin {
 				String facing = config.getString("spawn.facing");
 				if (facing != null) {
 					spawnLocation = new Location(Bukkit.getWorld(spawnWorldName), config.getDouble("spawn.x"), config.getDouble("spawn.y"), config.getDouble("spawn.z"), getYawFromFacing(facing), 0);
+				}
+			}
+		}
+
+		// Death
+		{
+			String spawnWorldName = config.getString("death.world");
+			if (spawnWorldName != null && Bukkit.getWorld(spawnWorldName) != null) {
+				String facing = config.getString("death.facing");
+				if (facing != null) {
+					spawnLocation = new Location(Bukkit.getWorld(spawnWorldName), config.getDouble("death.x"), config.getDouble("death.y"), config.getDouble("death.z"), getYawFromFacing(facing), 0);
 				}
 			}
 		}
@@ -297,6 +324,31 @@ public final class RPPersonas extends JavaPlugin {
 		}
 	}
 
+	// SPAWN AND DEATH
+	private void updateConfigForSpawn(Location loc) {
+		updateConfigForSpawnOrDeath(loc, false);
+	}
+
+	private void updateConfigForDeath(Location loc) {
+		updateConfigForSpawnOrDeath(loc, true);
+	}
+
+	private void updateConfigForSpawnOrDeath(Location loc, boolean death) {
+		if (loc != null && loc.getWorld() != null) {
+			String type = "spawn";
+			if (death) {
+				type = "death";
+			}
+			config = getConfig();
+			config.set(type + ".world", loc.getWorld().getName());
+			config.set(type + ".x", loc.getBlockX());
+			config.set(type + ".y", loc.getBlockY());
+			config.set(type + ".z", loc.getBlockZ());
+
+			config.set(type + ".facing", getFacingFromYaw(loc.getYaw()));
+		}
+	}
+
 	// PARAMETERS //
 	private void registerParameters() {
 		Commands.defineArgumentType(Altar.class)
@@ -334,7 +386,7 @@ public final class RPPersonas extends JavaPlugin {
 				.register();
 	}
 
-	private float getYawFromFacing(String facing) {
+	public static float getYawFromFacing(String facing) {
 		float output = 0;
 		if (facing.equalsIgnoreCase("west")) {
 			output = 90;
@@ -342,6 +394,21 @@ public final class RPPersonas extends JavaPlugin {
 			output = 180;
 		} else if (facing.equalsIgnoreCase("east")) {
 			output = -90;
+		}
+		return output;
+	}
+
+	public static String getFacingFromYaw(float yaw) {
+		int halfwayGap = 45;
+		String output = "north";
+		if (yaw < 180-halfwayGap) {
+			if (yaw >= 90 - halfwayGap) {
+				output = "west";
+			} else if (yaw >= -halfwayGap) {
+				output = "south";
+			} else if (yaw >= -90 - halfwayGap) {
+				output = "east";
+			}
 		}
 		return output;
 	}

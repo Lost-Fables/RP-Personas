@@ -56,4 +56,14 @@ public class RPPCommands extends BaseCommand {
 		return karmaCommands;
 	}
 
+	@Cmd(value="Set the location to spawn at when registering a persona.")
+	public void setspawn(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			plugin.setSpawnLocation(p.getLocation());
+		} else {
+			msg("Console stahp it.");
+		}
+	}
+
 }

@@ -24,6 +24,14 @@ spawn:
   y: 64
   z: 0
 
+# Death Zone when a persona has been killed.
+death:
+  facing: south
+  world: world
+  x: 0
+  y: 64
+  z: 0
+
 # World Time Settings
 # season; Summer, Autumn, Winter, Spring
 # timescale; Day/night cycle in minutes.
