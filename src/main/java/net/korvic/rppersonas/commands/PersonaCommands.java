@@ -51,11 +51,12 @@ public class PersonaCommands extends BaseCommand {
 						@Arg(value = "Player", description = "The player which you're executing.") Player victim) {
 		if (sender instanceof Player) {
 			Persona victimPersona = plugin.getPersonaHandler().getLoadedPersona(victim);
-			if (victimPersona.isAlive()) {
+			if (victimPersona != null && victimPersona.isAlive()) {
 				Player killer = (Player) sender;
 				if (LocationUtil.isClose(killer, victim, EXECUTE_DISTANCE)) {
 					if (!plugin.getDeathHandler().hasRequest(victim)) {
-						if (victimPersona.getAccountID() != plugin.getPersonaHandler().getLoadedPersona(killer).getAccountID()) {
+						Persona killerPersona = plugin.getPersonaHandler().getLoadedPersona(killer);
+						if (killerPersona != null && victimPersona.getAccountID() != killerPersona.getAccountID()) {
 							plugin.getDeathHandler().requestExecute(killer, victim);
 							msg(RPPersonas.PRIMARY_DARK + "Execution request sent!");
 						} else {
