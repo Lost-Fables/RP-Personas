@@ -7,7 +7,6 @@ import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.DeathSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
-import net.korvic.rppersonas.statuses.EtherealStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -59,7 +58,7 @@ public class DeathRequest {
 		RPPersonas plugin = RPPersonas.get();
 
 		saveDeathSQL(plugin, staffInflicted);
-		victimPersona.addStatus(new EtherealStatus(), (byte) 0, Long.MAX_VALUE); // Become Ghost
+		victim.teleport(plugin.getDeathLocation());
 		dropCorpse(plugin);
 		savePersona(plugin);
 		plugin.getDeathHandler().deleteRequest(victim);

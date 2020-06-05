@@ -5,7 +5,6 @@ import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.personas.Persona;
-import net.korvic.rppersonas.statuses.EtherealStatus;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -61,18 +60,6 @@ public class AltarCommands extends BaseCommand {
 			InventoryUtil.addOrDropItem(p, plugin.getCorpseHandler().createCorpse(player).getItem());
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + CONSOLE);
-		}
-	}
-
-	@Cmd(value = "Debug command.")
-	public void toggleGhost(Player sender) {
-		Persona pers = plugin.getPersonaHandler().getLoadedPersona(sender);
-		if (pers != null) {
-			if (pers.hasStatus(EtherealStatus.NAME)) {
-				pers.clearStatus(EtherealStatus.NAME);
-			} else {
-				pers.addStatus(new EtherealStatus(), (byte) 0, Long.MAX_VALUE);
-			}
 		}
 	}
 

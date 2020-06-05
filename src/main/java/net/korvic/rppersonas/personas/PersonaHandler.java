@@ -12,7 +12,6 @@ import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
-import net.korvic.rppersonas.statuses.EtherealStatus;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import org.bukkit.ChatColor;
@@ -182,9 +181,6 @@ public class PersonaHandler {
 					// TODO - Create respawn animation
 				}
 
-				Status.clearStatus(EtherealStatus.NAME, p);
-				new EtherealStatus().clearEffect(p);
-
 				if (data.containsKey(PersonasSQL.CORPSEINV) && data.get(PersonasSQL.CORPSEINV) != null) {
 					ItemStack[] items = InventoryUtil.deserializeItemsToArray((String) data.get(PersonasSQL.CORPSEINV));
 					for (ItemStack item : items) {
@@ -200,10 +196,6 @@ public class PersonaHandler {
 
 				plugin.getPersonasSQL().registerOrUpdate(data);
 				plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
-			} else {
-				if (!persona.hasStatus(EtherealStatus.NAME)) {
-					persona.addStatus(new EtherealStatus(), (byte) -1, Long.MAX_VALUE);
-				}
 			}
 		}
 
