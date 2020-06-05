@@ -55,6 +55,7 @@ public class RPPCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			plugin.setSpawnLocation(p.getLocation());
+			msg(RPPersonas.PRIMARY_DARK + "Spawn updated to your location.");
 		} else {
 			msg("Console stahp it.");
 		}
@@ -65,6 +66,7 @@ public class RPPCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			plugin.setDeathLocation(p.getLocation());
+			msg(RPPersonas.PRIMARY_DARK + "Death Zone updated to your location.");
 		} else {
 			msg("Console stahp it.");
 		}
