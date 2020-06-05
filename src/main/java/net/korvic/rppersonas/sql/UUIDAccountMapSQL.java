@@ -14,6 +14,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	private static final String SQL_TABLE_NAME = "rppersonas_uuid_account_map";
 	
 	public static final String PLAYER = "player";
+	public static final String PLAYER_UUID = "uuid";
 	public static final String ACCOUNTID = "accountid";
 
 	public UUIDAccountMapSQL(RPPersonas plugin) {
@@ -35,18 +36,29 @@ public class UUIDAccountMapSQL extends BaseSQL {
 
 	protected void addDataMappings() {
 		DataMapFilter.addFilter(PLAYER, PLAYER, Player.class);
+		DataMapFilter.addFilter(PLAYER_UUID, PLAYER_UUID, UUID.class);
 		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
-		Player p = (Player) data.get(PLAYER);
-		try {
-			plugin.getUnregisteredHandler().remove(p);
-			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
-			plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
-		} catch (Exception e) {
-			if (RPPersonas.DEBUGGING) {
-				e.printStackTrace();
+		if (data.containsKey(PLAYER)) {
+			Player p = (Player) data.get(PLAYER);
+			try {
+				plugin.getUnregisteredHandler().remove(p);
+				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
+			} catch (Exception e) {
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
+			}
+		} else if (data.containsKey(PLAYER_UUID)) {
+			try {
+				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+			} catch (Exception e) {
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -58,7 +70,11 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (UUID,AccountID) VALUES(?,?)");
 
 		// Required
-		replaceStatement.setString(1, ((Player) data.get(PLAYER)).getUniqueId().toString());
+		if (data.containsKey(PLAYER)) {
+			replaceStatement.setString(1, ((Player) data.get(PLAYER)).getUniqueId().toString());
+		} else if (data.containsKey(PLAYER_UUID)) {
+			replaceStatement.setString(1, ((UUID) data.get(PLAYER_UUID)).toString());
+		}
 
 		if (data.containsKey(ACCOUNTID)) {
 			replaceStatement.setInt(2, (int) data.get(ACCOUNTID));

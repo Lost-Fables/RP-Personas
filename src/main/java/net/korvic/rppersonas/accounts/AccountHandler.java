@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class AccountHandler {
 
@@ -56,10 +57,21 @@ public class AccountHandler {
 	public void finalizeLink(Player requester, Player linker) {
 		if (awaitingLink.get(requester).equals(linker)) {
 			awaitingLink.remove(requester);
-			DataMapFilter data = new DataMapFilter();
-			data.put(UUIDAccountMapSQL.ACCOUNTID, plugin.getUuidAccountMapSQL().getAccountID(requester.getUniqueId()))
-				.put(UUIDAccountMapSQL.PLAYER, linker);
-			plugin.getUuidAccountMapSQL().registerOrUpdate(data);
+			addLink(linker, plugin.getUuidAccountMapSQL().getAccountID(requester.getUniqueId()));
 		}
+	}
+
+	public void addLink(Player player, int forumID) {
+		DataMapFilter data = new DataMapFilter();
+		data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
+			.put(UUIDAccountMapSQL.PLAYER, player);
+		plugin.getUuidAccountMapSQL().registerOrUpdate(data);
+	}
+
+	public void addLink(UUID uuid, int forumID) {
+		DataMapFilter data = new DataMapFilter();
+		data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
+			.put(UUIDAccountMapSQL.PLAYER_UUID, uuid);
+		plugin.getUuidAccountMapSQL().registerOrUpdate(data);
 	}
 }
