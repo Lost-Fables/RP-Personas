@@ -60,4 +60,14 @@ public class RPPCommands extends BaseCommand {
 		}
 	}
 
+	@Cmd(value="Set the location to go to when one's persona dies.")
+	public void setdeath(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			plugin.setDeathLocation(p.getLocation());
+		} else {
+			msg("Console stahp it.");
+		}
+	}
+
 }
