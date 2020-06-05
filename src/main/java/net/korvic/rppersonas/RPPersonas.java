@@ -341,9 +341,9 @@ public final class RPPersonas extends JavaPlugin {
 			}
 			config = getConfig();
 			config.set(type + ".world", loc.getWorld().getName());
-			config.set(type + ".x", loc.getBlockX());
-			config.set(type + ".y", loc.getBlockY());
-			config.set(type + ".z", loc.getBlockZ());
+			config.set(type + ".x", loc.getBlockX() + 0.5d);
+			config.set(type + ".y", loc.getBlockY() + 0.5d);
+			config.set(type + ".z", loc.getBlockZ() + 0.5d);
 
 			config.set(type + ".facing", getFacingFromYaw(loc.getYaw()));
 			saveConfig();
