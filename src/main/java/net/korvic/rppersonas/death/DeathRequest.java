@@ -56,10 +56,12 @@ public class DeathRequest {
 
 	public void complete(boolean staffInflicted) {
 		RPPersonas plugin = RPPersonas.get();
+		Location oldLoc = victim.getLocation();
 
 		saveDeathSQL(plugin, staffInflicted);
+
 		victim.teleport(plugin.getDeathLocation());
-		dropCorpse(plugin);
+		dropCorpse(plugin, oldLoc);
 		savePersona(plugin);
 		plugin.getDeathHandler().deleteRequest(victim);
 	}
@@ -80,7 +82,7 @@ public class DeathRequest {
 		plugin.getDeathSQL().registerOrUpdate(data);
 	}
 
-	private void dropCorpse(RPPersonas plugin) {
+	private void dropCorpse(RPPersonas plugin, Location loc) {
 		InventoryUtil.addOrDropItem(victim, plugin.getCorpseHandler().createCorpse(victim).getItem());
 		ItemStack[] items = victim.getInventory().getContents();
 		victim.getInventory().clear();
