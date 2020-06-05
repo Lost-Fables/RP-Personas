@@ -115,7 +115,6 @@ public class RPPCommands extends BaseCommand {
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null && p.isOnline()) {
 				plugin.getAccountHandler().addLink(p, forumID);
-				p.kickPlayer("You've been accepted! Please relog.");
 			} else {
 				plugin.getAccountHandler().addLink(uuid, forumID);
 			}
