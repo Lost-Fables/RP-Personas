@@ -41,7 +41,7 @@ public class AccountCommands extends BaseCommand {
 
 	private RPPersonas plugin;
 	private static final String PLAYER_ONLY = RPPersonas.PRIMARY_DARK + "This command only works for players!";
-	private static final String FORUM_LINK_SUCCESS = RPPersonas.PRIMARY_DARK + "Successfully linked your forum account!";
+	private static final String ACCOUNT_LINK_SUCCESS = RPPersonas.PRIMARY_DARK + "Your accounts are now linked together!";
 	private static final String DISCORD_LINK_SUCCESS = RPPersonas.PRIMARY_DARK + "Successfully linked your Discord account!";
 	private static final String DISCORD_UNLINKED_SUCCESS = RPPersonas.PRIMARY_DARK + "Successfully removed the Discord link on your account.";
 	private static final String ALREADY_REGISTERED = RPPersonas.PRIMARY_DARK + "Your account is already linked!";
@@ -51,34 +51,34 @@ public class AccountCommands extends BaseCommand {
 		this.plugin = plugin;
 	}
 
-	@Cmd(value = "Send a registration message to your forum account.", permission = RPPersonas.PERMISSION_START + ".link")
-	public void linkforum (CommandSender sender,
-						 @Arg(value="Forum ID", description="Your forum account ID.") int forumID) {
+	@Cmd(value = "Link your alternate accounts to the same Lost Fables account.", permission = RPPersonas.PERMISSION_START + ".link")
+	public void linkalt (CommandSender sender, Player other) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			if (plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId()) <= 0 && !plugin.getAccountsSQL().isRegistered(forumID)) {
-				//TODO - Send user a message on the forums for them to confirm their Forum ID that will instead run the lines below.
-				DataMapFilter data = new DataMapFilter();
-				data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
-					.put(UUIDAccountMapSQL.PLAYER, p);
-				plugin.getUuidAccountMapSQL().registerOrUpdate(data);
-				msg(FORUM_LINK_SUCCESS);
+			int accountID = plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId());
+			if (accountID > 0 && other != null) {
+				plugin.getAccountHandler().attemptLink(p, other);
+				msg(RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_LIGHT + "/account altaccept " + p.getName() + RPPersonas.PRIMARY_DARK + "to finalize the link.\n"
+					+ RPPersonas.PRIMARY_DARK + "All linked accounts take full responsibility for the actions of one-another.");
 			} else {
-				msg(ALREADY_REGISTERED);
+				msg(RPPersonas.PRIMARY_DARK + "You don't have a linked account, yourself! Make an application on the forums.");
 			}
 		} else {
 			msg(PLAYER_ONLY);
 		}
 	}
 
-	@Cmd(value = "Start the register process for someone else.", permission = RPPersonas.PERMISSION_START + ".helper")
-	public void linkforumother (CommandSender sender,
-							   @Arg(value="The Player", description="The player you're helping register.") Player p,
-							   @Arg(value="Forum ID", description="The forum ID of the other player.") int forumID) {
-		linkforum((CommandSender) p, forumID);
+	@Cmd(value = "Accept an account link request.", permission = RPPersonas.PERMISSION_START + ".link")
+	public void altaccept (CommandSender sender, Player other) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			plugin.getAccountHandler().finalizeLink(other, p);
+			msg(ACCOUNT_LINK_SUCCESS);
+			other.sendMessage(ACCOUNT_LINK_SUCCESS);
+		}
 	}
 
-	@Cmd(value = "Send a registration message to your forum account.", permission = RPPersonas.PERMISSION_START + ".link")
+	@Cmd(value = "Attach your discord information to your account.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void linkdiscord (CommandSender sender,
 							@Arg(value="DiscordID#0000", description="Your personal Discord ID.") @Default(value="") String discordID) {
 		if (sender instanceof Player) {
