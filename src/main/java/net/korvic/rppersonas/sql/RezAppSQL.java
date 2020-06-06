@@ -102,7 +102,7 @@ public class RezAppSQL extends BaseSQL {
 		return replaceStatement;
 	}
 
-	public void deleteByIDs(DataMapFilter data) {
+	public void deleteByID(int personaID) {
 		if (data.containsKey(PERSONAID) && data.containsKey(KARMAID)) {
 			Connection conn = getSQLConnection();
 			try {

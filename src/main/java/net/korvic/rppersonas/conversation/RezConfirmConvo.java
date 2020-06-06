@@ -21,9 +21,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Map;
 import java.util.UUID;
 
-public class ResurrectionConfirmConvo extends BaseConvo {
+public class RezConfirmConvo extends BaseConvo {
 
-	public ResurrectionConfirmConvo(RPPersonas plugin) {
+	public RezConfirmConvo(RPPersonas plugin) {
 		super(plugin);
 	}
 

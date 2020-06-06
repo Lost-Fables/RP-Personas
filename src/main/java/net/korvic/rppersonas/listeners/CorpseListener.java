@@ -4,7 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.BaseConvo;
-import net.korvic.rppersonas.conversation.ResurrectionConfirmConvo;
+import net.korvic.rppersonas.conversation.RezConfirmConvo;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
@@ -19,8 +19,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -142,7 +140,7 @@ public class CorpseListener implements Listener {
 		newData.put("altar", altar);
 		newData.putAll(data);
 
-		new ResurrectionConfirmConvo(plugin).startConvo(p, newData, false);
+		new RezConfirmConvo(plugin).startConvo(p, newData, false);
 	}
 
 }

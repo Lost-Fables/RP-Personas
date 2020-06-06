@@ -19,6 +19,7 @@ import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.personas.PersonaLanguage;
+import net.korvic.rppersonas.resurrection.RezHandler;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.util.SaveQueue;
 import net.korvic.rppersonas.statuses.*;
@@ -63,6 +64,7 @@ public final class RPPersonas extends JavaPlugin {
 	@Getter private AltarHandler altarHandler;
 	@Getter private UnregisteredHandler unregisteredHandler;
 	@Getter private KitHandler kitHandler;
+	@Getter private RezHandler rezHandler;
 
 	// SQL
 	@Getter private SaveQueue saveQueue;
@@ -145,6 +147,7 @@ public final class RPPersonas extends JavaPlugin {
 			corpseHandler = new CorpseHandler(this);
 			altarHandler = new AltarHandler(this);
 			unregisteredHandler = new UnregisteredHandler(this);
+			rezHandler = new RezHandler(this);
 
 			// Load up existing altars & corpses. Must be done after the alter handler is created
 			altarsSQL.loadAltars();
