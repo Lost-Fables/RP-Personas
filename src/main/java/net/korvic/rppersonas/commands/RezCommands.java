@@ -46,21 +46,15 @@ public class RezCommands extends BaseCommand {
 		list.add(new TextComponent(RPPersonas.SECONDARY_DARK + "" + ChatColor.UNDERLINE + "----------- Rez Apps -----------\n"));
 
 		list.add(new TextComponent(RPPersonas.PRIMARY_DARK + "Why are you seeking resurrection?\n"));
-		for (String string : app.getResponses().getResponsesAsList(1)) {
-			list.add(new TextComponent(RPPersonas.SECONDARY_LIGHT + string));
-		}
+		list.add(new TextComponent(RPPersonas.SECONDARY_LIGHT + app.getResponses().getResponse(1)));
 		list.add(new TextComponent(""));
 
 		list.add(new TextComponent(RPPersonas.PRIMARY_DARK + "Have you lived an honest life?\n"));
-		for (String string : app.getResponses().getResponsesAsList(2)) {
-			list.add(new TextComponent(RPPersonas.SECONDARY_LIGHT + string));
-		}
+		list.add(new TextComponent(RPPersonas.SECONDARY_LIGHT + app.getResponses().getResponse(2)));
 		list.add(new TextComponent(""));
 
 		list.add(new TextComponent(RPPersonas.PRIMARY_DARK + "What is the meaning of your life?\n"));
-		for (String string : app.getResponses().getResponsesAsList(3)) {
-			list.add(new TextComponent(RPPersonas.SECONDARY_LIGHT + string));
-		}
+		list.add(new TextComponent(RPPersonas.SECONDARY_LIGHT + app.getResponses().getResponse(3)));
 		list.add(new TextComponent(""));
 
 		list.add(new TextComponent(RPPersonas.PRIMARY_DARK + "If you believe this persona worth rezzing, please use " + RPPersonas.SECONDARY_DARK + "/rpp rez accept " + app.getPersonaID() + RPPersonas.PRIMARY_DARK +

@@ -30,10 +30,15 @@ public class RezAppSQL extends BaseSQL {
 		}
 
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
-						  "    KarmaID INT NOT NULL,\n" +
-						  "    PersonaID INT NOT NULL,\n" +
-						  "    Action TEXT NOT NULL,\n" +
-						  "    Modifier REAL NOT NULL\n" +
+						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
+						  "    Why TEXT NOT NULL,\n" +
+						  "    Honest TEXT NOT NULL,\n" +
+						  "    Meaning TEXT NOT NULL,\n" +
+						  "    Karma INT NOT NULL\n" +
+						  "    Kills INT NOT NULL\n" +
+						  "    Deaths INT NOT NULL\n" +
+						  "    Altar TEXT NOT NULL\n" +
+						  "    Denied BIT NOT NULL\n" +
 						  ");";
 		load(SQLTable, SQL_TABLE_NAME);
 	}
@@ -55,9 +60,6 @@ public class RezAppSQL extends BaseSQL {
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
-			if (!data.containsKey(KARMAID)) {
-				data.put(KARMAID, getMaxKarmaID((int) data.get(PERSONAID)) + 1);
-			}
 			try {
 				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 			} catch (SQLException ex) {
@@ -72,32 +74,70 @@ public class RezAppSQL extends BaseSQL {
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND KarmaID='" + data.get(KARMAID) + "'");
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
 		ResultSet result = grabStatement.executeQuery();
 		boolean resultPresent = result.next();
 
 		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,KarmaID,Action,Modifier) VALUES(?,?,?,?)");
+		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,Why,Honest,Meaning,Karma,Kills,Deaths,Altar,Denied) VALUES(?,?,?,?,?,?,?,?,?)");
 
 
 		// Required
 		replaceStatement.setInt(1, (int) data.get(PERSONAID));
-		replaceStatement.setInt(2, (int) data.get(KARMAID));
 
-		if (data.containsKey(ACTION)) {
-			replaceStatement.setString(3, (String) data.get(ACTION));
+		if (data.containsKey(RESPONSES)) {
+			RezAppConvo.RezAppResponses responses = (RezAppConvo.RezAppResponses) data.get(RESPONSES);
+			replaceStatement.setString(2, responses.getResponse(1));
+			replaceStatement.setString(3, responses.getResponse(2));
+			replaceStatement.setString(4, responses.getResponse(3));
 		} else if (resultPresent) {
-			replaceStatement.setString(3, result.getString("Action"));
+			replaceStatement.setString(2, result.getString("Why"));
+			replaceStatement.setString(3, result.getString("Honest"));
+			replaceStatement.setString(4, result.getString("Meaning"));
 		} else {
+			replaceStatement.setString(2, null);
 			replaceStatement.setString(3, null);
+			replaceStatement.setString(4, null);
 		}
 
-		if (data.containsKey(MODIFIER)) {
-			replaceStatement.setFloat(4, (float) data.get(MODIFIER));
+		if (data.containsKey(KARMA)) {
+			replaceStatement.setInt(5, (int) data.get(KARMA));
 		} else if (resultPresent) {
-			replaceStatement.setFloat(4, result.getFloat("Modifier"));
+			replaceStatement.setInt(5, result.getInt("Karma"));
 		} else {
-			replaceStatement.setFloat(4, 0);
+			replaceStatement.setInt(5, 0);
+		}
+
+		if (data.containsKey(KILLS)) {
+			replaceStatement.setInt(6, (int) data.get(KILLS));
+		} else if (resultPresent) {
+			replaceStatement.setInt(6, result.getInt("Kills"));
+		} else {
+			replaceStatement.setInt(6, 0);
+		}
+
+		if (data.containsKey(DEATHS)) {
+			replaceStatement.setInt(7, (int) data.get(DEATHS));
+		} else if (resultPresent) {
+			replaceStatement.setInt(7, result.getInt("Deaths"));
+		} else {
+			replaceStatement.setInt(7, 0);
+		}
+
+		if (data.containsKey(ALTAR)) {
+			replaceStatement.setString(8, ((Altar) data.get(ALTAR)).getLabel());
+		} else if (resultPresent) {
+			replaceStatement.setString(8, result.getString("Altar"));
+		} else {
+			replaceStatement.setString(8, null);
+		}
+
+		if (data.containsKey(DENIED)) {
+			replaceStatement.setBoolean(9, (boolean) data.get(DENIED));
+		} else if (resultPresent) {
+			replaceStatement.setBoolean(9, result.getBoolean("Denied"));
+		} else {
+			replaceStatement.setBoolean(9, false);
 		}
 
 		grabStatement.close();
@@ -122,7 +162,17 @@ public class RezAppSQL extends BaseSQL {
 			ResultSet rs = statement.executeQuery();
 
 			if (rs.next()) {
-				// TODO grab data after deciding on table format.
+				RezAppConvo.RezAppResponses responses = new RezAppConvo.RezAppResponses();
+				responses.addEntry(1, rs.getString("Why"));
+				responses.addEntry(2, rs.getString("Honest"));
+				responses.addEntry(3, rs.getString("Meaning"));
+				data.put(RESPONSES, responses);
+
+				data.put(KARMA, rs.getInt("Karma"));
+				data.put(KILLS, rs.getInt("Kills"));
+				data.put(DEATHS, rs.getInt("Deahts"));
+				data.put(ALTAR, plugin.getAltarHandler().getAltar(rs.getString("Altar")));
+				data.put(DENIED, rs.getBoolean("Denied"));
 			}
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);

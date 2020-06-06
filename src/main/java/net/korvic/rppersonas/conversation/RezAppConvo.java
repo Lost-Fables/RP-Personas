@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class RezAppConvo extends BaseConvo {
 
+	private static final int MAX_TEXT_PASSES = 10;
 	public RezAppConvo(RPPersonas plugin) {
 		super(plugin);
 	}
@@ -108,15 +109,15 @@ public class RezAppConvo extends BaseConvo {
 	///////////////
 	private static class ReasoningPrompt extends ValidatingPrompt {
 
-		private boolean firstPass = true;
 		private RezAppResponses responses = new RezAppResponses();
+		private int passes = 0;
 
 		@Override
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
 			String npcSpeech = null;
-			if (firstPass) {
+			if (passes == 0) {
 				npcSpeech = fauxChatBuilder("Mm... For what reasons would you seek to return to the mortal plane?");
 			} else {
 				double value = Math.random()*5;
@@ -136,13 +137,13 @@ public class RezAppConvo extends BaseConvo {
 
 			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
 
-			if (!firstPass) {
+			if (passes > 0) {
 				message.addExtra("\n" + DIVIDER +
 								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
 			p.spigot().sendMessage(message);
-			firstPass = false;
+			passes++;
 			return "";
 		}
 
@@ -155,7 +156,7 @@ public class RezAppConvo extends BaseConvo {
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			Player p = (Player) context.getForWhom();
 
-			if (input.equalsIgnoreCase("Done")) {
+			if (input.equalsIgnoreCase("Done") || passes >= MAX_TEXT_PASSES) {
 				return new HonestyPrompt(responses);
 			}
 
@@ -169,8 +170,8 @@ public class RezAppConvo extends BaseConvo {
 	/////////////
 	private static class HonestyPrompt extends ValidatingPrompt {
 
-		private boolean firstPass = true;
 		private RezAppResponses responses;
+		private int passes = 0;
 
 		public HonestyPrompt(RezAppResponses responses) {
 			this.responses = responses;
@@ -181,7 +182,7 @@ public class RezAppConvo extends BaseConvo {
 			Player p = (Player) context.getForWhom();
 
 			String npcSpeech = null;
-			if (firstPass) {
+			if (passes == 0) {
 				npcSpeech = fauxChatBuilder("So you'd say you've lived an *honest* life?");
 			} else {
 				double value = Math.random()*5;
@@ -201,13 +202,13 @@ public class RezAppConvo extends BaseConvo {
 
 			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
 
-			if (!firstPass) {
+			if (passes > 0) {
 				message.addExtra("\n" + DIVIDER +
 								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
 			p.spigot().sendMessage(message);
-			firstPass = false;
+			passes++;
 			return "";
 		}
 
@@ -220,7 +221,7 @@ public class RezAppConvo extends BaseConvo {
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			Player p = (Player) context.getForWhom();
 
-			if (input.equalsIgnoreCase("Done")) {
+			if (input.equalsIgnoreCase("Done") || passes >= MAX_TEXT_PASSES) {
 				return new MeaningPrompt(responses);
 			}
 
@@ -234,8 +235,8 @@ public class RezAppConvo extends BaseConvo {
 	/////////////
 	private static class MeaningPrompt extends ValidatingPrompt {
 
-		private boolean firstPass = true;
 		private RezAppResponses responses;
+		private int passes = 0;
 
 		public MeaningPrompt(RezAppResponses responses) {
 			this.responses = responses;
@@ -246,7 +247,7 @@ public class RezAppConvo extends BaseConvo {
 			Player p = (Player) context.getForWhom();
 
 			String npcSpeech = null;
-			if (firstPass) {
+			if (passes == 0) {
 				npcSpeech = fauxChatBuilder("And what exactly do you think the meaning of your existence is? Across all the planes, what does your soul accomplish that another could not?");
 			} else {
 				double value = Math.random()*5;
@@ -266,13 +267,13 @@ public class RezAppConvo extends BaseConvo {
 
 			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
 
-			if (!firstPass) {
+			if (passes > 0) {
 				message.addExtra("\n" + DIVIDER +
 								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
 			p.spigot().sendMessage(message);
-			firstPass = false;
+			passes++;
 			return "";
 		}
 
@@ -285,7 +286,7 @@ public class RezAppConvo extends BaseConvo {
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			Player p = (Player) context.getForWhom();
 
-			if (input.equalsIgnoreCase("Done")) {
+			if (input.equalsIgnoreCase("Done") || passes >= MAX_TEXT_PASSES) {
 				return new AltarPrompt(responses);
 			}
 
@@ -394,14 +395,23 @@ public class RezAppConvo extends BaseConvo {
 	public static class RezAppResponses {
 
 		@Getter
-		private HashMap<Integer, List<String>> responses = new HashMap<>();
+		private HashMap<Integer, String> responses = new HashMap<>();
 
 		public void addEntry(int questionID, String entry) {
-			List<String> fullEntry = responses.computeIfAbsent(questionID, k -> new ArrayList<>());
-			fullEntry.add(entry);
+			String fullEntry = null;
+			if (responses.containsKey(questionID)) {
+				fullEntry = responses.get(questionID);
+			}
+
+			if (fullEntry == null) {
+				fullEntry = entry;
+			} else {
+				fullEntry += " " + entry;
+			}
+			responses.put(questionID, fullEntry);
 		}
 
-		public List<String> getResponsesAsList(int questionID) {
+		public String getResponse(int questionID) {
 			return responses.get(questionID);
 		}
 
