@@ -491,7 +491,9 @@ public class AccountCommands extends BaseCommand {
 
 						if (deadPersonas.get(personaID) != null) {
 							lore.add(RPPersonas.SECONDARY_LIGHT + "Persona currently in use.");
-							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to open a resurrection app.");
+							if (!plugin.getRezAppSQL().hasApplied(personaID)) {
+								lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to open a resurrection app.");
+							}
 						} else {
 							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
 						}
@@ -518,11 +520,11 @@ public class AccountCommands extends BaseCommand {
 								menuAction.getPlayer().closeInventory();
 								plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
 								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + personaData.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + ".");
+
 							} else if (!plugin.getRezAppSQL().hasApplied(personaID)) {
 								menuAction.getPlayer().closeInventory();
 								new RezAppConvo(plugin).startConvo(menuAction.getPlayer(), null, true);
 							}
-
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().closeInventory();
 
