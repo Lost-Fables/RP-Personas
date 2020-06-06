@@ -453,7 +453,7 @@ public class AccountCommands extends BaseCommand {
 								menuAction.getPlayer().closeInventory();
 
 								Map<Object, Object> data = new HashMap<>();
-								data.put("personaid", personaID);
+								data.put(PersonasSQL.PERSONAID, personaID);
 								new PersonaDeleteConvo(plugin).startConvo(menuAction.getPlayer(), data, true);
 							}
 						}
@@ -483,15 +483,12 @@ public class AccountCommands extends BaseCommand {
 						} else {
 							currentName = (String) data.get(PersonasSQL.NAME);
 						}
-						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + currentName + "(Dead)");
+						meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + currentName + " (Dead)");
 
 						ArrayList<String> lore = new ArrayList<>();
 
-						if (data.containsKey(PersonasSQL.ALTARID)) {
-							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
-						} else {
-							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to request ressurection, Right Click to delete.");
-						}
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
+
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Persona ID: " + RPPersonas.SECONDARY_DARK + String.format("%06d", personaID));
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " + RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.NAME));
@@ -510,13 +507,9 @@ public class AccountCommands extends BaseCommand {
 						Map<String, Object> personaData = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
 						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
-							if (personaData.containsKey(PersonasSQL.ALTARID)) {
-								menuAction.getPlayer().closeInventory();
-								plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
-								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + personaData.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + ".");
-							} else {
-								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Opening Ressurection Application...");
-							}
+							menuAction.getPlayer().closeInventory();
+							plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
+							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + personaData.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + ".");
 
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().closeInventory();
