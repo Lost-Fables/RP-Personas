@@ -4,6 +4,7 @@ import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -40,7 +41,11 @@ public class AltarHandler {
 		return null;
 	}
 
-	public Set<String> getAltarList() {
+	public Collection<Altar> getAltarList() {
+		return allAltars.values();
+	}
+
+	public Set<String> getAltarNameList() {
 		return allAltars.keySet();
 	}
 

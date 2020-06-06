@@ -3,6 +3,7 @@ package net.korvic.rppersonas.conversation;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.kits.Kit;
+import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.*;
 import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
@@ -39,7 +40,6 @@ public class PersonaCreationConvo extends BaseConvo {
 
 	// Intro //
 	public static class StartingPrompt extends MessagePrompt {
-
 		@Override
 		public String getPromptText(ConversationContext context) {
 			return RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "   ► Welcome to Lost Fables! ◄   \n" +
@@ -553,5 +553,22 @@ public class PersonaCreationConvo extends BaseConvo {
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
 
 		return Prompt.END_OF_CONVERSATION;
+	}
+
+	public static class PersonaCreationAbandonedListener implements ConversationAbandonedListener {
+
+		@Override
+		public void conversationAbandoned(ConversationAbandonedEvent abandonedEvent) {
+			if (!abandonedEvent.gracefulExit()) {
+				Player p = (Player) abandonedEvent.getContext().getForWhom();
+
+				p.hideTitle();
+				PersonaHandler.stopSkipping(p);
+				new DisabledStatus(null).clearEffect(p);
+				p.sendMessage("\n" + RPPersonas.PRIMARY_DARK + "Persona creation cancelled.");
+				JoinQuitListener.loadIntoPersona(p);
+			}
+		}
+
 	}
 }

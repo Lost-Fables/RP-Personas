@@ -188,4 +188,38 @@ public class DeathSQL extends BaseSQL {
 		return replaceStatement;
 	}
 
+	public int getKills(int personaID) {
+		Connection conn = getSQLConnection();
+		int output = 0;
+
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE KillerPersona='" + personaID + "'");
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				output++;
+			}
+		} catch (Exception ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		}
+		return output;
+	}
+
+	public int getDeaths(int personaID) {
+		Connection conn = getSQLConnection();
+		int output = 0;
+
+		try {
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE VictimPersona='" + personaID + "'");
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				output++;
+			}
+		} catch (Exception ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		}
+		return output;
+	}
+
 }

@@ -78,6 +78,7 @@ public final class RPPersonas extends JavaPlugin {
 	@Getter private StatusSQL statusSQL;
 	@Getter private LanguageSQL languageSQL;
 	@Getter private KarmaSQL karmaSQL;
+	@Getter private RezAppSQL rezAppSQL;
 
 	// Default Locations
 	@Getter private Location spawnLocation;
@@ -199,6 +200,7 @@ public final class RPPersonas extends JavaPlugin {
 		statusSQL = new StatusSQL(this);
 		languageSQL = new LanguageSQL(this);
 		karmaSQL = new KarmaSQL(this);
+		rezAppSQL = new RezAppSQL(this);
 	}
 
 	// Spawn & Death Location
@@ -355,7 +357,7 @@ public final class RPPersonas extends JavaPlugin {
 		Commands.defineArgumentType(Altar.class)
 				.defaultName("Altar")
 				.defaultError("Failed to find an altar by that name.")
-				.completer(() -> altarHandler.getAltarList())
+				.completer(() -> altarHandler.getAltarNameList())
 				.mapperWithSender((sender, name) -> altarHandler.getAltar(name))
 				.register();
 
