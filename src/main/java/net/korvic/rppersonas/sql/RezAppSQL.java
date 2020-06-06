@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.RezAppConvo;
 import net.korvic.rppersonas.death.Altar;
+import net.korvic.rppersonas.resurrection.RezApp;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
@@ -45,7 +46,21 @@ public class RezAppSQL extends BaseSQL {
 
 	@Override
 	protected boolean customStatement() {
-		return false;
+		connection = getSQLConnection();
+		try {
+			String stmt;
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
+			PreparedStatement ps = connection.prepareStatement(stmt);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				DataMapFilter data = grabDataFromResult(rs);
+				plugin.getRezHandler().addApp(new RezApp(data));
+			}
+			close(ps, rs);
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+		return true;
 	}
 
 	protected void addDataMappings() {
@@ -162,21 +177,33 @@ public class RezAppSQL extends BaseSQL {
 			ResultSet rs = statement.executeQuery();
 
 			if (rs.next()) {
-				RezAppConvo.RezAppResponses responses = new RezAppConvo.RezAppResponses();
-				responses.addEntry(1, rs.getString("Why"));
-				responses.addEntry(2, rs.getString("Honest"));
-				responses.addEntry(3, rs.getString("Meaning"));
-				data.put(RESPONSES, responses);
-
-				data.put(KARMA, rs.getInt("Karma"));
-				data.put(KILLS, rs.getInt("Kills"));
-				data.put(DEATHS, rs.getInt("Deahts"));
-				data.put(ALTAR, plugin.getAltarHandler().getAltar(rs.getString("Altar")));
-				data.put(DENIED, rs.getBoolean("Denied"));
+				data.putAllData(grabDataFromResult(rs));
 			}
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
+		return data;
+	}
+
+	private DataMapFilter grabDataFromResult(ResultSet rs) {
+		DataMapFilter data = new DataMapFilter();
+
+		try {
+			RezAppConvo.RezAppResponses responses = new RezAppConvo.RezAppResponses();
+			responses.addEntry(1, rs.getString("Why"));
+			responses.addEntry(2, rs.getString("Honest"));
+			responses.addEntry(3, rs.getString("Meaning"));
+			data.put(RESPONSES, responses);
+
+			data.put(KARMA, rs.getInt("Karma"));
+			data.put(KILLS, rs.getInt("Kills"));
+			data.put(DEATHS, rs.getInt("Deahts"));
+			data.put(ALTAR, plugin.getAltarHandler().getAltar(rs.getString("Altar")));
+			data.put(DENIED, rs.getBoolean("Denied"));
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+
 		return data;
 	}
 
