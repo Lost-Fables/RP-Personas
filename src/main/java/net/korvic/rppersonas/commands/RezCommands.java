@@ -63,7 +63,8 @@ public class RezCommands extends BaseCommand {
 		}
 		list.add(new TextComponent(""));
 
-		list.add(new TextComponent(RPPersonas.PRIMARY_DARK + "If you believe this persona worth rezzing, please use " + RPPersonas.SECONDARY_DARK + "/rpp rez accept " + app.getPersonaID()));
+		list.add(new TextComponent(RPPersonas.PRIMARY_DARK + "If you believe this persona worth rezzing, please use " + RPPersonas.SECONDARY_DARK + "/rpp rez accept " + app.getPersonaID() + RPPersonas.PRIMARY_DARK +
+								   ".\n Otherwise, to deny this persona resurrection use " + RPPersonas.SECONDARY_DARK + "/rpp rez deny " + app.getPersonaID()));
 
 		for (TextComponent text : list) {
 			msg(text);
@@ -73,6 +74,16 @@ public class RezCommands extends BaseCommand {
 	@Cmd(value="Accept a resurrection app.")
 	public void accept(CommandSender sender, int id) {
 		plugin.getRezHandler().accept(id);
+	}
+
+	@Cmd(value="Deny a resurrection app.")
+	public void deny(CommandSender sender, int id) {
+		plugin.getRezHandler().deny(id);
+	}
+
+	@Cmd(value="Remove the denial of a resurrection app.")
+	public void undeny(CommandSender sender, int id) {
+		plugin.getRezHandler().undeny(id);
 	}
 
 }

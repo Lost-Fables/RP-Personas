@@ -27,4 +27,16 @@ public class RezHandler {
 		plugin.getRezAppSQL().deleteByID(id);
 		app.accept();
 	}
+
+	public void deny(int id) {
+		rezAppList.remove(id);
+		DataMapFilter data = new DataMapFilter().put(RezAppSQL.PERSONAID, id).put(RezAppSQL.DENIED, true);
+		plugin.getRezAppSQL().registerOrUpdate(data);
+	}
+
+	public void undeny(int id) {
+		DataMapFilter data = new DataMapFilter().put(RezAppSQL.PERSONAID, id).put(RezAppSQL.DENIED, false);
+		plugin.getRezAppSQL().registerOrUpdate(data);
+		addApp(new RezApp(plugin.getRezAppSQL().getData(id)));
+	}
 }

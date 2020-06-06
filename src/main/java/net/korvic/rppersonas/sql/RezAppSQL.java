@@ -22,6 +22,7 @@ public class RezAppSQL extends BaseSQL {
 	public static final String KILLS = "kills";
 	public static final String DEATHS = "deaths";
 	public static final String ALTAR = "altar";
+	public static final String DENIED = "denied";
 
 	public RezAppSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
@@ -49,6 +50,7 @@ public class RezAppSQL extends BaseSQL {
 		DataMapFilter.addFilter(KILLS, KILLS, Integer.class);
 		DataMapFilter.addFilter(DEATHS, DEATHS, Integer.class);
 		DataMapFilter.addFilter(ALTAR, ALTAR, Altar.class);
+		DataMapFilter.addFilter(DENIED, DENIED, Boolean.class);
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
@@ -103,91 +105,28 @@ public class RezAppSQL extends BaseSQL {
 	}
 
 	public void deleteByID(int personaID) {
-		if (data.containsKey(PERSONAID) && data.containsKey(KARMAID)) {
-			Connection conn = getSQLConnection();
-			try {
-				PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND KarmaID='" + data.get(KARMAID) + "'");
-				plugin.getSaveQueue().addToQueue(statement);
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
-			}
+		Connection conn = getSQLConnection();
+		try {
+			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			plugin.getSaveQueue().addToQueue(statement);
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
 	}
 
-	private int getMaxKarmaID(int personaID) {
-		int output = 0;
+	public DataMapFilter getData(int personaID) {
+		DataMapFilter data = new DataMapFilter().put(PERSONAID, personaID);
 		Connection conn = getSQLConnection();
 		try {
 			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
 			ResultSet rs = statement.executeQuery();
 
-			while (rs.next()) {
-				if (rs.getInt("KarmaID") > output) {
-					output = rs.getInt("KarmaID");
-				}
+			if (rs.next()) {
+				// TODO grab data after deciding on table format.
 			}
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-		return output;
-	}
-
-	public int calculateKarma(int personaID) {
-		int output = 0;
-		Connection conn = getSQLConnection();
-		try {
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
-			ResultSet rs = statement.executeQuery();
-
-			while (rs.next()) {
-				output += rs.getInt("Modifier");
-			}
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
-		}
-		return output;
-	}
-
-	public float calculateExecuteModifier(int killerID, int victimID) {
-		int killerKarma = calculateKarma(killerID);
-		float difference = killerKarma - calculateKarma(victimID);
-		return calculateKarma(killerKarma, difference / (EXPERIENCE_DIVISOR / 5f));
-	}
-
-	public float calculateRuinModifier(int personaID) {
-		int karma = calculateKarma(personaID);
-		return calculateKarma(karma, -1);
-	}
-
-	private float calculateExperience(int karma) {
-		// Experience is an exponential for how far one is from neutral Karma.
-		return ((float) (karma*karma))/EXPERIENCE_DIVISOR;
-	}
-
-	private float calculateKarma(int karma, float differential) {
-		float experience = calculateExperience(karma + 1);
-
-		if (RPPersonas.DEBUGGING) {
-			plugin.getLogger().info(" \nKarma " + karma + "\nExperience " + experience + "\nDifferential " + differential);
-		}
-		float karmaChange = experience * differential;
-
-		if (RPPersonas.DEBUGGING) {
-			plugin.getLogger().info("Before Adjustment " + karmaChange);
-		}
-
-		if (karmaChange > 0) {
-			karmaChange += BASE_KARMA;
-		} else {
-			karmaChange -= BASE_KARMA;
-		}
-
-		if (RPPersonas.DEBUGGING) {
-			plugin.getLogger().info("Adjusting Karma by " + karmaChange);
-		}
-
-		// This calculation is based on '(x^2 / 10000) * (z / 2000) +- 25' where x = Killer Karma and z = Killer-Victim Karma Difference
-		// If EXPERIENCE_DIVISOR or BASE_KARMA is updated the equation will change accordingly.
-		return karmaChange;
+		return data;
 	}
 }
