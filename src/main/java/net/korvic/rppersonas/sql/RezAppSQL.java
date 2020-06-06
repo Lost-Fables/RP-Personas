@@ -129,4 +129,18 @@ public class RezAppSQL extends BaseSQL {
 		}
 		return data;
 	}
+
+	public boolean hasApplied(int personaID) {
+		Connection conn = getSQLConnection();
+		try {
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+		return false;
+	}
 }

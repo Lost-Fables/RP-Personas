@@ -24,7 +24,9 @@ public abstract class BaseConvo {
 
 	public void startConvo(Player p, Map<Object, Object> data, boolean abandonable) {
 		this.factory = getFreshFactory();
-		factory.withInitialSessionData(data);
+		if (data != null) {
+			factory.withInitialSessionData(data);
+		}
 		factory.withFirstPrompt(this.getFirstPrompt(data));
 		if (abandonable) {
 			addAbandoners(factory);

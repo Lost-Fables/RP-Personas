@@ -15,12 +15,14 @@ import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaDeleteConvo;
+import net.korvic.rppersonas.conversation.RezAppConvo;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.conversation.PersonaSkinConvo;
 import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.sql.RezAppSQL;
 import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.time.TimeManager;
@@ -487,7 +489,12 @@ public class AccountCommands extends BaseCommand {
 
 						ArrayList<String> lore = new ArrayList<>();
 
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
+						if (deadPersonas.get(personaID) != null) {
+							lore.add(RPPersonas.SECONDARY_LIGHT + "Persona currently in use.");
+							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to open a resurrection app.");
+						} else {
+							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
+						}
 
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Persona ID: " + RPPersonas.SECONDARY_DARK + String.format("%06d", personaID));
@@ -507,9 +514,14 @@ public class AccountCommands extends BaseCommand {
 						Map<String, Object> personaData = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
 						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
-							menuAction.getPlayer().closeInventory();
-							plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + personaData.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + ".");
+							if (deadPersonas.get(personaID) == null) {
+								menuAction.getPlayer().closeInventory();
+								plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
+								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + personaData.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + ".");
+							} else if (!plugin.getRezAppSQL().hasApplied(personaID)) {
+								menuAction.getPlayer().closeInventory();
+								new RezAppConvo(plugin).startConvo(menuAction.getPlayer(), null, true);
+							}
 
 						} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
 							menuAction.getPlayer().closeInventory();
