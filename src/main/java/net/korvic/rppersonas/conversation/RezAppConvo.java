@@ -366,14 +366,16 @@ public class RezAppConvo extends BaseConvo {
 
 	// FAUX-CHAT BUILDER
 	private static String fauxChatBuilder(String message) {
+		int breakout = 0;
 		boolean start = true;
-		while (message.contains("*")) {
+		while (message.contains("*") && breakout < 30) {
 			if (start) {
-				message = message.replaceFirst("/*", ChatColor.ITALIC + "");
+				message = message.replaceFirst("\\*", ChatColor.ITALIC + "");
 			} else {
-				message = message.replaceFirst("/*", RPPersonas.SECONDARY_LIGHT + "");
+				message = message.replaceFirst("\\*", RPPersonas.SECONDARY_LIGHT + "");
 			}
 			start = !start;
+			breakout++;
 		}
 
 		return RPPersonas.TERTIARY + "Mysterious Voice: " + RPPersonas.SECONDARY_LIGHT + "\"" + message + "\"";
