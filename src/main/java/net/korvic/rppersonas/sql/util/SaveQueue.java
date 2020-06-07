@@ -94,7 +94,9 @@ public class SaveQueue {
 	}
 
 	public void completeAllSaves() {
-		runnable.cancel();
+		if (!runnable.isCancelled()) {
+			runnable.cancel();
+		}
 		finalSave = true;
 		long startMillis = System.currentTimeMillis();
 

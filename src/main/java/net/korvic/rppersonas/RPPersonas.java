@@ -180,6 +180,7 @@ public final class RPPersonas extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		saveQueue.stopSaving();
 		personaHandler.saveAllPersonas();
 		saveQueue.completeAllSaves();
 		BaseSQL.cancelConnectionMaintainer();
