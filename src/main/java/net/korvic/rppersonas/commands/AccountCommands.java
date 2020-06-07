@@ -142,7 +142,7 @@ public class AccountCommands extends BaseCommand {
 			icons.add(getDiscordIcon(data));
 			icons.add(getSkinsIcon(data));
 			icons.add(getPersonasIcon(accountID));
-			//icons.add(getStatusIcon());
+			icons.add(getStatusIcon());
 
 			homeMenu = Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
 			return homeMenu;

@@ -169,7 +169,7 @@ public final class RPPersonas extends JavaPlugin {
 			Commands.build(getCommand("time"), () -> timeCommands);
 
 			// Register statuses we want on the list of statuses
-			new SpeedStatus().registerStatus();
+			//new SpeedStatus().registerStatus();
 			new SlowStatus().registerStatus();
 			new SickStatus().registerStatus();
 			new BlindStatus().registerStatus();
