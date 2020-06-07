@@ -35,10 +35,10 @@ public class RezAppSQL extends BaseSQL {
 						  "    Why TEXT NOT NULL,\n" +
 						  "    Honest TEXT NOT NULL,\n" +
 						  "    Meaning TEXT NOT NULL,\n" +
-						  "    Karma INT NOT NULL\n" +
-						  "    Kills INT NOT NULL\n" +
-						  "    Deaths INT NOT NULL\n" +
-						  "    Altar TEXT NOT NULL\n" +
+						  "    Karma INT NOT NULL,\n" +
+						  "    Kills INT NOT NULL,\n" +
+						  "    Deaths INT NOT NULL,\n" +
+						  "    Altar TEXT NOT NULL,\n" +
 						  "    Denied BIT NOT NULL\n" +
 						  ");";
 		load(SQLTable, SQL_TABLE_NAME);
