@@ -65,7 +65,7 @@ public class JoinQuitListener implements Listener {
 			plugin.getAccountHandler().loadAccount(p, accountID, personaID, false);
 		} else {
 			p.kickPlayer("You need to be whitelisted!");
-			//plugin.getUnregisteredHandler().add(p);
+			plugin.getUnregisteredHandler().add(p);
 		}
 	}
 
