@@ -62,7 +62,7 @@ public class RezAppConvo extends BaseConvo {
 			message.addExtra("\n");
 			message.addExtra(MessageUtil.CommandButton("What's Mevvet?", "What", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			firstPass = false;
 			return "";
 		}
@@ -135,14 +135,14 @@ public class RezAppConvo extends BaseConvo {
 				}
 			}
 
-			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
+			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
 
 			if (passes > 0) {
 				message.addExtra("\n" + DIVIDER +
 								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			passes++;
 			return "";
 		}
@@ -200,14 +200,14 @@ public class RezAppConvo extends BaseConvo {
 				}
 			}
 
-			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
+			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
 
 			if (passes > 0) {
 				message.addExtra("\n" + DIVIDER +
 								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			passes++;
 			return "";
 		}
@@ -265,14 +265,14 @@ public class RezAppConvo extends BaseConvo {
 				}
 			}
 
-			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
+			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
 
 			if (passes > 0) {
 				message.addExtra("\n" + DIVIDER +
 								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			passes++;
 			return "";
 		}
@@ -310,14 +310,14 @@ public class RezAppConvo extends BaseConvo {
 		public String getPromptText(ConversationContext context) {
 			Player p = (Player) context.getForWhom();
 
-			BaseComponent message = new TextComponent(fauxChatBuilder("What area of Gaia do you hail from?") + "\n" + DIVIDER);
+			TextComponent message = new TextComponent(fauxChatBuilder("What area of Gaia do you hail from?") + "\n" + DIVIDER);
 
 			for (String altarName : RPPersonas.get().getAltarHandler().getAltarNameList()) {
 				message.addExtra(MessageUtil.CommandButton(altarName, altarName, "Click to select", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 				message.addExtra(BUTTON_SPACE);
 			}
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			return "";
 		}
 
