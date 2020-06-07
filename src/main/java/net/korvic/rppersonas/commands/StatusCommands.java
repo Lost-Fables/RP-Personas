@@ -38,7 +38,7 @@ public class StatusCommands extends BaseCommand {
 		this.plugin = plugin;
 	}
 
-	@Cmd(value="Apply a set status to yourself.")
+	@Cmd(value="Apply a set status to yourself.", permission=RPPersonas.PERMISSION_START + ".status.apply")
 	public void apply(CommandSender sender,
 					  @Arg(value="Status", description="The status you wish to apply.") Status status,
 					  @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
@@ -55,7 +55,7 @@ public class StatusCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Apply a set status to another player.")
+	@Cmd(value="Apply a set status to another player.", permission=RPPersonas.PERMISSION_START + ".status.apply.other")
 	public void applyother(CommandSender sender,
 						   Player player,
 						   @Arg(value="Status", description="The status you wish to apply.") Status status,
@@ -69,7 +69,7 @@ public class StatusCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Clear a status effect from yourself.")
+	@Cmd(value="Clear a status effect from yourself.", permission=RPPersonas.PERMISSION_START + ".status.clear")
 	public void clear(CommandSender sender, Status status) {
 		if (sender instanceof Player) {
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona((Player) sender);
@@ -83,7 +83,7 @@ public class StatusCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Clear a status effect from another player.")
+	@Cmd(value="Clear a status effect from another player.", permission=RPPersonas.PERMISSION_START + ".status.clear.other")
 	public void clearother(CommandSender sender, Player player, Status status) {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
