@@ -38,37 +38,37 @@ public class RPPCommands extends BaseCommand {
 		this.rezCommands = new RezCommands(plugin);
 	}
 
-	@Cmd(value="Commands for modifying altars.")
+	@Cmd(value="Commands for modifying altars.", permission=RPPersonas.PERMISSION_START + ".altars")
 	public BaseCommand altar() {
 		return altarCommands;
 	}
 
-	@Cmd(value="Commands for adjusting the time.")
+	@Cmd(value="Commands for adjusting the time.", permission=RPPersonas.PERMISSION_START + ".time")
 	public BaseCommand time() {
 		return timeCommands;
 	}
 
-	@Cmd(value="Commands for modifying kits.")
+	@Cmd(value="Commands for modifying kits.", permission=RPPersonas.PERMISSION_START + ".kits")
 	public BaseCommand kit() {
 		return kitCommands;
 	}
 
-	@Cmd(value="Language based commands.")
+	@Cmd(value="Language based commands.", permission=RPPersonas.PERMISSION_START + ".language")
 	public BaseCommand language() {
 		return langaugeCommands;
 	}
 
-	@Cmd(value="Karma based commands.")
+	@Cmd(value="Karma based commands.", permission=RPPersonas.PERMISSION_START + ".karma")
 	public BaseCommand karma() {
 		return karmaCommands;
 	}
 
-	@Cmd(value="Resurrection based commands.")
+	@Cmd(value="Resurrection based commands.", permission=RPPersonas.PERMISSION_START + ".rez")
 	public BaseCommand rez() {
 		return rezCommands;
 	}
 
-	@Cmd(value="Set the location to spawn at when registering a persona.")
+	@Cmd(value="Set the location to spawn at when registering a persona.", permission=RPPersonas.PERMISSION_START + ".admin")
 	public void setspawn(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -79,7 +79,7 @@ public class RPPCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Set the location to go to when one's persona dies.")
+	@Cmd(value="Set the location to go to when one's persona dies.", permission=RPPersonas.PERMISSION_START + ".admin")
 	public void setdeath(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
@@ -90,7 +90,7 @@ public class RPPCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value="Accept a user. This updates their role and registers them.")
+	@Cmd(value="Accept a user. This updates their role and registers them.", permission=RPPersonas.PERMISSION_START + ".accept")
 	public void accept(CommandSender sender,
 					   @Arg(value="Player Name", description="The username of the player you're accepting.") String player,
 					   @Arg(value="Forum ID", description="The forum ID of the player you're accepting.") int forumID) {
@@ -109,12 +109,17 @@ public class RPPCommands extends BaseCommand {
 					}
 
 					Node accepted = Node.builder("group.accepted").build();
+					boolean hasAccepted = false;
 					for (Node node : user.getNodes()) {
 						if (node.getKey().equalsIgnoreCase("group.default")) {
 							user.data().remove(node);
+						} else if (node.getKey().equalsIgnoreCase("group.accepted")) {
+							hasAccepted = true;
 						}
 					}
-					user.data().add(accepted);
+					if (!hasAccepted) {
+						user.data().add(accepted);
+					}
 					api.getUserManager().saveUser(user);
 				});
 			}

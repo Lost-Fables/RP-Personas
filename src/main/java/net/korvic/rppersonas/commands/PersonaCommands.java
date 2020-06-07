@@ -152,7 +152,7 @@ public class PersonaCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value = "Commands to modify the statuses on your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
+	@Cmd(value = "Commands to modify the statuses on your persona.", permission = RPPersonas.PERMISSION_START + ".status")
 	public BaseCommand status() {
 		return statusCommands;
 	}
