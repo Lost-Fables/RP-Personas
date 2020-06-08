@@ -383,7 +383,7 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(plugin.getPersonaHandler().getLoadedPersona(menuAction.getPlayer()).getAccountID()).size();
+					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(menuAction.getPlayer()).size();
 					int maxPersonas = PermissionsUtil.getTotalPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
 					maxPersonas += totalAccounts * RPPersonas.DEFAULT_PERSONAS;
 					getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());

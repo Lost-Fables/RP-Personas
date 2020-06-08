@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
 public class RPPCommands extends BaseCommand {
 
@@ -97,16 +98,19 @@ public class RPPCommands extends BaseCommand {
 					   @Arg(value="Forum ID", description="The forum ID of the player you're accepting.") int forumID) {
 		UUID uuid = PlayerUtil.getPlayerUUID(player);
 		if (uuid != null) {
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-					if(provider != null) {
-						LuckPerms api = provider.getProvider();
-						CompletableFuture<User> userFuture = api.getUserManager().loadUser(uuid);
-						User user = userFuture.join();
+			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+			if (provider != null) {
+				LuckPerms api = provider.getProvider();
+				CompletableFuture<User> userFuture = api.getUserManager().loadUser(uuid);
+				userFuture.whenCompleteAsync(new BiConsumer<User, Throwable>() {
+					@Override
+					public void accept(User user, Throwable throwable) {
+						if (throwable != null) {
+							return;
+						}
 
 						Node accepted = Node.builder("group.accepted").build();
+
 						boolean hasAccepted = false;
 						for (Node node : user.getNodes()) {
 							if (node.getKey().equalsIgnoreCase("group.default")) {
@@ -120,8 +124,8 @@ public class RPPCommands extends BaseCommand {
 						}
 						api.getUserManager().saveUser(user);
 					}
-				}
-			}.runTaskAsynchronously(plugin);
+				}, runnable -> Bukkit.getScheduler().runTask(plugin, runnable));
+			}
 
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null && p.isOnline()) {

@@ -85,6 +85,10 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		return replaceStatement;
 	}
 
+	public List<UUID> getUUIDsOf(Player player) {
+		return getUUIDsOf(getAccountID(player.getUniqueId()));
+	}
+
 	// Retrieves the amount of tokens a player has, as per our database.
 	public List<UUID> getUUIDsOf(int accountID) {
 		Connection conn = null;
