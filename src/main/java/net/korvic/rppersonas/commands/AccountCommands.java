@@ -383,7 +383,9 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					int maxPersonas = PermissionsUtil.getMaxPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots", RPPersonas.DEFAULT_PERSONAS);
+					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(plugin.getPersonaHandler().getLoadedPersona(menuAction.getPlayer()).getAccountID()).size();
+					int maxPersonas = PermissionsUtil.getTotalPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
+					maxPersonas += totalAccounts * RPPersonas.DEFAULT_PERSONAS;
 					getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
 				}
 			};
@@ -394,6 +396,7 @@ public class AccountCommands extends BaseCommand {
 			Map<Integer, UUID> livePersonas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, true);
 			int currentPersonaCount = 0;
 
+			// LIVE PERSONAS //
 			for (int personaID : livePersonas.keySet()) {
 				icons.add(new Button() {
 					private String currentName;
@@ -464,6 +467,7 @@ public class AccountCommands extends BaseCommand {
 				currentPersonaCount++;
 			}
 
+			// DEAD PERSONAS //
 			Map<Integer, UUID> deadPersonas = plugin.getPersonaAccountMapSQL().getPersonasOf(accountID, false);
 			for (int personaID : deadPersonas.keySet()) {
 				icons.add(new Button() {
@@ -537,6 +541,7 @@ public class AccountCommands extends BaseCommand {
 				currentPersonaCount++;
 			}
 
+			// CREATE PERSONAS //
 			if (currentPersonaCount < maxPersonas) {
 				int finalCurrentPersonaCount = currentPersonaCount;
 				icons.add(new Button() {

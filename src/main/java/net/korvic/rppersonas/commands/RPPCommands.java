@@ -122,6 +122,7 @@ public class RPPCommands extends BaseCommand {
 					}
 					api.getUserManager().saveUser(user);
 				});
+				userFuture.complete(api.getUserManager().getUser(uuid));
 			}
 
 			Player p = Bukkit.getPlayer(uuid);
