@@ -50,6 +50,7 @@ public class SaveQueue {
 	public void startSaving() {
 		if (runnable.isCancelled()) {
 			runnable.runTaskTimerAsynchronously(plugin, 0, TICKS);
+			finalSave = false;
 		}
 	}
 
