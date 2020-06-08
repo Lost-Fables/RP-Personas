@@ -26,7 +26,7 @@ public class JoinQuitListener implements Listener {
 	}
 
 	// EVENT //
-	@EventHandler
+	@EventHandler(ignoreCancelled=false)
 	public void onJoin(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		if (p.hasPermission("rppersonas.link")) {
@@ -35,22 +35,23 @@ public class JoinQuitListener implements Listener {
 		p.setCollidable(false);
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=false)
 	public void onQuit(PlayerQuitEvent event) {
 		Player p = event.getPlayer();
-		UUID uuid = event.getPlayer().getUniqueId();
-		int account = plugin.getUuidAccountMapSQL().getAccountID(uuid);
-		refreshAccountPlaytime(p);
-		plugin.getAccountHandler().unloadAccount(account);
-		playerLoginTime.remove(p);
-
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
-		if (pers != null) {
+
+		if (pers != null && !PersonaHandler.isSkipped(pers)) {
 			pers.queueSave(p);
 			pers.clearAllStatuses();
 			pers.unloadPersona(true);
 		}
 		PersonaHandler.stopSkipping(p);
+
+		UUID uuid = event.getPlayer().getUniqueId();
+		int account = plugin.getUuidAccountMapSQL().getAccountID(uuid);
+		refreshAccountPlaytime(p);
+		plugin.getAccountHandler().unloadAccount(account);
+		playerLoginTime.remove(p);
 	}
 
 

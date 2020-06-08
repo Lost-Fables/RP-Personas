@@ -47,9 +47,9 @@ public class RezAppConvo extends BaseConvo {
 
 			String npcSpeech = null;
 			if (firstPass) {
-				npcSpeech = fauxChatBuilder("Ah, another soul passing on to Mevvet. Are you ready for what awaits you?");
+				npcSpeech = "Ah, another soul passing on to Mevvet. Are you ready for what awaits you?";
 			} else {
-				npcSpeech = fauxChatBuilder("With that out of the way, are you ready for what awaits you?");
+				npcSpeech = "With that out of the way, are you ready for what awaits you?";
 			}
 
 			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + "\n" +
@@ -118,32 +118,35 @@ public class RezAppConvo extends BaseConvo {
 
 			String npcSpeech = null;
 			if (passes == 0) {
-				npcSpeech = fauxChatBuilder("Mm... For what reasons would you seek to return to the mortal plane?");
+				npcSpeech = "Mm... For what reasons would you seek to return to the mortal plane?";
 			} else {
 				double value = Math.random()*5;
 
 				if (value < 1) {
-					npcSpeech = fauxChatBuilder("And...?");
+					npcSpeech = "And...?";
 				} else if (value < 2) {
-					npcSpeech = fauxChatBuilder("I see.");
+					npcSpeech = "I see.";
 				} else if (value < 3) {
-					npcSpeech = fauxChatBuilder("Alright.");
+					npcSpeech = "Alright.";
 				} else if (value < 4) {
-					npcSpeech = fauxChatBuilder("Mhm.");
+					npcSpeech = "Mhm.";
 				} else {
-					npcSpeech = fauxChatBuilder("Go on.");
+					npcSpeech = "Go on.";
 				}
 			}
 
 			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
+			TextComponent button = null;
 
 			if (passes > 0) {
-				message.addExtra("\n" + DIVIDER +
-								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				button = new TextComponent("\n" + DIVIDER +
+										   MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
 			p.sendMessage(message);
-			passes++;
+			if (button != null) {
+				p.sendMessage(button);
+			}
 			return "";
 		}
 
@@ -183,32 +186,34 @@ public class RezAppConvo extends BaseConvo {
 
 			String npcSpeech = null;
 			if (passes == 0) {
-				npcSpeech = fauxChatBuilder("So you'd say you've lived an *honest* life?");
+				npcSpeech = "So you'd say you've lived an *honest* life?";
 			} else {
 				double value = Math.random()*5;
 
 				if (value < 1) {
-					npcSpeech = fauxChatBuilder("And...?");
+					npcSpeech = "And...?";
 				} else if (value < 2) {
-					npcSpeech = fauxChatBuilder("I see.");
+					npcSpeech = "I see.";
 				} else if (value < 3) {
-					npcSpeech = fauxChatBuilder("Alright.");
+					npcSpeech = "Alright.";
 				} else if (value < 4) {
-					npcSpeech = fauxChatBuilder("Mhm.");
+					npcSpeech = "Mhm.";
 				} else {
-					npcSpeech = fauxChatBuilder("Go on.");
+					npcSpeech = "Go on.";
 				}
 			}
 
 			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
+			TextComponent button = null;
 
 			if (passes > 0) {
-				message.addExtra("\n" + DIVIDER +
-								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				button = new TextComponent("\n" + DIVIDER + MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
 			p.sendMessage(message);
-			passes++;
+			if (button != null) {
+				p.sendMessage(button);
+			}
 			return "";
 		}
 
@@ -248,31 +253,34 @@ public class RezAppConvo extends BaseConvo {
 
 			String npcSpeech = null;
 			if (passes == 0) {
-				npcSpeech = fauxChatBuilder("And what exactly do you think the meaning of your existence is? Across all the planes, what does your soul accomplish that another could not?");
+				npcSpeech = "And what exactly do you think the meaning of your existence is? Across all the planes, what does your soul accomplish that another could not?";
 			} else {
 				double value = Math.random()*5;
 
 				if (value < 1) {
-					npcSpeech = fauxChatBuilder("And...?");
+					npcSpeech = "And...?";
 				} else if (value < 2) {
-					npcSpeech = fauxChatBuilder("I see.");
+					npcSpeech = "I see.";
 				} else if (value < 3) {
-					npcSpeech = fauxChatBuilder("Alright.");
+					npcSpeech = "Alright.";
 				} else if (value < 4) {
-					npcSpeech = fauxChatBuilder("Mhm.");
+					npcSpeech = "Mhm.";
 				} else {
-					npcSpeech = fauxChatBuilder("Go on.");
+					npcSpeech = "Go on.";
 				}
 			}
 
 			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech));
+			TextComponent button = null;
 
 			if (passes > 0) {
-				message.addExtra("\n" + DIVIDER +
-								 MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				button = new TextComponent("\n" + DIVIDER + MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
 			p.sendMessage(message);
+			if (button != null) {
+				p.sendMessage(button);
+			}
 			passes++;
 			return "";
 		}

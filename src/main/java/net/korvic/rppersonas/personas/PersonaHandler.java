@@ -14,6 +14,7 @@ import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -330,9 +331,9 @@ public class PersonaHandler {
 	}
 
 	public void saveAllPersonas() {
-		for (Player p : playerObjectToID.keySet()) {
-			Persona pers = loadedPersonas.get(playerObjectToID.get(p));
-			if (!isSkipped(pers)) {
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			Persona pers = getLoadedPersona(p);
+			if (pers != null && !isSkipped(pers)) {
 				pers.queueSave(p);
 			}
 		}

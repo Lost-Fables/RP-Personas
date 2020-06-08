@@ -43,6 +43,7 @@ public class SaveQueue {
 	public void stopSaving() {
 		if (!runnable.isCancelled()) {
 			runnable.cancel();
+			finalSave = true;
 		}
 	}
 
