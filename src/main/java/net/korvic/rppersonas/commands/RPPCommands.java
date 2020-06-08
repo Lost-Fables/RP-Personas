@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -96,32 +97,31 @@ public class RPPCommands extends BaseCommand {
 					   @Arg(value="Forum ID", description="The forum ID of the player you're accepting.") int forumID) {
 		UUID uuid = PlayerUtil.getPlayerUUID(player);
 		if (uuid != null) {
-			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-			if (provider != null) {
-				LuckPerms api = provider.getProvider();
-				CompletableFuture<User> userFuture = api.getUserManager().loadUser(uuid);
-				User user = userFuture.join();
-				for (Node node : user.getDistinctNodes()) {
-					if (node.getKey().equalsIgnoreCase("rppersonas.accepted")) {
-						msg(RPPersonas.PRIMARY_DARK + "That player is already accepted.");
-						return;
-					}
-				}
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+					if(provider != null) {
+						LuckPerms api = provider.getProvider();
+						CompletableFuture<User> userFuture = api.getUserManager().loadUser(uuid);
+						User user = userFuture.join();
 
-				Node accepted = Node.builder("group.accepted").build();
-				boolean hasAccepted = false;
-				for (Node node : user.getNodes()) {
-					if (node.getKey().equalsIgnoreCase("group.default")) {
-						user.data().remove(node);
-					} else if (node.getKey().equalsIgnoreCase("group.accepted")) {
-						hasAccepted = true;
+						Node accepted = Node.builder("group.accepted").build();
+						boolean hasAccepted = false;
+						for (Node node : user.getNodes()) {
+							if (node.getKey().equalsIgnoreCase("group.default")) {
+								user.data().remove(node);
+							} else if (node.getKey().equalsIgnoreCase("group.accepted")) {
+								hasAccepted = true;
+							}
+						}
+						if (!hasAccepted) {
+							user.data().add(accepted);
+						}
+						api.getUserManager().saveUser(user);
 					}
 				}
-				if (!hasAccepted) {
-					user.data().add(accepted);
-				}
-				api.getUserManager().saveUser(user);
-			}
+			}.runTaskAsynchronously(plugin);
 
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null && p.isOnline()) {
