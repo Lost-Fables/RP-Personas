@@ -100,29 +100,27 @@ public class RPPCommands extends BaseCommand {
 			if (provider != null) {
 				LuckPerms api = provider.getProvider();
 				CompletableFuture<User> userFuture = api.getUserManager().loadUser(uuid);
-				userFuture.thenAcceptAsync(user -> {
-					for (Node node : user.getDistinctNodes()) {
-						if (node.getKey().equalsIgnoreCase("rppersonas.accepted")) {
-							msg(RPPersonas.PRIMARY_DARK + "That player is already accepted.");
-							return;
-						}
+				User user = userFuture.join();
+				for (Node node : user.getDistinctNodes()) {
+					if (node.getKey().equalsIgnoreCase("rppersonas.accepted")) {
+						msg(RPPersonas.PRIMARY_DARK + "That player is already accepted.");
+						return;
 					}
+				}
 
-					Node accepted = Node.builder("group.accepted").build();
-					boolean hasAccepted = false;
-					for (Node node : user.getNodes()) {
-						if (node.getKey().equalsIgnoreCase("group.default")) {
-							user.data().remove(node);
-						} else if (node.getKey().equalsIgnoreCase("group.accepted")) {
-							hasAccepted = true;
-						}
+				Node accepted = Node.builder("group.accepted").build();
+				boolean hasAccepted = false;
+				for (Node node : user.getNodes()) {
+					if (node.getKey().equalsIgnoreCase("group.default")) {
+						user.data().remove(node);
+					} else if (node.getKey().equalsIgnoreCase("group.accepted")) {
+						hasAccepted = true;
 					}
-					if (!hasAccepted) {
-						user.data().add(accepted);
-					}
-					api.getUserManager().saveUser(user);
-				});
-				userFuture.complete(api.getUserManager().getUser(uuid));
+				}
+				if (!hasAccepted) {
+					user.data().add(accepted);
+				}
+				api.getUserManager().saveUser(user);
 			}
 
 			Player p = Bukkit.getPlayer(uuid);
