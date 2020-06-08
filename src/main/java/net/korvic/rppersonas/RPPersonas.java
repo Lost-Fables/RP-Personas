@@ -116,7 +116,7 @@ public final class RPPersonas extends JavaPlugin {
 				public void run() {
 					JoinQuitListener.refreshAllAccountPlaytime();
 					corpseHandler.saveAllCorpses();
-					personaHandler.saveAllPersonas();
+					personaHandler.queueSaveAllPersonas();
 				}
 			}.runTaskTimerAsynchronously(this, 0, 36000);
 
@@ -181,7 +181,7 @@ public final class RPPersonas extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		saveQueue.stopSaving();
-		personaHandler.saveAllPersonas();
+		personaHandler.queueSaveAllPersonas();
 		saveQueue.completeAllSaves();
 		BaseSQL.cancelConnectionMaintainer();
 	}

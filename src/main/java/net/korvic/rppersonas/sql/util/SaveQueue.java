@@ -105,7 +105,7 @@ public class SaveQueue {
 			plugin.getCorpseHandler().saveAllCorpses();
 		}
 		if (plugin.getPersonaHandler() != null) {
-			plugin.getPersonaHandler().saveAllPersonas();
+			plugin.getPersonaHandler().queueSaveAllPersonas();
 		}
 		JoinQuitListener.refreshAllAccountPlaytime();
 

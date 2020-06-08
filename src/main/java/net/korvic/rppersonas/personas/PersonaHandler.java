@@ -17,6 +17,7 @@ import net.korvic.rppersonas.statuses.StatusEntry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -330,11 +331,10 @@ public class PersonaHandler {
 		plugin.getPersonasSQL().registerOrUpdate(data);
 	}
 
-	public void saveAllPersonas() {
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			Persona pers = getLoadedPersona(p);
+	public void queueSaveAllPersonas() {
+		for (Persona pers : loadedPersonas.values()) {
 			if (pers != null && !isSkipped(pers)) {
-				pers.queueSave(p);
+				pers.queueSave();
 			}
 		}
 	}
