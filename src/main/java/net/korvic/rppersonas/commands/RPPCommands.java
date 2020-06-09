@@ -112,7 +112,7 @@ public class RPPCommands extends BaseCommand {
 						Node accepted = Node.builder("group.accepted").build();
 
 						boolean hasAccepted = false;
-						for (Node node : user.getNodes()) {
+						for (Node node : user.data().toCollection()) {
 							if (node.getKey().equalsIgnoreCase("group.default")) {
 								user.data().remove(node);
 							} else if (node.getKey().equalsIgnoreCase("group.accepted")) {

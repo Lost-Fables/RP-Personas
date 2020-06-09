@@ -36,8 +36,11 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AccountCommands extends BaseCommand {
 
@@ -384,9 +387,16 @@ public class AccountCommands extends BaseCommand {
 				@Override
 				public void click(MenuAction menuAction) {
 					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(menuAction.getPlayer()).size();
-					int maxPersonas = PermissionsUtil.getTotalPermission(menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
-					maxPersonas += totalAccounts * RPPersonas.DEFAULT_PERSONAS;
-					getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
+					AtomicInteger amount = new AtomicInteger(0);
+					AtomicBoolean finished = PermissionsUtil.getTotalPermission(amount, menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
+
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
+							getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
+						}
+					}.runTaskTimerAsynchronously(plugin, 0, 5);
 				}
 			};
 		}
