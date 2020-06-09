@@ -388,6 +388,7 @@ public class AccountCommands extends BaseCommand {
 				public void click(MenuAction menuAction) {
 					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(menuAction.getPlayer()).size();
 					AtomicInteger amount = new AtomicInteger(0);
+					AtomicInteger passes = new AtomicInteger(0);
 					AtomicBoolean finished = PermissionsUtil.getTotalPermission(amount, menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
 
 					new BukkitRunnable() {
@@ -395,6 +396,11 @@ public class AccountCommands extends BaseCommand {
 						public void run() {
 							int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
 							getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
+							if (passes.get() > 10) {
+								this.cancel();
+							} else {
+								passes.addAndGet(1);
+							}
 						}
 					}.runTaskTimerAsynchronously(plugin, 0, 5);
 				}
