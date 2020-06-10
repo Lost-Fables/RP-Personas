@@ -50,6 +50,7 @@ public final class RPPersonas extends JavaPlugin {
 	public static final boolean DEBUGGING = false;
 	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
 	public static final int DEFAULT_PERSONAS = 2;
+	public static final int DEFAULT_SKINS = 0;
 	public static final String PERMISSION_START = "rppersonas";
 	public static final long DAY_IN_MILLIS = 1000L * 60 * 60 * 24;
 
