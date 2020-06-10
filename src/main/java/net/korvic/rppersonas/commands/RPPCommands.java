@@ -108,20 +108,9 @@ public class RPPCommands extends BaseCommand {
 						if (throwable != null) {
 							return;
 						}
-
 						Node accepted = Node.builder("group.accepted").build();
-
-						boolean hasAccepted = false;
-						for (Node node : user.data().toCollection()) {
-							if (node.getKey().equalsIgnoreCase("group.default")) {
-								user.data().remove(node);
-							} else if (node.getKey().equalsIgnoreCase("group.accepted")) {
-								hasAccepted = true;
-							}
-						}
-						if (!hasAccepted) {
-							user.data().add(accepted);
-						}
+						user.data().clear();
+						user.data().add(accepted);
 						api.getUserManager().saveUser(user);
 					}
 				}, runnable -> Bukkit.getScheduler().runTask(plugin, runnable));

@@ -394,12 +394,16 @@ public class AccountCommands extends BaseCommand {
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
-							getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
-							if (passes.get() > 10) {
+							if (finished.get()) {
+								int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
+								getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
 								this.cancel();
 							} else {
-								passes.addAndGet(1);
+								if (passes.get() > 10) {
+									this.cancel();
+								} else {
+									passes.addAndGet(1);
+								}
 							}
 						}
 					}.runTaskTimerAsynchronously(plugin, 0, 5);
