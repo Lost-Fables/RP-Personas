@@ -88,7 +88,7 @@ public class DeathRequest {
 		victim.getInventory().clear();
 		for (ItemStack item : items) {
 			if (item != null) {
-				victim.getLocation().getWorld().dropItem(victim.getLocation(), item);
+				victim.getLocation().getWorld().dropItem(loc, item);
 			}
 		}
 	}
