@@ -6,6 +6,7 @@ import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.listeners.JoinQuitListener;
 import net.korvic.rppersonas.personas.*;
 import net.korvic.rppersonas.sql.LanguageSQL;
+import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
@@ -532,6 +533,12 @@ public class PersonaCreationConvo extends BaseConvo {
 		Player p = (Player) context.getForWhom();
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registering your persona now..."));
 
+		Persona oldPers = null;
+		if (context.getAllSessionData().containsKey("oldpersona")) {
+			oldPers = (Persona) context.getAllSessionData().get("oldpersona");
+			context.getAllSessionData().remove("oldpersona");
+		}
+
 		DataMapFilter data = new DataMapFilter();
 		data.putAllObject(context.getAllSessionData());
 
@@ -546,6 +553,14 @@ public class PersonaCreationConvo extends BaseConvo {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
 			}
+		}
+
+		if (oldPers != null) {
+			DataMapFilter mapData = new DataMapFilter();
+			mapData.put(PersonaAccountsMapSQL.PERSONAID, oldPers.getPersonaID())
+				   .put(PersonaAccountsMapSQL.ACCOUNTID, oldPers.getAccountID())
+				   .put(PersonaAccountsMapSQL.ACTIVEUUID, null);
+			RPPersonas.get().getPersonaAccountMapSQL().registerOrUpdate(mapData);
 		}
 
 		PersonaHandler.stopSkipping(p);

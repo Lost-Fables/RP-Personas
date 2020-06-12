@@ -48,12 +48,16 @@ public class PersonaHandler {
 	public static void createPersona(Player p, int accountID, boolean first) {
 		new DisabledStatus(null).applyEffect(p, (byte) 0);
 
+		Persona pers = null;
 		String welcomeText = "";
 		if (first) {
 			welcomeText = RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Welcome!";
-		} else if (plugin.getPersonaHandler().getLoadedPersona(p) != null) {
-			plugin.getPersonaHandler().getLoadedPersona(p).queueSave(p);
-			skipSave.put(p, plugin.getPersonaHandler().getLoadedPersona(p));
+		} else {
+			pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			if (pers != null) {
+				pers.queueSave(p);
+				skipSave.put(p, pers);
+			}
 		}
 		Title title = new Title(welcomeText,
 								RPPersonas.SECONDARY_LIGHT + "Type your Persona's name to continue.",
@@ -72,6 +76,10 @@ public class PersonaHandler {
 		data.put(PersonasSQL.PLAYTIME, 0L);
 		data.put(PersonasSQL.FRESH, new Object());
 		data.put(PersonasSQL.LOCATION, plugin.getSpawnLocation());
+
+		if (pers != null) {
+			data.put("oldpersona", pers);
+		}
 
 		if (first) {
 			data.put(PersonasSQL.FIRST, new Object());
