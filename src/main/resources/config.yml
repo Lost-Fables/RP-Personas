@@ -42,9 +42,9 @@ death:
 #    timescale: 240
 #    synced:
 #      - build_world
-worlds:
+worlds: {}
 
 # Saved Kits
 #kits:
 #  Huntsman: {Item Strings}
-kits:
+kits: {}

@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -359,7 +360,8 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
 			context.setSessionData(PersonasSQL.GENDER, PersonaGender.getByName(input));
-			if (returnToEnd) {
+			List<Kit> allKits = RPPersonas.get().getKitHandler().getAllKits();
+			if (returnToEnd || allKits == null || allKits.size() < 1) {
 				return new PersonaConfirmPrompt();
 			} else {
 				return new PersonaBackgroundPrompt();

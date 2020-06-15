@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.listeners;
 
+import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaHandler;
@@ -52,6 +53,7 @@ public class JoinQuitListener implements Listener {
 		refreshAccountPlaytime(p);
 		plugin.getAccountHandler().unloadAccount(account);
 		playerLoginTime.remove(p);
+		BoardManager.removePlayer(p);
 	}
 
 

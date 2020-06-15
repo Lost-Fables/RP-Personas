@@ -45,7 +45,7 @@ public class BoardManager {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			boolean registered = false;
 			for (Team team : nameBoard.getTeams()) {
-				if (team.getName().equalsIgnoreCase(p.getName())) {
+				if (team.getName().equalsIgnoreCase(p.getUniqueId().toString())) {
 					registered = true;
 					break;
 				}
@@ -58,13 +58,22 @@ public class BoardManager {
 		for (Team team : nameBoard.getTeams()) {
 			boolean registered = false;
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (team.getName().equalsIgnoreCase(p.getName())) {
+				if (team.getName().equalsIgnoreCase(p.getUniqueId().toString())) {
 					registered = true;
 					break;
 				}
 			}
 			if (!registered) {
 				team.unregister();
+			}
+		}
+	}
+
+	public static void removePlayer(Player p) {
+		for (Team team : nameBoard.getTeams()) {
+			if (team.getName().equalsIgnoreCase(p.getUniqueId().toString())) {
+				team.unregister();
+				break;
 			}
 		}
 	}
@@ -77,9 +86,9 @@ public class BoardManager {
 	}
 
 	public static void addPlayer(Player p, String[] namePieces) {
-		Team team = nameBoard.getTeam(p.getName());
+		Team team = nameBoard.getTeam(p.getUniqueId().toString());
 		if (team == null) {
-			team = nameBoard.registerNewTeam(p.getName());
+			team = nameBoard.registerNewTeam(p.getUniqueId().toString());
 		}
 
 		if (namePieces[0] != null) {
