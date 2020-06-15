@@ -222,11 +222,16 @@ public class PersonasSQL extends BaseSQL {
 			replaceStatement.setDouble(10, loc.getX());
 			replaceStatement.setDouble(11, loc.getY());
 			replaceStatement.setDouble(12, loc.getZ());
-		} else {
+		} else if (resultPresent) {
 			replaceStatement.setString(9, result.getString("LocationWorld"));
 			replaceStatement.setDouble(10, result.getDouble("LocationX"));
 			replaceStatement.setDouble(11, result.getDouble("LocationY"));
 			replaceStatement.setDouble(12, result.getDouble("LocationZ"));
+		} else {
+			replaceStatement.setString(9, "world");
+			replaceStatement.setDouble(10, 0);
+			replaceStatement.setDouble(11, 0);
+			replaceStatement.setDouble(12, 0);
 		}
 
 		//Health & Hunger
