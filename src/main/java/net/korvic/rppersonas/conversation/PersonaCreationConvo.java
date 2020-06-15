@@ -437,17 +437,17 @@ public class PersonaCreationConvo extends BaseConvo {
 			PersonaGender gender = (PersonaGender) context.getSessionData(PersonasSQL.GENDER);
 			Kit kit = (Kit) context.getSessionData(PersonasSQL.BACKGROUND);
 
-			String raceString = null;
+			String raceString = "None";
 			if (race != null) {
 				raceString = race.getName();
 			}
 
-			String genderString = null;
+			String genderString = "None";
 			if (gender != null) {
 				genderString = gender.getName();
 			}
 
-			String backgroundString = null;
+			String backgroundString = "None";
 			if (kit != null) {
 				backgroundString = kit.getName();
 			}
