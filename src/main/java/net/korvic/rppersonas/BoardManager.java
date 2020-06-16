@@ -88,7 +88,7 @@ public class BoardManager {
 	public static void addPlayer(Player p, String[] namePieces) {
 		Team team = nameBoard.getTeam(p.getName());
 		if (team == null) {
-			team = nameBoard.registerNewTeam(p.getUniqueId().toString());
+			team = nameBoard.registerNewTeam(p.getName());
 		}
 
 		if (namePieces[0] != null) {
