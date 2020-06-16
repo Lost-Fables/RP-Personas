@@ -368,6 +368,8 @@ public class AccountCommands extends BaseCommand {
 
 		// PERSONAS //
 		private Icon getPersonasIcon(int accountID) {
+			final boolean[] clicked = { false };
+
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -386,40 +388,43 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					Player p = menuAction.getPlayer();
-					p.sendMessage(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Loading Personas...");
-					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(p).size();
-					AtomicInteger amount = new AtomicInteger(0);
-					AtomicInteger passes = new AtomicInteger(0);
-					AtomicBoolean finished = PermissionsUtil.getTotalPermission(amount, p.getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
+					if (!clicked[0]) {
+						clicked[0] = true;
+						Player p = menuAction.getPlayer();
+						p.sendMessage(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Loading Personas...");
+						int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(p).size();
+						AtomicInteger amount = new AtomicInteger(0);
+						AtomicInteger passes = new AtomicInteger(0);
+						AtomicBoolean finished = PermissionsUtil.getTotalPermission(amount, p.getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
 
-					new BukkitRunnable() {
-						private boolean opened = false;
+						new BukkitRunnable() {
+							private boolean opened = false;
 
-						@Override
-						public void run() {
-							if (!opened) {
-								if (finished.get()) {
-									int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
-									List<Menu> personasMenu = getPersonasListMenu(accountID, maxPersonas);
-									if (personasMenu.size() > 0) {
-										personasMenu.get(0).openSession(menuAction.getPlayer());
-										opened = true;
+							@Override
+							public void run() {
+								if (!opened) {
+									if (finished.get()) {
+										int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
+										List<Menu> personasMenu = getPersonasListMenu(accountID, maxPersonas);
+										if (personasMenu.size() > 0) {
+											personasMenu.get(0).openSession(menuAction.getPlayer());
+											opened = true;
+										}
+									} else {
+										if (passes.get() > 10) {
+											opened = true;
+										} else {
+											passes.addAndGet(1);
+										}
 									}
 								} else {
-									if (passes.get() > 10) {
-										opened = true;
-									} else {
-										passes.addAndGet(1);
+									if (!this.isCancelled()) {
+										this.cancel();
 									}
 								}
-							} else {
-								if (!this.isCancelled()) {
-									this.cancel();
-								}
 							}
-						}
-					}.runTaskTimer(plugin, 2, 2);
+						}.runTaskTimer(plugin, 2, 2);
+					}
 				}
 			};
 		}
