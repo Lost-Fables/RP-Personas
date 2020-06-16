@@ -386,30 +386,40 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(menuAction.getPlayer()).size();
+					Player p = menuAction.getPlayer();
+					p.sendMessage(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Loading Personas...");
+					int totalAccounts = plugin.getUuidAccountMapSQL().getUUIDsOf(p).size();
 					AtomicInteger amount = new AtomicInteger(0);
 					AtomicInteger passes = new AtomicInteger(0);
-					AtomicBoolean finished = PermissionsUtil.getTotalPermission(amount, menuAction.getPlayer().getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
+					AtomicBoolean finished = PermissionsUtil.getTotalPermission(amount, p.getUniqueId(), RPPersonas.PERMISSION_START + ".personaslots");
 
 					new BukkitRunnable() {
+						private boolean opened = false;
+
 						@Override
 						public void run() {
-							if (finished.get()) {
-								int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
-								List<Menu> personasMenu = getPersonasListMenu(accountID, maxPersonas);
-								if (personasMenu.size() > 0) {
-									personasMenu.get(0).openSession(menuAction.getPlayer());
-									this.cancel();
+							if (!opened) {
+								if (finished.get()) {
+									int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
+									List<Menu> personasMenu = getPersonasListMenu(accountID, maxPersonas);
+									if (personasMenu.size() > 0) {
+										personasMenu.get(0).openSession(menuAction.getPlayer());
+										opened = true;
+									}
+								} else {
+									if (passes.get() > 10) {
+										opened = true;
+									} else {
+										passes.addAndGet(1);
+									}
 								}
 							} else {
-								if (passes.get() > 10) {
+								if (!this.isCancelled()) {
 									this.cancel();
-								} else {
-									passes.addAndGet(1);
 								}
 							}
 						}
-					}.runTaskTimerAsynchronously(plugin, 0, 5);
+					}.runTaskTimer(plugin, 2, 2);
 				}
 			};
 		}
