@@ -396,8 +396,11 @@ public class AccountCommands extends BaseCommand {
 						public void run() {
 							if (finished.get()) {
 								int maxPersonas = amount.get() + (totalAccounts * RPPersonas.DEFAULT_PERSONAS);
-								getPersonasListMenu(accountID, maxPersonas).get(0).openSession(menuAction.getPlayer());
-								this.cancel();
+								List<Menu> personasMenu = getPersonasListMenu(accountID, maxPersonas);
+								if (personasMenu.size() > 0) {
+									personasMenu.get(0).openSession(menuAction.getPlayer());
+									this.cancel();
+								}
 							} else {
 								if (passes.get() > 10) {
 									this.cancel();
