@@ -419,6 +419,7 @@ public class PersonasSQL extends BaseSQL {
 			Map<String, Object> output = new HashMap<>();
 
 			if (rs.next()) {
+				output.put(PREFIX, rs.getString("Prefix"));
 				if (rs.getString("NickName") != null && rs.getString("NickName").length() > 0) {
 					output.put(NICKNAME, rs.getString("NickName"));
 				}
