@@ -41,7 +41,7 @@ public class SkinDisplayListener {
 									Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
 									if (pers != null) {
 										WrappedGameProfile profile = playerInfo.getProfile();
-										profile = profile.withName(pers.getNamePieces()[1]);
+										profile = profile.withName(pers.getNamePieces()[0]);
 
 										if (pers.getActiveSkinID() > 0) {
 											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
