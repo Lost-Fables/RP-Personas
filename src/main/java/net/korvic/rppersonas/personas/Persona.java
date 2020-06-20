@@ -39,7 +39,7 @@ public class Persona {
 	@Getter private int accountID;
 	@Getter private String prefix;
 	@Getter private String nickName;
-	@Getter private String[] namePieces = new String[3];
+	@Getter private String[] namePieces = new String[2];
 	@Getter private Inventory enderChest;
 	@Getter @Setter private boolean alive;
 	@Getter private PersonaSkin activeSkin = null;
@@ -214,6 +214,10 @@ public class Persona {
 	}
 
 	// SET //
+	public void setNickName(String name) {
+		setNickName(usingPlayer, name);
+	}
+
 	public void setNickName(Player p, String name) {
 		if (name.length() > 0) {
 			this.nickName = name;
@@ -221,37 +225,29 @@ public class Persona {
 			this.nickName = (String) getBasicInfo().get(PersonasSQL.NAME);
 		}
 
-		namePieces = new String[3];
+		namePieces = new String[2];
 
+		// Prefix Grabber
 		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
-		String prefix = null;
+		String prefix = "";
 		if (user != null) {
 			for (Node node : user.getDistinctNodes()) {
 				if (node.getValue() && node.getType().equals(NodeType.PREFIX)) {
 					prefix = ChatColor.translateAlternateColorCodes('&', node.getKey());
 					prefix = ChatColor.getLastColors(prefix);
+					break;
 				}
 			}
 		}
 
-		String personaName = this.nickName;
-		int maxSize = 16;
-		int pieces = (int) Math.ceil(((double) personaName.length()) / maxSize);
+		String personaName = prefix + this.nickName;
+		int maxMidSize = 16;
+		int maxSuffixSize = 64;
 
-		if (pieces == 1 && (prefix + this.nickName).length() > 16) {
-			pieces++;
-		}
-
-		if (pieces > 1) {
-			for (int i = 0; i < pieces && i < namePieces.length; i++) {
-				int end = Math.min(maxSize * (i + 1), personaName.length());
-				namePieces[i] = personaName.substring(maxSize * i, end);
-				if (i == 0) {
-					namePieces[i] = prefix + namePieces[i];
-				}
-			}
-		} else {
-			namePieces[1] = prefix + personaName;
+		namePieces[0] = personaName.substring(0, maxMidSize);
+		if (personaName.length() > maxMidSize) {
+			String suffix = prefix + personaName.substring(maxMidSize, personaName.length());
+			namePieces[1] = suffix.substring(0, maxSuffixSize);
 		}
 
 		queueSave(p);

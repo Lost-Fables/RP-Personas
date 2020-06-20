@@ -3,6 +3,7 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
+import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
@@ -124,6 +125,11 @@ public class RPPCommands extends BaseCommand {
 			}
 			msg(RPPersonas.PRIMARY_DARK + "Player successfully accepted.");
 		}
+	}
+
+	@Cmd(value="Force a full clean of the scoreboard for persona name.", permission=RPPersonas.PERMISSION_START + ".refresh")
+	public void refresh() {
+		BoardManager.forceFullClean();
 	}
 
 }

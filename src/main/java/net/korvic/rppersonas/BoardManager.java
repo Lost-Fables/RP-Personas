@@ -15,6 +15,19 @@ public class BoardManager {
 
 	private static BukkitRunnable autoClean = null;
 
+	public static void forceFullClean() {
+		for (Team team : nameBoard.getTeams()) {
+			team.unregister();
+		}
+
+		nameBoard = manager.getNewScoreboard();
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(p);
+			pers.setNickName(pers.getNickName());
+			addPlayer(p);
+		}
+	}
+
 	public static void toggleAutoClean() {
 		if (autoClean != null) {
 			if (autoClean.isCancelled()) {
@@ -91,14 +104,8 @@ public class BoardManager {
 			team = nameBoard.registerNewTeam(p.getName());
 		}
 
-		if (namePieces[0] != null) {
-			team.setPrefix(namePieces[0]);
-		} else {
-			team.setPrefix("");
-		}
-
-		if (namePieces[2] != null) {
-			team.setSuffix(namePieces[2]);
+		if (namePieces[1] != null) {
+			team.setSuffix(namePieces[1]);
 		} else {
 			team.setSuffix("");
 		}
@@ -106,7 +113,7 @@ public class BoardManager {
 		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
 		team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
 
-		team.addEntry(namePieces[1]);
+		team.addEntry(namePieces[0]);
 		p.setScoreboard(nameBoard);
 		PersonaSkin.refreshPlayer(p);
 	}
