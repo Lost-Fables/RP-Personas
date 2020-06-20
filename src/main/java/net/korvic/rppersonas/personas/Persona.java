@@ -244,7 +244,7 @@ public class Persona {
 		int maxMidSize = 16;
 		int maxSuffixSize = 64;
 
-		namePieces[0] = personaName.substring(0, maxMidSize);
+		namePieces[0] = personaName.substring(0, Math.min(maxMidSize, personaName.length()));
 		if (personaName.length() > maxMidSize) {
 			String suffix = prefix + personaName.substring(maxMidSize, personaName.length());
 			namePieces[1] = suffix.substring(0, Math.min(maxSuffixSize, suffix.length()));
