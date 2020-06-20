@@ -14,6 +14,10 @@ import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import net.korvic.rppersonas.time.TimeManager;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -219,17 +223,35 @@ public class Persona {
 
 		namePieces = new String[3];
 
+		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
+		String prefix = null;
+		if (user != null) {
+			for (Node node : user.getDistinctNodes()) {
+				if (node.getValue() && node.getType().equals(NodeType.PREFIX)) {
+					prefix = ChatColor.translateAlternateColorCodes('&', node.getKey());
+					prefix = ChatColor.getLastColors(prefix);
+				}
+			}
+		}
+
 		String personaName = this.nickName;
 		int maxSize = 16;
 		int pieces = (int) Math.ceil(((double) personaName.length()) / maxSize);
+
+		if (pieces == 1 && (prefix + this.nickName).length() > 16) {
+			pieces++;
+		}
 
 		if (pieces > 1) {
 			for (int i = 0; i < pieces && i < namePieces.length; i++) {
 				int end = Math.min(maxSize * (i + 1), personaName.length());
 				namePieces[i] = personaName.substring(maxSize * i, end);
+				if (i == 0) {
+					namePieces[i] = prefix + namePieces[i];
+				}
 			}
 		} else {
-			namePieces[1] = personaName;
+			namePieces[1] = prefix + personaName;
 		}
 
 		queueSave(p);
