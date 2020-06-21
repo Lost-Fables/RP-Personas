@@ -9,7 +9,9 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.listeners.CorpseListener;
+import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.sql.KarmaSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
@@ -126,6 +128,27 @@ public class PersonaCommands extends BaseCommand {
 				InventoryUtil.addOrDropItem(p, corpse);
 			} else {
 				msg(RPPersonas.PRIMARY_DARK + "You must be holding a corpse in your hand in order to ruin it!");
+			}
+		} else {
+			msg(NO_CONSOLE);
+		}
+	}
+
+	@Cmd(value = "Show the Minecraft Usernames of a player instead of their RP name.", permission = RPPersonas.PERMISSION_START + ".shownames")
+	public void showMCnames(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			if (SkinDisplayListener.showingMCNames.contains(p)) {
+				SkinDisplayListener.showingMCNames.remove(p);
+			} else {
+				SkinDisplayListener.showingMCNames.add(p);
+			}
+			PersonaSkin.refreshPlayer(p);
+
+			if (SkinDisplayListener.showingMCNames.contains(p)) {
+				msg(RPPersonas.PRIMARY_DARK + "Now showing MC names.");
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "Now showing RP names.");
 			}
 		} else {
 			msg(NO_CONSOLE);

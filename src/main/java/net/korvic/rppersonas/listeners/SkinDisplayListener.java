@@ -14,11 +14,14 @@ import net.korvic.rppersonas.personas.Persona;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
 
 public class SkinDisplayListener {
+
+	public static List<Player> showingMCNames = new ArrayList<>();
 
 	public static void listen() {
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
@@ -41,7 +44,11 @@ public class SkinDisplayListener {
 									Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
 									if (pers != null) {
 										WrappedGameProfile profile = playerInfo.getProfile();
-										profile = profile.withName(pers.getNamePieces()[0]);
+										String name = pers.getNamePieces()[0];
+										if (showingMCNames.contains(event.getPlayer())) {
+											name = event.getPlayer().getName();
+										}
+										profile = profile.withName(name);
 
 										if (pers.getActiveSkinID() > 0) {
 											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
