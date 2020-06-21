@@ -26,10 +26,12 @@ import net.korvic.rppersonas.statuses.*;
 import net.korvic.rppersonas.time.Season;
 import net.korvic.rppersonas.time.TimeManager;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.PrefixNode;
+import net.luckperms.api.query.QueryOptions;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,6 +46,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -434,17 +437,7 @@ public final class RPPersonas extends JavaPlugin {
 		// Prefix Grabber
 		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
 		if (user != null) {
-			int currentLevel = 0;
-			String finalKey = null;
-			for (Node node : user.getDistinctNodes()) {
-				if (node.getValue() && node.getType().equals(NodeType.PREFIX)) {
-					PrefixNode pn = (PrefixNode) node;
-					if (pn.getPriority() >= currentLevel) {
-						finalKey = pn.getKey();
-						currentLevel = pn.getPriority();
-					}
-				}
-			}
+			String finalKey = user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
 			if (finalKey != null) {
 				output = org.bukkit.ChatColor.translateAlternateColorCodes('&', finalKey);
 				output = org.bukkit.ChatColor.getLastColors(output);
