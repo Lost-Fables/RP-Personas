@@ -47,6 +47,10 @@ public class SkinDisplayListener {
 										String name = pers.getNamePieces()[0];
 										if (showingMCNames.contains(event.getPlayer())) {
 											name = player.getName();
+											String prefix = RPPersonas.getPrefixColor(player);
+											if (prefix.length() + name.length() <= 16) {
+												name = prefix + name;
+											}
 										}
 										profile = profile.withName(name);
 

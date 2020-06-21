@@ -226,18 +226,9 @@ public class Persona {
 		}
 
 		namePieces = new String[2];
-
-		// Prefix Grabber
-		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
 		String prefix = "";
-		if (staffNameEnabled && user != null) {
-			for (Node node : user.getDistinctNodes()) {
-				if (node.getValue() && node.getType().equals(NodeType.PREFIX)) {
-					prefix = ChatColor.translateAlternateColorCodes('&', node.getKey());
-					prefix = ChatColor.getLastColors(prefix);
-					break;
-				}
-			}
+		if (staffNameEnabled) {
+			prefix = RPPersonas.getPrefixColor(p);
 		}
 
 		String personaName = prefix + this.nickName;

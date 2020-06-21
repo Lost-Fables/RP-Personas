@@ -25,12 +25,18 @@ import net.korvic.rppersonas.sql.util.SaveQueue;
 import net.korvic.rppersonas.statuses.*;
 import net.korvic.rppersonas.time.Season;
 import net.korvic.rppersonas.time.TimeManager;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.PrefixNode;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -419,6 +425,28 @@ public final class RPPersonas extends JavaPlugin {
 				output = "east";
 			}
 		}
+		return output;
+	}
+
+	public static String getPrefixColor(Player p) {
+		String output = "";
+
+		// Prefix Grabber
+		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
+		if (user != null) {
+			int currentLevel = 0;
+			for (Node node : user.getDistinctNodes()) {
+				if (node.getValue() && node.getType().equals(NodeType.PREFIX)) {
+					PrefixNode pn = (PrefixNode) node;
+					if (pn.getPriority() >= currentLevel) {
+						output = org.bukkit.ChatColor.translateAlternateColorCodes('&', pn.getKey());
+						output = org.bukkit.ChatColor.getLastColors(output);
+						currentLevel = pn.getPriority();
+					}
+				}
+			}
+		}
+
 		return output;
 	}
 }
