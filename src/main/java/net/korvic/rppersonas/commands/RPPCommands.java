@@ -5,15 +5,14 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.personas.Persona;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
-import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -130,6 +129,23 @@ public class RPPCommands extends BaseCommand {
 	@Cmd(value="Force a full clean of the scoreboard for persona name.", permission=RPPersonas.PERMISSION_START + ".refresh")
 	public void refresh() {
 		BoardManager.forceFullClean();
+	}
+
+	@Cmd(value = "Toggle the colouring on one's nameplate.", permission = RPPersonas.PERMISSION_START + ".staff")
+	public void toggleTag(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			pers.setStaffNameEnabled(!pers.isStaffNameEnabled());
+			pers.setNickName(pers.getNickName());
+			if (pers.isStaffNameEnabled()) {
+				msg(RPPersonas.PRIMARY_DARK + "You are now displaying your staff colour.");
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You are no longer displaying your staff colour.");
+			}
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + "Stahp it, console.");
+		}
 	}
 
 }

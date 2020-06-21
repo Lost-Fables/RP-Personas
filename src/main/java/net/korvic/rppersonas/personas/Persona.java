@@ -6,7 +6,6 @@ import lombok.Setter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.conversation.BaseConvo;
-import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.StatusSQL;
@@ -44,6 +43,7 @@ public class Persona {
 	@Getter @Setter private boolean alive;
 	@Getter private PersonaSkin activeSkin = null;
 	@Getter private List<StatusEntry> activeStatuses = new ArrayList<>();
+	@Getter @Setter private boolean staffNameEnabled = false;
 
 	private String inventory;
 
@@ -230,7 +230,7 @@ public class Persona {
 		// Prefix Grabber
 		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
 		String prefix = "";
-		if (user != null) {
+		if (staffNameEnabled && user != null) {
 			for (Node node : user.getDistinctNodes()) {
 				if (node.getValue() && node.getType().equals(NodeType.PREFIX)) {
 					prefix = ChatColor.translateAlternateColorCodes('&', node.getKey());
