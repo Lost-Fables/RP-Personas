@@ -143,7 +143,7 @@ public class PersonaCommands extends BaseCommand {
 			} else {
 				SkinDisplayListener.showingMCNames.add(p);
 			}
-			PersonaSkin.refreshPlayer(p);
+			PersonaSkin.refreshOthers(p);
 
 			if (SkinDisplayListener.showingMCNames.contains(p)) {
 				msg(RPPersonas.PRIMARY_DARK + "Now showing MC names.");

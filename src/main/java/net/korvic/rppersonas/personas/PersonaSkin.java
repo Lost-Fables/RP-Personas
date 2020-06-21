@@ -59,6 +59,13 @@ public class PersonaSkin {
 		return mojangData;
 	}
 
+	public static void refreshOthers(Player p) {
+		Bukkit.getOnlinePlayers().stream()
+			  .filter(x -> (x != p))
+			  .filter(x -> x.canSee(p))
+			  .forEach(x -> {p.hidePlayer(RPPersonas.get(), x); p.showPlayer(RPPersonas.get(), x);});
+	}
+
 	// ProtocolLib Refreshing
 	public static void refreshPlayer(Player p) {
 		if (p.isInsideVehicle()) {

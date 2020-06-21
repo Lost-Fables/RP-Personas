@@ -46,7 +46,7 @@ public class SkinDisplayListener {
 										WrappedGameProfile profile = playerInfo.getProfile();
 										String name = pers.getNamePieces()[0];
 										if (showingMCNames.contains(event.getPlayer())) {
-											name = event.getPlayer().getName();
+											name = player.getName();
 										}
 										profile = profile.withName(name);
 
