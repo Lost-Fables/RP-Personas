@@ -435,15 +435,19 @@ public final class RPPersonas extends JavaPlugin {
 		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
 		if (user != null) {
 			int currentLevel = 0;
+			String finalKey = null;
 			for (Node node : user.getDistinctNodes()) {
 				if (node.getValue() && node.getType().equals(NodeType.PREFIX)) {
 					PrefixNode pn = (PrefixNode) node;
 					if (pn.getPriority() >= currentLevel) {
-						output = org.bukkit.ChatColor.translateAlternateColorCodes('&', pn.getKey());
-						output = org.bukkit.ChatColor.getLastColors(output);
+						finalKey = pn.getKey();
 						currentLevel = pn.getPriority();
 					}
 				}
+			}
+			if (finalKey != null) {
+				output = org.bukkit.ChatColor.translateAlternateColorCodes('&', finalKey);
+				output = org.bukkit.ChatColor.getLastColors(output);
 			}
 		}
 
