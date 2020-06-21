@@ -29,7 +29,7 @@ public class DeathRequest {
 		this.victim = victim;
 		this.victimPersona = RPPersonas.get().getPersonaHandler().getLoadedPersona(victim);
 
-		this.location = victim.getLocation().toBlockLocation();
+		this.location = victim.getLocation().toBlockLocation().add(0, 1, 0);
 	}
 
 	public Player getKiller() {
@@ -56,12 +56,11 @@ public class DeathRequest {
 
 	public void complete(boolean staffInflicted) {
 		RPPersonas plugin = RPPersonas.get();
-		Location oldLoc = victim.getLocation();
 
 		saveDeathSQL(plugin, staffInflicted);
 
 		victim.teleport(plugin.getDeathLocation());
-		dropCorpse(plugin, oldLoc);
+		dropCorpse(plugin, location);
 		savePersona(plugin);
 		plugin.getDeathHandler().deleteRequest(victim);
 	}
@@ -88,7 +87,7 @@ public class DeathRequest {
 		victim.getInventory().clear();
 		for (ItemStack item : items) {
 			if (item != null) {
-				victim.getLocation().getWorld().dropItem(loc, item);
+				loc.getWorld().dropItemNaturally(loc, item);
 			}
 		}
 	}

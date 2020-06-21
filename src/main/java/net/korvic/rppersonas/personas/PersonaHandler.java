@@ -155,7 +155,7 @@ public class PersonaHandler {
 			activeSkinID = (int) data.get(PersonasSQL.SKINID);
 		}
 
-		boolean isAlive = false;
+		boolean isAlive = true;
 		if (data.containsKey(PersonasSQL.ALIVE)) {
 			isAlive = (boolean) data.get(PersonasSQL.ALIVE);
 		}
