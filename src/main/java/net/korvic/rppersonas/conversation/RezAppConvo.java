@@ -74,8 +74,7 @@ public class RezAppConvo extends BaseConvo {
 			Player p = (Player) context.getForWhom();
 
 			if (input.equalsIgnoreCase("Yes")) {
-				p.sendMessage(fauxChatBuilder("Very well. I'll be here for the rest of eternity if you change your mind."));
-				return Prompt.END_OF_CONVERSATION;
+				return new TextFillPrompt(Prompt.END_OF_CONVERSATION, "Very well. I'll be here for the rest of eternity if you change your mind.");
 			} else if (input.equalsIgnoreCase("No")) {
 				return new ReasoningPrompt();
 			} else if (input.equalsIgnoreCase("Returned")) {
