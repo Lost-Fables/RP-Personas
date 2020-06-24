@@ -111,9 +111,7 @@ public final class RPPersonas extends JavaPlugin {
 		} catch (Exception e) {
 			sqlSuccessful = false;
 			this.getLogger().severe("FATAL: Failed to initiate SQL database. Please check your credentials.");
-			if (DEBUGGING) {
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 
 		if (sqlSuccessful) {
@@ -183,16 +181,20 @@ public final class RPPersonas extends JavaPlugin {
 			new SlowStatus().registerStatus();
 			new SickStatus().registerStatus();
 			new BlindStatus().registerStatus();
-		} else {
-			this.onDisable();
 		}
 	}
 
 	@Override
 	public void onDisable() {
-		saveQueue.stopSaving();
-		personaHandler.queueSaveAllPersonas();
-		saveQueue.completeAllSaves();
+		if (saveQueue != null) {
+			saveQueue.stopSaving();
+		}
+		if (personaHandler != null) {
+			personaHandler.queueSaveAllPersonas();
+		}
+		if (saveQueue != null) {
+			saveQueue.completeAllSaves();
+		}
 		BaseSQL.cancelConnectionMaintainer();
 	}
 
@@ -202,7 +204,7 @@ public final class RPPersonas extends JavaPlugin {
 	}
 
 	// SQL //
-	private void setupDatabases() {
+	private void setupDatabases() throws Exception {
 		uuidAccountMapSQL = new UUIDAccountMapSQL(this);
 		accountsSQL = new AccountsSQL(this);
 		personaAccountMapSQL = new PersonaAccountsMapSQL(this);
