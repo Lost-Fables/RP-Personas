@@ -46,7 +46,7 @@ public class RezAppConvo extends BaseConvo {
 			if (firstPass) {
 				npcSpeech = "Ah, another soul passing on to Mevvet. Are you ready for what awaits you?";
 			} else {
-				npcSpeech = "Well then, are you ready for what awaits you?";
+				npcSpeech = "So, are you ready for what awaits you?";
 			}
 
 			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + "\n" +
