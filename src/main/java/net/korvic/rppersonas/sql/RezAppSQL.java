@@ -197,7 +197,7 @@ public class RezAppSQL extends BaseSQL {
 
 			data.put(KARMA, rs.getInt("Karma"));
 			data.put(KILLS, rs.getInt("Kills"));
-			data.put(DEATHS, rs.getInt("Deahts"));
+			data.put(DEATHS, rs.getInt("Deaths"));
 			data.put(ALTAR, plugin.getAltarHandler().getAltar(rs.getString("Altar")));
 			data.put(DENIED, rs.getBoolean("Denied"));
 		} catch (SQLException ex) {
