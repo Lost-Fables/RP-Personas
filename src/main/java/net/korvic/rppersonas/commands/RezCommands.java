@@ -60,7 +60,7 @@ public class RezCommands extends BaseCommand {
 		list.add(new TextComponent(""));
 
 		{
-			TextComponent acceptText = new TextComponent(RPPersonas.PRIMARY_DARK + "If you believe this persona worth rezzing, please use/click " + RPPersonas.SECONDARY_DARK + "/rpp rez accept " + app.getPersonaID());
+			TextComponent acceptText = new TextComponent(RPPersonas.PRIMARY_DARK + "If you believe this persona worth rezzing, please use/click " + ChatColor.GREEN + "/rpp rez accept " + app.getPersonaID());
 			ClickEvent event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rpp rez accept " + app.getPersonaID());
 			acceptText.setHoverEvent(MessageUtil.hoverEvent("Click to accept this app."));
 			acceptText.setClickEvent(event);
@@ -68,7 +68,7 @@ public class RezCommands extends BaseCommand {
 		}
 
 		{
-			TextComponent denyText = new TextComponent(RPPersonas.PRIMARY_DARK + "Otherwise, to deny this persona resurrection use/click " + RPPersonas.SECONDARY_DARK + "/rpp rez deny " + app.getPersonaID());
+			TextComponent denyText = new TextComponent(RPPersonas.PRIMARY_DARK + "Otherwise, to deny this persona resurrection use/click " + ChatColor.RED + "/rpp rez deny " + app.getPersonaID());
 			ClickEvent event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rpp rez deny " + app.getPersonaID());
 			denyText.setHoverEvent(MessageUtil.hoverEvent("Click to deny this app."));
 			denyText.setClickEvent(event);
