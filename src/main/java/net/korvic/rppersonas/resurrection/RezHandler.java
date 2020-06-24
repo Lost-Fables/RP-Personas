@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.RezAppSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 
@@ -19,6 +20,7 @@ public class RezHandler {
 
 	public void addApp(RezApp app) {
 		rezAppList.put(app.getPersonaID(), app);
+		Bukkit.broadcast(RPPersonas.PRIMARY_DARK + "A new rez app has been submitted.", RPPersonas.PERMISSION_START + ".rez");
 	}
 
 	public void accept(int id) {
