@@ -49,7 +49,7 @@ public class RezAppConvo extends BaseConvo {
 			if (firstPass) {
 				npcSpeech = "Ah, another soul passing on to Mevvet. Are you ready for what awaits you?";
 			} else {
-				npcSpeech = "With that out of the way, are you ready for what awaits you?";
+				npcSpeech = "Well then, are you ready for what awaits you?";
 			}
 
 			BaseComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + "\n" +
@@ -164,6 +164,7 @@ public class RezAppConvo extends BaseConvo {
 			}
 
 			responses.addEntry(1, input);
+			passes++;
 			return this;
 		}
 	}
@@ -231,6 +232,7 @@ public class RezAppConvo extends BaseConvo {
 			}
 
 			responses.addEntry(2, input);
+			passes++;
 			return this;
 		}
 	}
@@ -281,7 +283,6 @@ public class RezAppConvo extends BaseConvo {
 			if (button != null) {
 				p.sendMessage(button);
 			}
-			passes++;
 			return "";
 		}
 
@@ -299,6 +300,7 @@ public class RezAppConvo extends BaseConvo {
 			}
 
 			responses.addEntry(3, input);
+			passes++;
 			return this;
 		}
 	}
