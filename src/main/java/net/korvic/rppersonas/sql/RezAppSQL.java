@@ -173,14 +173,14 @@ public class RezAppSQL extends BaseSQL {
 	}
 
 	public DataMapFilter getData(int personaID) {
-		DataMapFilter data = new DataMapFilter().put(PERSONAID, personaID);
+		DataMapFilter data = null;
 		Connection conn = getSQLConnection();
 		try {
 			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
 			ResultSet rs = statement.executeQuery();
 
 			if (rs.next()) {
-				data.putAllData(grabDataFromResult(rs));
+				data = grabDataFromResult(rs);
 			}
 
 			rs.close();
@@ -194,6 +194,8 @@ public class RezAppSQL extends BaseSQL {
 		DataMapFilter data = new DataMapFilter();
 
 		try {
+			data.put(PERSONAID, rs.getInt("PersonaID"));
+
 			RezAppConvo.RezAppResponses responses = new RezAppConvo.RezAppResponses();
 			responses.addEntry(1, rs.getString("Why"));
 			responses.addEntry(2, rs.getString("Honest"));
