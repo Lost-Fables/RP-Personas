@@ -46,7 +46,21 @@ public class RezAppSQL extends BaseSQL {
 
 	@Override
 	protected boolean customStatement() {
-		connection = getSQLConnection();
+		return false;
+	}
+
+	protected void addDataMappings() {
+		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
+		DataMapFilter.addFilter(RESPONSES, RESPONSES, RezAppConvo.RezAppResponses.class);
+		DataMapFilter.addFilter(KARMA, KARMA, Integer.class);
+		DataMapFilter.addFilter(KILLS, KILLS, Integer.class);
+		DataMapFilter.addFilter(DEATHS, DEATHS, Integer.class);
+		DataMapFilter.addFilter(ALTAR, ALTAR, Altar.class);
+		DataMapFilter.addFilter(DENIED, DENIED, Boolean.class);
+	}
+
+	public void loadApps() {
+		Connection conn = getSQLConnection();
 		try {
 			String stmt;
 			stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
@@ -60,17 +74,6 @@ public class RezAppSQL extends BaseSQL {
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-		return true;
-	}
-
-	protected void addDataMappings() {
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(RESPONSES, RESPONSES, RezAppConvo.RezAppResponses.class);
-		DataMapFilter.addFilter(KARMA, KARMA, Integer.class);
-		DataMapFilter.addFilter(KILLS, KILLS, Integer.class);
-		DataMapFilter.addFilter(DEATHS, DEATHS, Integer.class);
-		DataMapFilter.addFilter(ALTAR, ALTAR, Altar.class);
-		DataMapFilter.addFilter(DENIED, DENIED, Boolean.class);
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
@@ -179,6 +182,8 @@ public class RezAppSQL extends BaseSQL {
 			if (rs.next()) {
 				data.putAllData(grabDataFromResult(rs));
 			}
+
+			rs.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
@@ -215,6 +220,7 @@ public class RezAppSQL extends BaseSQL {
 			if (rs.next()) {
 				return true;
 			}
+			rs.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

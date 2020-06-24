@@ -157,9 +157,10 @@ public final class RPPersonas extends JavaPlugin {
 			unregisteredHandler = new UnregisteredHandler(this);
 			rezHandler = new RezHandler(this);
 
-			// Load up existing altars & corpses. Must be done after the alter handler is created
+			// Load up existing altars, corpses, and rez apps. Must be done after the handlers are created
 			altarsSQL.loadAltars();
 			corpseSQL.loadCorpses();
+			rezAppSQL.loadApps();
 
 			// Register parameters
 			registerParameters();
