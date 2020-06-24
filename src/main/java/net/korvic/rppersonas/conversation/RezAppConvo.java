@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.personas.PersonaGender;
+import net.korvic.rppersonas.resurrection.RezApp;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.RezAppSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -143,9 +144,9 @@ public class RezAppConvo extends BaseConvo {
 										   MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.sendMessage(message);
+			p.spigot().sendMessage(message);
 			if (button != null) {
-				p.sendMessage(button);
+				p.spigot().sendMessage(button);
 			}
 			return "";
 		}
@@ -211,9 +212,9 @@ public class RezAppConvo extends BaseConvo {
 				button = new TextComponent("\n" + DIVIDER + MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.sendMessage(message);
+			p.spigot().sendMessage(message);
 			if (button != null) {
-				p.sendMessage(button);
+				p.spigot().sendMessage(button);
 			}
 			return "";
 		}
@@ -279,9 +280,9 @@ public class RezAppConvo extends BaseConvo {
 				button = new TextComponent("\n" + DIVIDER + MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.sendMessage(message);
+			p.spigot().sendMessage(message);
 			if (button != null) {
-				p.sendMessage(button);
+				p.spigot().sendMessage(button);
 			}
 			return "";
 		}
@@ -365,11 +366,13 @@ public class RezAppConvo extends BaseConvo {
 			RPPersonas plugin = RPPersonas.get();
 			int personaID = plugin.getPersonaHandler().getLoadedPersona((Player) context.getForWhom()).getPersonaID();
 			DataMapFilter data = new DataMapFilter().put(RezAppSQL.PERSONAID, personaID)
-													.put(RezAppSQL.RESPONSES, responses).put(RezAppSQL.KARMA, plugin.getKarmaSQL().calculateKarma(personaID))
+													.put(RezAppSQL.RESPONSES, responses)
+													.put(RezAppSQL.KARMA, plugin.getKarmaSQL().calculateKarma(personaID))
 													.put(RezAppSQL.KILLS, plugin.getDeathSQL().getKills(personaID))
 													.put(RezAppSQL.DEATHS, plugin.getDeathSQL().getDeaths(personaID))
 													.put(RezAppSQL.ALTAR, altar);
 			plugin.getRezAppSQL().registerOrUpdate(data);
+			plugin.getRezHandler().addApp(new RezApp(data));
 			return Prompt.END_OF_CONVERSATION;
 		}
 	}
