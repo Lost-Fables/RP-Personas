@@ -83,16 +83,19 @@ public class RezCommands extends BaseCommand {
 	@Cmd(value="Accept a resurrection app.")
 	public void accept(CommandSender sender, int id) {
 		plugin.getRezHandler().accept(id);
+		msg(RPPersonas.PRIMARY_DARK + "Resurrection app accepted.");
 	}
 
 	@Cmd(value="Deny a resurrection app.")
 	public void deny(CommandSender sender, int id) {
 		plugin.getRezHandler().deny(id);
+		msg(RPPersonas.PRIMARY_DARK + "Resurrection app denied.");
 	}
 
-	@Cmd(value="Remove the denial of a resurrection app.")
+	@Cmd(value="Remove the denial of a resurrection app.", permission=RPPersonas.PERMISSION_START + ".rez.undeny")
 	public void undeny(CommandSender sender, int id) {
 		plugin.getRezHandler().undeny(id);
+		msg(RPPersonas.PRIMARY_DARK + "Resurrection app un-denied.");
 	}
 
 }
