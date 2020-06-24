@@ -4,9 +4,7 @@ import co.lotc.core.util.MessageUtil;
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
-import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.resurrection.RezApp;
-import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.RezAppSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -15,9 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RezAppConvo extends BaseConvo {
@@ -88,20 +84,36 @@ public class RezAppConvo extends BaseConvo {
 					npcSpeech = "Mmm... I'm sure you have. " + npcSpeech;
 				}
 				returned = true;
-				p.sendMessage(fauxChatBuilder(npcSpeech));
-				return this;
+				return new TextFillPrompt(this, npcSpeech);
 			} else if (input.equalsIgnoreCase("What")) {
 				String npcSpeech = "All you need know is that Mevvet is the place you go when you *die*.";
 				if (!returned) {
 					npcSpeech = "First time, then? " + npcSpeech;
 				}
 				inquired = true;
-				p.sendMessage(fauxChatBuilder(npcSpeech));
-				return this;
+				return new TextFillPrompt(this, npcSpeech);
 			}
 
-			p.sendMessage(fauxChatBuilder("There are a plethora of souls here, I'd rather not waste time."));
-			return this;
+			return new TextFillPrompt(this, "There are a plethora of souls here, I'd rather not waste time.");
+		}
+	}
+
+	// TextFill //
+	public static class TextFillPrompt extends MessagePrompt {
+		private Prompt returnPrompt;
+		private String npcSpeech;
+
+		public TextFillPrompt(Prompt returnPrompt, String npcSpeech) {
+			this.returnPrompt = returnPrompt;
+			this.npcSpeech = npcSpeech;
+		}
+		@Override
+		public String getPromptText(ConversationContext context) {
+			return fauxChatBuilder(npcSpeech);
+		}
+		@Override
+		protected Prompt getNextPrompt(ConversationContext context) {
+			return returnPrompt;
 		}
 	}
 
@@ -140,13 +152,13 @@ public class RezAppConvo extends BaseConvo {
 			TextComponent button = null;
 
 			if (passes > 0) {
-				button = new TextComponent("\n" + DIVIDER +
-										   MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				button = new TextComponent("\n" + DIVIDER);
+				button.addExtra(MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			if (button != null) {
-				p.spigot().sendMessage(button);
+				p.sendMessage(button);
 			}
 			return "";
 		}
@@ -209,12 +221,13 @@ public class RezAppConvo extends BaseConvo {
 			TextComponent button = null;
 
 			if (passes > 0) {
-				button = new TextComponent("\n" + DIVIDER + MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				button = new TextComponent("\n" + DIVIDER);
+				button.addExtra(MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			if (button != null) {
-				p.spigot().sendMessage(button);
+				p.sendMessage(button);
 			}
 			return "";
 		}
@@ -277,12 +290,13 @@ public class RezAppConvo extends BaseConvo {
 			TextComponent button = null;
 
 			if (passes > 0) {
-				button = new TextComponent("\n" + DIVIDER + MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				button = new TextComponent("\n" + DIVIDER);
+				button.addExtra(MessageUtil.CommandButton("That's all I had.", "Done", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 			}
 
-			p.spigot().sendMessage(message);
+			p.sendMessage(message);
 			if (button != null) {
-				p.spigot().sendMessage(button);
+				p.sendMessage(button);
 			}
 			return "";
 		}
