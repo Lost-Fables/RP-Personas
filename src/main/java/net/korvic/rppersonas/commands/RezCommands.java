@@ -60,7 +60,7 @@ public class RezCommands extends BaseCommand {
 		list.add(new TextComponent(""));
 
 		{
-			TextComponent acceptText = new TextComponent(RPPersonas.PRIMARY_DARK + "If you believe this persona worth rezzing, please use/click " + ChatColor.GREEN + "/rpp rez accept " + app.getPersonaID());
+			TextComponent acceptText = new TextComponent(RPPersonas.PRIMARY_DARK + "If you believe this persona worth rezzing use/click " + ChatColor.GREEN + "/rpp rez accept " + app.getPersonaID());
 			ClickEvent event = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/rpp rez accept " + app.getPersonaID());
 			acceptText.setHoverEvent(MessageUtil.hoverEvent("Click to accept this app."));
 			acceptText.setClickEvent(event);
