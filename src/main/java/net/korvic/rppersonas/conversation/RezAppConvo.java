@@ -147,7 +147,7 @@ public class RezAppConvo extends BaseConvo {
 				}
 			}
 
-			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + "((Type freely here))");
+			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + " ((Type freely here))");
 			TextComponent button = null;
 
 			if (passes > 0) {
@@ -216,7 +216,7 @@ public class RezAppConvo extends BaseConvo {
 				}
 			}
 
-			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + "((Type freely here))");
+			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + " ((Type freely here))");
 			TextComponent button = null;
 
 			if (passes > 0) {
@@ -285,7 +285,7 @@ public class RezAppConvo extends BaseConvo {
 				}
 			}
 
-			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + "((Type freely here))");
+			TextComponent message = new TextComponent(fauxChatBuilder(npcSpeech) + " ((Type freely here))");
 			TextComponent button = null;
 
 			if (passes > 0) {
