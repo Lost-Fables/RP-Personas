@@ -14,7 +14,8 @@ import java.util.List;
 
 public class RezCommands extends BaseCommand {
 
-	RPPersonas plugin;
+	private static final String header = "---+---+--- Rez Apps ---+---+---\n";
+	private RPPersonas plugin;
 
 	public RezCommands(RPPersonas plugin) {
 		this.plugin = plugin;
@@ -23,7 +24,7 @@ public class RezCommands extends BaseCommand {
 	@Cmd(value="Get a list of current Rez Apps.")
 	public void check() {
 		List<TextComponent> list = new ArrayList<>();
-		list.add(new TextComponent(RPPersonas.SECONDARY_DARK + "" + ChatColor.UNDERLINE + "----------- Rez Apps -----------\n"));
+		list.add(new TextComponent(RPPersonas.SECONDARY_DARK + "" + ChatColor.UNDERLINE + header));
 
 		for (RezApp app : plugin.getRezHandler().getRezAppList().values()) {
 			TextComponent text = new TextComponent(RPPersonas.PRIMARY_DARK + "ID: " + RPPersonas.SECONDARY_DARK + app.getPersonaID() +
@@ -45,7 +46,7 @@ public class RezCommands extends BaseCommand {
 	public void info(CommandSender sender, int id) {
 		RezApp app = plugin.getRezHandler().getRezAppList().get(id);
 		List<TextComponent> list = new ArrayList<>();
-		list.add(new TextComponent(RPPersonas.SECONDARY_DARK + "" + ChatColor.UNDERLINE + "----------- Rez Apps -----------\n"));
+		list.add(new TextComponent(RPPersonas.SECONDARY_DARK + "" + ChatColor.UNDERLINE + header));
 
 		list.add(new TextComponent(RPPersonas.PRIMARY_DARK + "Why are you seeking resurrection?"));
 		list.add(new TextComponent(RPPersonas.SECONDARY_LIGHT + app.getResponses().getResponse(1)));
