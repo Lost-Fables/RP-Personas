@@ -2,6 +2,7 @@ package net.korvic.rppersonas;
 
 import co.lotc.core.bukkit.command.Commands;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.accounts.UnregisteredHandler;
 import net.korvic.rppersonas.commands.TimeCommands;
@@ -437,14 +438,9 @@ public final class RPPersonas extends JavaPlugin {
 	public static String getPrefixColor(Player p) {
 		String output = "";
 
-		// Prefix Grabber
-		User user = LuckPermsProvider.get().getUserManager().getUser(p.getUniqueId());
-		if (user != null) {
-			String finalKey = user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
-			if (finalKey != null) {
-				output = org.bukkit.ChatColor.translateAlternateColorCodes('&', finalKey);
-				output = org.bukkit.ChatColor.getLastColors(output);
-			}
+		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") &&
+			Bukkit.getPluginManager().isPluginEnabled("Rollit")) {
+			output = PlaceholderAPI.setPlaceholders(p, "%rollit_prefix%");
 		}
 
 		return output;
