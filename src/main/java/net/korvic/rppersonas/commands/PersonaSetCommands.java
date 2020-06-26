@@ -41,7 +41,7 @@ public class PersonaSetCommands extends BaseCommand {
 					final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 					final Matcher matcher = pattern.matcher(builder.toString());
 					if (!matcher.find()) {
-						String finalName = WordUtils.capitalizeFully(builder.toString());
+						String finalName = builder.toString();
 						pers.setNickName(p, finalName);
 						msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + finalName + RPPersonas.PRIMARY_DARK + ".");
 					} else {
