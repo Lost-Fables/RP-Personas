@@ -97,18 +97,18 @@ public class PersonaSkin {
 		try {
 			manager.sendServerPacket(p, packetDel);
 			manager.sendServerPacket(p, packetAdd);
-			fakeRespawn(p, p.getWorld().getEnvironment());
+			fakeRespawn(p);
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@SuppressWarnings("deprecation")
-	private static void fakeRespawn(Player p, World.Environment env) {
+	private static void fakeRespawn(Player p) {
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
 		PacketContainer packet = manager.createPacket(PacketType.Play.Server.RESPAWN);
-		packet.getDimensions().write(0, env.getId()); //Does matter
+		packet.getDimensions().write(0, p.getWorld().getEnvironment().getId()); //Does matter
 		packet.getDifficulties().write(0, EnumWrappers.Difficulty.valueOf(p.getWorld().getDifficulty().name()));//Doesnt matter
 		packet.getGameModes().write(0, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode()));
 		packet.getWorldTypeModifier().write(0, p.getWorld().getWorldType()); //Doesnt matter tbh
