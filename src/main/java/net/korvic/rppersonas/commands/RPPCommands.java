@@ -28,6 +28,7 @@ public class RPPCommands extends BaseCommand {
 	LanguageCommands langaugeCommands;
 	KarmaCommands karmaCommands;
 	RezCommands rezCommands;
+	StaffPersonaCommands staffPersonaCommands;
 
 	public RPPCommands(RPPersonas plugin, TimeCommands timeCommands) {
 		this.plugin = plugin;
@@ -38,6 +39,7 @@ public class RPPCommands extends BaseCommand {
 		this.langaugeCommands = new LanguageCommands(plugin);
 		this.karmaCommands = new KarmaCommands(plugin);
 		this.rezCommands = new RezCommands(plugin);
+		this.staffPersonaCommands = new StaffPersonaCommands(plugin);
 	}
 
 	@Cmd(value="Commands for modifying altars.", permission=RPPersonas.PERMISSION_START + ".altars")
@@ -68,6 +70,11 @@ public class RPPCommands extends BaseCommand {
 	@Cmd(value="Resurrection based commands.", permission=RPPersonas.PERMISSION_START + ".rez")
 	public BaseCommand rez() {
 		return rezCommands;
+	}
+
+	@Cmd(value="Staff persona handling commands.", permission=RPPersonas.PERMISSION_START + ".managepersonas")
+	public BaseCommand personas() {
+		return staffPersonaCommands;
 	}
 
 	@Cmd(value="Set the location to spawn at when registering a persona.", permission=RPPersonas.PERMISSION_START + ".admin")
