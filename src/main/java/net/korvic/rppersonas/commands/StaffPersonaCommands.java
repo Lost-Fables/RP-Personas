@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 public class StaffPersonaCommands extends BaseCommand {
 
 	private RPPersonas plugin;
+	public static final String NO_PERSONA = "That player does not have an active persona.";
 
 	public StaffPersonaCommands(RPPersonas plugin) {
 		this.plugin = plugin;
@@ -30,7 +31,7 @@ public class StaffPersonaCommands extends BaseCommand {
 													.put(PersonasSQL.RAW_RACE, race);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 		} else {
-			msg(RPPersonas.PRIMARY_DARK + "That player does not have an active persona.");
+			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
 	}
 
@@ -44,7 +45,7 @@ public class StaffPersonaCommands extends BaseCommand {
 													.put(PersonasSQL.RACE, race);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 		} else {
-			msg(RPPersonas.PRIMARY_DARK + "That player does not have an active persona.");
+			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
 	}
 
@@ -59,7 +60,21 @@ public class StaffPersonaCommands extends BaseCommand {
 													.put(PersonasSQL.AGE, ages);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 		} else {
-			msg(RPPersonas.PRIMARY_DARK + "That player does not have an active persona.");
+			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
+		}
+	}
+
+	@Cmd(value = "Set the birth name of a given player.", permission = RPPersonas.PERMISSION_START + ".managepersonas.name")
+	public void setName(CommandSender sender,
+						@Arg(value = "Name", description = "The birth name to set for a given player.") String name,
+						@Arg(value = "Player", description = "The player who's age you wish to change.") @Default(value = "@p") Player player) {
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		if (pers != null) {
+			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
+													.put(PersonasSQL.NAME, name);
+			plugin.getPersonasSQL().registerOrUpdate(data);
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
 	}
 
