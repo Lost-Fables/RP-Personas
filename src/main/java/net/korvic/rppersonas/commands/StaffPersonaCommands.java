@@ -7,6 +7,7 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
+import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -30,6 +31,16 @@ public class StaffPersonaCommands extends BaseCommand {
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + "That player does not have an active persona.");
 		}
+	}
+
+	@Cmd(value = "Force update a persona's age.", permission = RPPersonas.PERMISSION_START + ".managepersonas.age")
+	public void setAge(CommandSender sender,
+					   @Arg(value = "Ages", description = "The number of ages since they were born.") int ages,
+					   @Arg(value = "Player", description = "The player who's age you wish to change.") @Default(value = "@p") Player player) {
+		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		long age = TimeManager.getMillisFromAge(ages);
+		DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID()).put(PersonasSQL.AGE, ages);
+		plugin.getPersonasSQL().registerOrUpdate(data);
 	}
 
 }
