@@ -3,8 +3,10 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
+import co.lotc.core.bukkit.util.PlayerUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
+import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
@@ -15,6 +17,7 @@ import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.sql.KarmaSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -44,7 +47,7 @@ public class PersonaCommands extends BaseCommand {
 
 	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void info(CommandSender sender,
-					 @Arg(value = "Player", description = "The player who's info you wish to see.") Player player) {
+					 @Arg(value = "Player", description = "The player who's info you wish to see.") @Default(value = "@p") Player player) {
 		msg(plugin.getPersonaHandler().getPersonaInfo(player));
 	}
 
