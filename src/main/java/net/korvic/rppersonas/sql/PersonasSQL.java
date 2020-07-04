@@ -25,6 +25,7 @@ public class PersonasSQL extends BaseSQL {
 	public static final String GENDER = "gender";
 	public static final String AGE = "age";
 	public static final String RACE = "race";
+	public static final String RAW_RACE = "raw-race";
 	public static final String LIVES = "lives";
 	public static final String PLAYTIME = "playtime";
 	public static final String LOCATION = "location";
@@ -186,6 +187,8 @@ public class PersonasSQL extends BaseSQL {
 
 		if (data.containsKey(RACE)) {
 			replaceStatement.setString(6, ((PersonaSubRace) data.get(RACE)).getName());
+		} else if (data.containsKey(RAW_RACE)) {
+			replaceStatement.setString(6, (String) data.get(RAW_RACE));
 		} else if (resultPresent) {
 			replaceStatement.setString(6, result.getString("Race"));
 		} else {

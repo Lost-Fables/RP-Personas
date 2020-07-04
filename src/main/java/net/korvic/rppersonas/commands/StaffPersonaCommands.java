@@ -25,7 +25,7 @@ public class StaffPersonaCommands extends BaseCommand {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
-													.put(PersonasSQL.RACE, race);
+													.put(PersonasSQL.RAW_RACE, race);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + "That player does not have an active persona.");
