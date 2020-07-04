@@ -38,9 +38,13 @@ public class StaffPersonaCommands extends BaseCommand {
 					   @Arg(value = "Ages", description = "The number of ages since they were born.") int ages,
 					   @Arg(value = "Player", description = "The player who's age you wish to change.") @Default(value = "@p") Player player) {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
-		long age = TimeManager.getMillisFromAge(ages);
-		DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID()).put(PersonasSQL.AGE, ages);
-		plugin.getPersonasSQL().registerOrUpdate(data);
+		if (pers != null) {
+			long age = TimeManager.getMillisFromAge(ages);
+			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID()).put(PersonasSQL.AGE, ages);
+			plugin.getPersonasSQL().registerOrUpdate(data);
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + "That player does not have an active persona.");
+		}
 	}
 
 }
