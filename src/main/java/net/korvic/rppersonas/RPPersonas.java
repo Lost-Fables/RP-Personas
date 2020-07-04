@@ -20,6 +20,7 @@ import net.korvic.rppersonas.listeners.StatusEventListener;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.personas.PersonaLanguage;
+import net.korvic.rppersonas.personas.PersonaSubRace;
 import net.korvic.rppersonas.resurrection.RezHandler;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.util.SaveQueue;
@@ -405,6 +406,13 @@ public final class RPPersonas extends JavaPlugin {
 				.defaultError("Failed to find a language by that name.")
 				.completer(PersonaLanguage::getNames)
 				.mapperWithSender((sender, lang) -> PersonaLanguage.getByName(lang))
+				.register();
+
+		Commands.defineArgumentType(PersonaSubRace.class)
+				.defaultName("Race")
+				.defaultError("Failed to find a race by that name.")
+				.completer(PersonaSubRace::getNames)
+				.mapperWithSender((sender, race) -> PersonaSubRace.getByName(race))
 				.register();
 	}
 

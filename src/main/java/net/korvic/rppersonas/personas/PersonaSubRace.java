@@ -2,6 +2,10 @@ package net.korvic.rppersonas.personas;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum PersonaSubRace {
 
 	// HUMANS
@@ -43,5 +47,9 @@ public enum PersonaSubRace {
 			}
 		}
 		return null;
+	}
+
+	public static List<String> getNames() {
+		return Arrays.stream(values()).map(PersonaSubRace::getName).collect(Collectors.toList());
 	}
 }
