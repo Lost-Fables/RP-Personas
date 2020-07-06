@@ -58,9 +58,10 @@ public abstract class BaseSQL {
 
 	// STATIC //
 	protected static Connection getSQLConnection() {
+		Connection output = null;
 		try {
 			if (connection != null && !connection.isClosed()) {
-				return connection;
+				output = connection;
 			}
 			String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
 			return DriverManager.getConnection(url, USER, PASSWORD);
@@ -70,7 +71,11 @@ public abstract class BaseSQL {
 			}
 		}
 
-		return null;
+		if (output == null) {
+			plugin.getLogger().warning("Null database for " + HOST + ":" + PORT + "/" + DATABASE);
+		}
+
+		return output;
 	}
 
 	protected static void runConnectionMaintainer() {
