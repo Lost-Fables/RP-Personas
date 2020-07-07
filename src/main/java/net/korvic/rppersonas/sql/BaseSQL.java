@@ -72,7 +72,23 @@ public abstract class BaseSQL {
 		}
 
 		if (output == null) {
-			plugin.getLogger().warning("Null database for " + HOST + ":" + PORT + "/" + DATABASE);
+			plugin.getLogger().warning("Null database for " + HOST + ":" + PORT + "/" + DATABASE + " with information " + USER + ":" + PASSWORD);
+
+			try {
+				if (connection != null && !connection.isClosed()) {
+					output = connection;
+				}
+				String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
+				return DriverManager.getConnection(url, USER, PASSWORD);
+			} catch (SQLException ex) {
+				if (RPPersonas.DEBUGGING) {
+					plugin.getLogger().log(Level.SEVERE, "MariaDB exception on initialize", ex);
+				}
+			}
+
+			if (output == null) {
+				plugin.getLogger().severe("Could not connect via MariaDB URL either.");
+			}
 		}
 
 		return output;
