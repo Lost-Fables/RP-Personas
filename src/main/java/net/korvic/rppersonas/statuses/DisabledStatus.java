@@ -1,6 +1,5 @@
 package net.korvic.rppersonas.statuses;
 
-import com.comphenix.packetwrapper.WrapperPlayServerWorldBorder;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.listeners.StatusEventListener;
