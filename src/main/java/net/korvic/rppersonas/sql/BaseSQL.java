@@ -64,7 +64,7 @@ public abstract class BaseSQL {
 				output = connection;
 			}
 			String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
-			return DriverManager.getConnection(url, USER, PASSWORD);
+			output = DriverManager.getConnection(url, USER, PASSWORD);
 		} catch (SQLException ex) {
 			if (RPPersonas.DEBUGGING) {
 				plugin.getLogger().log(Level.SEVERE, "MariaDB exception on initialize", ex);
@@ -79,7 +79,7 @@ public abstract class BaseSQL {
 					output = connection;
 				}
 				String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
-				return DriverManager.getConnection(url, USER, PASSWORD);
+				output = DriverManager.getConnection(url, USER, PASSWORD);
 			} catch (SQLException ex) {
 				if (RPPersonas.DEBUGGING) {
 					plugin.getLogger().log(Level.SEVERE, "MySQL exception on initialize", ex);
