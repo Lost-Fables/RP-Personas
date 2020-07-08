@@ -63,11 +63,11 @@ public abstract class BaseSQL {
 			if (connection != null && !connection.isClosed()) {
 				output = connection;
 			}
-			String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
+			String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
 			return DriverManager.getConnection(url, USER, PASSWORD);
 		} catch (SQLException ex) {
 			if (RPPersonas.DEBUGGING) {
-				plugin.getLogger().log(Level.SEVERE, "MySQL exception on initialize", ex);
+				plugin.getLogger().log(Level.SEVERE, "MariaDB exception on initialize", ex);
 			}
 		}
 
@@ -78,16 +78,16 @@ public abstract class BaseSQL {
 				if (connection != null && !connection.isClosed()) {
 					output = connection;
 				}
-				String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
+				String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
 				return DriverManager.getConnection(url, USER, PASSWORD);
 			} catch (SQLException ex) {
 				if (RPPersonas.DEBUGGING) {
-					plugin.getLogger().log(Level.SEVERE, "MariaDB exception on initialize", ex);
+					plugin.getLogger().log(Level.SEVERE, "MySQL exception on initialize", ex);
 				}
 			}
 
 			if (output == null) {
-				plugin.getLogger().severe("Could not connect via MariaDB URL either.");
+				plugin.getLogger().severe("Could not connect via MySQL URL either.");
 			}
 		}
 
