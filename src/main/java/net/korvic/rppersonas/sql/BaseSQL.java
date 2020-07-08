@@ -72,7 +72,7 @@ public abstract class BaseSQL {
 		}
 
 		if (output == null) {
-			plugin.getLogger().warning("Null database for " + HOST + ":" + PORT + "/" + DATABASE + " with information " + USER + ":" + PASSWORD);
+			plugin.getLogger().warning("Null MariaDB database for " + HOST + ":" + PORT + "/" + DATABASE + " with information " + USER + ":" + PASSWORD + " | Trying MySQL instead.");
 
 			try {
 				if (connection != null && !connection.isClosed()) {
@@ -87,7 +87,9 @@ public abstract class BaseSQL {
 			}
 
 			if (output == null) {
-				plugin.getLogger().severe("Could not connect via MySQL URL either.");
+				plugin.getLogger().severe("Could not connect via MySQL either.");
+			} else {
+				plugin.getLogger().warning("Connected with MySQL.");
 			}
 		}
 
