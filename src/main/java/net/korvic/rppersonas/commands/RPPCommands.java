@@ -120,6 +120,7 @@ public class RPPCommands extends BaseCommand {
 						Node accepted = Node.builder("group.accepted").build();
 						user.data().add(accepted);
 						api.getUserManager().saveUser(user);
+						api.getUserManager().cleanupUser(user);
 					}
 				}, runnable -> Bukkit.getScheduler().runTask(plugin, runnable));
 			}
