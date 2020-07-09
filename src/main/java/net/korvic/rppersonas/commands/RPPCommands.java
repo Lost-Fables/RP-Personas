@@ -3,6 +3,7 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
+import co.lotc.core.util.MojangCommunicator;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
@@ -108,6 +109,7 @@ public class RPPCommands extends BaseCommand {
 			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
 			if (provider != null) {
 				LuckPerms api = provider.getProvider();
+				api.getUserManager().savePlayerData(uuid, PlayerUtil.getPlayerName(uuid));
 				CompletableFuture<User> userFuture = api.getUserManager().loadUser(uuid);
 				userFuture.whenCompleteAsync(new BiConsumer<User, Throwable>() {
 					@Override
@@ -116,7 +118,6 @@ public class RPPCommands extends BaseCommand {
 							return;
 						}
 						Node accepted = Node.builder("group.accepted").build();
-						user.data().clear();
 						user.data().add(accepted);
 						api.getUserManager().saveUser(user);
 					}
