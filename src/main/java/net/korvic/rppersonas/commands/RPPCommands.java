@@ -157,4 +157,16 @@ public class RPPCommands extends BaseCommand {
 		}
 	}
 
+	@Cmd(value="Move all data from one account ID to a new account ID", permission=RPPersonas.PERMISSION_START + ".datashuffle")
+	public void shuffle(CommandSender sender,
+						@Arg(value="Account From") int from,
+						@Arg(value="Account To") int to) {
+		plugin.getUuidAccountMapSQL().moveAllAccounts(from, to);
+		plugin.getSkinsSQL().moveAllAccounts(from, to);
+		plugin.getPersonaAccountMapSQL().moveAllAccounts(from, to);
+		plugin.getDeathSQL().moveAllAccounts(from, to);
+		plugin.getAccountsSQL().moveAllAccounts(from, to);
+		msg(RPPersonas.PRIMARY_DARK + "Successfully remapped all account IDs. Please give this a moment to reflect in the database.");
+	}
+
 }

@@ -155,4 +155,31 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		return 0;
 	}
 
+	public void moveAllAccounts(int from, int to) {
+		Connection conn = getSQLConnection();
+		PreparedStatement grabStatement = null;
+		try {
+			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
+
+			ResultSet result = grabStatement.executeQuery();
+
+			if (result.next()) {
+				DataMapFilter data = new DataMapFilter();
+				data.put(PLAYER_UUID, UUID.fromString(result.getString("UUID")))
+					.put(ACCOUNTID, to);
+				registerOrUpdate(data);
+			}
+
+			result.close();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (grabStatement != null)
+					grabStatement.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+	}
 }

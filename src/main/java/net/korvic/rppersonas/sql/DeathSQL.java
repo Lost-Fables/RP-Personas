@@ -101,8 +101,10 @@ public class DeathSQL extends BaseSQL {
 
 	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(DataMapFilter data) {
-		data.put(DEATHID, highestDeathID);
-		updateHighestDeathID(highestDeathID);
+		if (!data.containsKey(DEATHID)) {
+			data.put(DEATHID, highestDeathID);
+			updateHighestDeathID(highestDeathID);
+		}
 		try {
 			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 		} catch (SQLException ex) {
@@ -114,42 +116,64 @@ public class DeathSQL extends BaseSQL {
 		Connection conn = getSQLConnection();
 		PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (DeathID,VictimPersona,VictimAccount,VictimUUID,KillerPersona,KillerAccount,KillerUUID,World,LocationX,LocationY,LocationZ,Time,StaffInflicted,Refunder) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
+		conn = getSQLConnection();
+		ResultSet result = null;
+		boolean resultPresent = false;
+		if (data.containsKey(DEATHID)) {
+			PreparedStatement grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(DEATHID) + "'");
+			result = grabStatement.executeQuery();
+		}
+		if (result != null) {
+			resultPresent = result.next();
+		}
 
 		// Required
 		replaceStatement.setInt(1, (int) data.get(DEATHID));
 
 		if (data.containsKey(VICTIM_PERSONAID)) {
 			replaceStatement.setInt(2, (int) data.get(VICTIM_PERSONAID));
+		} else if (resultPresent) {
+			replaceStatement.setInt(2, result.getInt("VictimPersona"));
 		} else {
 			replaceStatement.setInt(2, 0);
 		}
 
 		if (data.containsKey(VICTIM_ACCOUNTID)) {
 			replaceStatement.setInt(3, (int) data.get(VICTIM_ACCOUNTID));
+		} else if (resultPresent) {
+			replaceStatement.setInt(3, result.getInt("VictimAccount"));
 		} else {
 			replaceStatement.setInt(3, 0);
 		}
 
 		if (data.containsKey(VICTIM_UUID)) {
 			replaceStatement.setString(4, data.get(VICTIM_UUID).toString());
+		} else if (resultPresent) {
+			replaceStatement.setString(4, result.getString("VictimUUID"));
 		} else {
 			replaceStatement.setString(4, null);
 		}
 
 		if (data.containsKey(KILLER_PERSONAID)) {
 			replaceStatement.setInt(5, (int) data.get(KILLER_PERSONAID));
+		} else if (resultPresent) {
+			replaceStatement.setInt(5, result.getInt("KillerPersona"));
 		} else {
 			replaceStatement.setInt(5, 0);
 		}
 
 		if (data.containsKey(KILLER_ACCOUNTID)) {
 			replaceStatement.setInt(6, (int) data.get(KILLER_ACCOUNTID));
+		} else if (resultPresent) {
+			replaceStatement.setInt(6, result.getInt("KillerAccount"));
 		} else {
 			replaceStatement.setInt(6, 0);
 		}
 
 		if (data.containsKey(KILLER_UUID)) {
 			replaceStatement.setString(7, data.get(KILLER_UUID).toString());
+		} else if (resultPresent) {
+			replaceStatement.setString(7, result.getString("KillerUUID"));
 		} else {
 			replaceStatement.setString(7, null);
 		}
@@ -160,6 +184,11 @@ public class DeathSQL extends BaseSQL {
 			replaceStatement.setInt(9, loc.getBlockX());
 			replaceStatement.setInt(10, loc.getBlockY());
 			replaceStatement.setInt(11, loc.getBlockZ());
+		} else if (resultPresent) {
+			replaceStatement.setString(8, result.getString("World"));
+			replaceStatement.setInt(9, result.getInt("LocationX"));
+			replaceStatement.setInt(10, result.getInt("LocationY"));
+			replaceStatement.setInt(11, result.getInt("LocationZ"));
 		} else {
 			replaceStatement.setString(8, null);
 			replaceStatement.setInt(9, 0);
@@ -169,18 +198,24 @@ public class DeathSQL extends BaseSQL {
 
 		if (data.containsKey(CREATED)) {
 			replaceStatement.setLong(12, (long) data.get(CREATED));
+		} else if (resultPresent) {
+			replaceStatement.setLong(12, result.getLong("Time"));
 		} else {
 			replaceStatement.setLong(12, System.currentTimeMillis());
 		}
 
 		if (data.containsKey(STAFF)) {
 			replaceStatement.setBoolean(13, (boolean) data.get(STAFF));
+		} else if (resultPresent) {
+			replaceStatement.setBoolean(13, result.getBoolean("StaffInflicted"));
 		} else {
 			replaceStatement.setBoolean(13, false);
 		}
 
 		if (data.containsKey(REFUNDER)) {
 			replaceStatement.setString(14, data.get(REFUNDER).toString());
+		} else if (resultPresent) {
+			replaceStatement.setString(14, result.getString("Refunder"));
 		} else {
 			replaceStatement.setString(14, null);
 		}
@@ -222,4 +257,64 @@ public class DeathSQL extends BaseSQL {
 		return output;
 	}
 
+	public void moveAllAccounts(int from, int to) {
+		moveVictims(from, to);
+		moveKillers(from, to);
+	}
+
+	private void moveVictims(int from, int to) {
+		Connection conn = getSQLConnection();
+		PreparedStatement grabStatement = null;
+		try {
+			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE VictimAccount='" + from + "'");
+
+			ResultSet result = grabStatement.executeQuery();
+
+			if (result.next()) {
+				DataMapFilter data = new DataMapFilter();
+				data.put(DEATHID, result.getInt("DeathID"))
+					.put(VICTIM_ACCOUNTID, to);
+				getSaveStatement(data).executeUpdate();
+			}
+
+			result.close();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (grabStatement != null)
+					grabStatement.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+	}
+
+	private void moveKillers(int from, int to) {
+		Connection conn = getSQLConnection();
+		PreparedStatement grabStatement = null;
+		try {
+			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE KillerAccount='" + from + "'");
+
+			ResultSet result = grabStatement.executeQuery();
+
+			if (result.next()) {
+				DataMapFilter data = new DataMapFilter();
+				data.put(DEATHID, result.getInt("DeathID"))
+					.put(KILLER_ACCOUNTID, to);
+				getSaveStatement(data).executeUpdate();
+			}
+
+			result.close();
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		} finally {
+			try {
+				if (grabStatement != null)
+					grabStatement.close();
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
+			}
+		}
+	}
 }

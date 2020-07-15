@@ -4,21 +4,66 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.*;
 import com.google.common.collect.Lists;
+import com.google.common.hash.Hashing;
 import net.korvic.rppersonas.RPPersonas;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 public class PersonaSkin {
+
+	// static final methods are faster, because JVM can inline them and make them accessible
+	private static final Class<Object> RESOURCE_KEY_CLASS = (Class<Object>) MinecraftReflection.getMinecraftClass("ResourceKey");
+	private static final Field WORLD_KEY_FIELD;
+	private static final Field DEBUG_WORLD_FIELD;
+
+	private static final boolean DISABLED_PACKETS;
+
+	static {
+		boolean methodAvailable;
+		try {
+			Player.class.getDeclaredMethod("hidePlayer", Plugin.class, Player.class);
+			methodAvailable = true;
+		} catch (NoSuchMethodException noSuchMethodEx) {
+			methodAvailable = false;
+		}
+
+		boolean localDisable = false;
+		Field localWorldKey = null;
+		Field localDebugWorld = null;
+
+		Method localHandleMethod = null;
+		Field localInteractionField = null;
+		Field localGamemode = null;
+
+		// use standard reflection, because we cannot use the performance benefits of MethodHandles
+		// MethodHandles are only clearly faster with invokeExact
+		// we can use for a nested call of debug world: getDebugField(getNMSWorldFromBukkit) in a single handle
+		// But for the resourceKey the return type is not known at compile time - it's an NMS class
+		try {
+			Class<?> nmsWorldClass = MinecraftReflection.getNmsWorldClass();
+			localWorldKey = nmsWorldClass.getDeclaredField("dimensionKey");
+			localWorldKey.setAccessible(true);
+
+			localDebugWorld = nmsWorldClass.getDeclaredField("debugWorld");
+			localDebugWorld.setAccessible(true);
+		} catch (NoSuchFieldException reflectiveEx) {
+			localDisable = true;
+		}
+		WORLD_KEY_FIELD = localWorldKey;
+		DEBUG_WORLD_FIELD = localDebugWorld;
+		DISABLED_PACKETS = localDisable;
+	}
 
 	private int skinID;
 	private String name;
@@ -100,18 +145,29 @@ public class PersonaSkin {
 			fakeRespawn(p);
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			RPPersonas.get().getLogger().warning("Screwed up on NMS. Call a doctor.");
+			e.printStackTrace();
 		}
 	}
 
 	@SuppressWarnings("deprecation")
-	private static void fakeRespawn(Player p) {
+	private static void fakeRespawn(Player p) throws IllegalAccessException {
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
 		PacketContainer packet = manager.createPacket(PacketType.Play.Server.RESPAWN);
-		packet.getDimensions().write(0, p.getWorld().getEnvironment().getId()); //Does matter
-		packet.getDifficulties().write(0, EnumWrappers.Difficulty.valueOf(p.getWorld().getDifficulty().name()));//Doesnt matter
-		packet.getGameModes().write(0, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode()));
-		packet.getWorldTypeModifier().write(0, p.getWorld().getWorldType()); //Doesnt matter tbh
+		Object nmsWorld = BukkitConverters.getWorldConverter().getGeneric(p.getWorld());
+		Object resourceKey = WORLD_KEY_FIELD.get(nmsWorld);
+		long seed = p.getWorld().getSeed();
+
+		packet.getDimensions().write(0, p.getWorld().getEnvironment().getId()); //a
+		packet.getSpecificModifier(RESOURCE_KEY_CLASS).write(1, resourceKey); //b
+		packet.getLongs().write(0, Hashing.sha256().hashLong(seed).asLong()); //c
+		packet.getGameModes().write(0, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //d
+		packet.getGameModes().write(1, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //e
+		packet.getBooleans().write(0, DEBUG_WORLD_FIELD.getBoolean(nmsWorld)); //f
+		packet.getBooleans().write(1, p.getWorld().getWorldType() == WorldType.FLAT); //g
+		packet.getBooleans().write(2, true); //h
 
 
 		Location location = p.getLocation();
