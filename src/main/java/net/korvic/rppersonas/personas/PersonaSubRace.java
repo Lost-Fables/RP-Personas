@@ -40,9 +40,14 @@ public enum PersonaSubRace {
 		this.defaultLanguages = languages;
 	}
 
+	private String getSafeName() {
+		return this.name.replace(' ', '_');
+	}
+
 	public static PersonaSubRace getByName(String name) {
+		String properName = name.replace('_', ' ');
 		for (PersonaSubRace subrace : values()) {
-			if (subrace.getName().equalsIgnoreCase(name)) {
+			if (subrace.getName().equalsIgnoreCase(properName)) {
 				return subrace;
 			}
 		}
@@ -50,6 +55,6 @@ public enum PersonaSubRace {
 	}
 
 	public static List<String> getNames() {
-		return Arrays.stream(values()).map(PersonaSubRace::getName).collect(Collectors.toList());
+		return Arrays.stream(values()).map(PersonaSubRace::getSafeName).collect(Collectors.toList());
 	}
 }
