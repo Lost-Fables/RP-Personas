@@ -92,6 +92,7 @@ public class PersonasSQL extends BaseSQL {
 		DataMapFilter.addFilter(GENDER, GENDER, PersonaGender.class);
 		DataMapFilter.addFilter(AGE, AGE, Long.class);
 		DataMapFilter.addFilter(RACE, RACE, PersonaSubRace.class);
+		DataMapFilter.addFilter(RAW_RACE, RAW_RACE, String.class);
 		DataMapFilter.addFilter(LIVES, LIVES, Integer.class);
 		DataMapFilter.addFilter(PLAYTIME, PLAYTIME, Long.class);
 		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);

@@ -59,7 +59,7 @@ public class StaffPersonaCommands extends BaseCommand {
 		if (pers != null) {
 			long age = TimeManager.getMillisFromAge(ages);
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
-													.put(PersonasSQL.AGE, ages);
+													.put(PersonasSQL.AGE, age);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 			msg(RPPersonas.PRIMARY_DARK + "Set the age of " + player.getName() + "'s persona to " + ages + " Ages.");
 		} else {
