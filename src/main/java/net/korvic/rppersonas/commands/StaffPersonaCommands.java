@@ -28,8 +28,9 @@ public class StaffPersonaCommands extends BaseCommand {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
-													.put(PersonasSQL.RAW_RACE, race);
+													.put(PersonasSQL.RAW_RACE, race.replace('_', ' '));
 			plugin.getPersonasSQL().registerOrUpdate(data);
+			msg(RPPersonas.PRIMARY_DARK + "Set the race of " + player.getName() + "'s persona to " + race.replace('_', ' '));
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
@@ -44,6 +45,7 @@ public class StaffPersonaCommands extends BaseCommand {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
 													.put(PersonasSQL.RACE, race);
 			plugin.getPersonasSQL().registerOrUpdate(data);
+			msg(RPPersonas.PRIMARY_DARK + "Set the race of " + player.getName() + "'s persona to " + race.getName());
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
@@ -59,6 +61,7 @@ public class StaffPersonaCommands extends BaseCommand {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
 													.put(PersonasSQL.AGE, ages);
 			plugin.getPersonasSQL().registerOrUpdate(data);
+			msg(RPPersonas.PRIMARY_DARK + "Set the age of " + player.getName() + "'s persona to " + ages + " Ages.");
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
@@ -71,8 +74,9 @@ public class StaffPersonaCommands extends BaseCommand {
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
-													.put(PersonasSQL.NAME, name);
+													.put(PersonasSQL.NAME, name.replace('_', ' '));
 			plugin.getPersonasSQL().registerOrUpdate(data);
+			msg(RPPersonas.PRIMARY_DARK + "Set the name of " + player.getName() + "'s persona to " + name.replace('_', ' '));
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
