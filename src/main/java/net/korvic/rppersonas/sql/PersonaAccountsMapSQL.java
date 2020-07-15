@@ -296,7 +296,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 
 			ResultSet result = grabStatement.executeQuery();
 
-			if (result.next()) {
+			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
 				data.put(PERSONAID, result.getInt("PersonaID"))
 					.put(ACCOUNTID, to);

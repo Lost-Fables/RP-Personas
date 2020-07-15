@@ -14,6 +14,7 @@ public class AccountsSQL extends BaseSQL {
 	private static final String SQL_TABLE_NAME = "rppersonas_accounts";
 
 	public static final String ACCOUNTID = "accountid";
+	public static final String OLD_ACCOUNTID = "old-accountid";
 	public static final String DISCORDID = "discordid";
 	public static final String PLAYTIME = "playtime";
 	public static final String VOTES = "votes";
@@ -39,6 +40,7 @@ public class AccountsSQL extends BaseSQL {
 
 	protected void addDataMappings() {
 		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(OLD_ACCOUNTID, OLD_ACCOUNTID, Integer.class);
 		DataMapFilter.addFilter(DISCORDID, DISCORDID, String.class);
 		DataMapFilter.addFilter(PLAYTIME, PLAYTIME, Long.class);
 		DataMapFilter.addFilter(VOTES, VOTES, Short.class);
@@ -127,7 +129,8 @@ public class AccountsSQL extends BaseSQL {
 		PreparedStatement replaceStatement = null;
 		conn = getSQLConnection();
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + data.get("accountid") + "'");
+		int currentAccount = (int) ((data.containsKey(OLD_ACCOUNTID)) ? data.get(OLD_ACCOUNTID) : data.get(ACCOUNTID));
+		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + currentAccount + "'");
 		ResultSet result = grabStatement.executeQuery();
 		boolean resultPresent = result.next();
 
@@ -194,7 +197,8 @@ public class AccountsSQL extends BaseSQL {
 
 			if (result.next()) {
 				DataMapFilter data = new DataMapFilter();
-				data.put(ACCOUNTID, to);
+				data.put(ACCOUNTID, to)
+					.put(OLD_ACCOUNTID, from);
 				getSaveStatement(data).executeUpdate();
 
 				conn = getSQLConnection();

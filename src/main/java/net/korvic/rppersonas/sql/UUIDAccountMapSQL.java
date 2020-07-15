@@ -163,7 +163,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 
 			ResultSet result = grabStatement.executeQuery();
 
-			if (result.next()) {
+			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
 				data.put(PLAYER_UUID, UUID.fromString(result.getString("UUID")))
 					.put(ACCOUNTID, to);

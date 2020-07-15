@@ -217,7 +217,7 @@ public class SkinsSQL extends BaseSQL {
 
 			ResultSet result = grabStatement.executeQuery();
 
-			if (result.next()) {
+			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
 				data.put(SKINID, result.getInt("SkinID"))
 					.put(ACCOUNTID, to);

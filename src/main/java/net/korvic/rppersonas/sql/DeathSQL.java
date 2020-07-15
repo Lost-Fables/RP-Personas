@@ -270,7 +270,7 @@ public class DeathSQL extends BaseSQL {
 
 			ResultSet result = grabStatement.executeQuery();
 
-			if (result.next()) {
+			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
 				data.put(DEATHID, result.getInt("DeathID"))
 					.put(VICTIM_ACCOUNTID, to);
@@ -298,7 +298,7 @@ public class DeathSQL extends BaseSQL {
 
 			ResultSet result = grabStatement.executeQuery();
 
-			if (result.next()) {
+			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
 				data.put(DEATHID, result.getInt("DeathID"))
 					.put(KILLER_ACCOUNTID, to);
