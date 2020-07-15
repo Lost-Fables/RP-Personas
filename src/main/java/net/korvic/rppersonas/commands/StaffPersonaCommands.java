@@ -65,7 +65,7 @@ public class StaffPersonaCommands extends BaseCommand {
 					   @Arg(value = "Ages", description = "The number of ages since they were born.") int ages,
 					   @Arg(value = "Player", description = "The player who's age you wish to change.") @Default(value = "@p") Player player) {
 		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + "managepersonas.age.others")) {
-			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' ageg.");
+			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' ages.");
 			return;
 		}
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
