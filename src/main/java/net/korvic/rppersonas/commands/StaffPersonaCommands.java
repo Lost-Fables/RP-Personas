@@ -26,7 +26,7 @@ public class StaffPersonaCommands extends BaseCommand {
 	public void setRawRace(CommandSender sender,
 						   @Arg(value = "Race", description = "The name of the race with proper capitalization.") String race,
 						   @Arg(value = "Player", description = "The player who's race you wish to change.") @Default(value = "@p") Player player) {
-		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + "managepersonas.rawrace.others")) {
+		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + ".managepersonas.rawrace.others")) {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' races with raw text.");
 			return;
 		}
@@ -45,7 +45,7 @@ public class StaffPersonaCommands extends BaseCommand {
 	public void setRace(CommandSender sender,
 						PersonaSubRace race,
 						@Arg(value = "Player", description = "The player who's race you wish to change.") @Default(value = "@p") Player player) {
-		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + "managepersonas.race.others")) {
+		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + ".managepersonas.race.others")) {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' races.");
 			return;
 		}
@@ -64,7 +64,7 @@ public class StaffPersonaCommands extends BaseCommand {
 	public void setAge(CommandSender sender,
 					   @Arg(value = "Ages", description = "The number of ages since they were born.") int ages,
 					   @Arg(value = "Player", description = "The player who's age you wish to change.") @Default(value = "@p") Player player) {
-		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + "managepersonas.age.others")) {
+		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + ".managepersonas.age.others")) {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' ages.");
 			return;
 		}
@@ -84,7 +84,7 @@ public class StaffPersonaCommands extends BaseCommand {
 	public void setName(CommandSender sender,
 						@Arg(value = "Name", description = "The birth name to set for a given player.") String name,
 						@Arg(value = "Player", description = "The player who's age you wish to change.") @Default(value = "@p") Player player) {
-		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + "managepersonas.name.others")) {
+		if (!player.equals(sender) && !sender.hasPermission(RPPersonas.PERMISSION_START + ".managepersonas.name.others")) {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' names.");
 			return;
 		}
