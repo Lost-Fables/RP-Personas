@@ -28,7 +28,7 @@ public class TimeCommands extends BaseCommand {
 			Player p = (Player) sender;
 			String message = RPPersonas.PRIMARY_DARK + "The time is: " + RPPersonas.SECONDARY_DARK + p.getWorld().getTime();
 			if (TimeManager.getManagerOfWorld(p.getWorld()) != null) {
-				message += RPPersonas.PRIMARY_DARK + ", and the season is: " + RPPersonas.SECONDARY_DARK + TimeManager.getManagerOfWorld(p.getWorld()).getSeason();
+				message += RPPersonas.PRIMARY_DARK + ", and the season is: " + RPPersonas.SECONDARY_DARK + TimeManager.getManagerOfWorld(p.getWorld()).getSeason().getName();
 			}
 			sender.sendMessage(message);
 		}
