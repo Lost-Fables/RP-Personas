@@ -282,8 +282,9 @@ public final class RPPersonas extends JavaPlugin {
 					World world = Bukkit.getWorld(worldName);
 
 					TimeManager manager = TimeManager.registerWorld(world, false);
-					manager.setSeason(config.getString("worlds." + worldName + ".season"), false);
+					manager.setLastKnownAges(config.getInt("worlds." + worldName + ".ages"), false);
 					manager.setTimeScale(config.getInt("worlds." + worldName + ".timescale"), false);
+					manager.setSeason(config.getString("worlds." + worldName + ".season"), false);
 
 					List<String> syncedWorlds = section.getStringList(worldName + ".synced");
 					for (String str : syncedWorlds) {
@@ -317,14 +318,17 @@ public final class RPPersonas extends JavaPlugin {
 	}
 
 	// TIME
-	public void updateConfigForWorld(String worldName, Season season, int timeScale, List<String> syncedWorlds) {
+	public void updateConfigForWorld(String worldName, int lastKnownAges, int timeScale, Season season, List<String> syncedWorlds) {
 		String configPath = "worlds." + worldName;
 		config = getConfig();
-		if (season != null) {
-			config.set(configPath + ".season", season.getName());
+		if (lastKnownAges > 0) {
+			config.set(configPath + ".ages", lastKnownAges);
 		}
 		if (timeScale > 20) {
 			config.set(configPath + ".timescale", timeScale);
+		}
+		if (season != null) {
+			config.set(configPath + ".season", season.getName());
 		}
 		if (syncedWorlds != null) {
 			config.set(configPath + ".synced", syncedWorlds);

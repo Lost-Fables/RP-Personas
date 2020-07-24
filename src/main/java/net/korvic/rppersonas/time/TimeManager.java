@@ -81,7 +81,7 @@ public class TimeManager {
 			while (mngr.lastKnownAges < ages) {
 				changed = true;
 				mngr.setSeason(mngr.getSeason().getNext(), true);
-				mngr.setLastKnownAges(mngr.getLastKnownAges() + 1);
+				mngr.setLastKnownAges(mngr.getLastKnownAges() + 1, true);
 			}
 
 			if (changed) {
@@ -116,7 +116,7 @@ public class TimeManager {
 			addWorld(world);
 
 			if (save) {
-				RPPersonas.get().updateConfigForWorld(world.getName(), season, this.timeScale, null);
+				RPPersonas.get().updateConfigForWorld(world.getName(), lastKnownAges, this.timeScale, season, null);
 			}
 
 			this.currentState = TimeState.getState((int) world.getTime());
@@ -154,13 +154,16 @@ public class TimeManager {
 						syncedWorldNames.add(syncedWorld.getName());
 					}
 				}
-				RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), null, 0, syncedWorldNames);
+				RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), 0, 0, null, syncedWorldNames);
 			}
 		}
 	}
 
-	public void setLastKnownAges(int ages) {
+	public void setLastKnownAges(int ages, boolean save) {
 		this.lastKnownAges = ages;
+		if (save) {
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), this.lastKnownAges, 0, null, null);
+		}
 	}
 
 	public void setTime(int time) {
@@ -173,7 +176,7 @@ public class TimeManager {
 	public void setTimeScale(int timeScale, boolean save) {
 		this.timeScale = timeScale;
 		if (save) {
-			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), null, this.timeScale, null);
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), 0, this.timeScale, null, null);
 		}
 	}
 
@@ -183,7 +186,7 @@ public class TimeManager {
 	public void setSeason(Season season, boolean save) {
 		this.season = season;
 		if (save) {
-			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), season, 0, null);
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), 0, 0, this.season, null);
 		}
 	}
 
