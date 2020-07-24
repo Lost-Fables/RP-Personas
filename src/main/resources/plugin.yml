@@ -17,6 +17,9 @@ commands:
   time:
     command: /<command>
     description: "Retrieve or adjust the time."
+  date:
+    command: /<command>
+    description: "Get the current ages since arriving on Anoma."
 permissions:
   rppersonas.accepted:
     default: op

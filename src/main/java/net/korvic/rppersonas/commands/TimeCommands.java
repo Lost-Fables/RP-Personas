@@ -9,25 +9,28 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class TimeCommands extends BaseCommand {
 
 	private RPPersonas plugin;
-
 	public TimeCommands(RPPersonas plugin) {
 		this.plugin = plugin;
 	}
 
-	@Cmd(value="Get the current time of the world you're in.", permission=RPPersonas.PERMISSION_START + ".time.info")
+	@Cmd(value="Get the current date & time", permission=RPPersonas.PERMISSION_START + "time.info")
 	public void info(CommandSender sender) {
+		sender.sendMessage(RPPersonas.PRIMARY_DARK + "It has been " + RPPersonas.SECONDARY_DARK + TimeManager.getRelativeTimeString(RPPersonas.ANOMA_DATE.getTime()) + RPPersonas.PRIMARY_DARK + " since arriving on Anoma.");
+
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			String message = RPPersonas.PRIMARY_DARK + "The time is: " + RPPersonas.SECONDARY_DARK + p.getWorld().getTime();
 			if (TimeManager.getManagerOfWorld(p.getWorld()) != null) {
 				message += RPPersonas.PRIMARY_DARK + ", and the season is: " + RPPersonas.SECONDARY_DARK + TimeManager.getManagerOfWorld(p.getWorld()).getSeason();
 			}
-			msg(message);
-		} else {
-			msg("Stahp it console.");
+			sender.sendMessage(message);
 		}
 	}
 

@@ -5,12 +5,9 @@ import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.accounts.UnregisteredHandler;
-import net.korvic.rppersonas.commands.TimeCommands;
+import net.korvic.rppersonas.commands.*;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.AltarHandler;
-import net.korvic.rppersonas.commands.AccountCommands;
-import net.korvic.rppersonas.commands.RPPCommands;
-import net.korvic.rppersonas.commands.PersonaCommands;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.death.DeathHandler;
 import net.korvic.rppersonas.kits.Kit;
@@ -46,9 +43,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -65,8 +62,19 @@ public final class RPPersonas extends JavaPlugin {
 	public static final String PERMISSION_START = "rppersonas";
 	public static final long DAY_IN_MILLIS = 1000L * 60 * 60 * 24;
 
-	public static FileConfiguration config;
 	private static RPPersonas instance;
+	public static FileConfiguration config;
+	public static Date ANOMA_DATE = new Date();
+	static {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+		String anomaDate = "06-06-2020 23:00:00";
+		try {
+			ANOMA_DATE = sdf.parse(anomaDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		ANOMA_DATE.setTime(ANOMA_DATE.getTime() + BASE_LONG_VALUE);
+	}
 
 	// Handlers
 	@Getter private AccountHandler accountHandler;
@@ -178,6 +186,7 @@ public final class RPPersonas extends JavaPlugin {
 			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
 			Commands.build(getCommand("rpp"), () -> new RPPCommands(this, timeCommands));
 			Commands.build(getCommand("time"), () -> timeCommands);
+			Objects.requireNonNull(getCommand("date")).setExecutor(new DateAlias(timeCommands));
 
 			// Register statuses we want on the list of statuses
 			new SpeedStatus().registerStatus();

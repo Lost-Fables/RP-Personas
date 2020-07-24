@@ -14,6 +14,7 @@ public enum PersonaLanguage {
 	GRAVICAN("Gravican", "[GR]"),
 	ARMUSIAN("Armusian", "[MS]"),
 	CARRIB("Carrib", "[CB]"),
+	JOTUNNTUNGA( "Jötunntunga", "[JT]"),
 
 	ANC_REHKISH("Ancient_Rehkish", "[AR]"),
 	REHKISH("Rehkish", "[R]"),

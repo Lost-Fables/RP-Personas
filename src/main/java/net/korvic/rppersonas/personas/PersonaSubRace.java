@@ -9,9 +9,10 @@ import java.util.stream.Collectors;
 public enum PersonaSubRace {
 
 	// HUMANS
-	ARMUSIAN( "Armusian",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.ARMUSIAN }),
-	CARRIBARD("Carribard", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CARRIB }),
-	GRAVICAN( "Gravican",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GRAVICAN }),
+	ARMUSIAN(  "Armusian",   90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.ARMUSIAN }),
+	CARRIBARD( "Carribard",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CARRIB }),
+	GRAVICAN(  "Gravican",   90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GRAVICAN }),
+	GIANTBLOOD("Giantblood", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.JOTUNNTUNGA }),
 
 	// DWARVES
 	CAVE_DWARF("Cave Dwarf", 90, PersonaRace.DWARF, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.YAZYK }),

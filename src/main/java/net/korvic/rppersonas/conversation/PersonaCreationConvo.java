@@ -199,16 +199,18 @@ public class PersonaCreationConvo extends BaseConvo {
 
 		@Override
 		public String getPromptText(ConversationContext context) {
-			if (race != null) {
+			if (this.race != null) {
 				Player p = (Player) context.getForWhom();
 
 				BaseComponent subraces = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "Pick your subrace: \n" + DIVIDER);
 				subraces.addExtra(MessageUtil.CommandButton("Back", "Back", "Click to return to main races", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 				subraces.addExtra(BUTTON_SPACE);
 
-				for (PersonaSubRace race : this.race.getSubRaceList()) {
-					if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
-						subraces.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to select subrace", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
+				for (PersonaSubRace subRace : this.race.getSubRaceList()) {
+					if (subRace == null) {
+						RPPersonas.get().getLogger().warning("Found null subRace in subRace list for " + this.race.getName());
+					} else if (p.hasPermission("rppersonas.race." + subRace.getName().toLowerCase())) {
+						subraces.addExtra(MessageUtil.CommandButton(subRace.getName(), subRace.getName(), "Click to select subrace", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 						subraces.addExtra(BUTTON_SPACE);
 					}
 				}
