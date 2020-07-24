@@ -194,8 +194,13 @@ public final class RPPersonas extends JavaPlugin {
 			new SickStatus().registerStatus();
 			new BlindStatus().registerStatus();
 
-			// Update our seasons in case they're out of date.
-			TimeManager.updateSeasons();
+			// Start auto-check for season updates every 5 mins.
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					TimeManager.updateSeasons();
+				}
+			}.runTaskTimerAsynchronously(this, 0, 6000);
 		}
 	}
 
