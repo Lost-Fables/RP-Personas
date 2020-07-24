@@ -91,6 +91,7 @@ public class TimeManager {
 						p.sendMessage(message);
 					}
 				}
+				RPPersonas.get().getLogger().info(message);
 			}
 
 		}

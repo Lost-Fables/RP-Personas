@@ -193,6 +193,9 @@ public final class RPPersonas extends JavaPlugin {
 			new SlowStatus().registerStatus();
 			new SickStatus().registerStatus();
 			new BlindStatus().registerStatus();
+
+			// Update our seasons in case they're out of date.
+			TimeManager.updateSeasons();
 		}
 	}
 
