@@ -78,6 +78,10 @@ public class TimeManager {
 		int ages = getRelativeAges(RPPersonas.ANOMA_DATE.getTime());
 		for (TimeManager mngr : managers.values()) {
 			boolean changed = false;
+			if (mngr.getLastKnownAges() <= 0) {
+				mngr.setLastKnownAges(1, true);
+			}
+
 			while (mngr.lastKnownAges < ages) {
 				changed = true;
 				mngr.setSeason(mngr.getSeason().getNext(), true);
