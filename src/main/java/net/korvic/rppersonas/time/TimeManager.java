@@ -3,8 +3,10 @@ package net.korvic.rppersonas.time;
 import lombok.Getter;
 import lombok.Setter;
 import net.korvic.rppersonas.RPPersonas;
+import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -75,10 +77,22 @@ public class TimeManager {
 	public static void updateSeasons() {
 		int ages = getRelativeAges(RPPersonas.ANOMA_DATE.getTime());
 		for (TimeManager mngr : managers.values()) {
+			boolean changed = false;
 			while (mngr.lastKnownAges < ages) {
+				changed = true;
 				mngr.setSeason(mngr.getSeason().getNext(), true);
 				mngr.setLastKnownAges(mngr.getLastKnownAges() + 1);
 			}
+
+			if (changed) {
+				String message = mngr.getSeason().getChangeMessage();
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (mngr.getWorlds().contains(p.getWorld())) {
+						p.sendMessage(message);
+					}
+				}
+			}
+
 		}
 	}
 
