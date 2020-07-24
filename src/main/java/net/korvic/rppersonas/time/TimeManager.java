@@ -43,7 +43,7 @@ public class TimeManager {
 
 	// TIME MANAGER //
 	public static TimeManager registerWorld(World world, boolean save) {
-		TimeManager output = new TimeManager(world, "Summer", 240, save);
+		TimeManager output = new TimeManager(world, getRelativeAges(RPPersonas.ANOMA_DATE.getTime()), 240, Season.SUMMER, save);
 		managers.put(world, output);
 		return output;
 	}
@@ -73,8 +73,12 @@ public class TimeManager {
 	}
 
 	public static void updateSeasons() {
+		int ages = getRelativeAges(RPPersonas.ANOMA_DATE.getTime());
 		for (TimeManager mngr : managers.values()) {
-
+			while (mngr.lastKnownAges < ages) {
+				mngr.setSeason(mngr.getSeason().getNext(), true);
+				mngr.setLastKnownAges(mngr.getLastKnownAges() + 1);
+			}
 		}
 	}
 
@@ -82,16 +86,18 @@ public class TimeManager {
 	// INSTANCE //
 	//////////////
 	@Getter private List<World> worlds = new ArrayList<>();
+	@Getter private int lastKnownAges;
 	@Getter private int timeScale;
 	@Getter private Season season;
 	@Setter @Getter private TimeState currentState;
 
 	private BukkitRunnable currentRunnable;
 
-	public TimeManager(World world, String season, int timeScale, boolean save) {
+	public TimeManager(World world, int lastKnownAges, int timeScale, Season season, boolean save) {
 		if (world != null) {
+			this.lastKnownAges = lastKnownAges;
 			this.timeScale = timeScale;
-			this.season = Season.getByName(season);
+			this.season = season;
 
 			addWorld(world);
 
@@ -139,6 +145,10 @@ public class TimeManager {
 		}
 	}
 
+	public void setLastKnownAges(int ages) {
+		this.lastKnownAges = ages;
+	}
+
 	public void setTime(int time) {
 		for (World world : worlds) {
 			world.setTime(time);
@@ -159,7 +169,7 @@ public class TimeManager {
 	public void setSeason(Season season, boolean save) {
 		this.season = season;
 		if (save) {
-			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), season.getName(), 0, null);
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), season, 0, null);
 		}
 	}
 
@@ -227,47 +237,5 @@ public class TimeManager {
 
 		int delay = Math.round((timeScale * 1200 * dayPercentage) / TimeState.getTicksToNextState(currentState));
 		currentRunnable.runTaskLater(RPPersonas.get(), delay);
-	}
-
-	public enum Season {
-		SUMMER( "Summer"),
-		AUTUMN( "Autumn"),
-		WINTER( "Winter"),
-		SPRING( "Spring");
-
-		@Getter private String name;
-
-		Season(String name) {
-			this.name = name;
-		}
-
-		public Season getNext() {
-			List<Season> season = Arrays.asList(values());
-			int index = season.indexOf(this);
-			index++;
-			if (index >= season.size()) {
-				index -= season.size();
-			}
-			return season.get(index);
-		}
-
-		public Season getLast() {
-			List<Season> season = Arrays.asList(values());
-			int index = season.indexOf(this);
-			index--;
-			if (index < 0) {
-				index += season.size();
-			}
-			return season.get(index);
-		}
-
-		public static Season getByName(String name) {
-			for (Season season : values()) {
-				if (season.getName().equalsIgnoreCase(name)) {
-					return season;
-				}
-			}
-			return null;
-		}
 	}
 }

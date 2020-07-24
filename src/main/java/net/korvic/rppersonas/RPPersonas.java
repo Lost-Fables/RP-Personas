@@ -317,11 +317,11 @@ public final class RPPersonas extends JavaPlugin {
 	}
 
 	// TIME
-	public void updateConfigForWorld(String worldName, String season, int timeScale, List<String> syncedWorlds) {
+	public void updateConfigForWorld(String worldName, Season season, int timeScale, List<String> syncedWorlds) {
 		String configPath = "worlds." + worldName;
 		config = getConfig();
 		if (season != null) {
-			config.set(configPath + ".season", season);
+			config.set(configPath + ".season", season.getName());
 		}
 		if (timeScale > 20) {
 			config.set(configPath + ".timescale", timeScale);

@@ -91,7 +91,7 @@ public class TimeCommands extends BaseCommand {
 			Player p = (Player) sender;
 			TimeManager manager = TimeManager.getManagerOfWorld(p.getWorld());
 			if (manager != null) {
-				manager.setSeason(season.getName(), true);
+				manager.setSeason(season, true);
 				msg(RPPersonas.PRIMARY_DARK + "Season updated!");
 			} else {
 				msg(RPPersonas.PRIMARY_DARK + "You must register this world before you can set the season.");
