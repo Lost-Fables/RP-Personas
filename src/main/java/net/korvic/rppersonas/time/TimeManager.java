@@ -7,10 +7,7 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TimeManager {
 	public static final long WEEK_IN_MILLIS = RPPersonas.DAY_IN_MILLIS * 7;
@@ -44,6 +41,7 @@ public class TimeManager {
 		return (getRelativeAges(millis) + " Ages; (" + getRelativeEras(millis) + " Eras)");
 	}
 
+	// TIME MANAGER //
 	public static TimeManager registerWorld(World world, boolean save) {
 		TimeManager output = new TimeManager(world, "Summer", 240, save);
 		managers.put(world, output);
@@ -74,12 +72,18 @@ public class TimeManager {
 		}
 	}
 
+	public static void updateSeasons() {
+		for (TimeManager mngr : managers.values()) {
+
+		}
+	}
+
 	//////////////
 	// INSTANCE //
 	//////////////
 	@Getter private List<World> worlds = new ArrayList<>();
 	@Getter private int timeScale;
-	@Getter private String season;
+	@Getter private Season season;
 	@Setter @Getter private TimeState currentState;
 
 	private BukkitRunnable currentRunnable;
@@ -87,7 +91,7 @@ public class TimeManager {
 	public TimeManager(World world, String season, int timeScale, boolean save) {
 		if (world != null) {
 			this.timeScale = timeScale;
-			this.season = season;
+			this.season = Season.getByName(season);
 
 			addWorld(world);
 
@@ -149,10 +153,13 @@ public class TimeManager {
 		}
 	}
 
-	public void setSeason(String season, boolean save) {
+	public void setSeason(String seasonName, boolean save) {
+		setSeason(Season.getByName(seasonName), save);
+	}
+	public void setSeason(Season season, boolean save) {
 		this.season = season;
 		if (save) {
-			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), season, 0, null);
+			RPPersonas.get().updateConfigForWorld(worlds.get(0).getName(), season.getName(), 0, null);
 		}
 	}
 
@@ -206,13 +213,13 @@ public class TimeManager {
 		};
 
 		float dayPercentage = 25;
-		if (season.equalsIgnoreCase("Summer")) {
+		if (season.equals(Season.SUMMER)) {
 			dayPercentage = (float) currentState.getSummerPercent();
-		} else if (season.equalsIgnoreCase("Autumn")) {
+		} else if (season.equals(Season.AUTUMN)) {
 			dayPercentage = (float) currentState.getAutumnPercent();
-		} else if (season.equalsIgnoreCase("Winter")) {
+		} else if (season.equals(Season.WINTER)) {
 			dayPercentage = (float) currentState.getWinterPercent();
-		} else if (season.equalsIgnoreCase("Spring")) {
+		} else if (season.equals(Season.SPRING)) {
 			dayPercentage = (float) currentState.getSpringPercent();
 		}
 
@@ -220,5 +227,47 @@ public class TimeManager {
 
 		int delay = Math.round((timeScale * 1200 * dayPercentage) / TimeState.getTicksToNextState(currentState));
 		currentRunnable.runTaskLater(RPPersonas.get(), delay);
+	}
+
+	public enum Season {
+		SUMMER( "Summer"),
+		AUTUMN( "Autumn"),
+		WINTER( "Winter"),
+		SPRING( "Spring");
+
+		@Getter private String name;
+
+		Season(String name) {
+			this.name = name;
+		}
+
+		public Season getNext() {
+			List<Season> season = Arrays.asList(values());
+			int index = season.indexOf(this);
+			index++;
+			if (index >= season.size()) {
+				index -= season.size();
+			}
+			return season.get(index);
+		}
+
+		public Season getLast() {
+			List<Season> season = Arrays.asList(values());
+			int index = season.indexOf(this);
+			index--;
+			if (index < 0) {
+				index += season.size();
+			}
+			return season.get(index);
+		}
+
+		public static Season getByName(String name) {
+			for (Season season : values()) {
+				if (season.getName().equalsIgnoreCase(name)) {
+					return season;
+				}
+			}
+			return null;
+		}
 	}
 }
