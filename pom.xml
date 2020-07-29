@@ -59,6 +59,14 @@
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
+            <id>rayzr</id>
+            <url>https://rayzr.dev/repo/</url>
+        </repository>
+        <repository>
+            <id>codemc</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+        <repository>
             <id>dynmap-repo</id>
             <url>http://repo.mikeprimm.com/</url>
         </repository>
