@@ -102,7 +102,7 @@ public class Placeholders extends PlaceholderExpansion {
 	 * @return possibly-null String of the requested identifier.
 	 */
 	@Override
-	public String onRequest(OfflinePlayer player, String identifier){
+	public String onRequest(OfflinePlayer player, String identifier) {
 		if(player != null) {
 			Persona pers = plugin.getPersonaHandler().getLoadedPersona(player.getPlayer());
 			if (pers != null) {
