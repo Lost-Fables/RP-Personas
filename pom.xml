@@ -82,7 +82,7 @@
         <dependency>
             <groupId>co.lotc</groupId>
             <artifactId>tythan-bukkit</artifactId>
-            <version>0.7.5</version>
+            <version>0.7.6</version>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
