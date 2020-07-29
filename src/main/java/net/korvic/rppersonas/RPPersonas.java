@@ -469,7 +469,7 @@ public final class RPPersonas extends JavaPlugin {
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") &&
 			Bukkit.getPluginManager().isPluginEnabled("Rollit")) {
-			output = PlaceholderAPI.setPlaceholders(p, "%rollit_prefix%");
+			output = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(p.getUniqueId()), "%rollit_prefix%");
 		}
 
 		return output;
