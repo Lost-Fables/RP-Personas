@@ -72,22 +72,27 @@ public abstract class BaseSQL {
 		}
 
 		if (output == null) {
-			plugin.getLogger().warning("Null MariaDB database for " + HOST + ":" + PORT + "/" + DATABASE + " with information " + USER + ":" + PASSWORD + " | Trying MySQL instead.");
+			plugin.getLogger().warning("Unable to connect with MariaDB for " + HOST + ":" + PORT + "/" + DATABASE /*+ " with information " + USER + ":" + PASSWORD*/ + " | Trying MySQL instead.");
 
 			try {
 				if (connection != null && !connection.isClosed()) {
 					output = connection;
 				}
+				Class.forName("com.mysql.jdbc.Driver");
 				String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
 				output = DriverManager.getConnection(url, USER, PASSWORD);
-			} catch (SQLException ex) {
+			} catch (ClassNotFoundException cnfe) {
+				if (RPPersonas.DEBUGGING) {
+					plugin.getLogger().log(Level.SEVERE, "Unable to find dependent JDBC drivers in JVM.", cnfe);
+				}
+	    	} catch (SQLException ex) {
 				if (RPPersonas.DEBUGGING) {
 					plugin.getLogger().log(Level.SEVERE, "MySQL exception on initialize", ex);
 				}
 			}
 
 			if (output == null) {
-				plugin.getLogger().severe("Could not connect via MySQL either.");
+				plugin.getLogger().warning("Unable to connect with MySQL for " + HOST + ":" + PORT + "/" + DATABASE);
 			} else {
 				plugin.getLogger().warning("Connected with MySQL.");
 			}
