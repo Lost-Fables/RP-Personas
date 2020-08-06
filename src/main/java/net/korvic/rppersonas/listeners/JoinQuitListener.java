@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,12 @@ public class JoinQuitListener implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		if (p.hasPermission("rppersonas.link")) {
-			loadIntoPersona(p);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					loadIntoPersona(p);
+				}
+			}.runTaskAsynchronously(plugin);
 		}
 		p.setCollidable(false);
 	}
