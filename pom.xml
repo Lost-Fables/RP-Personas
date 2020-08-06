@@ -6,7 +6,7 @@
 
     <groupId>net.korvic</groupId>
     <artifactId>rppersonas</artifactId>
-    <version>1.16.0.6</version>
+    <version>1.16.0.7</version>
     <packaging>jar</packaging>
 
     <name>RPPersonas</name>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>co.lotc</groupId>
             <artifactId>tythan-bukkit</artifactId>
-            <version>0.7.6</version>
+            <version>0.7.9</version>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
@@ -111,8 +111,8 @@
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
-            <artifactId>PlaceholderAPI</artifactId>
-            <version>2.10.7</version>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
