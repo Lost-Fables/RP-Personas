@@ -14,10 +14,7 @@ import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -188,6 +185,7 @@ public class PersonaHandler {
 				Altar altar = plugin.getAltarHandler().getAltar((int) data.get(PersonasSQL.ALTARID));
 				if (altar != null) {
 					p.teleport(altar.getTPLocation());
+					p.getLocation().getWorld().playSound(altar.getTPLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
 					// TODO - Create respawn animation
 				}
 
@@ -293,7 +291,14 @@ public class PersonaHandler {
 		} else {
 			p.getInventory().clear();
 		}
-		PersonaSkin.refreshPlayer(p);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				PersonaSkin.refreshPlayer(p);
+			}
+		}.runTask(plugin);
+
 		p.teleportAsync(plugin.getPersonasSQL().getLocation(personaID));
 	}
 
