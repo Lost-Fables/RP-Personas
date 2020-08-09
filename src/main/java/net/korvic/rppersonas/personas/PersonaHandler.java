@@ -170,7 +170,12 @@ public class PersonaHandler {
 		if (data.containsKey(PersonasSQL.LOCATION)) {
 			Location loc = (Location) data.get(PersonasSQL.LOCATION);
 			if (!LocationUtil.isClose(p, loc, 1.0D)) {
-				p.teleportAsync(loc);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						p.teleport(loc);
+					}
+				}.runTask(plugin);
 			}
 		}
 
