@@ -60,13 +60,17 @@ public class AccountCommands extends BaseCommand {
 	public void linkalt (CommandSender sender, Player other) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			int accountID = plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId());
-			if (accountID > 0 && other != null) {
-				plugin.getAccountHandler().attemptLink(p, other);
-				msg(RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_LIGHT + "/account altaccept " + p.getName() + RPPersonas.PRIMARY_DARK + "to finalize the link.\n"
-					+ RPPersonas.PRIMARY_DARK + "All linked accounts take full responsibility for the actions of one-another.");
+			if (!p.equals(other)) {
+				int accountID = plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId());
+				if (accountID > 0 && other != null) {
+					plugin.getAccountHandler().attemptLink(p, other);
+					msg(RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_LIGHT + "/account altaccept " + p.getName() + RPPersonas.PRIMARY_DARK + "to finalize the link.\n"
+						+ RPPersonas.PRIMARY_DARK + "All linked accounts take full responsibility for the actions of one-another.");
+				} else {
+					msg(RPPersonas.PRIMARY_DARK + "You don't have a linked account, yourself! Make an application on the forums.");
+				}
 			} else {
-				msg(RPPersonas.PRIMARY_DARK + "You don't have a linked account, yourself! Make an application on the forums.");
+				msg(RPPersonas.PRIMARY_DARK + "You cannot link to yourself!");
 			}
 		} else {
 			msg(PLAYER_ONLY);
@@ -77,9 +81,13 @@ public class AccountCommands extends BaseCommand {
 	public void altaccept (CommandSender sender, Player other) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			plugin.getAccountHandler().finalizeLink(other, p);
-			msg(ACCOUNT_LINK_SUCCESS);
-			other.sendMessage(ACCOUNT_LINK_SUCCESS);
+			if (!p.equals(other)) {
+				plugin.getAccountHandler().finalizeLink(other, p);
+				msg(ACCOUNT_LINK_SUCCESS);
+				other.sendMessage(ACCOUNT_LINK_SUCCESS);
+			} else {
+				msg(RPPersonas.PRIMARY_DARK + "You can't link to yourself!");
+			}
 		}
 	}
 
