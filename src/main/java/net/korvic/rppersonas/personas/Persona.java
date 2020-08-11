@@ -285,7 +285,7 @@ public class Persona {
 	public void setSkin(int skinID) {
 		this.activeSkin = PersonaSkin.getFromID(skinID);
 		if (usingPlayer != null) {
-			PersonaSkin.refreshPlayer(usingPlayer);
+			PersonaSkin.refreshPlayerSync(usingPlayer);
 		}
 	}
 

@@ -115,7 +115,7 @@ public class BoardManager {
 
 		team.addEntry(namePieces[0]);
 		p.setScoreboard(nameBoard);
-		PersonaSkin.refreshPlayer(p);
+		PersonaSkin.refreshPlayerSync(p);
 	}
 
 }

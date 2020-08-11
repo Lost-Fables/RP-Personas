@@ -111,8 +111,16 @@ public class PersonaSkin {
 			  .forEach(x -> {p.hidePlayer(RPPersonas.get(), x); p.showPlayer(RPPersonas.get(), x);});
 	}
 
+	public static void refreshPlayerSync(Player p) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				refreshPlayer(p);
+			}
+		}.runTask(RPPersonas.get());
+	}
 	// ProtocolLib Refreshing
-	public static void refreshPlayer(Player p) {
+	private static void refreshPlayer(Player p) {
 		if (p.isInsideVehicle()) {
 			p.leaveVehicle();
 		}

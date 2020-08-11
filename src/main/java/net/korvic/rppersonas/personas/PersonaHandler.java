@@ -297,12 +297,7 @@ public class PersonaHandler {
 			p.getInventory().clear();
 		}
 
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				PersonaSkin.refreshPlayer(p);
-			}
-		}.runTask(plugin);
+		PersonaSkin.refreshPlayerSync(p);
 
 		p.teleportAsync(plugin.getPersonasSQL().getLocation(personaID));
 	}
