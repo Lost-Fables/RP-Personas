@@ -3,6 +3,7 @@ package net.korvic.rppersonas;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -113,6 +114,8 @@ public class Placeholders extends PlaceholderExpansion {
 						return "" + String.format("%06d", pers.getPersonaID());
 					case "accountid":
 						return "" + String.format("%06d", pers.getAccountID());
+					case "date":
+						return TimeManager.getRelativeTimeString(RPPersonas.ANOMA_DATE.getTime());
 				}
 			}
 		}
