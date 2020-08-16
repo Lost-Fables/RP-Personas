@@ -43,7 +43,7 @@ public class PersonaHandler {
 
 	// CREATION //
 	public static void createPersona(Player p, int accountID, boolean first) {
-		new DisabledStatus(null).applyEffect(p, (byte) 0);
+		new DisabledStatus(null).applyEffectSync(p, (byte) 0);
 
 		Persona pers = null;
 		String welcomeText = "";
@@ -60,29 +60,35 @@ public class PersonaHandler {
 								RPPersonas.SECONDARY_LIGHT + "Type your Persona's name to continue.",
 								20, 60*20, 20);
 
-		new DisabledStatus(title).applyEffect(p, (byte) 0);
-		if (plugin.getSpawnLocation() != null) {
-			p.teleportAsync(plugin.getSpawnLocation());
-		}
-		p.getInventory().clear();
+		Persona finalPers = pers;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				new DisabledStatus(title).applyEffect(p, (byte) 0);
+				if (plugin.getSpawnLocation() != null) {
+					p.teleportAsync(plugin.getSpawnLocation());
+				}
+				p.getInventory().clear();
 
-		Map<Object, Object> data = new HashMap<>();
-		data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
-		data.put(PersonasSQL.ALIVE, true);
-		data.put(PersonasSQL.LIVES, 3);
-		data.put(PersonasSQL.PLAYTIME, 0L);
-		data.put(PersonasSQL.FRESH, new Object());
-		data.put(PersonasSQL.LOCATION, plugin.getSpawnLocation());
+				Map<Object, Object> data = new HashMap<>();
+				data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
+				data.put(PersonasSQL.ALIVE, true);
+				data.put(PersonasSQL.LIVES, 3);
+				data.put(PersonasSQL.PLAYTIME, 0L);
+				data.put(PersonasSQL.FRESH, new Object());
+				data.put(PersonasSQL.LOCATION, plugin.getSpawnLocation());
 
-		if (pers != null) {
-			data.put("oldpersona", pers);
-		}
+				if (finalPers != null) {
+					data.put("oldpersona", finalPers);
+				}
 
-		if (first) {
-			data.put(PersonasSQL.FIRST, new Object());
-		}
+				if (first) {
+					data.put(PersonasSQL.FIRST, new Object());
+				}
 
-		new PersonaCreationConvo(plugin).startConvo(p, data, !first);
+				new PersonaCreationConvo(plugin).startConvo(p, data, !first);
+			}
+		}.runTask(plugin);
 	}
 
 	public Persona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {

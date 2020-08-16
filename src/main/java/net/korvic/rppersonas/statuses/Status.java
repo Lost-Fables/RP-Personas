@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,15 @@ public abstract class Status {
 		clearStatus(name, player);
 	}
 
+	public void applyEffectSync(Player player, byte severity) {
+		Status status = this;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				status.applyEffect(player, severity);
+			}
+		}.runTask(plugin);
+	}
 	// ABSTRACT //
 	public abstract void applyEffect(Player player, byte severity);
 	public abstract void clearEffect(Player player);
