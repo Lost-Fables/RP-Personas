@@ -203,18 +203,30 @@ public class PersonaSkin {
 			// Teleport the player far away to make sure they refresh chunks, then back to their new position.
 			// Solves the issue of 1.14-1.15 not loading chunks fully.
 			{
+				RPPersonas plugin = RPPersonas.get();
 				Location origin = p.getLocation();
+				Location offset;
 
-				// Make sure we're teleporting relatively close to the z axis to avoid any worldborder
-				// shenanigans, but still 100 blocks away in the x direction.
-				int x = origin.getBlockX();
-				if (x >= 100 || x <= -100) {
-					x = 0;
+				if (origin.getWorld() != plugin.getSpawnLocation().getWorld() ||
+					origin.distance(plugin.getSpawnLocation()) >= 100) {
+					offset = plugin.getSpawnLocation();
+				} else if (origin.getWorld() != plugin.getDeathLocation().getWorld() ||
+						   origin.distance(plugin.getDeathLocation()) >= 100) {
+					offset = plugin.getDeathLocation();
 				} else {
-					x += 100;
+					// Make sure we're teleporting relatively close to the y axis to avoid any worldborder
+					// shenanigans, but still 100 blocks away in the xz direction.
+					int[] xz = { origin.getBlockX(), origin.getBlockZ() };
+					for (int i = 0; i < xz.length; i++) {
+						if (xz[i] >= 100 || xz[i] <= -100) {
+							xz[i] = 0;
+						} else {
+							xz[i] += 100;
+						}
+					}
+					offset = origin.clone().add(new Vector(xz[0], 260, xz[1]));
 				}
-				Location sky = origin.clone().add(new Vector(x, 260, 0));
-				p.teleport(sky);
+				p.teleport(offset);
 				p.teleport(origin);
 			}
 
