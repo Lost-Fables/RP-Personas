@@ -208,7 +208,7 @@ public class PersonaSkin {
 				Location offset = null;
 				for (World world : Bukkit.getWorlds()) {
 					if (world != origin.getWorld()) {
-						offset = new Location(world, 0, (origin.getY() + 300), 0);
+						offset = new Location(world, 0, 400, 0);
 						break;
 					}
 				}
