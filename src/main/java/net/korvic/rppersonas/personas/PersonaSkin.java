@@ -14,6 +14,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -181,31 +182,41 @@ public class PersonaSkin {
 		PacketContainer secondRespawn = buildRespawn(originDimension, resourceKey, nmsWorld, seed, p);
 
 		try {
-			ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-			manager.sendServerPacket(p, firstRespawn);
-			manager.sendServerPacket(p, secondRespawn);
+			{
+				ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+				manager.sendServerPacket(p, firstRespawn);
+				manager.sendServerPacket(p, secondRespawn);
 
-			// Some wizardry here to make the right amount of hearts show up
-			if(p.getGameMode() == GameMode.ADVENTURE || p.getGameMode() == GameMode.SURVIVAL) {
-				boolean toggle = p.isHealthScaled();
-				p.setHealthScaled(!toggle);
-				p.setHealthScale(p.getHealthScale());
-				p.setHealth(p.getHealth());
-				p.setHealthScaled(toggle);
+				// Some wizardry here to make the right amount of hearts show up
+				if (p.getGameMode() == GameMode.ADVENTURE || p.getGameMode() == GameMode.SURVIVAL) {
+					boolean toggle = p.isHealthScaled();
+					p.setHealthScaled(!toggle);
+					p.setHealthScale(p.getHealthScale());
+					p.setHealth(p.getHealth());
+					p.setHealthScaled(toggle);
+				}
 			}
 
 			// Some wizardry here to prevent unintended speedhacking
 			p.setWalkSpeed(p.getWalkSpeed());
 
-			// Teleport the player to spawn or death to make sure they refresh, then back to their new position.
+			// Teleport the player far away to make sure they refresh chunks, then back to their new position.
 			// Solves the issue of 1.14-1.15 not loading chunks fully.
-			Location origin = p.getLocation();
-			if (origin.getWorld() != RPPersonas.get().getSpawnLocation().getWorld()) {
-				p.teleport(RPPersonas.get().getSpawnLocation());
-			} else {
-				p.teleport(RPPersonas.get().getDeathLocation());
+			{
+				Location origin = p.getLocation();
+
+				// Make sure we're teleporting relatively close to the z axis to avoid any worldborder
+				// shenanigans, but still 100 blocks away in the x direction.
+				int x = origin.getBlockX();
+				if (x >= 100 || x <= -100) {
+					x = 0;
+				} else {
+					x += 100;
+				}
+				Location sky = origin.clone().add(new Vector(x, 260, 0));
+				p.teleport(sky);
+				p.teleport(origin);
 			}
-			p.teleport(origin);
 
 			// Redraw inventory as assumed empty on respawn
 			new BukkitRunnable() {
