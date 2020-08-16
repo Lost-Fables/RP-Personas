@@ -205,27 +205,35 @@ public class PersonaSkin {
 			{
 				RPPersonas plugin = RPPersonas.get();
 				Location origin = p.getLocation();
-				Location offset;
+				Location offset = null;
+				for (World world : Bukkit.getWorlds()) {
+					if (world != origin.getWorld()) {
+						offset = new Location(world, 0, (origin.getY() + 300), 0);
+						break;
+					}
+				}
 
-				if (origin.getWorld() != plugin.getSpawnLocation().getWorld() ||
-					origin.distance(plugin.getSpawnLocation()) >= 100) {
-					offset = plugin.getSpawnLocation();
-				} else if (origin.getWorld() != plugin.getDeathLocation().getWorld() ||
-						   origin.distance(plugin.getDeathLocation()) >= 100) {
-					offset = plugin.getDeathLocation();
-				} else {
+				// Make sure that our offset is at least SOME location attempt if we don't find any
+				// alternative worlds.
+				if (offset == null) {
 					// Make sure we're teleporting relatively close to the y axis to avoid any worldborder
-					// shenanigans, but still 100 blocks away in the xz direction.
+					// shenanigans, but still minDistance blocks away in the xz direction.
+					int minDistance = 1000;
 					int[] xz = { origin.getBlockX(), origin.getBlockZ() };
 					for (int i = 0; i < xz.length; i++) {
-						if (xz[i] >= 100 || xz[i] <= -100) {
+						if (xz[i] >= minDistance || xz[i] <= -minDistance) {
 							xz[i] = 0;
 						} else {
-							xz[i] += 100;
+							if (xz[i] > 0) {
+								xz[i] -= minDistance;
+							} else {
+								xz[i] += minDistance;
+							}
 						}
 					}
 					offset = origin.clone().add(new Vector(xz[0], 260, xz[1]));
 				}
+
 				p.teleport(offset);
 				p.teleport(origin);
 			}
