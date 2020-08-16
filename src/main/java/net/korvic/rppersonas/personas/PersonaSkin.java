@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.injector.netty.WirePacket;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.*;
 import com.google.common.collect.Lists;
@@ -161,37 +162,30 @@ public class PersonaSkin {
 
 	@SuppressWarnings("deprecation")
 	private static void fakeRespawn(Player p) throws IllegalAccessException {
-		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+		// Grab our origin dimension and any dimension that isn't our current one (if possible).
+		int originDimension = p.getWorld().getEnvironment().getId();
+		int dimension = originDimension;
+		for (World world : Bukkit.getWorlds()) {
+			if (world != p.getWorld()) {
+				dimension = world.getEnvironment().getId();
+				break;
+			}
+		}
 
-		PacketContainer respawn = manager.createPacket(PacketType.Play.Server.RESPAWN);
 		Object nmsWorld = BukkitConverters.getWorldConverter().getGeneric(p.getWorld());
 		Object resourceKey = WORLD_KEY_FIELD.get(nmsWorld);
 		long seed = p.getWorld().getSeed();
 
-		respawn.getDimensions().write(0, p.getWorld().getEnvironment().getId()); //a
-		respawn.getSpecificModifier(RESOURCE_KEY_CLASS).write(1, resourceKey); //b
-		respawn.getLongs().write(0, Hashing.sha256().hashLong(seed).asLong()); //c
-		respawn.getGameModes().write(0, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //d
-		respawn.getGameModes().write(1, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //e
-		respawn.getBooleans().write(0, DEBUG_WORLD_FIELD.getBoolean(nmsWorld)); //f
-		respawn.getBooleans().write(1, p.getWorld().getWorldType() == WorldType.FLAT); //g
-		respawn.getBooleans().write(2, true); //h
-
-
-		Location location = p.getLocation();
-		PacketContainer teleport = manager.createPacket(PacketType.Play.Server.POSITION);
-		teleport.getModifier().writeDefaults();
-		teleport.getDoubles().write(0, location.getX());
-		teleport.getDoubles().write(1, location.getY());
-		teleport.getDoubles().write(2, location.getZ());
-		teleport.getFloat().write(0, location.getYaw());
-		teleport.getFloat().write(1, location.getPitch());
-		teleport.getIntegers().writeSafely(0, -99);
+		// Do two respawn packets as recommended by ProtocolLib
+		PacketContainer firstRespawn = buildRespawn(dimension, resourceKey, nmsWorld, seed, p);
+		PacketContainer secondRespawn = buildRespawn(originDimension, resourceKey, nmsWorld, seed, p);
 
 		try {
-			manager.sendServerPacket(p, respawn);
-			manager.sendServerPacket(p, teleport);
-			//Some wizardry here to make the right amount of hearts show up
+			ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+			manager.sendServerPacket(p, firstRespawn);
+			manager.sendServerPacket(p, secondRespawn);
+
+			// Some wizardry here to make the right amount of hearts show up
 			if(p.getGameMode() == GameMode.ADVENTURE || p.getGameMode() == GameMode.SURVIVAL) {
 				boolean toggle = p.isHealthScaled();
 				p.setHealthScaled(!toggle);
@@ -200,10 +194,20 @@ public class PersonaSkin {
 				p.setHealthScaled(toggle);
 			}
 
-			//Some wizardry here to prevent unintended speedhacking
+			// Some wizardry here to prevent unintended speedhacking
 			p.setWalkSpeed(p.getWalkSpeed());
 
-			//Redraw inventory as assumed empty on respawn
+			// Teleport the player to spawn or death to make sure they refresh, then back to their new position.
+			// Solves the issue of 1.14-1.15 not loading chunks fully.
+			Location origin = p.getLocation();
+			if (origin.getWorld() != RPPersonas.get().getSpawnLocation().getWorld()) {
+				p.teleport(RPPersonas.get().getSpawnLocation());
+			} else {
+				p.teleport(RPPersonas.get().getDeathLocation());
+			}
+			p.teleport(origin);
+
+			// Redraw inventory as assumed empty on respawn
 			new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -213,6 +217,23 @@ public class PersonaSkin {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private static PacketContainer buildRespawn(int dimension, Object resourceKey, Object nmsWorld, long seed, Player p) throws IllegalAccessException {
+		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+		PacketContainer output = manager.createPacket(PacketType.Play.Server.RESPAWN);
+
+		output.getDimensions().write(0, dimension); //a
+		output.getSpecificModifier(RESOURCE_KEY_CLASS).write(1, resourceKey); //b
+		output.getLongs().write(0, Hashing.sha256().hashLong(seed).asLong()); //c
+		output.getGameModes().write(0, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //d
+		output.getGameModes().write(1, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //e
+		output.getBooleans().write(0, DEBUG_WORLD_FIELD.getBoolean(nmsWorld)); //f
+		output.getBooleans().write(1, p.getWorld().getWorldType() == WorldType.FLAT); //g
+		output.getBooleans().write(2, true); //h
+
+		return output;
 	}
 
 }
