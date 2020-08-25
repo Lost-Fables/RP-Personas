@@ -73,7 +73,7 @@ public class PersonaHandler {
 				Map<Object, Object> data = new HashMap<>();
 				data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
 				data.put(PersonasSQL.ALIVE, true);
-				data.put(PersonasSQL.LIVES, 3);
+				data.put(PersonasSQL.LIVES, RPPersonas.DEFAULT_LIVES);
 				data.put(PersonasSQL.PLAYTIME, 0L);
 				data.put(PersonasSQL.FRESH, new Object());
 				data.put(PersonasSQL.LOCATION, plugin.getSpawnLocation());

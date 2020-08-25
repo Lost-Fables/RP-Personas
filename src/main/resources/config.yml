@@ -6,6 +6,13 @@ mysql:
   password: minecraft
   database: Minecraft
 
+# Default personas, lives, etc.
+defaults:
+  personas-per-mc-account: 2
+  skins-per-account: 1
+  lives-per-persona: 3
+  lives-per-rez: 3
+
 # Auto-Save timer.
 saving:
   # Balance ticks and amount so you can spread out the auto-save load over multiple ticks rather than all at once.

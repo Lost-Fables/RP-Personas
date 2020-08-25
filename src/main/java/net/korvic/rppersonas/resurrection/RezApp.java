@@ -50,7 +50,7 @@ public class RezApp {
 
 		DataMapFilter personaData = new DataMapFilter();
 		personaData.put(PersonasSQL.PERSONAID, personaID);
-		personaData.put(PersonasSQL.LIVES, 3);
+		personaData.put(PersonasSQL.LIVES, RPPersonas.DEFAULT_REZ_LIVES);
 		personaData.put(PersonasSQL.ALTARID, altar.getAltarID());
 		personaData.put(PersonasSQL.CORPSEINV, null);
 

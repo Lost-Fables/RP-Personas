@@ -55,12 +55,16 @@ public final class RPPersonas extends JavaPlugin {
 	public static final ChatColor SECONDARY_LIGHT = ChatColor.WHITE;
 	public static final ChatColor SECONDARY_DARK = ChatColor.GRAY;
 	public static final ChatColor TERTIARY = ChatColor.DARK_GRAY;
-	public static final boolean DEBUGGING = false;
 	public static final long BASE_LONG_VALUE = Long.MAX_VALUE/2L;
-	public static final int DEFAULT_PERSONAS = 2;
-	public static final int DEFAULT_SKINS = 0;
 	public static final String PERMISSION_START = "rppersonas";
 	public static final long DAY_IN_MILLIS = 1000L * 60 * 60 * 24;
+
+	public static final boolean DEBUGGING = false;
+
+	public static int DEFAULT_PERSONAS;
+	public static int DEFAULT_SKINS;
+	public static int DEFAULT_LIVES;
+	public static int DEFAULT_REZ_LIVES;
 
 	private static RPPersonas instance;
 	public static FileConfiguration config;
@@ -257,6 +261,21 @@ public final class RPPersonas extends JavaPlugin {
 
 	// CONFIG //
 	private void loadFromConfig() {
+		// Default Values
+		{
+			DEFAULT_PERSONAS = config.getInt("defaults.personas-per-mc-account");
+			DEFAULT_PERSONAS = Math.max(DEFAULT_PERSONAS, 1);
+
+			DEFAULT_LIVES = config.getInt("defaults.lives-per-persona");
+			DEFAULT_LIVES = Math.max(DEFAULT_LIVES, 1);
+
+			DEFAULT_REZ_LIVES = config.getInt("defaults.lives-per-rez");
+			DEFAULT_REZ_LIVES = Math.max(DEFAULT_REZ_LIVES, 1);
+
+			DEFAULT_SKINS = config.getInt("defaults.skins-per-account");
+			DEFAULT_SKINS = Math.max(DEFAULT_SKINS, 0);
+		}
+
 		// Save Queue
 		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
 
