@@ -256,7 +256,7 @@ public class PersonaSkin {
 		PacketContainer output = manager.createPacket(PacketType.Play.Server.RESPAWN);
 
 		output.getDimensions().write(0, dimension); //a
-		output.getSpecificModifier(RESOURCE_KEY_CLASS).write(1, resourceKey); //b
+		output.getSpecificModifier(RESOURCE_KEY_CLASS).write(0, resourceKey); //b
 		output.getLongs().write(0, Hashing.sha256().hashLong(seed).asLong()); //c
 		output.getGameModes().write(0, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //d
 		output.getGameModes().write(1, EnumWrappers.NativeGameMode.fromBukkit(p.getGameMode())); //e
