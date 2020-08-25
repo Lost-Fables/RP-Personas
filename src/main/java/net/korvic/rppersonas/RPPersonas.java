@@ -262,19 +262,10 @@ public final class RPPersonas extends JavaPlugin {
 	// CONFIG //
 	private void loadFromConfig() {
 		// Default Values
-		{
-			DEFAULT_PERSONAS = config.getInt("defaults.personas-per-mc-account");
-			DEFAULT_PERSONAS = Math.max(DEFAULT_PERSONAS, 1);
-
-			DEFAULT_LIVES = config.getInt("defaults.lives-per-persona");
-			DEFAULT_LIVES = Math.max(DEFAULT_LIVES, 1);
-
-			DEFAULT_REZ_LIVES = config.getInt("defaults.lives-per-rez");
-			DEFAULT_REZ_LIVES = Math.max(DEFAULT_REZ_LIVES, 1);
-
-			DEFAULT_SKINS = config.getInt("defaults.skins-per-account");
-			DEFAULT_SKINS = Math.max(DEFAULT_SKINS, 0);
-		}
+		DEFAULT_PERSONAS = Math.max(config.getInt("defaults.personas-per-mc-account"), 1);
+		DEFAULT_LIVES = Math.max(config.getInt("defaults.lives-per-persona"), 1);
+		DEFAULT_REZ_LIVES = Math.max(config.getInt("defaults.lives-per-rez"), 1);
+		DEFAULT_SKINS = Math.max(config.getInt("defaults.skins-per-account"), 0);
 
 		// Save Queue
 		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
