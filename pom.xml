@@ -6,7 +6,7 @@
 
     <groupId>net.korvic</groupId>
     <artifactId>rppersonas</artifactId>
-    <version>1.16.0.8</version>
+    <version>1.16.2.1</version>
     <packaging>jar</packaging>
 
     <name>RPPersonas</name>
