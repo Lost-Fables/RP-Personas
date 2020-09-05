@@ -130,9 +130,19 @@ public class PersonaHandler {
 				for (int i = 0; i < arrayItems.length; i++) {
 					arrayItems[i] = items.get(i);
 				}
-				p.getInventory().setContents(arrayItems);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						p.getInventory().setContents(arrayItems);
+					}
+				}.runTask(plugin);
 			} else {
-				p.getInventory().clear();
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						p.getInventory().clear();
+					}
+				}.runTask(plugin);
 			}
 		}
 
@@ -145,13 +155,25 @@ public class PersonaHandler {
 		if (data.containsKey(PersonasSQL.HEALTH)) {
 			health = (double) data.get(PersonasSQL.HEALTH);
 		}
-		p.setHealth(health);
+		double finalHealth = health;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				p.setHealth(finalHealth);
+			}
+		}.runTask(plugin);
 
 		int hunger = 20;
 		if (data.containsKey(PersonasSQL.HUNGER)) {
 			hunger = (int) data.get(PersonasSQL.HUNGER);
 		}
-		p.setFoodLevel(hunger);
+		int finalHunger = hunger;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				p.setFoodLevel(finalHunger);
+			}
+		}.runTask(plugin);
 
 		int activeSkinID = 0;
 		if (data.containsKey(PersonasSQL.SKINID)) {
@@ -195,9 +217,14 @@ public class PersonaHandler {
 
 				Altar altar = plugin.getAltarHandler().getAltar((int) data.get(PersonasSQL.ALTARID));
 				if (altar != null) {
-					p.teleport(altar.getTPLocation());
-					p.getLocation().getWorld().playSound(altar.getTPLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
-					// TODO - Create respawn animation
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							p.teleport(altar.getTPLocation());
+							p.getLocation().getWorld().playSound(altar.getTPLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1, 1);
+							// TODO - Create respawn animation
+						}
+					}.runTask(plugin);
 				}
 
 				if (data.containsKey(PersonasSQL.CORPSEINV) && data.get(PersonasSQL.CORPSEINV) != null) {
