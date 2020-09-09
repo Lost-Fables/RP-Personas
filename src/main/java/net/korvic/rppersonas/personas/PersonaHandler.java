@@ -135,14 +135,14 @@ public class PersonaHandler {
 					public void run() {
 						p.getInventory().setContents(arrayItems);
 					}
-				}.runTask(plugin);
+				}.runTaskLater(plugin, 10);
 			} else {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
 						p.getInventory().clear();
 					}
-				}.runTask(plugin);
+				}.runTaskLater(plugin, 10);
 			}
 		}
 
@@ -186,7 +186,12 @@ public class PersonaHandler {
 		}
 
 		if (data.containsKey(PersonasSQL.FRESH)) {
-			p.setSaturation(20); // Give the player 20 saturation if they're a new persona so they can run around a bit more.
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					p.setSaturation(20); // Give the player 20 saturation if they're a new persona so they can run around a bit more.
+				}
+			}.runTask(plugin);
 			data.put(PersonasSQL.PERSONAID, personaID);
 
 			plugin.getPersonasSQL().registerOrUpdate(data);

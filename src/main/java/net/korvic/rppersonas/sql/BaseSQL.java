@@ -19,6 +19,7 @@ public abstract class BaseSQL {
 	private static final String DATABASE = RPPersonas.config.getString("mysql.database");
 	private static final String USER = RPPersonas.config.getString("mysql.user");
 	private static final String PASSWORD = RPPersonas.config.getString("mysql.password");
+	private static final boolean MARIADB = RPPersonas.config.getBoolean("mysql.mariadb");
 
 	// INSTANCE //
 	protected void load(String SQLTable, String SQLTableName) {
@@ -62,9 +63,15 @@ public abstract class BaseSQL {
 		try {
 			if (connection != null && !connection.isClosed()) {
 				output = connection;
+			} else if (MARIADB) {
+				Class.forName("com.mysql.jdbc.Driver");
+				String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
+				output = DriverManager.getConnection(url, USER, PASSWORD);
 			}
-			String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
-			output = DriverManager.getConnection(url, USER, PASSWORD);
+		} catch (ClassNotFoundException cnfe) {
+			if (RPPersonas.DEBUGGING) {
+				plugin.getLogger().log(Level.SEVERE, "Unable to find dependent JDBC drivers in JVM.", cnfe);
+			}
 		} catch (SQLException ex) {
 			if (RPPersonas.DEBUGGING) {
 				plugin.getLogger().log(Level.SEVERE, "MariaDB exception on initialize", ex);
@@ -72,12 +79,11 @@ public abstract class BaseSQL {
 		}
 
 		if (output == null) {
-			plugin.getLogger().warning("Unable to connect with MariaDB for " + HOST + ":" + PORT + "/" + DATABASE /*+ " with information " + USER + ":" + PASSWORD*/ + " | Trying MySQL instead.");
+			if (MARIADB) {
+				plugin.getLogger().warning("Unable to connect with MariaDB for " + HOST + ":" + PORT + "/" + DATABASE /*+ " with information " + USER + ":" + PASSWORD*/ + " | Trying MySQL instead.");
+			}
 
 			try {
-				if (connection != null && !connection.isClosed()) {
-					output = connection;
-				}
 				Class.forName("com.mysql.jdbc.Driver");
 				String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
 				output = DriverManager.getConnection(url, USER, PASSWORD);

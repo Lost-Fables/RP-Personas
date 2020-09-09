@@ -116,12 +116,12 @@ public class PersonasSQL extends BaseSQL {
 		if (data.containsKey(PERSONAID)) {
 			PreparedStatement ps = null;
 			try {
+				ps = getSaveStatement(data);
 				if (data.containsKey(PersonasSQL.FRESH)) {
-					ps = getSaveStatement(data);
 					ps.executeUpdate();
 					ps.close();
 				} else {
-					plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+					plugin.getSaveQueue().addToQueue(ps);
 				}
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
@@ -257,7 +257,12 @@ public class PersonasSQL extends BaseSQL {
 
 		// Optional
 		if (data.containsKey(INVENTORY)) {
-			replaceStatement.setString(15, (String) data.get(INVENTORY));
+			String inventory = (String) data.get(INVENTORY);
+			replaceStatement.setString(15, inventory);
+			if (RPPersonas.DEBUGGING) {
+				plugin.getLogger().info("Adding inventory to prepared statement;");
+				plugin.getLogger().info(inventory);
+			}
 		} else if (resultPresent) {
 			replaceStatement.setString(15, result.getString("Inventory"));
 		} else {

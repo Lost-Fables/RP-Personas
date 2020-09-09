@@ -5,6 +5,7 @@ mysql:
   user: root
   password: minecraft
   database: Minecraft
+  mariadb: false
 
 # Default personas, lives, etc.
 defaults:

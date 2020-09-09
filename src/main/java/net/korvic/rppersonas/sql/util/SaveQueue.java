@@ -5,6 +5,7 @@ import net.korvic.rppersonas.listeners.JoinQuitListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,26 @@ public class SaveQueue {
 	}
 
 	public void addToQueue(PreparedStatement statement) {
-		queue.add(statement);
+		long startMillis = System.currentTimeMillis();
+		try {
+			statement.executeUpdate();
+			plugin.getLogger().info(RPPersonas.PRIMARY_DARK + "Saved " + RPPersonas.SECONDARY_LIGHT + " row(s) " + RPPersonas.PRIMARY_DARK + "in " + RPPersonas.SECONDARY_LIGHT + (System.currentTimeMillis() - startMillis) + "ms");
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (Exception e) {
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
+			}
+		}
+		//queue.add(statement);
 	}
 
 	public void stopSaving() {
