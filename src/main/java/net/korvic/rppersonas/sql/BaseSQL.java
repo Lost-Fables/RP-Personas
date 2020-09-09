@@ -81,7 +81,7 @@ public abstract class BaseSQL {
 
 		if (output == null) {
 			if (MARIADB) {
-				plugin.getLogger().warning("Unable to connect with MariaDB for " + HOST + ":" + PORT + "/" + DATABASE /*+ " with information " + USER + ":" + PASSWORD*/ + " | Trying MySQL instead.");
+				plugin.getLogger().warning("Unable to connect with MariaDB for " + HOST + ":" + PORT + "/" + DATABASE + FLAGS/*+ " with information " + USER + ":" + PASSWORD*/ + " | Trying MySQL instead.");
 			}
 
 			try {
@@ -99,9 +99,9 @@ public abstract class BaseSQL {
 			}
 
 			if (output == null) {
-				plugin.getLogger().warning("Unable to connect with MySQL for " + HOST + ":" + PORT + "/" + DATABASE);
+				plugin.getLogger().warning("Unable to connect with MySQL for " + HOST + ":" + PORT + "/" + DATABASE + FLAGS);
 			} else {
-				plugin.getLogger().warning("Connected with MySQL.");
+				plugin.getLogger().info("Connected with MySQL.");
 			}
 		}
 
