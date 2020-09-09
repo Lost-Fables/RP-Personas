@@ -59,8 +59,7 @@ public final class RPPersonas extends JavaPlugin {
 	public static final String PERMISSION_START = "rppersonas";
 	public static final long DAY_IN_MILLIS = 1000L * 60 * 60 * 24;
 
-	public static final boolean DEBUGGING = true;
-
+	public static boolean DEBUGGING;
 	public static int DEFAULT_PERSONAS;
 	public static int DEFAULT_SKINS;
 	public static int DEFAULT_LIVES;
@@ -262,6 +261,7 @@ public final class RPPersonas extends JavaPlugin {
 	// CONFIG //
 	private void loadFromConfig() {
 		// Default Values
+		DEBUGGING = config.getBoolean("debugging");
 		DEFAULT_PERSONAS = Math.max(config.getInt("defaults.personas-per-mc-account"), 1);
 		DEFAULT_LIVES = Math.max(config.getInt("defaults.lives-per-persona"), 1);
 		DEFAULT_REZ_LIVES = Math.max(config.getInt("defaults.lives-per-rez"), 1);
