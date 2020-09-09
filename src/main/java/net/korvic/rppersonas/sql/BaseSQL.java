@@ -20,6 +20,7 @@ public abstract class BaseSQL {
 	private static final String USER = RPPersonas.config.getString("mysql.user");
 	private static final String PASSWORD = RPPersonas.config.getString("mysql.password");
 	private static final boolean MARIADB = RPPersonas.config.getBoolean("mysql.mariadb");
+	private static final String FLAGS = RPPersonas.config.getString("mysql.flags");
 
 	// INSTANCE //
 	protected void load(String SQLTable, String SQLTableName) {
@@ -65,7 +66,7 @@ public abstract class BaseSQL {
 				output = connection;
 			} else if (MARIADB) {
 				Class.forName("com.mysql.jdbc.Driver");
-				String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
+				String url = "jdbc:mariadb://" + HOST + ":" + PORT + "/" + DATABASE + FLAGS;
 				output = DriverManager.getConnection(url, USER, PASSWORD);
 			}
 		} catch (ClassNotFoundException cnfe) {
@@ -85,7 +86,7 @@ public abstract class BaseSQL {
 
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
-				String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?allowPublicKeyRetrieval=true&useSSL=false";
+				String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + FLAGS;
 				output = DriverManager.getConnection(url, USER, PASSWORD);
 			} catch (ClassNotFoundException cnfe) {
 				if (RPPersonas.DEBUGGING) {

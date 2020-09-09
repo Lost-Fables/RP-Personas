@@ -6,6 +6,7 @@ mysql:
   password: minecraft
   database: Minecraft
   mariadb: false
+  flags: ?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8
 
 # Default personas, lives, etc.
 defaults:
