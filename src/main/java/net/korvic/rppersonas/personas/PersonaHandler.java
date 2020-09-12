@@ -134,6 +134,16 @@ public class PersonaHandler {
 					@Override
 					public void run() {
 						p.getInventory().setContents(arrayItems);
+						if (data.containsKey(PersonasSQL.BACKGROUND)) {
+							Kit kit = (Kit) data.get(PersonasSQL.BACKGROUND);
+							if (kit != null) {
+								for (ItemStack item : kit.getItems()) {
+									if (item != null) {
+										InventoryUtil.addOrDropItem(p, item);
+									}
+								}
+							}
+						}
 					}
 				}.runTaskLater(plugin, 10);
 			} else {
@@ -141,6 +151,16 @@ public class PersonaHandler {
 					@Override
 					public void run() {
 						p.getInventory().clear();
+						if (data.containsKey(PersonasSQL.BACKGROUND)) {
+							Kit kit = (Kit) data.get(PersonasSQL.BACKGROUND);
+							if (kit != null) {
+								for (ItemStack item : kit.getItems()) {
+									if (item != null) {
+										InventoryUtil.addOrDropItem(p, item);
+									}
+								}
+							}
+						}
 					}
 				}.runTaskLater(plugin, 10);
 			}
@@ -253,22 +273,6 @@ public class PersonaHandler {
 		List<StatusEntry> entries = plugin.getStatusSQL().getPersonaStatuses(personaID);
 		persona.getActiveStatuses().addAll(entries);
 		persona.refreshStatuses();
-
-		if (data.containsKey(PersonasSQL.BACKGROUND)) {
-			Kit kit = (Kit) data.get(PersonasSQL.BACKGROUND);
-			if (kit != null) {
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						for (ItemStack item : kit.getItems()) {
-							if (item != null) {
-								InventoryUtil.addOrDropItem(p, item);
-							}
-						}
-					}
-				}.runTask(plugin);
-			}
-		}
 
 		return persona;
 	}
