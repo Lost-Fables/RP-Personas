@@ -53,10 +53,12 @@ public class StaffPersonaCommands extends BaseCommand {
 		}
 		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
+			// Race
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
 													.put(PersonasSQL.RACE, race);
 			plugin.getPersonasSQL().registerOrUpdate(data);
 
+			// Languages
 			plugin.getLanguageSQL().purgeAll(pers.getPersonaID());
 			for (PersonaLanguage lang : race.getDefaultLanguages()) {
 				DataMapFilter langData = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID())
@@ -64,6 +66,7 @@ public class StaffPersonaCommands extends BaseCommand {
 															.put(LanguageSQL.LEVEL, 190);
 				plugin.getLanguageSQL().registerOrUpdate(langData);
 			}
+
 			msg(RPPersonas.PRIMARY_DARK + "Set the race and languages of " + player.getName() + "'s persona to " + race.getName() + "'s default values.");
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
