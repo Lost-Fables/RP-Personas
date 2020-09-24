@@ -6,7 +6,7 @@
 
     <groupId>net.korvic</groupId>
     <artifactId>rppersonas</artifactId>
-    <version>1.16.2.4</version>
+    <version>1.16.2.5</version>
     <packaging>jar</packaging>
 
     <name>RPPersonas</name>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>co.lotc</groupId>
             <artifactId>tythan-bukkit</artifactId>
-            <version>1.16.2.2</version>
+            <version>1.16.2.6</version>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
