@@ -43,7 +43,7 @@ public class StaffPersonaCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value = "Set the race for the given player", permission = RPPersonas.PERMISSION_START + ".managepersonas.race")
+	@Cmd(value = "Set the race and default languages for the given player.", permission = RPPersonas.PERMISSION_START + ".managepersonas.race")
 	public void setRace(CommandSender sender,
 						PersonaSubRace race,
 						@Arg(value = "Player", description = "The player who's race you wish to change.") @Default(value = "@p") Player player) {
