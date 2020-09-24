@@ -63,7 +63,7 @@ public class StaffPersonaCommands extends BaseCommand {
 			for (PersonaLanguage lang : race.getDefaultLanguages()) {
 				DataMapFilter langData = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID())
 															.put(LanguageSQL.LANGUAGE, lang.getName())
-															.put(LanguageSQL.LEVEL, 190);
+															.put(LanguageSQL.LEVEL, (short) 190);
 				plugin.getLanguageSQL().registerOrUpdate(langData);
 			}
 
