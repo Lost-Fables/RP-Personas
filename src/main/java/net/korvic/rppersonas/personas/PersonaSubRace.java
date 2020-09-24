@@ -30,7 +30,15 @@ public enum PersonaSubRace {
 	WINTER_ELF("Winter Elf", 90, PersonaRace.ELF, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.NEW_ELVEN }),
 
 	// BEASTFOLK
-	JAVALI("Javali", 90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.JAVALI });
+	JAVALI( "Javali",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.JAVALI }),
+	VERIVAN("Verivan", 90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.VERIVAN }),
+	MAKSHA( "Maksha",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.MAKSHA }),
+	GAHORI( "Gahori",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GAHORIAN }),
+
+	// RACE APP
+	EMPYREAN("Empyrean", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CELESTIAL }),
+	DEMONKIN("Demonkin", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.DEMONIC }),
+	GOLEM(   "Golem",    90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON });
 
 	@Getter private String name;
 	@Getter private int maxAge;
