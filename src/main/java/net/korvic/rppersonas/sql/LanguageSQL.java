@@ -78,6 +78,10 @@ public class LanguageSQL extends BaseSQL {
 		plugin.getSaveQueue().addToQueue(getDeleteLanguageStatement(data));
 	}
 
+	public void purgeAll(int personaID) {
+		plugin.getSaveQueue().addToQueue(getDeleteStatementByPersonaID(personaID));
+	}
+
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		if (data.containsKey(PERSONAID) && data.containsKey(LANGUAGE) && data.containsKey(LEVEL)) {
 			Connection conn = getSQLConnection();

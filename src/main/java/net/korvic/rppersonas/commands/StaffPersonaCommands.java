@@ -5,7 +5,9 @@ import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.PersonaLanguage;
 import net.korvic.rppersonas.personas.PersonaSubRace;
+import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.time.TimeManager;
@@ -54,7 +56,15 @@ public class StaffPersonaCommands extends BaseCommand {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
 													.put(PersonasSQL.RACE, race);
 			plugin.getPersonasSQL().registerOrUpdate(data);
-			msg(RPPersonas.PRIMARY_DARK + "Set the race of " + player.getName() + "'s persona to " + race.getName());
+
+			plugin.getLanguageSQL().purgeAll(pers.getPersonaID());
+			for (PersonaLanguage lang : race.getDefaultLanguages()) {
+				DataMapFilter langData = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID())
+															.put(LanguageSQL.LANGUAGE, lang.getName())
+															.put(LanguageSQL.LEVEL, 190);
+				plugin.getLanguageSQL().registerOrUpdate(langData);
+			}
+			msg(RPPersonas.PRIMARY_DARK + "Set the race and languages of " + player.getName() + "'s persona to " + race.getName() + "'s default values.");
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + NO_PERSONA);
 		}
