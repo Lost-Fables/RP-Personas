@@ -52,7 +52,7 @@ public enum PersonaSubRace {
 		this.defaultLanguages = languages;
 	}
 
-	private String getSafeName() {
+	public String getSafeName() {
 		return this.name.replace(' ', '_');
 	}
 

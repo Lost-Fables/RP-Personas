@@ -19,6 +19,10 @@ public enum PersonaRace {
 		this.subRaceList = subRaces;
 	}
 
+	public String getSafeName() {
+		return this.name.replace(' ', '_');
+	}
+
 	public static PersonaRace getByName(String name) {
 		for (PersonaRace race : values()) {
 			if (race.getName().equalsIgnoreCase(name)) {

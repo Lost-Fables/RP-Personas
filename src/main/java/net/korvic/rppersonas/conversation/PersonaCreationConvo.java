@@ -158,7 +158,7 @@ public class PersonaCreationConvo extends BaseConvo {
 			BaseComponent races = new TextComponent("\n" + RPPersonas.PRIMARY_DARK + "Pick your main race: \n" + DIVIDER);
 
 			for (PersonaRace race : PersonaRace.values()) {
-				if (p.hasPermission("rppersonas.race." + race.getName().toLowerCase())) {
+				if (p.hasPermission("rppersonas.race." + race.getSafeName().toLowerCase())) {
 					races.addExtra(MessageUtil.CommandButton(race.getName(), race.getName(), "Click to see subraces", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 					races.addExtra(BUTTON_SPACE);
 				}
@@ -209,7 +209,7 @@ public class PersonaCreationConvo extends BaseConvo {
 				for (PersonaSubRace subRace : this.race.getSubRaceList()) {
 					if (subRace == null) {
 						RPPersonas.get().getLogger().warning("Found null subRace in subRace list for " + this.race.getName());
-					} else if (p.hasPermission("rppersonas.race." + subRace.getName().toLowerCase())) {
+					} else if (p.hasPermission("rppersonas.race." + subRace.getSafeName().toLowerCase())) {
 						subraces.addExtra(MessageUtil.CommandButton(subRace.getName(), subRace.getName(), "Click to select subrace", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 						subraces.addExtra(BUTTON_SPACE);
 					}
