@@ -76,10 +76,10 @@ public class AccountHandler {
 	}
 
 	public Account getAccountForcefully(int accountID) {
-		return null;
+		return getLoadedAccount(accountID);
 	}
 
 	public Account getAccountForcefully(Player player) {
-		return null;
+		return getLoadedAccount(plugin.getPersonaHandler().getLoadedPersona(player).getAccountID());
 	}
 }
