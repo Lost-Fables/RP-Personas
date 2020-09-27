@@ -46,7 +46,9 @@ public enum PersonaLanguage {
 	DRAKAN("Drakan", "[DK]"),
 	FEY_SPEAK("Fey_Speak", "[FS]"),
 	FAR_TONGUE("Far_Tongue", "[FT]"),
-	HORDESH("Hordesh", "[HD]");
+	HORDESH("Hordesh", "[HD]"),
+
+	POLYGLOT("Polyglot", "[PG]");
 
 	@Getter private String name;
 	@Getter private String tag;
