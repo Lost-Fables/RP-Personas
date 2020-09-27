@@ -7,6 +7,8 @@ import com.destroystokyo.paper.Title;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.death.Altar;
+import net.korvic.rppersonas.events.PlayerChangePersonaEvent;
+import net.korvic.rppersonas.events.PlayerCreatePersonaEvent;
 import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
@@ -186,6 +188,7 @@ public class PersonaHandler {
 		}
 
 		if (data.containsKey(PersonasSQL.FRESH)) {
+			plugin.getServer().getPluginManager().callEvent(new PlayerCreatePersonaEvent());
 			new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -343,6 +346,7 @@ public class PersonaHandler {
 		PersonaSkin.refreshPlayerSync(p);
 
 		p.teleportAsync(plugin.getPersonasSQL().getLocation(personaID));
+		plugin.getServer().getPluginManager().callEvent(new PlayerChangePersonaEvent());
 	}
 
 	// UNLOADING //
