@@ -1,8 +1,10 @@
 package net.korvic.rppersonas;
 
 import co.lotc.core.bukkit.command.Commands;
+import co.lotc.core.bukkit.util.PlayerUtil;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.korvic.rppersonas.accounts.Account;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.accounts.UnregisteredHandler;
 import net.korvic.rppersonas.commands.*;
@@ -46,6 +48,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class RPPersonas extends JavaPlugin {
 
@@ -444,6 +447,27 @@ public final class RPPersonas extends JavaPlugin {
 				.defaultError("Failed to find a race by that name.")
 				.completer(PersonaSubRace::getNames)
 				.mapperWithSender((sender, race) -> PersonaSubRace.getByName(race))
+				.register();
+
+		Commands.defineArgumentType(Account.class)
+				.defaultName("Player or Account")
+				.defaultError("Unable to find an account for that user or number.")
+				.completer((s,$) -> {
+					return Arrays.stream(getServer().getOnlinePlayers().toArray()).map(object -> ((Player) object).getName()).collect(Collectors.toList());
+				})
+				.mapperWithSender((sender, account) -> {
+					try {
+						int accountID = Integer.parseInt(account);
+						return accountHandler.getAccountForcefully(accountID);
+					} catch (NumberFormatException nfe) {
+						UUID uuid = PlayerUtil.getPlayerUUID(account);
+						if (uuid != null) {
+							Player player = Bukkit.getPlayer(uuid);
+							return accountHandler.getAccountForcefully(player);
+						}
+					}
+					return null;
+				})
 				.register();
 	}
 

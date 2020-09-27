@@ -74,4 +74,12 @@ public class AccountHandler {
 			.put(UUIDAccountMapSQL.PLAYER_UUID, uuid);
 		plugin.getUuidAccountMapSQL().registerOrUpdate(data);
 	}
+
+	public Account getAccountForcefully(int accountID) {
+		return null;
+	}
+
+	public Account getAccountForcefully(Player player) {
+		return null;
+	}
 }
