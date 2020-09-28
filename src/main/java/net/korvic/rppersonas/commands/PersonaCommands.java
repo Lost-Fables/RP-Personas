@@ -8,6 +8,7 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.accounts.Account;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.listeners.CorpseListener;
@@ -47,8 +48,9 @@ public class PersonaCommands extends BaseCommand {
 
 	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void info(CommandSender sender,
-					 @Arg(value = "Player", description = "The player who's info you wish to see.") @Default(value = "@p") Player player) {
-		msg(plugin.getPersonaHandler().getPersonaInfo(player));
+					 @Arg(value = "Account", description = "Username or Account ID") @Default(value = "@p") Account account) {
+		for (int id : account.getLivePersonaIDs()) {
+		}
 	}
 
 	@Cmd(value = "Execute the given player's current persona by your current persona.", permission = RPPersonas.PERMISSION_START + ".execute")
