@@ -5,7 +5,7 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.OldPersona;
+import net.korvic.rppersonas.players.personas.OldPersona;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;

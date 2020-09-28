@@ -1,10 +1,8 @@
 package net.korvic.rppersonas.players;
 
 import lombok.Getter;
-import lombok.Setter;
-import net.korvic.rppersonas.personas.PersonaSkin;
-import net.korvic.rppersonas.statuses.StatusEntry;
-import org.bukkit.entity.Player;
+import net.korvic.rppersonas.players.personas.PersonaSkin;
+import net.korvic.rppersonas.players.statuses.StatusEntry;
 import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
@@ -24,7 +22,11 @@ public class Persona {
 	private static Map<Integer, Persona> loadedPersonas = new HashMap<>();
 	private static List<Integer> loadBlocked = new ArrayList<>();
 
-	public static void unloadPersona(int personaID) {
+	/**
+	 * @param personaID Forcefully unload the given persona ID. This may kick players back to the main menu
+	 *                  and/or to the lobby itself.
+	 */
+	protected static void unloadPersona(int personaID) {
 		loadBlocked.add(personaID);
 		Persona p = loadedPersonas.get(personaID);
 		if (p != null) {
@@ -72,11 +74,11 @@ public class Persona {
 
 		// Name
 		private String prefix;
+		private boolean staffNameEnabled;
 		private String[] namePieces = new String[2];
-		private boolean staffNameEnabled = false;
 
 		// Skin
-		private PersonaSkin activeSkin = null;
+		private PersonaSkin activeSkin;
 
 		// Statuses
 		private List<StatusEntry> activeStatuses = new ArrayList<>();

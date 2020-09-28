@@ -1,9 +1,9 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.conversation.RezAppConvo;
-import net.korvic.rppersonas.death.Altar;
-import net.korvic.rppersonas.resurrection.RezApp;
+import net.korvic.rppersonas.players.conversation.RezAppConvo;
+import net.korvic.rppersonas.players.death.Altar;
+import net.korvic.rppersonas.players.resurrection.RezApp;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 

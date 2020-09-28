@@ -4,17 +4,14 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.kits.Kit;
-import net.korvic.rppersonas.kits.KitCreateHolder;
-import net.korvic.rppersonas.kits.KitHandler;
+import net.korvic.rppersonas.players.kits.Kit;
+import net.korvic.rppersonas.players.kits.KitCreateHolder;
+import net.korvic.rppersonas.players.kits.KitHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class KitCommands extends BaseCommand {
 

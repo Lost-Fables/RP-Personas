@@ -1,6 +1,6 @@
 package net.korvic.rppersonas;
 
-import net.korvic.rppersonas.personas.OldPersona;
+import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

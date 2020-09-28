@@ -3,7 +3,7 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.resurrection.RezApp;
+import net.korvic.rppersonas.players.resurrection.RezApp;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;

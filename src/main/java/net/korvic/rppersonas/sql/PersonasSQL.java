@@ -1,10 +1,10 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.kits.Kit;
-import net.korvic.rppersonas.personas.OldPersona;
-import net.korvic.rppersonas.personas.PersonaGender;
-import net.korvic.rppersonas.personas.PersonaSubRace;
+import net.korvic.rppersonas.players.kits.Kit;
+import net.korvic.rppersonas.players.personas.OldPersona;
+import net.korvic.rppersonas.players.personas.PersonaGender;
+import net.korvic.rppersonas.players.personas.PersonaSubRace;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 import org.bukkit.Bukkit;

@@ -1,7 +1,7 @@
 package net.korvic.rppersonas;
 
-import net.korvic.rppersonas.personas.OldPersona;
-import net.korvic.rppersonas.personas.PersonaSkin;
+import net.korvic.rppersonas.players.personas.OldPersona;
+import net.korvic.rppersonas.players.personas.PersonaSkin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

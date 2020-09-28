@@ -5,10 +5,13 @@ import org.bukkit.entity.Player;
 
 public class RPPlayer {
 
+	//////////////////
+	//// INSTANCE ////
+	//////////////////
+
 	@Getter private Player player;
 	@Getter Account account;
-	@Getter
-	Persona persona;
+	@Getter Persona persona;
 
 	RPPlayer(Player player) {
 		this.player = player;

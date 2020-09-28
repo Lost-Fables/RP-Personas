@@ -3,8 +3,8 @@ package net.korvic.rppersonas.sql;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
-import net.korvic.rppersonas.statuses.Status;
-import net.korvic.rppersonas.statuses.StatusEntry;
+import net.korvic.rppersonas.players.statuses.Status;
+import net.korvic.rppersonas.players.statuses.StatusEntry;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

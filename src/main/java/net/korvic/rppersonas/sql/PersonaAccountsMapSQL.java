@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.PersonaHandler;
+import net.korvic.rppersonas.players.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 

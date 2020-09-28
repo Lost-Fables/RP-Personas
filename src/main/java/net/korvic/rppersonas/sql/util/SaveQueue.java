@@ -1,11 +1,10 @@
 package net.korvic.rppersonas.sql.util;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.listeners.JoinQuitListener;
+import net.korvic.rppersonas.players.listeners.JoinQuitListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
