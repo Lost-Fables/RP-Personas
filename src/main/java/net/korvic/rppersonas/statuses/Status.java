@@ -1,9 +1,8 @@
 package net.korvic.rppersonas.statuses;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,14 +43,14 @@ public abstract class Status {
 	public static void applyStatus(Status status, Player player, byte severity, long duration) {
 		applyStatus(status, plugin.getPersonaHandler().getLoadedPersona(player), severity, duration);
 	}
-	public static void applyStatus(Status status, Persona pers, byte severity, long duration) {
+	public static void applyStatus(Status status, OldPersona pers, byte severity, long duration) {
 		pers.addStatus(status, severity, duration);
 	}
 
 	public static void clearStatus(String name, Player player) {
 		clearStatus(name, plugin.getPersonaHandler().getLoadedPersona(player));
 	}
-	public static void clearStatus(String name, Persona pers) {
+	public static void clearStatus(String name, OldPersona pers) {
 		pers.clearStatus(name);
 	}
 
@@ -90,7 +89,7 @@ public abstract class Status {
 	}
 
 	public void applyTo(Player player, byte severity, long duration) {
-		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		applyStatus(this, pers, severity, duration);
 	}
 	public void clearFrom(Player player) {

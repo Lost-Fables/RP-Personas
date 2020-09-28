@@ -2,7 +2,7 @@ package net.korvic.rppersonas.sql;
 
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.kits.Kit;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaSubRace;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -346,7 +346,7 @@ public class PersonasSQL extends BaseSQL {
 			while (result.next()) {
 				int personaID = result.getInt("PersonaID");
 
-				Persona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
+				OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
 				if (pers != null) {
 					pers.setSkin(0);
 				}

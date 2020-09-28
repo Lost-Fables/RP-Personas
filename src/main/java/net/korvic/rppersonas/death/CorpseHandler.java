@@ -4,7 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.Bukkit;
@@ -45,7 +45,7 @@ public class CorpseHandler {
 				texture = PlayerUtil.getPlayerTexture(player.getUniqueId());
 			}
 
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 			output = createCorpse(RPPersonas.PRIMARY_DARK + pers.getNickName() + "'s Corpse", texture, items, pers.getPersonaID());
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {

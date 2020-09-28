@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Persona {
+public class OldPersona {
 
 	private RPPersonas plugin;
 
@@ -47,7 +47,7 @@ public class Persona {
 
 	private String inventory;
 
-	public Persona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean alive, int activeSkinID) {
+	public OldPersona(RPPersonas plugin, Player usingPlayer, int personaID, int accountID, String prefix, String nickName, String personaInvData, String personaEnderData, boolean alive, int activeSkinID) {
 		this.plugin = plugin;
 
 		this.usingPlayer = usingPlayer;

@@ -3,10 +3,9 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
-import co.lotc.core.util.MojangCommunicator;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
@@ -144,7 +143,7 @@ public class RPPCommands extends BaseCommand {
 	public void toggleTag(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			pers.setStaffNameEnabled(!pers.isStaffNameEnabled());
 			pers.setNickName(pers.getNickName());
 			if (pers.isStaffNameEnabled()) {

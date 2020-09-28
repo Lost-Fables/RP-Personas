@@ -537,16 +537,16 @@ public class PersonaCreationConvo extends BaseConvo {
 		Player p = (Player) context.getForWhom();
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registering your persona now..."));
 
-		Persona oldPers = null;
+		OldPersona oldPers = null;
 		if (context.getAllSessionData().containsKey("oldpersona")) {
-			oldPers = (Persona) context.getAllSessionData().get("oldpersona");
+			oldPers = (OldPersona) context.getAllSessionData().get("oldpersona");
 			context.getAllSessionData().remove("oldpersona");
 		}
 
 		DataMapFilter data = new DataMapFilter();
 		data.putAllObject(context.getAllSessionData());
 
-		Persona pers = PersonaHandler.registerPersona(data, p, false);
+		OldPersona pers = PersonaHandler.registerPersona(data, p, false);
 
 		try {
 			for (PersonaLanguage language : ((PersonaSubRace) data.get(PersonasSQL.RACE)).getDefaultLanguages()) {

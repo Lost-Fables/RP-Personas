@@ -2,7 +2,7 @@ package net.korvic.rppersonas.commands;
 
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,7 +18,7 @@ public class PersonaDescCommands extends BaseCommand {
 	public void add(CommandSender sender, String[] text) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			if (pers != null) {
 				String newDesc = pers.addToDescription(p, text);
 				msg(RPPersonas.PRIMARY_DARK + "Your persona's description is now:\n " + RPPersonas.SECONDARY_LIGHT + newDesc);
@@ -34,7 +34,7 @@ public class PersonaDescCommands extends BaseCommand {
 	public void clear(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			if (pers != null) {
 				pers.clearDescription(p);
 				msg(RPPersonas.PRIMARY_DARK + "Your persona's description has been cleared.");

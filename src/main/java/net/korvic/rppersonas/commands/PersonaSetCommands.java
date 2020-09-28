@@ -4,8 +4,7 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
-import org.apache.commons.lang.WordUtils;
+import net.korvic.rppersonas.personas.OldPersona;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,7 +24,7 @@ public class PersonaSetCommands extends BaseCommand {
 					 @Arg(value = "Name", description = "The new display name of your persona.") String[] name) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 
 			if (pers != null) {
 				StringBuilder builder = new StringBuilder();
@@ -63,7 +62,7 @@ public class PersonaSetCommands extends BaseCommand {
 					   @Arg(value = "Prefix", description = "The prefix to use (no brackets needed). Leave empty to clear.") @Default(value = "") String prefix) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 			if (pers != null) {
 				pers.setPrefix(p, prefix);
 				msg(RPPersonas.PRIMARY_DARK + "Prefix updated to " + RPPersonas.SECONDARY_LIGHT + "[" + prefix + "]" + RPPersonas.PRIMARY_DARK + ".");

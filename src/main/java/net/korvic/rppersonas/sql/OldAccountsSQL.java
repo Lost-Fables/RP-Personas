@@ -4,12 +4,15 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class AccountsSQL extends BaseSQL {
+public class OldAccountsSQL extends BaseSQL {
 
 	private static final String SQL_TABLE_NAME = "rppersonas_accounts";
 
@@ -19,7 +22,7 @@ public class AccountsSQL extends BaseSQL {
 	public static final String PLAYTIME = "playtime";
 	public static final String VOTES = "votes";
 
-	public AccountsSQL(RPPersonas plugin) {
+	public OldAccountsSQL(RPPersonas plugin) {
 		if (BaseSQL.plugin == null) {
 			BaseSQL.plugin = plugin;
 		}
@@ -79,7 +82,7 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	// Gets our stored data for this account.
-	public DataMapFilter getData(int accountid) {
+	public Map<String, Object> getData(int accountid) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		conn = getSQLConnection();
@@ -88,7 +91,7 @@ public class AccountsSQL extends BaseSQL {
 			ps = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountid + "'");
 			ResultSet rs = ps.executeQuery();
 
-			DataMapFilter data = new DataMapFilter();
+			Map<String, Object> data = new HashMap<>();
 
 			if (rs.next()) {
 				data.put(ACCOUNTID, accountid);
@@ -175,7 +178,7 @@ public class AccountsSQL extends BaseSQL {
 
 	public void incrementVotes(int accountID) {
 		DataMapFilter data = new DataMapFilter();
-		data.put(ACCOUNTID, accountID)
+		data.putAll(getData(accountID))
 			.put(VOTES, ((short) data.get(VOTES)) + 1);
 		try {
 			plugin.getSaveQueue().addToQueue(getSaveStatement(data));

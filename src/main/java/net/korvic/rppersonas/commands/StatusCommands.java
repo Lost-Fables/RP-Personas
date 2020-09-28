@@ -11,7 +11,7 @@ import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Range;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -21,8 +21,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -44,7 +42,7 @@ public class StatusCommands extends BaseCommand {
 					  @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
 					  @Arg(value="Duration", description="The length in seconds that the effect will last.") int duration) {
 		if (sender instanceof Player) {
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona((Player) sender);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona((Player) sender);
 			if (pers != null) {
 				pers.addStatus(status, (byte) severity, 1000 * duration);
 			} else {
@@ -61,7 +59,7 @@ public class StatusCommands extends BaseCommand {
 						   @Arg(value="Status", description="The status you wish to apply.") Status status,
 						   @Arg(value="Severity", description="The strength of the effect.") @Range(min=1, max=255) int severity,
 						   @Arg(value="Duration", description="The length in seconds that the effect will last.") int duration) {
-		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
 			pers.addStatus(status, (byte) severity, 1000 * duration);
 		} else {
@@ -72,7 +70,7 @@ public class StatusCommands extends BaseCommand {
 	@Cmd(value="Clear a status effect from yourself.", permission=RPPersonas.PERMISSION_START + ".status.clear")
 	public void clear(CommandSender sender, Status status) {
 		if (sender instanceof Player) {
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona((Player) sender);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona((Player) sender);
 			if (pers != null) {
 				pers.clearStatus(status);
 			} else {
@@ -85,7 +83,7 @@ public class StatusCommands extends BaseCommand {
 
 	@Cmd(value="Clear a status effect from another player.", permission=RPPersonas.PERMISSION_START + ".status.clear.other")
 	public void clearother(CommandSender sender, Player player, Status status) {
-		Persona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
 		if (pers != null) {
 			pers.clearStatus(status);
 		} else {
@@ -108,13 +106,13 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	private void openStatusMenu(Player p) {
-		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 		buildMainMenu(null, pers).openSession(p);
 
 	}
 
 	// MAIN MENU //
-	public static Menu buildMainMenu(Menu menu, Persona pers) {
+	public static Menu buildMainMenu(Menu menu, OldPersona pers) {
 		List<Icon> icons = new ArrayList<>();
 
 		// Available Button
@@ -172,7 +170,7 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	// AVAILABLE STATUSES //
-	private static Menu buildAvailableStatusMenu(Menu menu, Persona pers) {
+	private static Menu buildAvailableStatusMenu(Menu menu, OldPersona pers) {
 		List<Icon> icons = new ArrayList<>();
 		for (Status status : Status.getStatuses()) {
 			icons.add(buildAvailableStatusIcon(status, pers));
@@ -180,7 +178,7 @@ public class StatusCommands extends BaseCommand {
 		return MenuUtil.createMultiPageMenu(menu, ChatColor.BOLD + "Available Statuses", icons).get(0);
 	}
 
-	private static Icon buildAvailableStatusIcon(Status status, Persona pers) {
+	private static Icon buildAvailableStatusIcon(Status status, OldPersona pers) {
 		return new Button() {
 			@Override
 			public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -226,7 +224,7 @@ public class StatusCommands extends BaseCommand {
 	}
 
 	// ACTIVE STATUSES //
-	private static Menu buildActiveStatusMenu(Menu menu, Persona pers) {
+	private static Menu buildActiveStatusMenu(Menu menu, OldPersona pers) {
 		List<Icon> icons = new ArrayList<>();
 		for (StatusEntry entry : pers.getActiveStatuses()) {
 			icons.add(buildActiveStatusIcon(menu, pers, entry));
@@ -234,7 +232,7 @@ public class StatusCommands extends BaseCommand {
 		return MenuUtil.createMultiPageMenu(menu, ChatColor.BOLD + "Active Statuses", icons).get(0);
 	}
 
-	private static Icon buildActiveStatusIcon(Menu menu, Persona pers, StatusEntry entry) {
+	private static Icon buildActiveStatusIcon(Menu menu, OldPersona pers, StatusEntry entry) {
 		Status status = entry.getStatus();
 		return new Button() {
 			@Override

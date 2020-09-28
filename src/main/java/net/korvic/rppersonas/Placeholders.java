@@ -1,8 +1,6 @@
 package net.korvic.rppersonas;
 
-import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
-import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -105,7 +103,7 @@ public class Placeholders extends PlaceholderExpansion {
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
 		if(player != null) {
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(player.getPlayer());
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player.getPlayer());
 			if (pers != null) {
 				switch (identifier) {
 					case "personaname":

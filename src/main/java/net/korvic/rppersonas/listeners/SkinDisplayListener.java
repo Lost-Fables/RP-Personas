@@ -10,7 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.*;
 import com.google.common.collect.Multimap;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -41,7 +41,7 @@ public class SkinDisplayListener {
 								UUID uuid = playerInfo.getProfile().getUUID();
 								Player player = Bukkit.getPlayer(uuid);
 								if (player != null) {
-									Persona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
+									OldPersona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
 									if (pers != null) {
 										WrappedGameProfile profile = playerInfo.getProfile();
 										String name = pers.getNamePieces()[0];

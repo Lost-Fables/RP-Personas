@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.accounts;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ import java.util.UUID;
 public class AccountHandler {
 
 	private RPPersonas plugin;
-	private Map<Integer, Account> loadedAccounts; // accountID, account
+	private Map<Integer, OldAccount> loadedAccounts; // accountID, account
 	private Map<Player, Player> awaitingLink; // Requester, Linker
 
 	private static final String MULTIPLE_ACCOUNTS_WARN = "Found multiple accounts with the ID ";
@@ -25,16 +25,16 @@ public class AccountHandler {
 		awaitingLink = new HashMap<>();
 	}
 
-	public Account getLoadedAccount(int accountID) {
+	public OldAccount getLoadedAccount(int accountID) {
 		return loadedAccounts.get(accountID);
 	}
 
-	public List<Persona> getLoadedPersonas(int accountID) {
-		return loadedAccounts.get(accountID).getLoadedPersonas();
+	public List<OldPersona> getLoadedPersonas(int accountID) {
+		return loadedAccounts.get(accountID).getPersonas();
 	}
 
-	public Account loadAccount(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
-		Account a = Account.createAccount(p, accountID, activePersonaID, saveCurrentPersona);
+	public OldAccount loadAccount(Player p, int accountID, int activePersonaID, boolean saveCurrentPersona) {
+		OldAccount a = OldAccount.createAccount(p, accountID, activePersonaID, saveCurrentPersona);
 		if (!loadedAccounts.containsValue(a)) {
 			loadedAccounts.put(a.getAccountID(), a);
 		}
@@ -75,11 +75,11 @@ public class AccountHandler {
 		plugin.getUuidAccountMapSQL().registerOrUpdate(data);
 	}
 
-	public Account getAccountForcefully(int accountID) {
+	public OldAccount getAccountForcefully(int accountID) {
 		return getLoadedAccount(accountID);
 	}
 
-	public Account getAccountForcefully(Player player) {
+	public OldAccount getAccountForcefully(Player player) {
 		return getLoadedAccount(plugin.getPersonaHandler().getLoadedPersona(player).getAccountID());
 	}
 }

@@ -134,7 +134,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
 
-			int result = 0;
+			int result = -1;
 			if (rs.next()) {
 				result = rs.getInt("AccountID");
 			}

@@ -2,7 +2,7 @@ package net.korvic.rppersonas.listeners;
 
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -45,7 +45,7 @@ public class JoinQuitListener implements Listener {
 	@EventHandler(ignoreCancelled=false)
 	public void onQuit(PlayerQuitEvent event) {
 		Player p = event.getPlayer();
-		Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 
 		if (pers != null && !PersonaHandler.isSkipped(pers)) {
 			pers.queueSave(p);

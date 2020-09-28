@@ -5,7 +5,7 @@ import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
@@ -92,7 +92,7 @@ public class RezConfirmConvo extends BaseConvo {
 			plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
 			plugin.getCorpseSQL().deleteByCorpseID(corpse.getId());
 
-			Persona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
+			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
 			if (pers != null && pers.getUsingPlayer().isOnline()) {
 				pers.getUsingPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
 				new BukkitRunnable() {

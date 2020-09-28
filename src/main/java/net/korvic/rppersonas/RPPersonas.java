@@ -4,7 +4,7 @@ import co.lotc.core.bukkit.command.Commands;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.korvic.rppersonas.accounts.Account;
+import net.korvic.rppersonas.accounts.OldAccount;
 import net.korvic.rppersonas.accounts.AccountHandler;
 import net.korvic.rppersonas.accounts.UnregisteredHandler;
 import net.korvic.rppersonas.commands.*;
@@ -26,13 +26,6 @@ import net.korvic.rppersonas.sql.util.SaveQueue;
 import net.korvic.rppersonas.statuses.*;
 import net.korvic.rppersonas.time.Season;
 import net.korvic.rppersonas.time.TimeManager;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.context.ImmutableContextSet;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
-import net.luckperms.api.node.NodeType;
-import net.luckperms.api.node.types.PrefixNode;
-import net.luckperms.api.query.QueryOptions;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -449,7 +442,7 @@ public final class RPPersonas extends JavaPlugin {
 				.mapperWithSender((sender, race) -> PersonaSubRace.getByName(race))
 				.register();
 
-		Commands.defineArgumentType(Account.class)
+		Commands.defineArgumentType(OldAccount.class)
 				.defaultName("Player or Account")
 				.defaultError("Unable to find an account for that user or number.")
 				.completer((s,$) -> {

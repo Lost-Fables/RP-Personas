@@ -1,11 +1,10 @@
 package net.korvic.rppersonas.resurrection;
 
-import co.lotc.core.bukkit.util.InventoryUtil;
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.RezAppConvo.RezAppResponses;
 import net.korvic.rppersonas.death.Altar;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.RezAppSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -58,7 +57,7 @@ public class RezApp {
 		plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
 		plugin.getCorpseSQL().deleteByPersonaID(personaID);
 
-		Persona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
+		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
 		if (pers != null && pers.getUsingPlayer().isOnline()) {
 			pers.getUsingPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
 			new BukkitRunnable() {

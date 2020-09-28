@@ -3,7 +3,7 @@ package net.korvic.rppersonas.death;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.sql.DeathSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -15,10 +15,10 @@ import org.bukkit.inventory.ItemStack;
 public class DeathRequest {
 
 	private Player killer;
-	private Persona killerPersona;
+	private OldPersona killerPersona;
 
 	private Player victim;
-	private Persona victimPersona;
+	private OldPersona victimPersona;
 
 	private Location location;
 

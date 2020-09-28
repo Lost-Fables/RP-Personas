@@ -16,14 +16,12 @@ import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.PersonaDeleteConvo;
 import net.korvic.rppersonas.conversation.RezAppConvo;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.conversation.PersonaSkinConvo;
 import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
-import net.korvic.rppersonas.sql.RezAppSQL;
-import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -635,7 +633,7 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					Persona pers = plugin.getPersonaHandler().getLoadedPersona(menuAction.getPlayer());
+					OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(menuAction.getPlayer());
 					StatusCommands.buildMainMenu(homeMenu, pers).openSession(menuAction.getPlayer());
 				}
 			};

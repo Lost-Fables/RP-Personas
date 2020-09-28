@@ -3,22 +3,19 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.LocationUtil;
-import co.lotc.core.bukkit.util.PlayerUtil;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.accounts.Account;
-import net.korvic.rppersonas.death.Corpse;
+import net.korvic.rppersonas.accounts.OldAccount;
 import net.korvic.rppersonas.death.CorpseHandler;
 import net.korvic.rppersonas.listeners.CorpseListener;
 import net.korvic.rppersonas.listeners.SkinDisplayListener;
-import net.korvic.rppersonas.personas.Persona;
+import net.korvic.rppersonas.personas.OldPersona;
 import net.korvic.rppersonas.personas.PersonaSkin;
 import net.korvic.rppersonas.sql.KarmaSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -48,7 +45,8 @@ public class PersonaCommands extends BaseCommand {
 
 	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void info(CommandSender sender,
-					 @Arg(value = "Account", description = "Username or Account ID") @Default(value = "@p") Account account) {
+					 @Arg(value = "Account", description = "Username or Account ID") @Default(value = "@p") OldAccount account,
+					 @Arg(value = "Persona ID", description = "Specific Persona ID") @Default(value = "-1") int personaID) {
 		for (int id : account.getLivePersonaIDs()) {
 		}
 	}
@@ -57,12 +55,12 @@ public class PersonaCommands extends BaseCommand {
 	public void execute(CommandSender sender,
 						@Arg(value = "Player", description = "The player which you're executing.") Player victim) {
 		if (sender instanceof Player) {
-			Persona victimPersona = plugin.getPersonaHandler().getLoadedPersona(victim);
+			OldPersona victimPersona = plugin.getPersonaHandler().getLoadedPersona(victim);
 			if (victimPersona != null && victimPersona.isAlive()) {
 				Player killer = (Player) sender;
 				if (LocationUtil.isClose(killer, victim, EXECUTE_DISTANCE)) {
 					if (!plugin.getDeathHandler().hasRequest(victim)) {
-						Persona killerPersona = plugin.getPersonaHandler().getLoadedPersona(killer);
+						OldPersona killerPersona = plugin.getPersonaHandler().getLoadedPersona(killer);
 						if (killerPersona != null && victimPersona.getAccountID() != killerPersona.getAccountID()) {
 							plugin.getDeathHandler().requestExecute(killer, victim);
 							msg(RPPersonas.PRIMARY_DARK + "Execution request sent!");
@@ -123,7 +121,7 @@ public class PersonaCommands extends BaseCommand {
 				meta.setLore(lore);
 				corpse.setItemMeta(meta);
 
-				Persona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+				OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
 				DataMapFilter data = new DataMapFilter().put(KarmaSQL.PERSONAID, pers.getPersonaID())
 														.put(KarmaSQL.ACTION, "RUIN_CORPSE")
 														.put(KarmaSQL.MODIFIER, plugin.getKarmaSQL().calculateRuinModifier(pers.getPersonaID()));

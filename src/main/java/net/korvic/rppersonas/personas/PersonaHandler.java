@@ -14,7 +14,6 @@ import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
-import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -27,9 +26,9 @@ import java.util.*;
 public class PersonaHandler {
 
 	private static RPPersonas plugin;
-	private Map<Integer, Persona> loadedPersonas = new HashMap<>(); // personaID, persona
+	private Map<Integer, OldPersona> loadedPersonas = new HashMap<>(); // personaID, persona
 	private Map<Player, Integer> playerObjectToID = new HashMap<>(); // player, personaID
-	private static Map<Player, Persona> skipSave = new HashMap<>(); // List of personas to skip saving (i.e. disabled)
+	private static Map<Player, OldPersona> skipSave = new HashMap<>(); // List of personas to skip saving (i.e. disabled)
 	private static int highestPersonaID = 1;
 
 	public PersonaHandler(RPPersonas plugin) {
@@ -47,7 +46,7 @@ public class PersonaHandler {
 	public static void createPersona(Player p, int accountID, boolean first) {
 		new DisabledStatus(null).applyEffectSync(p, (byte) 0);
 
-		Persona pers = null;
+		OldPersona pers = null;
 		String welcomeText = "";
 		if (first) {
 			welcomeText = RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Welcome!";
@@ -62,7 +61,7 @@ public class PersonaHandler {
 								RPPersonas.SECONDARY_LIGHT + "Type your Persona's name to continue.",
 								20, 60*20, 20);
 
-		Persona finalPers = pers;
+		OldPersona finalPers = pers;
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -93,7 +92,7 @@ public class PersonaHandler {
 		}.runTask(plugin);
 	}
 
-	public Persona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
+	public OldPersona loadPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
 		DataMapFilter personaData = new DataMapFilter();
 		personaData.putAll(plugin.getPersonasSQL().getLoadingInfo(personaID))
 				   .put(PersonasSQL.PERSONAID, personaID)
@@ -101,7 +100,7 @@ public class PersonaHandler {
 		return registerPersona(personaData, p, saveCurrentPersona);
 	}
 
-	public static Persona registerPersona(DataMapFilter data, Player p, boolean saveCurrentPersona) {
+	public static OldPersona registerPersona(DataMapFilter data, Player p, boolean saveCurrentPersona) {
 		int personaID = highestPersonaID;
 		if (data.containsKey(PersonasSQL.PERSONAID)) {
 			personaID = (int) data.get(PersonasSQL.PERSONAID);
@@ -215,7 +214,7 @@ public class PersonaHandler {
 			}
 		}
 
-		Persona persona = new Persona(plugin, p, personaID, accountID, prefix, nickName, personaInvData, personaEnderData, isAlive, activeSkinID);
+		OldPersona persona = new OldPersona(plugin, p, personaID, accountID, prefix, nickName, personaInvData, personaEnderData, isAlive, activeSkinID);
 		plugin.getPersonaHandler().playerObjectToID.put(p, personaID);
 		plugin.getPersonaHandler().loadedPersonas.put(personaID, persona);
 
@@ -277,8 +276,8 @@ public class PersonaHandler {
 	}
 
 	// GET //
-	public Persona getLoadedPersona(String personaName) {
-		for (Persona pers : loadedPersonas.values()) {
+	public OldPersona getLoadedPersona(String personaName) {
+		for (OldPersona pers : loadedPersonas.values()) {
 			if (pers.getNickName().equals(personaName) || pers.getNamePieces()[1].equals(personaName)) {
 				return pers;
 			}
@@ -286,7 +285,7 @@ public class PersonaHandler {
 		return null;
 	}
 
-	public Persona getLoadedPersona(Player p) {
+	public OldPersona getLoadedPersona(Player p) {
 		if (playerObjectToID.containsKey(p)) {
 			return getLoadedPersona(playerObjectToID.get(p));
 		} else {
@@ -294,12 +293,12 @@ public class PersonaHandler {
 		}
 	}
 
-	public Persona getLoadedPersona(int personaID) {
+	public OldPersona getLoadedPersona(int personaID) {
 		return loadedPersonas.getOrDefault(personaID, null);
 	}
 
 	public String getPersonaInfo(Player player) {
-		Persona pers = getLoadedPersona(player);
+		OldPersona pers = getLoadedPersona(player);
 		if (pers != null) {
 			return RPPersonas.SECONDARY_DARK + player.getName() + "'s active persona.\n" + pers.getFormattedBasicInfo();
 		} else {
@@ -316,7 +315,7 @@ public class PersonaHandler {
 	}
 
 	public void swapToPersona(Player p, int accountID, int personaID, boolean saveCurrentPersona) {
-		Persona originalPersona = plugin.getPersonaHandler().getLoadedPersona(p);
+		OldPersona originalPersona = plugin.getPersonaHandler().getLoadedPersona(p);
 		if (originalPersona != null) {
 			if (saveCurrentPersona) {
 				originalPersona.queueSave(p);
@@ -335,7 +334,7 @@ public class PersonaHandler {
 			.put(PersonaAccountsMapSQL.ACTIVEUUID, p.getUniqueId());
 		plugin.getPersonaAccountMapSQL().registerOrUpdate(data);
 
-		Persona newPersona = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
+		OldPersona newPersona = plugin.getPersonaHandler().loadPersona(p, accountID, personaID, saveCurrentPersona);
 		ItemStack[] items = newPersona.getInventory();
 		if (items != null) {
 			p.getInventory().setContents(items);
@@ -358,7 +357,7 @@ public class PersonaHandler {
 		unloadPersona(loadedPersonas.get(personaID), keepLinked);
 	}
 
-	public void unloadPersona(Persona pers, boolean keepLinked) {
+	public void unloadPersona(OldPersona pers, boolean keepLinked) {
 		if (pers != null) {
 			UUID uuid = null;
 			if (keepLinked) {
@@ -392,7 +391,7 @@ public class PersonaHandler {
 	}
 
 	public void queueSaveAllPersonas() {
-		for (Persona pers : loadedPersonas.values()) {
+		for (OldPersona pers : loadedPersonas.values()) {
 			if (pers != null && !isSkipped(pers)) {
 				pers.queueSave();
 			}
@@ -424,7 +423,7 @@ public class PersonaHandler {
 	}
 
 	// SKIP SAVE //
-	public static void startSkipping(Player p, Persona pers) {
+	public static void startSkipping(Player p, OldPersona pers) {
 		skipSave.put(p, pers);
 	}
 
@@ -432,7 +431,7 @@ public class PersonaHandler {
 		skipSave.remove(p);
 	}
 
-	public static boolean isSkipped(Persona pers) {
+	public static boolean isSkipped(OldPersona pers) {
 		return skipSave.containsValue(pers);
 	}
 
@@ -441,7 +440,7 @@ public class PersonaHandler {
 		new BukkitRunnable(){
 			@Override
 			public void run() {
-				for (Persona pers : loadedPersonas.values()) {
+				for (OldPersona pers : loadedPersonas.values()) {
 					List<StatusEntry> entriesToClear = new ArrayList<>();
 					for (StatusEntry entry : pers.getActiveStatuses()) {
 						if (entry.getExpiration() <= System.currentTimeMillis()) {
