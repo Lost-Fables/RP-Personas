@@ -23,6 +23,22 @@ public class Persona {
 	private static List<Integer> loadBlocked = new ArrayList<>();
 
 	/**
+	 * @param personaID The Lost Fables account ID
+	 * @return An Account object which represents the given Lost Fables account ID.
+	 */
+	public static Persona getPersona(int personaID) {
+		Persona p = null;
+		if (personaID > 0 && !loadBlocked.contains(personaID)) {
+			p = loadedPersonas.get(personaID);
+			if (p == null) {
+				p = new Persona(personaID);
+				loadedPersonas.put(personaID, p);
+			}
+		}
+		return p;
+	}
+
+	/**
 	 * @param personaID Forcefully unload the given persona ID. This may kick players back to the main menu
 	 *                  and/or to the lobby itself.
 	 */
