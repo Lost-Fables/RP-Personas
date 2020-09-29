@@ -23,8 +23,8 @@ public class Persona {
 	private static List<Integer> loadBlocked = new ArrayList<>();
 
 	/**
-	 * @param personaID The Lost Fables account ID
-	 * @return An Account object which represents the given Lost Fables account ID.
+	 * @param personaID The Lost Fables persona ID
+	 * @return A Persona object which represents the given Lost Fables persona ID.
 	 */
 	public static Persona getPersona(int personaID) {
 		Persona p = null;
