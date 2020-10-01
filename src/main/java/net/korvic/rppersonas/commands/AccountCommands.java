@@ -22,6 +22,7 @@ import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.players.conversation.PersonaSkinConvo;
 import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
+import net.korvic.rppersonas.sql.SkinsSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.time.TimeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -146,7 +147,7 @@ public class AccountCommands extends BaseCommand {
 
 		private Menu buildMainMenu(int accountID) {
 			ArrayList<Icon> icons = new ArrayList<>();
-			Map<String, Object> data = plugin.getAccountsSQL().getData(accountID);
+			DataMapFilter data = plugin.getAccountsSQL().getData(accountID);
 			icons.add(getStatisticsIcon(data));
 			icons.add(getDiscordIcon(data));
 			icons.add(getSkinsIcon(data));
@@ -159,7 +160,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// STATS //
-		private Icon getStatisticsIcon(Map<String, Object> data) {
+		private Icon getStatisticsIcon(DataMapFilter data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -168,9 +169,9 @@ public class AccountCommands extends BaseCommand {
 					meta.setDisplayName(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Stats");
 
 					ArrayList<String> lore = new ArrayList<>();
-					lore.add(RPPersonas.SECONDARY_LIGHT + "Votes: " + RPPersonas.SECONDARY_DARK + (short) data.get("votes"));
+					lore.add(RPPersonas.SECONDARY_LIGHT + "Votes: " + RPPersonas.SECONDARY_DARK + (short) data.get(AccountsSQL.VOTES));
 
-					long timeSpent = (long) data.get("playtime");
+					long timeSpent = (long) data.get(AccountsSQL.PLAYTIME);
 
 					String playtime;
 					if (timeSpent > 0) {
@@ -194,7 +195,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// DISCORD //
-		private Icon getDiscordIcon(Map<String, Object> data) {
+		private Icon getDiscordIcon(DataMapFilter data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -206,7 +207,7 @@ public class AccountCommands extends BaseCommand {
 					lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Click here to get a discord invite.");
 					lore.add(RPPersonas.SECONDARY_LIGHT + "" + ChatColor.ITALIC + "Use /account discordlink to link your discord.");
 
-					String discordTag = (String) data.get("discordid");
+					String discordTag = (String) data.get(AccountsSQL.DISCORDID);
 					if (discordTag != null && discordTag.length() > 0) {
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Linked To: " + RPPersonas.SECONDARY_DARK + discordTag);
@@ -229,7 +230,7 @@ public class AccountCommands extends BaseCommand {
 
 
 		// SKINS //
-		private Icon getSkinsIcon(Map<String, Object> data) {
+		private Icon getSkinsIcon(DataMapFilter data) {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -253,8 +254,8 @@ public class AccountCommands extends BaseCommand {
 			};
 		}
 
-		private List<Menu> getSkinsListMenu(Map<String, Object> data, int maxSkins, Player player) {
-			Map<Integer, String> skinData = plugin.getSkinsSQL().getSkinNames((int) data.get("accountid"));
+		private List<Menu> getSkinsListMenu(DataMapFilter data, int maxSkins, Player player) {
+			Map<Integer, String> skinData = plugin.getSkinsSQL().getSkinNames((int) data.get(AccountsSQL.ACCOUNTID));
 			int currentSkinCount = 0;
 
 			ArrayList<Icon> icons = new ArrayList<>();
@@ -274,7 +275,7 @@ public class AccountCommands extends BaseCommand {
 						if (isActive) {
 							texture = finalCurrentSkin.getTextureValue();
 						} else {
-							texture = (String) plugin.getSkinsSQL().getData(skinID).get("texture");
+							texture = (String) plugin.getSkinsSQL().getData(skinID).get(SkinsSQL.TEXTURE);
 						}
 
 						ItemStack item = ItemUtil.getSkullFromTexture(texture);
@@ -447,7 +448,7 @@ public class AccountCommands extends BaseCommand {
 
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						Map<String, Object> data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
+						DataMapFilter data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
 						PersonaSkin skin = null;
 						if (plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()) != null) {
@@ -517,7 +518,7 @@ public class AccountCommands extends BaseCommand {
 				icons.add(new Button() {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
-						Map<String, Object> data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
+						DataMapFilter data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 						PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()).getActiveSkin();
 						ItemStack item;
 						if (skin != null) {
@@ -561,7 +562,7 @@ public class AccountCommands extends BaseCommand {
 					@Override
 					public void click(MenuAction menuAction) {
 						ClickType click = menuAction.getClick();
-						Map<String, Object> personaData = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
+						DataMapFilter personaData = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
 						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
 							if (deadPersonas.get(personaID) == null) {

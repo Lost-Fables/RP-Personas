@@ -1,6 +1,8 @@
 package net.korvic.rppersonas.players;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class RPPlayer {
 	//////////////////
 
 	@Getter Account account;
-	@Getter Persona persona;
+	@Getter @Setter(AccessLevel.PROTECTED) Persona persona;
 	@Getter Player player;
 
 	RPPlayer(Player player) {
@@ -64,7 +66,9 @@ public class RPPlayer {
 	}
 
 	private void unload() {
-		// This should only be called when a player leaves the server.
+		loadBlocked.add(player);
+		// This should only be called when a player leaves the server, really.
+		loadBlocked.remove(player);
 	}
 
 }
