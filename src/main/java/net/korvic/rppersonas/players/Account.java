@@ -61,7 +61,7 @@ public class Account {
 	//////////////////
 
 	@Getter private int accountID;
-	private List<UUID> assignedUUIDs = new ArrayList<>();
+	private ArrayList<UUID> assignedUUIDs = new ArrayList<>();
 	private List<Integer> livePersonaIDs = new ArrayList<>();
 	private List<Integer> deadPersonaIDs = new ArrayList<>();
 
@@ -80,6 +80,14 @@ public class Account {
 		for (int personaID : getPersonaIDs()) {
 			Persona.unloadPersona(personaID);
 		}
+	}
+
+	/**
+	 * @return A clone of the assigned UUIDs list.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<UUID> getUUIDs() {
+		return (List<UUID>) assignedUUIDs.clone();
 	}
 
 	/**
