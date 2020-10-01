@@ -32,8 +32,10 @@ public class Account {
 	 */
 	public static Account getAccount(int accountID) {
 		Account account = null;
-		if (accountID > 0 && !loadBlocked.contains(accountID)) {
-			account = loadedAccounts.get(accountID);
+		if (accountID > 0) {
+			if (!loadBlocked.contains(accountID)) {
+				account = loadedAccounts.get(accountID);
+			}
 			if (account == null) {
 				account = new Account(accountID);
 				loadedAccounts.put(accountID, account);
@@ -48,9 +50,9 @@ public class Account {
 	 */
 	public static void unloadAccount(int accountID) {
 		loadBlocked.add(accountID);
-		Account a = loadedAccounts.get(accountID);
-		if (a != null) {
-			a.unloadPersonas();
+		Account account = loadedAccounts.get(accountID);
+		if (account != null) {
+			account.unloadPersonas();
 			loadedAccounts.remove(accountID);
 		}
 		loadBlocked.remove(accountID);

@@ -38,14 +38,28 @@ public class Persona {
 	 */
 	public static Persona getPersona(int personaID) {
 		Persona persona = null;
-		if (personaID > 0 && !loadBlocked.contains(personaID)) {
-			persona = loadedPersonas.get(personaID);
+		if (personaID > 0) {
+			if (!loadBlocked.contains(personaID)) {
+				persona = loadedPersonas.get(personaID);
+			}
 			if (persona == null) {
 				persona = new Persona(personaID);
 				loadedPersonas.put(personaID, persona);
 			}
 		}
 		return persona;
+	}
+
+	/**
+	 * @param personaID The Lost Fables persona ID
+	 * @return A Persona object if, and only if, this persona is loaded and not actively load blocked.
+	 */
+	public static Persona getLoadedPersona(int personaID) {
+		Persona output = null;
+		if (!loadBlocked.contains(personaID)) {
+			output = loadedPersonas.get(personaID);
+		}
+		return output;
 	}
 
 	/**
@@ -64,7 +78,7 @@ public class Persona {
 
 	protected static void cleanup(int personaID) {
 		Persona persona = loadedPersonas.get(personaID);
-		if (persona != null && persona.additionalData == null) {
+		if (persona != null && persona.additionalData == null && !persona.loadLocked) {
 			persona.unload();
 		}
 	}
@@ -91,7 +105,7 @@ public class Persona {
 	// If the persona is loaded we need additional data
 	private PersonaData additionalData;
 
-	// Load Locking to prevent loading into something being unloaded
+	// Load Locking to prevent loading into something being unloaded or unloading twice
 	private boolean loadLocked = false;
 
 	private Persona(int personaID) {
@@ -131,6 +145,7 @@ public class Persona {
 	}
 
 	private void unload() {
+		loadLocked = true;
 		this.additionalData.unload();
 		this.additionalData = null;
 		// Save data
@@ -150,7 +165,7 @@ public class Persona {
 	/**
 	 * A sub-class for data that's only loaded when a person is playing as this persona.
 	 */
-	private class PersonaData {
+	private static class PersonaData {
 
 		// Name
 		@Getter private String prefix;
@@ -174,7 +189,6 @@ public class Persona {
 		 * Unloads the given additional data such that the Persona is no longer in use.
 		 */
 		public void unload() {
-			loadLocked = true;
 			// Send player back to menu if they're still online.
 		}
 
