@@ -9,6 +9,7 @@ import net.korvic.rppersonas.players.statuses.StatusEntry;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -36,15 +37,15 @@ public class Persona {
 	 * @return A Persona object which represents the given Lost Fables persona ID.
 	 */
 	public static Persona getPersona(int personaID) {
-		Persona p = null;
+		Persona persona = null;
 		if (personaID > 0 && !loadBlocked.contains(personaID)) {
-			p = loadedPersonas.get(personaID);
-			if (p == null) {
-				p = new Persona(personaID);
-				loadedPersonas.put(personaID, p);
+			persona = loadedPersonas.get(personaID);
+			if (persona == null) {
+				persona = new Persona(personaID);
+				loadedPersonas.put(personaID, persona);
 			}
 		}
-		return p;
+		return persona;
 	}
 
 	/**
@@ -53,14 +54,20 @@ public class Persona {
 	 */
 	protected static void unloadPersona(int personaID) {
 		loadBlocked.add(personaID);
-		Persona p = loadedPersonas.get(personaID);
-		if (p != null) {
-			p.unload();
+		Persona persona = loadedPersonas.get(personaID);
+		if (persona != null) {
+			persona.unload();
 			loadedPersonas.remove(personaID);
 		}
 		loadBlocked.remove(personaID);
 	}
 
+	protected static void cleanup(int personaID) {
+		Persona persona = loadedPersonas.get(personaID);
+		if (persona != null && persona.additionalData == null) {
+			persona.unload();
+		}
+	}
 
 	//////////////////
 	//// INSTANCE ////
@@ -83,6 +90,9 @@ public class Persona {
 
 	// If the persona is loaded we need additional data
 	private PersonaData additionalData;
+
+	// Load Locking to prevent loading into something being unloaded
+	private boolean loadLocked = false;
 
 	private Persona(int personaID) {
 		DataMapFilter data = RPPersonas.get().getPersonasSQL().getBasicPersonaInfo(personaID);
@@ -123,14 +133,24 @@ public class Persona {
 	private void unload() {
 		this.additionalData.unload();
 		this.additionalData = null;
-		// Save and unload persona data
+		// Save data
+		loadedPersonas.remove(personaID);
+	}
+
+	/**
+	 * @param player Load the given player into this persona for use.
+	 */
+	public void loadPlayer(Player player) {
+		if (!loadLocked) {
+			this.additionalData = new PersonaData(player);
+		}
 	}
 
 
 	/**
 	 * A sub-class for data that's only loaded when a person is playing as this persona.
 	 */
-	private static class PersonaData {
+	private class PersonaData {
 
 		// Name
 		@Getter private String prefix;
@@ -146,7 +166,7 @@ public class Persona {
 		// Linked Player
 		@Getter private RPPlayer rpPlayer;
 
-		private PersonaData() {
+		private PersonaData(Player player) {
 			// Create additional detail and load a player into the persona.
 		}
 
@@ -154,7 +174,8 @@ public class Persona {
 		 * Unloads the given additional data such that the Persona is no longer in use.
 		 */
 		public void unload() {
-
+			loadLocked = true;
+			// Send player back to menu if they're still online.
 		}
 
 	}

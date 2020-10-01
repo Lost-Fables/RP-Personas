@@ -31,15 +31,15 @@ public class Account {
 	 * @return An Account object which represents the given Lost Fables account ID.
 	 */
 	public static Account getAccount(int accountID) {
-		Account a = null;
+		Account account = null;
 		if (accountID > 0 && !loadBlocked.contains(accountID)) {
-			a = loadedAccounts.get(accountID);
-			if (a == null) {
-				a = new Account(accountID);
-				loadedAccounts.put(accountID, a);
+			account = loadedAccounts.get(accountID);
+			if (account == null) {
+				account = new Account(accountID);
+				loadedAccounts.put(accountID, account);
 			}
 		}
-		return a;
+		return account;
 	}
 
 	/**
@@ -54,6 +54,25 @@ public class Account {
 			loadedAccounts.remove(accountID);
 		}
 		loadBlocked.remove(accountID);
+	}
+
+	/**
+	 * @param accountID Remove any stray data that's no longer in active use for the given account ID.
+	 */
+	public static void cleanup(int accountID) {
+		Account account = loadedAccounts.get(accountID);
+		if (account != null) {
+			account.cleanup();
+		}
+	}
+
+	/**
+	 * Remove any stray data that's no longer in active use for all loaded accounts.
+	 */
+	public static void cleanupAll() {
+		for (int accountID : loadedAccounts.keySet()) {
+			cleanup(accountID);
+		}
 	}
 
 	//////////////////
@@ -103,6 +122,15 @@ public class Account {
 		output.addAll(livePersonaIDs);
 		output.addAll(deadPersonaIDs);
 		return output;
+	}
+
+	/**
+	 * Remove any stray data that's no longer in active use.
+	 */
+	public void cleanup() {
+		for (int personaID : getPersonaIDs()) {
+			Persona.cleanup(personaID);
+		}
 	}
 
 }
