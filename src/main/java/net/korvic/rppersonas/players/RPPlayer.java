@@ -54,9 +54,11 @@ public class RPPlayer {
 
 	@Getter Account account;
 	@Getter Persona persona;
+	@Getter Player player;
 
 	RPPlayer(Player player) {
 		this.account = Account.getAccount(player);
+		this.player = player;
 	}
 
 	private void unload() {

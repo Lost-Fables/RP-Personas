@@ -365,7 +365,7 @@ public class PersonasSQL extends BaseSQL {
 	}
 
 	// GET INFO //
-	public Map<String, Object> getBasicPersonaInfo(int personaID) {
+	public DataMapFilter getBasicPersonaInfo(int personaID) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -378,7 +378,7 @@ public class PersonasSQL extends BaseSQL {
 			ps = conn.prepareStatement(stmt);
 			rs = ps.executeQuery();
 
-			Map<String, Object> output = new HashMap<>();
+			DataMapFilter output = new DataMapFilter();
 
 			if (rs.next()) {
 				if (rs.getString("NickName") != null && rs.getString("NickName").length() > 0) {

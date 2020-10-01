@@ -60,8 +60,13 @@ public class Account {
 	//// INSTANCE ////
 	//////////////////
 
+	// ID
 	@Getter private int accountID;
+
+	// Linked UUIDs
 	private ArrayList<UUID> assignedUUIDs = new ArrayList<>();
+
+	// Persona IDs
 	private List<Integer> livePersonaIDs = new ArrayList<>();
 	private List<Integer> deadPersonaIDs = new ArrayList<>();
 
