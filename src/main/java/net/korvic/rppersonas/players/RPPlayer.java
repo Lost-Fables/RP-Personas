@@ -22,15 +22,17 @@ public class RPPlayer {
 	 * @return An Account object which represents the given Lost Fables account ID.
 	 */
 	public static RPPlayer get(Player player) {
-		RPPlayer rpp = null;
-		if (player != null && !loadBlocked.contains(player)) {
-			rpp = playerMap.get(player);
-			if (rpp == null) {
-				rpp = new RPPlayer(player);
-				playerMap.put(player, rpp);
+		RPPlayer rpplayer = null;
+		if (player != null) {
+			if (!loadBlocked.contains(player)) {
+				rpplayer = playerMap.get(player);
+			}
+			if (rpplayer == null) {
+				rpplayer = new RPPlayer(player);
+				playerMap.put(player, rpplayer);
 			}
 		}
-		return rpp;
+		return rpplayer;
 	}
 
 	/**
