@@ -253,7 +253,7 @@ public class Persona {
 		if (name.length() > 0) {
 			this.nickname = name;
 		} else {
-			this.nickname = this.name;
+			this.nickname = null;
 		}
 
 		if (playerInteraction != null) {
@@ -331,10 +331,11 @@ public class Persona {
 		 * @return A formatted name without colours for the given character as [Prefix] Name
 		 */
 		public String getChatName() {
+			String currentName = (nickname != null) ? nickname : name;
 			if (prefix != null) {
-				return "[" + prefix + "] " + nickname;
+				return "[" + prefix + "] " + currentName;
 			} else {
-				return nickname;
+				return currentName;
 			}
 		}
 
