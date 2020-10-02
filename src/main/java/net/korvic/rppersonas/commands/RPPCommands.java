@@ -5,6 +5,9 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
+import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
+import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
@@ -100,9 +103,9 @@ public class RPPCommands extends BaseCommand {
 
 	@Cmd(value="Accept a user. This updates their role and registers them.", permission=RPPersonas.PERMISSION_START + ".accept")
 	public void accept(CommandSender sender,
-					   @Arg(value="Player Name", description="The username of the player you're accepting.") String player,
+					   @Arg(value="Player Name", description="The username of the player you're accepting.") String playerName,
 					   @Arg(value="Forum ID", description="The forum ID of the player you're accepting.") int forumID) {
-		UUID uuid = PlayerUtil.getPlayerUUID(player);
+		UUID uuid = PlayerUtil.getPlayerUUID(playerName);
 		if (uuid != null) {
 			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
 			if (provider != null) {
@@ -123,12 +126,17 @@ public class RPPCommands extends BaseCommand {
 				}, runnable -> Bukkit.getScheduler().runTask(plugin, runnable));
 			}
 
-			Player p = Bukkit.getPlayer(uuid);
-			if (p != null && p.isOnline()) {
-				plugin.getAccountHandler().addLink(p, forumID);
-			} else {
-				plugin.getAccountHandler().addLink(uuid, forumID);
+			Player player = Bukkit.getPlayer(uuid);
+
+			DataMapFilter data = new DataMapFilter();
+			data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
+				.put(UUIDAccountMapSQL.PLAYER_UUID, uuid);
+			if (player != null && player.isOnline()) {
+				data.put(UUIDAccountMapSQL.PLAYER, player);
 			}
+
+			plugin.getUuidAccountMapSQL().registerOrUpdate(data);
+
 			msg(RPPersonas.PRIMARY_DARK + "Player successfully accepted.");
 		}
 	}
@@ -142,13 +150,17 @@ public class RPPCommands extends BaseCommand {
 	public void toggleTag(CommandSender sender) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
-			pers.setStaffNameEnabled(!pers.isStaffNameEnabled());
-			pers.setNickName(pers.getNickName());
-			if (pers.isStaffNameEnabled()) {
-				msg(RPPersonas.PRIMARY_DARK + "You are now displaying your staff colour.");
+			Persona pers = Persona.getPersona(p);
+			if (pers != null) {
+				pers.getPlayerInteraction().setStaffNameEnabled(!pers.getPlayerInteraction().isStaffNameEnabled());
+				pers.getPlayerInteraction().updateNickname();
+				if (pers.getPlayerInteraction().isStaffNameEnabled()) {
+					msg(RPPersonas.PRIMARY_DARK + "You are now displaying your staff colour.");
+				} else {
+					msg(RPPersonas.PRIMARY_DARK + "You are no longer displaying your staff colour.");
+				}
 			} else {
-				msg(RPPersonas.PRIMARY_DARK + "You are no longer displaying your staff colour.");
+				msg(RPPersonas.PRIMARY_DARK + "You do not have an active persona!");
 			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + "Stahp it, console.");

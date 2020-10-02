@@ -244,6 +244,13 @@ public class Persona {
 	}
 
 	// ACCESSORS
+	public String getActiveName() {
+		if (this.nickname != null && this.nickname.length() > 0) {
+			return this.nickname;
+		} else {
+			return this.name;
+		}
+	}
 	/**
 	 * @return A map of Language Name to Language Level for this Persona.
 	 */
@@ -275,28 +282,9 @@ public class Persona {
 		return (String) RPPersonas.get().getPersonasSQL().getBasicPersonaInfo(personaID).get(PersonasSQL.DESCRIPTION);
 	}
 
-	private DataMapFilter getBaseInfo() {
-		if (playerInteraction != null) {
-			playerInteraction.updateSavedInventory();
-		}
-
-		DataMapFilter data = new DataMapFilter();
-		data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID)
-			.put(PersonasSQL.PERSONAID, personaID)
-			.put(PersonasSQL.ALIVE, alive)
-			.put(PersonasSQL.INVENTORY, savedInventory)
-			.put(PersonasSQL.NAME, name);
-		if (nickname.equals(name)) {
-			data.put(PersonasSQL.NICKNAME, null);
-		} else {
-			data.put(PersonasSQL.NICKNAME, nickname);
-		}
-		if (enderChest != null) {
-			data.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderChest));
-		}
-		return data;
-	}
-
+	/**
+	 * @return A string of the persona's information formatted all together.
+	 */
 	public String getFormattedBasicInfo() {
 		DataMapFilter data = RPPersonas.get().getPersonasSQL().getBasicPersonaInfo(personaID);
 		Map<String, Short> languages = getLanguages();
@@ -341,6 +329,28 @@ public class Persona {
 		return output.toString();
 	}
 
+	private DataMapFilter getBaseInfo() {
+		if (playerInteraction != null) {
+			playerInteraction.updateSavedInventory();
+		}
+
+		DataMapFilter data = new DataMapFilter();
+		data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID)
+			.put(PersonasSQL.PERSONAID, personaID)
+			.put(PersonasSQL.ALIVE, alive)
+			.put(PersonasSQL.INVENTORY, savedInventory)
+			.put(PersonasSQL.NAME, name);
+		if (nickname.equals(name)) {
+			data.put(PersonasSQL.NICKNAME, null);
+		} else {
+			data.put(PersonasSQL.NICKNAME, nickname);
+		}
+		if (enderChest != null) {
+			data.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderChest));
+		}
+		return data;
+	}
+
 	// MODIFIERS
 	/**
 	 * @param name Sets the name to the given String.
@@ -363,7 +373,7 @@ public class Persona {
 		}
 
 		if (playerInteraction != null) {
-			playerInteraction.updateNickname(name);
+			playerInteraction.updateNickname();
 		}
 	}
 
@@ -399,7 +409,7 @@ public class Persona {
 
 		// Name
 		@Getter private String prefix;
-		@Getter private boolean staffNameEnabled; // Whether to colour the player's RP name.
+		@Getter @Setter private boolean staffNameEnabled; // Whether to colour the player's RP name.
 		@Getter private String[] namePieces = new String[2];
 
 		@Getter private PersonaSkin activeSkin; // Skin
@@ -512,6 +522,13 @@ public class Persona {
 					}
 				}.open(player);
 			}
+		}
+
+		/**
+		 * Updates the persona's nickname in the event that colour has changed.
+		 */
+		public void updateNickname() {
+			updateNickname(getActiveName());
 		}
 
 		private void updateNickname(String name) {

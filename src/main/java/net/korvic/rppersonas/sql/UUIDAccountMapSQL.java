@@ -44,9 +44,8 @@ public class UUIDAccountMapSQL extends BaseSQL {
 		if (data.containsKey(PLAYER)) {
 			Player p = (Player) data.get(PLAYER);
 			try {
-				plugin.getUnregisteredHandler().remove(p);
 				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
-				plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
+				//plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true); TODO: Load the player into an account so they can get started, or kick them.
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
 					e.printStackTrace();

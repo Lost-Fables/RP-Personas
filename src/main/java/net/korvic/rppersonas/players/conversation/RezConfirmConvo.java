@@ -3,6 +3,7 @@ package net.korvic.rppersonas.players.conversation;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.death.Altar;
 import net.korvic.rppersonas.players.death.Corpse;
 import net.korvic.rppersonas.sql.PersonasSQL;
@@ -87,35 +88,35 @@ public class RezConfirmConvo extends BaseConvo {
 			personaData.put(PersonasSQL.ALTARID, altar.getAltarID());
 			personaData.put(PersonasSQL.CORPSEINV, InventoryUtil.serializeItems(corpse.getInventory()));
 
-			plugin.getPersonasSQL().registerOrUpdate(personaData);
-			plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
 			plugin.getCorpseSQL().deleteByCorpseID(corpse.getId());
 
-			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
-			if (pers != null && pers.getUsingPlayer().isOnline()) {
-				pers.getUsingPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
-				new BukkitRunnable() {
-					private int passes = 0;
+			Persona pers = Persona.getPersona(personaID);
+			if (pers != null) {
+				pers.save(personaData);
+				if (pers.getPlayerInteraction().getRpPlayer().getPlayer().isOnline()) {
+					pers.getPlayerInteraction().getRpPlayer().getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
+					new BukkitRunnable() {
+						private int passes = 0;
 
-					@Override
-					public void run() {
-						if (plugin.getSaveQueue().isEmpty() || passes > 3) {
-							if (pers.getUsingPlayer().isOnline()) {
-								plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), personaID, false); // Reload the force-saved data from above.
-								pers.getUsingPlayer().teleportAsync(altar.getTPLocation());
+						@Override
+						public void run() {
+							if (plugin.getSaveQueue().isEmpty() || passes > 3) {
+								if (pers.getPlayerInteraction().getRpPlayer().getPlayer().isOnline()) {
+									pers.getPlayerInteraction().getRpPlayer().getPlayer().teleportAsync(altar.getTPLocation());
+								}
+								this.cancel();
+							} else {
+								passes++;
 							}
-							this.cancel();
-						} else {
-							passes++;
 						}
-					}
-				}.runTaskTimer(plugin, 20, 20);
-			} else {
-				int accountID = plugin.getPersonaAccountMapSQL().getAccountOf(personaID);
-				for (UUID uuid : plugin.getUuidAccountMapSQL().getUUIDsOf(accountID)) {
-					Player p = Bukkit.getPlayer(uuid);
-					if (p != null && p.isOnline()) {
-						p.sendMessage(RPPersonas.PRIMARY_DARK + "Your persona " + RPPersonas.SECONDARY_DARK + (String) data.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + " has been resurrected.");
+					}.runTaskTimer(plugin, 20, 20);
+				} else {
+					int accountID = plugin.getPersonaAccountMapSQL().getAccountOf(personaID);
+					for (UUID uuid : plugin.getUuidAccountMapSQL().getUUIDsOf(accountID)) {
+						Player p = Bukkit.getPlayer(uuid);
+						if (p != null && p.isOnline()) {
+							p.sendMessage(RPPersonas.PRIMARY_DARK + "Your persona " + RPPersonas.SECONDARY_DARK + (String) data.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + " has been resurrected.");
+						}
 					}
 				}
 			}
