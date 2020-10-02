@@ -194,19 +194,30 @@ public class Persona {
 	 * Saves the given persona's data if it has possibly been altered.
 	 */
 	public void save() {
-		this.loadLocked = true;
 		if (this.altered) {
-			if (playerInteraction != null) {
-				playerInteraction.save();
-			} else {
-				RPPersonas.get().getPersonasSQL().registerOrUpdate(getBaseInfo());
-			}
+			this.loadLocked = true;
+			save(null);
+		}
+	}
+
+	public void save(DataMapFilter data) {
+		this.loadLocked = true;
+		if (data != null) {
+			DataMapFilter newData = getBaseInfo();
+			newData.putAllData(data);
+			data = newData;
+		} else {
+			data = getBaseInfo();
+		}
+		if (playerInteraction != null) {
+			playerInteraction.save(data);
+		} else {
+			RPPersonas.get().getPersonasSQL().registerOrUpdate(data);
 		}
 		this.loadLocked = false;
 	}
 
 	// ACCESSORS
-
 	/**
 	 * @return A map of Language Name to Language Level for this Persona.
 	 */
@@ -237,7 +248,6 @@ public class Persona {
 	}
 
 	// MODIFIERS
-
 	/**
 	 * @param name Sets the name to the given String.
 	 */
@@ -268,6 +278,15 @@ public class Persona {
 	 */
 	public void setSavedInventory(PlayerInventory inventory) {
 		this.savedInventory = InventoryUtil.serializeItems(inventory);
+	}
+
+	/**
+	 * @param description Update this persona to have the given description.
+	 */
+	public void setDescription(String description) {
+		DataMapFilter data = new DataMapFilter();
+		data.put(PersonasSQL.DESCRIPTION, description);
+		save(data);
 	}
 
 
@@ -301,9 +320,9 @@ public class Persona {
 		/**
 		 * Saves data for this persona with the active RPPlayer.
 		 */
-		public void save() {
+		public void save(DataMapFilter base) {
 			Player player = rpPlayer.getPlayer();
-			DataMapFilter data = getBaseInfo();
+			DataMapFilter data = new DataMapFilter();
 			data.put(PersonasSQL.PREFIX, prefix);
 			if (player != null) {
 				data.put(PersonasSQL.LOCATION, player.getLocation())
@@ -315,6 +334,7 @@ public class Persona {
 			} else {
 				data.put(PersonasSQL.SKINID, 0);
 			}
+			data.putAllData(base);
 			RPPersonas.get().getPersonasSQL().registerOrUpdate(data);
 			// Save data with the given RPPlayer
 		}
