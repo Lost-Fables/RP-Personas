@@ -4,10 +4,9 @@ import co.lotc.core.bukkit.command.Commands;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.korvic.rppersonas.players.accounts.OldAccount;
-import net.korvic.rppersonas.players.accounts.AccountHandler;
-import net.korvic.rppersonas.players.accounts.UnregisteredHandler;
 import net.korvic.rppersonas.commands.*;
+import net.korvic.rppersonas.players.Account;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.death.Altar;
 import net.korvic.rppersonas.players.death.AltarHandler;
 import net.korvic.rppersonas.players.death.CorpseHandler;
@@ -16,7 +15,6 @@ import net.korvic.rppersonas.players.kits.Kit;
 import net.korvic.rppersonas.players.kits.KitHandler;
 import net.korvic.rppersonas.players.listeners.*;
 import net.korvic.rppersonas.players.listeners.StatusEventListener;
-import net.korvic.rppersonas.players.personas.PersonaHandler;
 import net.korvic.rppersonas.players.listeners.SkinDisplayListener;
 import net.korvic.rppersonas.players.personas.PersonaLanguage;
 import net.korvic.rppersonas.players.personas.PersonaSubRace;
@@ -76,12 +74,9 @@ public final class RPPersonas extends JavaPlugin {
 	}
 
 	// Handlers
-	@Getter private AccountHandler accountHandler;
-	@Getter private PersonaHandler personaHandler;
 	@Getter private DeathHandler deathHandler;
 	@Getter private CorpseHandler corpseHandler;
 	@Getter private AltarHandler altarHandler;
-	@Getter private UnregisteredHandler unregisteredHandler;
 	@Getter private KitHandler kitHandler;
 	@Getter private RezHandler rezHandler;
 
@@ -133,7 +128,7 @@ public final class RPPersonas extends JavaPlugin {
 				public void run() {
 					JoinQuitListener.refreshAllAccountPlaytime();
 					corpseHandler.saveAllCorpses();
-					personaHandler.queueSaveAllPersonas();
+					Persona.cleanupAll();
 				}
 			}.runTaskTimerAsynchronously(this, 0, 36000);
 
@@ -158,12 +153,9 @@ public final class RPPersonas extends JavaPlugin {
 			SkinDisplayListener.listen();
 
 			// Register our handlers
-			accountHandler = new AccountHandler(this);
-			personaHandler = new PersonaHandler(this);
 			deathHandler = new DeathHandler(this);
 			corpseHandler = new CorpseHandler(this);
 			altarHandler = new AltarHandler(this);
-			unregisteredHandler = new UnregisteredHandler(this);
 			rezHandler = new RezHandler(this);
 
 			// Load up existing altars, corpses, and rez apps. Must be done after the handlers are created
@@ -188,10 +180,10 @@ public final class RPPersonas extends JavaPlugin {
 			Objects.requireNonNull(getCommand("date")).setExecutor(new DateAlias(timeCommands));
 
 			// Register statuses we want on the list of statuses
-			new SpeedStatus().registerStatus();
+			/*new SpeedStatus().registerStatus();
 			new SlowStatus().registerStatus();
 			new SickStatus().registerStatus();
-			new BlindStatus().registerStatus();
+			new BlindStatus().registerStatus();*/
 
 			// Start auto-check for season updates every 5 mins.
 			new BukkitRunnable() {
@@ -208,9 +200,7 @@ public final class RPPersonas extends JavaPlugin {
 		if (saveQueue != null) {
 			saveQueue.stopSaving();
 		}
-		if (personaHandler != null) {
-			personaHandler.queueSaveAllPersonas();
-		}
+		Persona.cleanupAll();
 		if (saveQueue != null) {
 			saveQueue.completeAllSaves();
 		}
@@ -414,12 +404,12 @@ public final class RPPersonas extends JavaPlugin {
 				.mapperWithSender((sender, season) -> Season.getByName(season))
 				.register();
 
-		Commands.defineArgumentType(Status.class)
+		/*Commands.defineArgumentType(Status.class)
 				.defaultName("Status")
 				.defaultError("Failed to find a status by that name.")
 				.completer(Status::getRegisteredStatusNames)
 				.mapperWithSender((sender, status) -> Status.getByName(status))
-				.register();
+				.register();*/
 
 		Commands.defineArgumentType(Kit.class)
 				.defaultName("Kit")
@@ -442,7 +432,7 @@ public final class RPPersonas extends JavaPlugin {
 				.mapperWithSender((sender, race) -> PersonaSubRace.getByName(race))
 				.register();
 
-		Commands.defineArgumentType(OldAccount.class)
+		Commands.defineArgumentType(Account.class)
 				.defaultName("Player or Account")
 				.defaultError("Unable to find an account for that user or number.")
 				.completer((s,$) -> {
@@ -451,12 +441,14 @@ public final class RPPersonas extends JavaPlugin {
 				.mapperWithSender((sender, account) -> {
 					try {
 						int accountID = Integer.parseInt(account);
-						return accountHandler.getAccountForcefully(accountID);
+						return Account.getAccount(accountID);
 					} catch (NumberFormatException nfe) {
 						UUID uuid = PlayerUtil.getPlayerUUID(account);
 						if (uuid != null) {
 							Player player = Bukkit.getPlayer(uuid);
-							return accountHandler.getAccountForcefully(player);
+							if (player != null) {
+								return Account.getAccount(player);
+							}
 						}
 					}
 					return null;

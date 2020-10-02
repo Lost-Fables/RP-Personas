@@ -24,7 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 public class PersonaHandler {
-
+/*
 	private static RPPersonas plugin;
 	private Map<Integer, OldPersona> loadedPersonas = new HashMap<>(); // personaID, persona
 	private Map<Player, Integer> playerObjectToID = new HashMap<>(); // player, personaID
@@ -457,5 +457,5 @@ public class PersonaHandler {
 				}
 			}
 		}.runTaskTimer(plugin, 0, 20);
-	}
+	}*/
 }
