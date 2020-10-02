@@ -3,6 +3,7 @@ package net.korvic.rppersonas.players.death;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.sql.DeathSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -14,19 +15,19 @@ import org.bukkit.inventory.ItemStack;
 public class DeathRequest {
 
 	private Player killer;
-	private OldPersona killerPersona;
+	private Persona killerPersona;
 
 	private Player victim;
-	private OldPersona victimPersona;
+	private Persona victimPersona;
 
 	private Location location;
 
 	public DeathRequest(Player killer, Player victim) {
 		this.killer = killer;
-		this.killerPersona = RPPersonas.get().getPersonaHandler().getLoadedPersona(killer);
+		this.killerPersona = Persona.getPersona(killer);
 
 		this.victim = victim;
-		this.victimPersona = RPPersonas.get().getPersonaHandler().getLoadedPersona(victim);
+		this.victimPersona = Persona.getPersona(victim);
 
 		this.location = victim.getLocation().toBlockLocation().add(0, 1, 0);
 	}
@@ -43,7 +44,7 @@ public class DeathRequest {
 
 	public void ping() {
 		if (victim.isOnline()) {
-			victim.sendMessage(RPPersonas.SECONDARY_DARK + killerPersona.getNickName() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.");
+			victim.sendMessage(RPPersonas.SECONDARY_DARK + killerPersona.getNickname() + RPPersonas.PRIMARY_DARK + " is attempting to execute you.");
 			BaseComponent command = MessageUtil.CommandButton("Use " + RPPersonas.SECONDARY_DARK + "/persona executeaccept " + killer.getName() + RPPersonas.PRIMARY_DARK + " to accept.",
 															  "/persona executeaccept " + killer.getName(),
 															  RPPersonas.SECONDARY_LIGHT + "Click here!",

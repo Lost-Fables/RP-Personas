@@ -5,6 +5,7 @@ import co.lotc.core.bukkit.util.BookUtil;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.players.personas.PersonaEnderHolder;
@@ -131,7 +132,7 @@ public class Persona {
 	//////////////////
 
 	// Status
-	@Getter private boolean alive;
+	@Getter @Setter private boolean alive;
 
 	// ID data
 	@Getter private int accountID;

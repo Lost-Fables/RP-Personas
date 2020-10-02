@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Status {
-
+/*
 	// STATIC //
 	protected static final RPPersonas plugin = RPPersonas.get();
 	protected static final int DEFAULT_DURATION = 1000*15;
@@ -107,5 +107,5 @@ public abstract class Status {
 	// ABSTRACT //
 	public abstract void applyEffect(Player player, byte severity);
 	public abstract void clearEffect(Player player);
-	public abstract void refreshEffect(Player player, byte severity);
+	public abstract void refreshEffect(Player player, byte severity);*/
 }
