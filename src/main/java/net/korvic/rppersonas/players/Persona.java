@@ -248,7 +248,8 @@ public class Persona {
 
 	/**
 	 * @return An inventory of the player using, or a new inventory representing
-	 *         the contents of the persona's inventory for modification.
+	 *         the contents of the persona's inventory for modification. If this is
+	 *         a new inventory, the persona will be load locked.
 	 */
 	public PlayerInventory getInventory() {
 		if (playerInteraction != null) {
