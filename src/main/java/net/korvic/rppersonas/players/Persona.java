@@ -418,7 +418,7 @@ public class Persona {
 				new BookStream(player, book, "Open to Edit! Done to complete!") {
 					@Override
 					public void onBookClose() {
-						persona.setDescription(BookUtil.getPagesAsString(this.getItem()));
+						persona.setDescription(BookUtil.getPagesAsString(this.getMeta()));
 					}
 				}.open(player);
 			}
