@@ -4,6 +4,7 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.personas.PersonaLanguage;
 import net.korvic.rppersonas.players.personas.PersonaSubRace;
 import net.korvic.rppersonas.sql.LanguageSQL;
@@ -31,7 +32,7 @@ public class StaffPersonaCommands extends BaseCommand {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' races with raw text.");
 			return;
 		}
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		Persona pers = Persona.getPersona(player);
 		if (pers != null) {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
 													.put(PersonasSQL.RAW_RACE, race.replace('_', ' '));
@@ -50,7 +51,7 @@ public class StaffPersonaCommands extends BaseCommand {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' races.");
 			return;
 		}
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		Persona pers = Persona.getPersona(player);
 		if (pers != null) {
 			// Race
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
@@ -80,7 +81,7 @@ public class StaffPersonaCommands extends BaseCommand {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' ages.");
 			return;
 		}
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		Persona pers = Persona.getPersona(player);
 		if (pers != null) {
 			long age = TimeManager.getMillisFromAge(ages);
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
@@ -100,7 +101,7 @@ public class StaffPersonaCommands extends BaseCommand {
 			msg(RPPersonas.PRIMARY_DARK + "You do not have permission to edit others' names.");
 			return;
 		}
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
+		Persona pers = Persona.getPersona(player);
 		if (pers != null) {
 			DataMapFilter data = new DataMapFilter().put(PersonasSQL.PERSONAID, pers.getPersonaID())
 													.put(PersonasSQL.NAME, name.replace('_', ' '));

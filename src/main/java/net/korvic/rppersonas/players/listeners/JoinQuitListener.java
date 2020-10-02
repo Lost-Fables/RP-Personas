@@ -2,6 +2,7 @@ package net.korvic.rppersonas.players.listeners;
 
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -44,9 +45,16 @@ public class JoinQuitListener implements Listener {
 	@EventHandler(ignoreCancelled=false)
 	public void onQuit(PlayerQuitEvent event) {
 		Player p = event.getPlayer();
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		Persona pers = Persona.getPersona(p);
+		if (pers != null) {
+			Persona.unloadPersona(pers.getPersonaID());
+		}
 
-		if (pers != null && !PersonaHandler.isSkipped(pers)) {
+		refreshAccountPlaytime(p);
+		playerLoginTime.remove(p);
+		BoardManager.removePlayer(p);
+
+		/*if (pers != null && !PersonaHandler.isSkipped(pers)) {
 			pers.queueSave(p);
 			pers.clearAllStatuses();
 			pers.unloadPersona(true);
@@ -55,10 +63,7 @@ public class JoinQuitListener implements Listener {
 
 		UUID uuid = event.getPlayer().getUniqueId();
 		int account = plugin.getUuidAccountMapSQL().getAccountID(uuid);
-		refreshAccountPlaytime(p);
-		plugin.getAccountHandler().unloadAccount(account);
-		playerLoginTime.remove(p);
-		BoardManager.removePlayer(p);
+		plugin.getAccountHandler().unloadAccount(account);*/
 	}
 
 
@@ -70,7 +75,7 @@ public class JoinQuitListener implements Listener {
 		if (accountID > 0) {
 			refreshAccountPlaytime(p);
 			int personaID = plugin.getPersonaAccountMapSQL().getCurrentPersonaID(uuid);
-			plugin.getAccountHandler().loadAccount(p, accountID, personaID, false);
+			//plugin.getAccountHandler().loadAccount(p, accountID, personaID, false); TODO: Load players into the forced account menu.
 		} else {
 			p.kickPlayer("You need to be whitelisted!");
 			//plugin.getUnregisteredHandler().add(p);
