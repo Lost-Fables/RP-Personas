@@ -1,5 +1,7 @@
 package net.korvic.rppersonas.players;
 
+import co.lotc.core.bukkit.book.BookStream;
+import co.lotc.core.bukkit.util.BookUtil;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import lombok.Getter;
 import net.korvic.rppersonas.BoardManager;
@@ -11,11 +13,13 @@ import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -401,6 +405,25 @@ public class Persona {
 		}
 
 		// UTIL //
+		public void openDescription() {
+			if (rpPlayer != null) {
+				final Persona persona = getPersona(personaID);
+				final Player player = rpPlayer.getPlayer();
+				final ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
+				{
+					BookMeta meta = (BookMeta) book.getItemMeta();
+					meta.setPages(BookUtil.getPagesForString(persona.getDescription()));
+					book.setItemMeta(meta);
+				}
+				new BookStream(player, book, "Open to Edit! Done to complete!") {
+					@Override
+					public void onBookClose() {
+						persona.setDescription(BookUtil.getPagesAsString(this.getItem()));
+					}
+				}.open(player);
+			}
+		}
+
 		private void updateNickname(String name) {
 			if (rpPlayer != null) {
 				Player player = rpPlayer.getPlayer();
