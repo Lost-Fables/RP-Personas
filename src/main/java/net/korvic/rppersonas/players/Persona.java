@@ -133,7 +133,6 @@ public class Persona {
 			this.name = (String) data.get(PersonasSQL.NAME);
 		} else {
 			this.name = "Unknown Persona";
-			this.nickname = "Unknown Persona";
 		}
 
 		if (data.containsKey(PersonasSQL.INVENTORY)) {
@@ -151,9 +150,11 @@ public class Persona {
 	// LOAD & SAVE
 	private void unload() {
 		loadLocked = true;
-		this.playerInteraction.unload();
-		this.playerInteraction = null;
 		save();
+		if (this.playerInteraction != null) {
+			this.playerInteraction.unload();
+			this.playerInteraction = null;
+		}
 		loadedPersonas.remove(personaID);
 	}
 
@@ -231,7 +232,7 @@ public class Persona {
 	}
 
 
-	/**
+	/** <PlayerInteraction>
 	 * A sub-class for data that's only loaded when a person is playing as this persona.
 	 * NOTE: Player interactions should ONLY go within this class.
 	 */
