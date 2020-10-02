@@ -188,52 +188,7 @@ public class OldPersona {
 		}
 	}
 
-	public void unloadPersona(boolean keepLinked) {
-		plugin.getPersonaHandler().unloadPersona(this, keepLinked);
-	}
-
 	// SET //
-	public void setNickName(String name) {
-		setNickName(usingPlayer, name);
-	}
-
-	public void setNickName(Player p, String name) {
-		if (name.length() > 0) {
-			this.nickName = name;
-		} else {
-			this.nickName = (String) getBasicInfo().get(PersonasSQL.NAME);
-		}
-
-		namePieces = new String[2];
-		String prefix = "";
-		if (staffNameEnabled) {
-			prefix = RPPersonas.getPrefixColor(p);
-		}
-
-		String personaName = prefix + this.nickName;
-		int maxMidSize = 16;
-		int maxSuffixSize = 64;
-
-		namePieces[0] = personaName.substring(0, Math.min(maxMidSize, personaName.length()));
-		if (personaName.length() > maxMidSize) {
-			String suffix = prefix + personaName.substring(maxMidSize, personaName.length());
-			namePieces[1] = suffix.substring(0, Math.min(maxSuffixSize, suffix.length()));
-		}
-
-		queueSave(p);
-
-		BoardManager.addPlayer(usingPlayer, namePieces);
-	}
-
-	public void setPrefix(Player p, String prefix) {
-		if (prefix.length() > 0) {
-			this.prefix = prefix;
-		} else {
-			this.prefix = null;
-		}
-		queueSave(p);
-	}
-
 	public String addToDescription(Player p, String[] description) {
 		Map<String, Object> data = getBasicInfo();
 		StringBuilder desc = new StringBuilder();
@@ -261,12 +216,7 @@ public class OldPersona {
 		queueSave(p, data);
 	}
 
-	public void setSkin(int skinID) {
-		this.activeSkin = PersonaSkin.getFromID(skinID);
-		if (usingPlayer != null) {
-			PersonaSkin.refreshPlayerSync(usingPlayer);
-		}
-	}
+
 
 	// STATUS //
 	public boolean hasStatus(Status status) {

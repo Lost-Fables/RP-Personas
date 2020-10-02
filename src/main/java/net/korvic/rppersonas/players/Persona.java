@@ -242,15 +242,17 @@ public class Persona {
 	 * @param name Sets the name to the given String.
 	 */
 	public void setName(String name) {
-		this.altered = true;
-		this.name = name;
+		if (name != null && name.length() > 0) {
+			this.altered = true;
+			this.name = name;
+		}
 	}
 
 	/**
 	 * @param name Updates the nickname for the given Persona.
 	 */
 	public void setNickname(String name) {
-		if (name.length() > 0) {
+		if (name == null || name.length() > 0) {
 			this.nickname = name;
 		} else {
 			this.nickname = null;
@@ -277,17 +279,12 @@ public class Persona {
 
 		// Name
 		@Getter private String prefix;
-		@Getter private boolean staffNameEnabled;
+		@Getter private boolean staffNameEnabled; // Whether to colour the player's RP name.
 		@Getter private String[] namePieces = new String[2];
 
-		// Skin
-		@Getter private PersonaSkin activeSkin;
-
-		// Statuses
-		private List<StatusEntry> activeStatuses = new ArrayList<>();
-
-		// Linked Player
-		@Getter private RPPlayer rpPlayer;
+		@Getter private PersonaSkin activeSkin; // Skin
+		//private List<StatusEntry> activeStatuses = new ArrayList<>(); // Statuses TODO: Status re-implementation. Ignoring for now.
+		@Getter private RPPlayer rpPlayer; // Player Wrapper
 
 		private PlayerInteraction(Player player) {
 			// Create additional detail and load a player into the persona.
@@ -351,6 +348,31 @@ public class Persona {
 		}
 
 		// MODIFIERS //
+		/**
+		 * @param prefix Sets the prefix to this. If length 0 then it becomes null.
+		 */
+		public void setPrefix(String prefix) {
+			if (prefix == null || prefix.length() > 0) {
+				this.prefix = prefix;
+			} else {
+				this.prefix = null;
+			}
+		}
+
+		/**
+		 * @param skinID Changes this persona to be using the given skin ID.
+		 */
+		public void setSkin(int skinID) {
+			if (rpPlayer != null) {
+				Player player = rpPlayer.getPlayer();
+				this.activeSkin = PersonaSkin.getFromID(skinID);
+				if (player != null) {
+					PersonaSkin.refreshPlayerSync(player);
+				}
+			}
+		}
+
+		// UTIL //
 		private void updateNickname(String name) {
 			if (rpPlayer != null) {
 				Player player = rpPlayer.getPlayer();
