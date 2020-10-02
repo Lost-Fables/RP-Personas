@@ -412,7 +412,7 @@ public class Persona {
 				final ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
 				{
 					BookMeta meta = (BookMeta) book.getItemMeta();
-					meta.setPages(BookUtil.getPagesForString(persona.getDescription()));
+					meta.setPages(BookUtil.getStringAsPages(persona.getDescription()));
 					book.setItemMeta(meta);
 				}
 				new BookStream(player, book, "Open to Edit! Done to complete!") {
