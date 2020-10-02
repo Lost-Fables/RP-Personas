@@ -8,6 +8,7 @@ import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.*;
 import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
+import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -66,10 +67,10 @@ public class PersonaSkin {
 		DISABLED_PACKETS = localDisable;
 	}
 
-	private int skinID;
-	private String name;
-	private String texture;
-	private WrappedSignedProperty mojangData;
+	@Getter private int skinID;
+	@Getter private String name;
+	@Getter private String texture;
+	@Getter private WrappedSignedProperty mojangData;
 
 	public static PersonaSkin getFromID(int skinID) {
 		if (skinID > 0) {
@@ -87,22 +88,6 @@ public class PersonaSkin {
 		this.texture = texture;
 
 		this.mojangData = new WrappedSignedProperty("textures", texture, signature);
-	}
-
-	public int getSkinID() {
-		return skinID;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getTextureValue() {
-		return texture;
-	}
-
-	public WrappedSignedProperty getMojangData() {
-		return mojangData;
 	}
 
 	public static void refreshOthers(Player p) {

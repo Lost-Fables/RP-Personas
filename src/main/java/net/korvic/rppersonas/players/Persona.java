@@ -6,6 +6,7 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.players.personas.PersonaEnderHolder;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.players.statuses.StatusEntry;
+import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Bukkit;
@@ -78,7 +79,7 @@ public class Persona {
 
 	protected static void cleanup(int personaID) {
 		Persona persona = loadedPersonas.get(personaID);
-		if (persona != null && persona.additionalData == null && !persona.loadLocked) {
+		if (persona != null && persona.playerInteraction == null && !persona.loadLocked) {
 			persona.unload();
 		}
 	}
@@ -103,10 +104,13 @@ public class Persona {
 	@Getter private Inventory enderChest;
 
 	// If the persona is loaded we need additional data
-	private PersonaData additionalData;
+	private PlayerInteraction playerInteraction;
 
 	// Load Locking to prevent loading into something being unloaded or unloading twice
 	private boolean loadLocked = false;
+
+	// Has had additionalData loaded (assigned/loaded by player), or any details changed.
+	private boolean altered = false;
 
 	private Persona(int personaID) {
 		DataMapFilter data = RPPersonas.get().getPersonasSQL().getBasicPersonaInfo(personaID);
@@ -144,11 +148,12 @@ public class Persona {
 		}
 	}
 
+	// LOAD & SAVE
 	private void unload() {
 		loadLocked = true;
-		this.additionalData.unload();
-		this.additionalData = null;
-		// Save data
+		this.playerInteraction.unload();
+		this.playerInteraction = null;
+		save();
 		loadedPersonas.remove(personaID);
 	}
 
@@ -157,15 +162,80 @@ public class Persona {
 	 */
 	public void loadPlayer(Player player) {
 		if (!loadLocked) {
-			this.additionalData = new PersonaData(player);
+			this.altered = true;
+			this.playerInteraction = new PlayerInteraction(player);
 		}
+	}
+
+	/**
+	 * Saves the given persona's data if it has possibly been altered.
+	 */
+	public void save() {
+		this.loadLocked = true;
+		if (this.altered) {
+			if (playerInteraction != null) {
+				playerInteraction.save();
+			} else {
+				RPPersonas.get().getPersonasSQL().registerOrUpdate(getBaseInfo());
+			}
+		}
+		this.loadLocked = false;
+	}
+
+	// ACCESSORS
+
+	/**
+	 * @return A map of Language Name to Language Level for this Persona.
+	 */
+	public Map<String, Short> getLanguages() {
+		return RPPersonas.get().getLanguageSQL().getLanguages(personaID);
+	}
+
+	private DataMapFilter getBaseInfo() {
+		if (playerInteraction != null) {
+			playerInteraction.updateSavedInventory();
+		}
+
+		DataMapFilter data = new DataMapFilter();
+		data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID)
+			.put(PersonasSQL.PERSONAID, personaID)
+			.put(PersonasSQL.ALIVE, alive)
+			.put(PersonasSQL.INVENTORY, savedInventory)
+			.put(PersonasSQL.NAME, name);
+		if (nickname.equals(name)) {
+			data.put(PersonasSQL.NICKNAME, null);
+		} else {
+			data.put(PersonasSQL.NICKNAME, nickname);
+		}
+		if (enderChest != null) {
+			data.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderChest));
+		}
+		return data;
+	}
+
+	// MODIFIERS
+
+	/**
+	 * @param name Sets the name to the given String.
+	 */
+	public void setName(String name) {
+		this.altered = true;
+		this.name = name;
+	}
+
+	/**
+	 * @param inventory Update the saved inventory contents to the one provided.
+	 */
+	public void setSavedInventory(PlayerInventory inventory) {
+		this.savedInventory = InventoryUtil.serializeItems(inventory);
 	}
 
 
 	/**
 	 * A sub-class for data that's only loaded when a person is playing as this persona.
+	 * NOTE: Player interactions should ONLY go within this class.
 	 */
-	private static class PersonaData {
+	private class PlayerInteraction {
 
 		// Name
 		@Getter private String prefix;
@@ -173,7 +243,7 @@ public class Persona {
 		@Getter private String[] namePieces = new String[2];
 
 		// Skin
-		private PersonaSkin activeSkin;
+		@Getter private PersonaSkin activeSkin;
 
 		// Statuses
 		private List<StatusEntry> activeStatuses = new ArrayList<>();
@@ -181,15 +251,64 @@ public class Persona {
 		// Linked Player
 		@Getter private RPPlayer rpPlayer;
 
-		private PersonaData(Player player) {
+		private PlayerInteraction(Player player) {
 			// Create additional detail and load a player into the persona.
 		}
 
+		// LOAD & SAVE
 		/**
 		 * Unloads the given additional data such that the Persona is no longer in use.
 		 */
 		public void unload() {
 			// Send player back to menu if they're still online.
+		}
+
+		/**
+		 * Saves data for this persona with the active RPPlayer.
+		 */
+		public void save() {
+			Player player = rpPlayer.getPlayer();
+			DataMapFilter data = getBaseInfo();
+			data.put(PersonasSQL.PREFIX, prefix);
+			if (player != null) {
+				data.put(PersonasSQL.LOCATION, player.getLocation())
+					.put(PersonasSQL.HEALTH, player.getHealth())
+					.put(PersonasSQL.HUNGER, player.getFoodLevel());
+			}
+			if (activeSkin != null) {
+				data.put(PersonasSQL.SKINID, activeSkin.getSkinID());
+			} else {
+				data.put(PersonasSQL.SKINID, 0);
+			}
+			RPPersonas.get().getPersonasSQL().registerOrUpdate(data);
+			// Save data with the given RPPlayer
+		}
+
+		private void updateSavedInventory() {
+			setSavedInventory(rpPlayer.getPlayer().getInventory());
+		}
+
+		// ACCESSORS //
+		/**
+		 * @return A formatted name without colours for the given character as [Prefix] Name
+		 */
+		public String getChatName() {
+			if (prefix != null) {
+				return "[" + prefix + "] " + nickname;
+			} else {
+				return nickname;
+			}
+		}
+
+		/**
+		 * @return The active skin ID.
+		 */
+		public int getActiveSkinID() {
+			if (activeSkin != null) {
+				return activeSkin.getSkinID();
+			} else {
+				return 0;
+			}
 		}
 
 	}

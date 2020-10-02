@@ -65,20 +65,7 @@ public class OldPersona {
 	}
 
 	// GET //
-	public String getChatName() {
-		if (prefix != null) {
-			return "[" + prefix + "] " + nickName;
-		} else {
-			return nickName;
-		}
-	}
-	public int getActiveSkinID() {
-		if (activeSkin != null) {
-			return activeSkin.getSkinID();
-		} else {
-			return 0;
-		}
-	}
+
 
 	public Map<String, Object> getLoadedInfo() {
 		Map<String, Object> output = new HashMap<>();
@@ -108,10 +95,6 @@ public class OldPersona {
 		output.put(PersonasSQL.PERSONAID, personaID);
 
 		return output;
-	}
-
-	public Map<String, Short> getLanguages() {
-		return plugin.getLanguageSQL().getLanguages(personaID);
 	}
 
 	public String getFormattedBasicInfo() {
