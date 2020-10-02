@@ -348,7 +348,7 @@ public class PersonasSQL extends BaseSQL {
 
 				Persona pers = Persona.getPersona(personaID);
 				if (pers != null) {
-					pers.setSkin(0);
+					pers.getPlayerInteraction().setSkin(0);
 				}
 
 				DataMapFilter data = new DataMapFilter();

@@ -7,7 +7,8 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.accounts.OldAccount;
+import net.korvic.rppersonas.players.Account;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.death.CorpseHandler;
 import net.korvic.rppersonas.players.listeners.CorpseListener;
 import net.korvic.rppersonas.players.listeners.SkinDisplayListener;
@@ -33,20 +34,20 @@ public class PersonaCommands extends BaseCommand {
 	private RPPersonas plugin;
 	private PersonaSetCommands personaSetCommands;
 	private PersonaDescCommands personaDescCommands;
-	private StatusCommands statusCommands;
+	//private StatusCommands statusCommands;
 
 	public PersonaCommands (RPPersonas plugin) {
 		this.plugin = plugin;
 		this.personaSetCommands = new PersonaSetCommands(plugin);
 		this.personaDescCommands = new PersonaDescCommands(plugin);
-		this.statusCommands = new StatusCommands(plugin);
+		//this.statusCommands = new StatusCommands(plugin);
 	}
 
 	@Cmd(value = "Get the information on someone else's persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public void info(CommandSender sender,
-					 @Arg(value = "Account", description = "Username or Account ID") @Default(value = "@p") OldAccount account,
+					 @Arg(value = "Account", description = "Username or Account ID") @Default(value = "@p") Account account,
 					 @Arg(value = "Persona ID", description = "Specific Persona ID") @Default(value = "-1") int personaID) {
-		for (int id : account.getLivePersonaIDs()) {
+		for (int id : account.getPersonaIDs()) {
 		}
 	}
 
@@ -54,12 +55,12 @@ public class PersonaCommands extends BaseCommand {
 	public void execute(CommandSender sender,
 						@Arg(value = "Player", description = "The player which you're executing.") Player victim) {
 		if (sender instanceof Player) {
-			OldPersona victimPersona = plugin.getPersonaHandler().getLoadedPersona(victim);
+			Persona victimPersona = Persona.getPersona(victim);
 			if (victimPersona != null && victimPersona.isAlive()) {
 				Player killer = (Player) sender;
 				if (LocationUtil.isClose(killer, victim, EXECUTE_DISTANCE)) {
 					if (!plugin.getDeathHandler().hasRequest(victim)) {
-						OldPersona killerPersona = plugin.getPersonaHandler().getLoadedPersona(killer);
+						Persona killerPersona = Persona.getPersona(killer);
 						if (killerPersona != null && victimPersona.getAccountID() != killerPersona.getAccountID()) {
 							plugin.getDeathHandler().requestExecute(killer, victim);
 							msg(RPPersonas.PRIMARY_DARK + "Execution request sent!");
@@ -120,11 +121,13 @@ public class PersonaCommands extends BaseCommand {
 				meta.setLore(lore);
 				corpse.setItemMeta(meta);
 
-				OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
-				DataMapFilter data = new DataMapFilter().put(KarmaSQL.PERSONAID, pers.getPersonaID())
-														.put(KarmaSQL.ACTION, "RUIN_CORPSE")
-														.put(KarmaSQL.MODIFIER, plugin.getKarmaSQL().calculateRuinModifier(pers.getPersonaID()));
-				plugin.getKarmaSQL().registerOrUpdate(data);
+				Persona pers = Persona.getPersona(p);
+				if (pers != null) {
+					DataMapFilter data = new DataMapFilter().put(KarmaSQL.PERSONAID, pers.getPersonaID())
+															.put(KarmaSQL.ACTION, "RUIN_CORPSE")
+															.put(KarmaSQL.MODIFIER, plugin.getKarmaSQL().calculateRuinModifier(pers.getPersonaID()));
+					plugin.getKarmaSQL().registerOrUpdate(data);
+				}
 
 				ItemUtil.removeCustomTag(corpse, CorpseHandler.CORPSE_KEY);
 				InventoryUtil.addOrDropItem(p, corpse);
@@ -177,10 +180,10 @@ public class PersonaCommands extends BaseCommand {
 		}
 	}
 
-	@Cmd(value = "Commands to modify the statuses on your persona.", permission = RPPersonas.PERMISSION_START + ".status")
+	/*@Cmd(value = "Commands to modify the statuses on your persona.", permission = RPPersonas.PERMISSION_START + ".status")
 	public BaseCommand status() {
 		return statusCommands;
-	}
+	}*/
 
 	@Cmd(value = "Set information about your persona.", permission = RPPersonas.PERMISSION_START + ".accepted")
 	public BaseCommand set() {
