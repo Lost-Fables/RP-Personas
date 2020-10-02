@@ -3,10 +3,12 @@ package net.korvic.rppersonas.players;
 import co.lotc.core.bukkit.book.BookStream;
 import co.lotc.core.bukkit.util.BookUtil;
 import co.lotc.core.bukkit.util.InventoryUtil;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.players.personas.PersonaEnderHolder;
+import net.korvic.rppersonas.players.personas.PersonaInventoryHolder;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.players.statuses.StatusEntry;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
@@ -36,7 +38,21 @@ public class Persona {
 	////////////////
 
 	private static Map<Integer, Persona> loadedPersonas = new HashMap<>();
+	private static Map<Player, Integer> playerPersonaMap = new HashMap<>();
 	private static List<Integer> loadBlocked = new ArrayList<>();
+
+	/**
+	 * @param player The player you're searching for.
+	 * @return The persona that player is currently assigned to, if it exists.
+	 */
+	public static Persona getPersona(Player player) {
+		int personaID = playerPersonaMap.get(player);
+		if (personaID > 0) {
+			return loadedPersonas.get(personaID);
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * @param personaID The Lost Fables persona ID
@@ -133,7 +149,7 @@ public class Persona {
 	private PlayerInteraction playerInteraction;
 
 	// Load Locking to prevent loading into something being unloaded or unloading twice
-	private boolean loadLocked = false;
+	@Getter private boolean loadLocked = false;
 
 	// Has had additionalData loaded (assigned/loaded by player), or any details changed.
 	private boolean altered = false;
@@ -166,7 +182,7 @@ public class Persona {
 		}
 
 		if (data.containsKey(PersonasSQL.ENDERCHEST)) {
-			this.enderChest = Bukkit.createInventory(new PersonaEnderHolder(), InventoryType.ENDER_CHEST, this.nickname + "'s Stash");
+			this.enderChest = Bukkit.createInventory(new PersonaEnderHolder(this.personaID), InventoryType.ENDER_CHEST, this.nickname + "'s Stash");
 			String personaEnderData = (String) data.get(PersonasSQL.ENDERCHEST);
 			ItemStack[] items = InventoryUtil.deserializeItemsToArray(personaEnderData);
 			this.enderChest.setContents(items);
@@ -191,6 +207,7 @@ public class Persona {
 		if (!loadLocked) {
 			this.altered = true;
 			this.playerInteraction = new PlayerInteraction(player);
+			playerPersonaMap.put(player, this.personaID);
 		}
 	}
 
@@ -227,6 +244,21 @@ public class Persona {
 	 */
 	public Map<String, Short> getLanguages() {
 		return RPPersonas.get().getLanguageSQL().getLanguages(personaID);
+	}
+
+	/**
+	 * @return An inventory of the player using, or a new inventory representing
+	 *         the contents of the persona's inventory for modification.
+	 */
+	public PlayerInventory getInventory() {
+		if (playerInteraction != null) {
+			return playerInteraction.getRpPlayer().getPlayer().getInventory();
+		} else {
+			this.loadLocked = true;
+			PlayerInventory inv = (PlayerInventory) Bukkit.createInventory(new PersonaInventoryHolder(this.personaID), InventoryType.PLAYER);
+			inv.setContents(InventoryUtil.deserializeItemsToArray(savedInventory));
+			return inv;
+		}
 	}
 
 	/**
@@ -289,7 +321,10 @@ public class Persona {
 	 * @param inventory Update the saved inventory contents to the one provided.
 	 */
 	public void setSavedInventory(PlayerInventory inventory) {
+		this.loadLocked = true;
 		this.savedInventory = InventoryUtil.serializeItems(inventory);
+		save();
+		this.loadLocked = false;
 	}
 
 	/**
@@ -302,7 +337,11 @@ public class Persona {
 	}
 
 
-	/** <PlayerInteraction>
+	////////////////////////////
+	//// Player Interaction ////
+	////////////////////////////
+
+	/**
 	 * A sub-class for data that's only loaded when a person is playing as this persona.
 	 * NOTE: Player interactions should ONLY go within this class.
 	 */
@@ -326,6 +365,7 @@ public class Persona {
 		 * Unloads the given additional data such that the Persona is no longer in use.
 		 */
 		public void unload() {
+			playerPersonaMap.remove(rpPlayer.getPlayer());
 			// Send player back to menu if they're still online.
 		}
 

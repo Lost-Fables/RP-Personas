@@ -145,7 +145,7 @@ public final class RPPersonas extends JavaPlugin {
 			manager.registerEvents(new JoinQuitListener(this), this);
 			manager.registerEvents(new StatusEventListener(this), this);
 			manager.registerEvents(new InspectListener(this), this);
-			manager.registerEvents(new EnderListener(this), this);
+			manager.registerEvents(new InventoryListener(this), this);
 			manager.registerEvents(new CorpseListener(this), this);
 			manager.registerEvents(new KitListener(this), this);
 
