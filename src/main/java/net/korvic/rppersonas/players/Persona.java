@@ -2,6 +2,7 @@ package net.korvic.rppersonas.players;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import lombok.Getter;
+import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.players.personas.PersonaEnderHolder;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
@@ -67,7 +68,7 @@ public class Persona {
 	 * @param personaID Forcefully unload the given persona ID. This may kick players back to the main menu
 	 *                  and/or to the lobby itself.
 	 */
-	protected static void unloadPersona(int personaID) {
+	public static void unloadPersona(int personaID) {
 		loadBlocked.add(personaID);
 		Persona persona = loadedPersonas.get(personaID);
 		if (persona != null) {
@@ -77,10 +78,31 @@ public class Persona {
 		loadBlocked.remove(personaID);
 	}
 
-	protected static void cleanup(int personaID) {
+	/**
+	 * Runs unload for all currently loaded Personas.
+	 */
+	public static void unloadAllPersonas() {
+		for (int personaID : loadedPersonas.keySet()) {
+			unloadPersona(personaID);
+		}
+	}
+
+	/**
+	 * @param personaID Runs cleanup for the given persona.
+	 */
+	public static void cleanup(int personaID) {
 		Persona persona = loadedPersonas.get(personaID);
 		if (persona != null && persona.playerInteraction == null && !persona.loadLocked) {
 			persona.unload();
+		}
+	}
+
+	/**
+	 * Runs cleanup and all currently loaded personas.
+	 */
+	public static void cleanupAll() {
+		for (int personaID : loadedPersonas.keySet()) {
+			cleanup(personaID);
 		}
 	}
 
@@ -225,6 +247,21 @@ public class Persona {
 	}
 
 	/**
+	 * @param name Updates the nickname for the given Persona.
+	 */
+	public void setNickname(String name) {
+		if (name.length() > 0) {
+			this.nickname = name;
+		} else {
+			this.nickname = this.name;
+		}
+
+		if (playerInteraction != null) {
+			playerInteraction.updateNickname(name);
+		}
+	}
+
+	/**
 	 * @param inventory Update the saved inventory contents to the one provided.
 	 */
 	public void setSavedInventory(PlayerInventory inventory) {
@@ -309,6 +346,30 @@ public class Persona {
 				return activeSkin.getSkinID();
 			} else {
 				return 0;
+			}
+		}
+
+		// MODIFIERS //
+		private void updateNickname(String name) {
+			if (rpPlayer != null) {
+				Player player = rpPlayer.getPlayer();
+				namePieces = new String[2];
+				String prefix = "";
+				if (staffNameEnabled) {
+					prefix = RPPersonas.getPrefixColor(player);
+				}
+
+				String personaName = prefix + nickname;
+				int maxMidSize = 16;
+				int maxSuffixSize = 64;
+
+				namePieces[0] = personaName.substring(0, Math.min(maxMidSize, personaName.length()));
+				if (personaName.length() > maxMidSize) {
+					String suffix = prefix + personaName.substring(maxMidSize, personaName.length());
+					namePieces[1] = suffix.substring(0, Math.min(maxSuffixSize, suffix.length()));
+				}
+
+				BoardManager.addPlayer(player, namePieces);
 			}
 		}
 
