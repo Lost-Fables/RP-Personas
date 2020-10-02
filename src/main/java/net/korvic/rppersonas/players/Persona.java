@@ -225,6 +225,14 @@ public class Persona {
 		return RPPersonas.get().getLanguageSQL().getLanguages(personaID);
 	}
 
+	/**
+	 * @return The current stored description for this persona.
+	 */
+	// TODO: Replace this with just a description grabber alone?
+	public String getDescription() {
+		return (String) RPPersonas.get().getPersonasSQL().getBasicPersonaInfo(personaID).get(PersonasSQL.DESCRIPTION);
+	}
+
 	private DataMapFilter getBaseInfo() {
 		if (playerInteraction != null) {
 			playerInteraction.updateSavedInventory();
