@@ -2,7 +2,6 @@ package net.korvic.rppersonas.players.statuses;
 
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

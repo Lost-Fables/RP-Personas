@@ -11,7 +11,6 @@ import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Range;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.players.statuses.Status;
 import net.korvic.rppersonas.players.statuses.StatusEntry;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatusCommands extends BaseCommand {
-
+	/*
 	private RPPersonas plugin;
 
 	public StatusCommands(RPPersonas plugin) {
@@ -305,6 +304,6 @@ public class StatusCommands extends BaseCommand {
 				buildActiveStatusMenu(menu, pers).openSession(menuAction.getPlayer());
 			}
 		};
-	}
+	}*/
 
 }

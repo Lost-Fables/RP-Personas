@@ -14,9 +14,9 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.util.MessageUtil;
 import co.lotc.core.util.TimeUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.conversation.PersonaDeleteConvo;
 import net.korvic.rppersonas.players.conversation.RezAppConvo;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.players.personas.PersonaHandler;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.players.conversation.PersonaSkinConvo;
@@ -62,7 +62,7 @@ public class AccountCommands extends BaseCommand {
 			if (!p.equals(other)) {
 				int accountID = plugin.getUuidAccountMapSQL().getAccountID(p.getUniqueId());
 				if (accountID > 0 && other != null) {
-					plugin.getAccountHandler().attemptLink(p, other);
+					//plugin.getAccountHandler().attemptLink(p, other);
 					msg(RPPersonas.PRIMARY_DARK + "Use " + RPPersonas.SECONDARY_LIGHT + "/account altaccept " + p.getName() + RPPersonas.PRIMARY_DARK + "to finalize the link.\n"
 						+ RPPersonas.PRIMARY_DARK + "All linked accounts take full responsibility for the actions of one-another.");
 				} else {
@@ -81,7 +81,7 @@ public class AccountCommands extends BaseCommand {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			if (!p.equals(other)) {
-				plugin.getAccountHandler().finalizeLink(other, p);
+				//plugin.getAccountHandler().finalizeLink(other, p);
 				msg(ACCOUNT_LINK_SUCCESS);
 				other.sendMessage(ACCOUNT_LINK_SUCCESS);
 			} else {
@@ -152,7 +152,7 @@ public class AccountCommands extends BaseCommand {
 			icons.add(getDiscordIcon(data));
 			icons.add(getSkinsIcon(data));
 			icons.add(getPersonasIcon(accountID));
-			icons.add(getStatusIcon());
+			//icons.add(getStatusIcon());
 
 			homeMenu = Menu.fromIcons(ChatColor.BOLD + "Account Management", icons);
 			return homeMenu;
@@ -261,7 +261,13 @@ public class AccountCommands extends BaseCommand {
 			ArrayList<Icon> icons = new ArrayList<>();
 			PersonaSkin currentSkin = null;
 			if (plugin.getPersonaHandler().getLoadedPersona(player) != null) {
-				currentSkin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
+				Persona pers = Persona.getPersona(player);
+				if (pers != null) {
+					Persona.PlayerInteraction persInt = pers.getPlayerInteraction();
+					if (persInt != null) {
+						currentSkin = persInt.getActiveSkin();
+					}
+				}
 			}
 
 			for (int skinID : skinData.keySet()) {
@@ -273,7 +279,7 @@ public class AccountCommands extends BaseCommand {
 					public ItemStack getItemStack(MenuAgent menuAgent) {
 						String texture;
 						if (isActive) {
-							texture = finalCurrentSkin.getTextureValue();
+							texture = finalCurrentSkin.getTexture();
 						} else {
 							texture = (String) plugin.getSkinsSQL().getData(skinID).get(SkinsSQL.TEXTURE);
 						}
@@ -299,9 +305,11 @@ public class AccountCommands extends BaseCommand {
 						ClickType clickType = menuAction.getClick();
 
 						if (clickType.equals(ClickType.LEFT) || clickType.equals(ClickType.SHIFT_LEFT)) {
-							int personaID = plugin.getPersonaHandler().getLoadedPersona(player).getPersonaID();
-							plugin.getPersonaHandler().updateActiveSkin(personaID, skinID, menuAction.getPlayer());
-							menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin updated!");
+							Persona pers = Persona.getPersona(player);
+							if (pers != null) {
+								plugin.getPersonaHandler().updateActiveSkin(pers.getPersonaID(), skinID, menuAction.getPlayer());
+								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin updated!");
+							}
 
 						} else if (clickType.equals(ClickType.RIGHT) || clickType.equals(ClickType.SHIFT_RIGHT)) {
 							Player p = menuAction.getPlayer();
@@ -363,9 +371,12 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					int personaID = plugin.getPersonaHandler().getLoadedPersona(player).getPersonaID();
-					plugin.getPersonaHandler().updateActiveSkin(personaID, 0, menuAction.getPlayer());
-					menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin reset!");
+					Persona pers = Persona.getPersona(player);
+					if (pers != null) {
+						int personaID = pers.getPersonaID();
+						plugin.getPersonaHandler().updateActiveSkin(personaID, 0, menuAction.getPlayer());
+						menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin reset!");
+					}
 				}
 			});
 
@@ -451,13 +462,14 @@ public class AccountCommands extends BaseCommand {
 						DataMapFilter data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
 
 						PersonaSkin skin = null;
-						if (plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()) != null) {
-							skin = plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()).getActiveSkin();
+						Persona pers = Persona.getPersona(menuAgent.getPlayer());
+						if (pers != null) {
+							skin = pers.getPlayerInteraction().getActiveSkin();
 						}
 
 						ItemStack item;
 						if (skin != null) {
-							item = ItemUtil.getSkullFromTexture(skin.getTextureValue());
+							item = ItemUtil.getSkullFromTexture(skin.getTexture());
 						} else {
 							item = new ItemStack(Material.PLAYER_HEAD);
 						}
@@ -519,10 +531,15 @@ public class AccountCommands extends BaseCommand {
 					@Override
 					public ItemStack getItemStack(MenuAgent menuAgent) {
 						DataMapFilter data = plugin.getPersonasSQL().getBasicPersonaInfo(personaID);
-						PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(menuAgent.getPlayer()).getActiveSkin();
+						Persona persona = Persona.getPersona(menuAgent.getPlayer());
 						ItemStack item;
-						if (skin != null) {
-							item = ItemUtil.getSkullFromTexture(skin.getTextureValue());
+						if (persona != null) {
+							PersonaSkin skin = persona.getPlayerInteraction().getActiveSkin();
+							if (skin != null) {
+								item = ItemUtil.getSkullFromTexture(skin.getTexture());
+							} else {
+								item = ItemUtil.getSkullFromTexture(DEAD_PERSONA);
+							}
 						} else {
 							item = ItemUtil.getSkullFromTexture(DEAD_PERSONA);
 						}
@@ -616,7 +633,7 @@ public class AccountCommands extends BaseCommand {
 		}
 
 		// STATUS
-		private Icon getStatusIcon() {
+		/*private Icon getStatusIcon() {
 			return new Button() {
 				@Override
 				public ItemStack getItemStack(MenuAgent menuAgent) {
@@ -634,11 +651,11 @@ public class AccountCommands extends BaseCommand {
 
 				@Override
 				public void click(MenuAction menuAction) {
-					OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(menuAction.getPlayer());
+					Persona pers = Persona.getPersona(menuAction.getPlayer());
 					StatusCommands.buildMainMenu(homeMenu, pers).openSession(menuAction.getPlayer());
 				}
 			};
-		}
+		}*/
 
 	}
 

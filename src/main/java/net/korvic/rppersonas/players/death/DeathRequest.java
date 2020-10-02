@@ -3,7 +3,6 @@ package net.korvic.rppersonas.players.death;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.sql.DeathSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;

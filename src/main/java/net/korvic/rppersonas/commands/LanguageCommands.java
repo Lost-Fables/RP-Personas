@@ -3,7 +3,6 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Range;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.players.personas.PersonaLanguage;
 import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;

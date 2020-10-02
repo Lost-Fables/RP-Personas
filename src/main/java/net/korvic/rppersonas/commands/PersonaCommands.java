@@ -11,7 +11,6 @@ import net.korvic.rppersonas.players.accounts.OldAccount;
 import net.korvic.rppersonas.players.death.CorpseHandler;
 import net.korvic.rppersonas.players.listeners.CorpseListener;
 import net.korvic.rppersonas.players.listeners.SkinDisplayListener;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.sql.KarmaSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;

@@ -2,7 +2,6 @@ package net.korvic.rppersonas.commands;
 
 import co.lotc.core.command.annotate.Cmd;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

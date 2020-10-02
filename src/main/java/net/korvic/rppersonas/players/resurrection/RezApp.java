@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.players.conversation.RezAppConvo.RezAppResponses;
 import net.korvic.rppersonas.players.death.Altar;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.RezAppSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;

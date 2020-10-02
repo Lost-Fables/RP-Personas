@@ -146,7 +146,7 @@ public class Persona {
 	@Getter private Inventory enderChest;
 
 	// If the persona is loaded we need additional data
-	private PlayerInteraction playerInteraction;
+	@Getter private PlayerInteraction playerInteraction;
 
 	// Load Locking to prevent loading into something being unloaded or unloading twice
 	@Getter private boolean loadLocked = false;
@@ -346,7 +346,7 @@ public class Persona {
 	 * A sub-class for data that's only loaded when a person is playing as this persona.
 	 * NOTE: Player interactions should ONLY go within this class.
 	 */
-	private class PlayerInteraction {
+	public class PlayerInteraction {
 
 		// Name
 		@Getter private String prefix;

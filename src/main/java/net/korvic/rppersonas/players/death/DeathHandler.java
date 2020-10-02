@@ -1,7 +1,6 @@
 package net.korvic.rppersonas.players.death;
 
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.sql.KarmaSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.entity.Player;

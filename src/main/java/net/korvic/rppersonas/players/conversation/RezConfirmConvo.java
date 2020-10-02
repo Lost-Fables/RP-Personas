@@ -5,7 +5,6 @@ import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.players.death.Altar;
 import net.korvic.rppersonas.players.death.Corpse;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.players.statuses.DisabledStatus;

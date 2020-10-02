@@ -4,7 +4,6 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.Bukkit;

@@ -2,7 +2,6 @@ package net.korvic.rppersonas.players.listeners;
 
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.players.personas.OldPersona;
 import net.korvic.rppersonas.players.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.AccountsSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
