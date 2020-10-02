@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class BlindStatus extends Status {
-
+/*
 	public static final String NAME = "Blindness";
 	public static final String DESC = "How are you reading this? You're unable to see anything in front of you.";
 
@@ -27,6 +27,6 @@ public class BlindStatus extends Status {
 	@Override
 	public void refreshEffect(Player player, byte severity) {
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.BLINDNESS));
-	}
+	}*/
 
 }

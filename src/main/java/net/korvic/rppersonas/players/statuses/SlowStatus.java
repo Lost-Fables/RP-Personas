@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class SlowStatus extends Status {
-
+/*
 	public static final String NAME = "Slowness";
 	public static final String DESC = "Palms are sweaty, knees weak, arms are heavy. All movements are more sluggish than normal.";
 
@@ -29,6 +29,6 @@ public class SlowStatus extends Status {
 	public void refreshEffect(Player player, byte severity) {
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.SLOW, severity));
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.SLOW_DIGGING, severity));
-	}
+	}*/
 
 }

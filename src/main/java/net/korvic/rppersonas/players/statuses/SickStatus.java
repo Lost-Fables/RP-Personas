@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class SickStatus extends Status {
-
+/*
 	public static final String NAME = "Sickness";
 	public static final String DESC = "Vomit on your sweater already. The world spins around you, and you feel sick to your stomach.";
 
@@ -27,6 +27,6 @@ public class SickStatus extends Status {
 	@Override
 	public void refreshEffect(Player player, byte severity) {
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.CONFUSION));
-	}
+	}*/
 
 }

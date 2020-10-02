@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class DisabledStatus extends Status {
-
+/*
 	public static final String NAME = "";
 	public static final String DESC = "You are currently disabled from interacting with the world.";
 
@@ -49,6 +49,6 @@ public class DisabledStatus extends Status {
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.SLOW, 255));
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.BLINDNESS));
 		player.addPotionEffect(createInfiniteEffect(PotionEffectType.INVISIBILITY));
-	}
+	}*/
 
 }
