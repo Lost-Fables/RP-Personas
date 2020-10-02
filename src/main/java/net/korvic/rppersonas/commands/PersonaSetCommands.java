@@ -4,6 +4,7 @@ import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Default;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,7 +24,7 @@ public class PersonaSetCommands extends BaseCommand {
 					 @Arg(value = "Name", description = "The new display name of your persona.") String[] name) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			Persona pers = Persona.getPersona(p);
 
 			if (pers != null) {
 				StringBuilder builder = new StringBuilder();
@@ -40,7 +41,7 @@ public class PersonaSetCommands extends BaseCommand {
 					final Matcher matcher = pattern.matcher(builder.toString());
 					if (!matcher.find()) {
 						String finalName = builder.toString();
-						pers.setNickName(p, finalName);
+						pers.setNickname(finalName);
 						msg(RPPersonas.PRIMARY_DARK + "Display Name updated to " + RPPersonas.SECONDARY_LIGHT + finalName + RPPersonas.PRIMARY_DARK + ".");
 					} else {
 						msg(RPPersonas.PRIMARY_DARK + "That name contained illegal lettering.");
@@ -61,15 +62,26 @@ public class PersonaSetCommands extends BaseCommand {
 					   @Arg(value = "Prefix", description = "The prefix to use (no brackets needed). Leave empty to clear.") @Default(value = "") String prefix) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+			Persona pers = Persona.getPersona(p);
 			if (pers != null) {
-				pers.setPrefix(p, prefix);
+				pers.getPlayerInteraction().setPrefix(prefix);
 				msg(RPPersonas.PRIMARY_DARK + "Prefix updated to " + RPPersonas.SECONDARY_LIGHT + "[" + prefix + "]" + RPPersonas.PRIMARY_DARK + ".");
 			} else {
 				msg(RPPersonas.PRIMARY_DARK + "You need to register a persona first! Be sure to link your account to get started.");
 			}
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
+		}
+	}
+
+	@Cmd(value = "Update the description of your current persona.")
+	public void desc(CommandSender sender) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			Persona pers = Persona.getPersona(p);
+			if (pers != null && pers.getPlayerInteraction() != null) {
+				pers.getPlayerInteraction().openDescription();
+			}
 		}
 	}
 

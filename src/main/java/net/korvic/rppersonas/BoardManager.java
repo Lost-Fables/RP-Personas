@@ -1,5 +1,6 @@
 package net.korvic.rppersonas;
 
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,8 +21,6 @@ public class BoardManager {
 
 		nameBoard = manager.getNewScoreboard();
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			OldPersona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(p);
-			pers.setNickName(pers.getNickName());
 			addPlayer(p);
 		}
 	}
@@ -90,9 +89,9 @@ public class BoardManager {
 	}
 
 	public static void addPlayer(Player p) {
-		OldPersona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(p);
+		Persona pers = Persona.getPersona(p);
 		if (pers != null) {
-			addPlayer(p, pers.getNamePieces());
+			addPlayer(p, pers.getPlayerInteraction().getNamePieces());
 		}
 	}
 

@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PersonaDescCommands extends BaseCommand {
-
+/*
 	private RPPersonas plugin;
 
 	public PersonaDescCommands(RPPersonas plugin) {
@@ -43,6 +43,6 @@ public class PersonaDescCommands extends BaseCommand {
 		} else {
 			msg(RPPersonas.PRIMARY_DARK + PersonaCommands.NO_CONSOLE);
 		}
-	}
+	}*/
 
 }

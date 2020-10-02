@@ -10,6 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.*;
 import com.google.common.collect.Multimap;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -40,10 +41,10 @@ public class SkinDisplayListener {
 								UUID uuid = playerInfo.getProfile().getUUID();
 								Player player = Bukkit.getPlayer(uuid);
 								if (player != null) {
-									OldPersona pers = RPPersonas.get().getPersonaHandler().getLoadedPersona(player);
+									Persona pers = Persona.getPersona(player);
 									if (pers != null) {
 										WrappedGameProfile profile = playerInfo.getProfile();
-										String name = pers.getNamePieces()[0];
+										String name = pers.getPlayerInteraction().getNamePieces()[0];
 										if (showingMCNames.contains(event.getPlayer())) {
 											name = player.getName();
 											String prefix = RPPersonas.getPrefixColor(player);
@@ -53,10 +54,10 @@ public class SkinDisplayListener {
 										}
 										profile = profile.withName(name);
 
-										if (pers.getActiveSkinID() > 0) {
+										if (pers.getPlayerInteraction().getActiveSkinID() > 0) {
 											Multimap<String, WrappedSignedProperty> properties = profile.getProperties();
 											properties.removeAll("textures");
-											properties.put("textures", pers.getActiveSkin().getMojangData());
+											properties.put("textures", pers.getPlayerInteraction().getActiveSkin().getMojangData());
 											changed = true;
 										}
 
