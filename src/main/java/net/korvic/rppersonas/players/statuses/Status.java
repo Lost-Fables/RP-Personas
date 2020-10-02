@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Status {
-/*
+
 	// STATIC //
-	protected static final RPPersonas plugin = RPPersonas.get();
+	//protected static final RPPersonas plugin = RPPersonas.get();
 	protected static final int DEFAULT_DURATION = 1000*15;
 
 	private static final int INFINITE_POTION_DURATION = 100000;
 
-	@Getter private static List<Status> statuses = new ArrayList<>();
+	/*@Getter private static List<Status> statuses = new ArrayList<>();
 
 	public static List<String> getRegisteredStatusNames() {
 		List<String> output = new ArrayList<>();
@@ -51,7 +51,7 @@ public abstract class Status {
 	}
 	public static void clearStatus(String name, OldPersona pers) {
 		pers.clearStatus(name);
-	}
+	}*/
 
 	// UTIL //
 	public static PotionEffect createInfiniteEffect(PotionEffectType type) {
@@ -59,7 +59,7 @@ public abstract class Status {
 	}
 	public static PotionEffect createInfiniteEffect(PotionEffectType type, int amplifier) {
 		return new PotionEffect(type, INFINITE_POTION_DURATION, amplifier, false , false, false);
-	}
+	}/*
 
 	// INSTANCE //
 	@Getter private final String name;
