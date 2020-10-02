@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.players.listeners;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,9 +29,11 @@ public class InspectListener implements Listener {
 		if (e.getRightClicked() instanceof Player && inspector.isSneaking()) {
 			Player target = (Player) e.getRightClicked();
 			if (!(recentInteractions.containsKey(inspector) && recentInteractions.get(inspector).contains(target))) {
-
-				if (plugin.getPersonaHandler().getLoadedPersona(target) != null) {
-					inspector.sendMessage(plugin.getPersonaHandler().getPersonaInfo(target));
+				Persona persona = Persona.getPersona(target);
+				if (persona != null) {
+					inspector.sendMessage(RPPersonas.SECONDARY_DARK + target.getName() + "'s active persona.\n" + persona.getFormattedBasicInfo());
+				} else {
+					inspector.sendMessage(RPPersonas.PRIMARY_DARK + "Unable to find loaded persona for the given player.");
 				}
 
 				if (recentInteractions.containsKey(inspector)) {

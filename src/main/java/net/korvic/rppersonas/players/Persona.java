@@ -8,13 +8,17 @@ import lombok.Getter;
 import lombok.Setter;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.conversation.BaseConvo;
 import net.korvic.rppersonas.players.personas.PersonaEnderHolder;
 import net.korvic.rppersonas.players.personas.PersonaInventoryHolder;
+import net.korvic.rppersonas.players.personas.PersonaLanguage;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.players.statuses.StatusEntry;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
+import net.korvic.rppersonas.time.TimeManager;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -291,6 +295,50 @@ public class Persona {
 			data.put(PersonasSQL.ENDERCHEST, InventoryUtil.serializeItems(enderChest));
 		}
 		return data;
+	}
+
+	public String getFormattedBasicInfo() {
+		DataMapFilter data = RPPersonas.get().getPersonasSQL().getBasicPersonaInfo(personaID);
+		Map<String, Short> languages = getLanguages();
+
+		StringBuilder output = new StringBuilder(BaseConvo.DIVIDER +
+												 RPPersonas.PRIMARY_DARK + "Persona ID: " + RPPersonas.SECONDARY_LIGHT + String.format("%06d", (int) data.get(PersonasSQL.PERSONAID)) + "\n");
+		if (data.containsKey(PersonasSQL.NICKNAME)) {
+			output.append(RPPersonas.PRIMARY_DARK).append("Nickname: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.NICKNAME)).append("\n");
+		}
+		output.append(RPPersonas.PRIMARY_DARK).append("Name: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.NAME)).append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Age: ").append(RPPersonas.SECONDARY_LIGHT).append(TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE))).append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Race: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.RACE)).append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Gender: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.GENDER)).append("\n");
+
+		if (languages != null && languages.size() > 0) {
+			StringBuilder languageLine = new StringBuilder(RPPersonas.PRIMARY_DARK + "Languages: ");
+			boolean filled = false;
+			for (String key : languages.keySet()) {
+				if (filled) {
+					languageLine.append(RPPersonas.TERTIARY).append(ChatColor.BOLD).append(" | ");
+				} else {
+					filled = true;
+				}
+
+				PersonaLanguage lang = PersonaLanguage.getByName(key);
+				if (lang != null) {
+					languageLine.append(RPPersonas.SECONDARY_LIGHT);
+					if (lang.getTag().length() > 0) {
+						languageLine.append(lang.getTag()).append(" ");
+					}
+					languageLine.append(key.replace("_", " ")).append(" ").append(RPPersonas.SECONDARY_DARK).append(languages.get(key));
+				}
+			}
+			output.append(languageLine).append("\n");
+		}
+
+		if (data.containsKey(PersonasSQL.DESCRIPTION)) {
+			output.append(RPPersonas.PRIMARY_DARK).append("Description: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.DESCRIPTION)).append("\n");
+		}
+		output.append(BaseConvo.DIVIDER);
+
+		return output.toString();
 	}
 
 	// MODIFIERS
