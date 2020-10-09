@@ -34,21 +34,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 
 	@Override
 	protected boolean customStatement() {
-		connection = getSQLConnection();
-		try {
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = connection.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				PersonaHandler.updateHighestPersonaID(rs.getInt("PersonaID"));
-			}
-			close(ps, rs);
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
-		}
-
-		return true;
+		return false;
 	}
 
 	protected void addDataMappings() {
@@ -63,6 +49,27 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		if (data.containsKey(PERSONAID)) {
 			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
 		}
+	}
+
+	/**
+	 * @return The current max known persona ID.
+	 */
+	public int getHighestPersonaID() {
+		int output = 1;
+		connection = getSQLConnection();
+		try {
+			String stmt;
+			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQL_TABLE_NAME + ");";
+			PreparedStatement ps = connection.prepareStatement(stmt);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				output = rs.getInt("PersonaID");
+			}
+			close(ps, rs);
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
+		return output;
 	}
 
 	private PreparedStatement getSaveStatement(DataMapFilter data) {

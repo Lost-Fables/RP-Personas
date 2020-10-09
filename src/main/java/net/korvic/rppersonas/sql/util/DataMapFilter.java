@@ -87,6 +87,10 @@ public class DataMapFilter {
 		return this;
 	}
 
+	public boolean isEmpty() {
+		return data.isEmpty();
+	}
+
 	public Object get(String key) {
 		return data.get(key);
 	}

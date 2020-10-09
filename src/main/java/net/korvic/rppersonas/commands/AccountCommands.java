@@ -260,7 +260,7 @@ public class AccountCommands extends BaseCommand {
 
 			ArrayList<Icon> icons = new ArrayList<>();
 			PersonaSkin currentSkin = null;
-			if (plugin.getPersonaHandler().getLoadedPersona(player) != null) {
+			if (Persona.getPersona(player) != null) {
 				Persona pers = Persona.getPersona(player);
 				if (pers != null) {
 					Persona.PlayerInteraction persInt = pers.getPlayerInteraction();
@@ -307,7 +307,7 @@ public class AccountCommands extends BaseCommand {
 						if (clickType.equals(ClickType.LEFT) || clickType.equals(ClickType.SHIFT_LEFT)) {
 							Persona pers = Persona.getPersona(player);
 							if (pers != null) {
-								plugin.getPersonaHandler().updateActiveSkin(pers.getPersonaID(), skinID, menuAction.getPlayer());
+								pers.getPlayerInteraction().setSkin(skinID);
 								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin updated!");
 							}
 
@@ -315,8 +315,8 @@ public class AccountCommands extends BaseCommand {
 							Player p = menuAction.getPlayer();
 							p.closeInventory();
 							p.sendMessage(RPPersonas.PRIMARY_DARK + "Deleting skin...");
-							plugin.getPersonaHandler().deleteSkin(skinID);
 							plugin.getPersonasSQL().unlinkSkin(skinID);
+							plugin.getSkinsSQL().deleteSkin(skinID);
 							p.sendMessage(RPPersonas.PRIMARY_DARK + "Skin deleted.");
 						}
 					}
@@ -373,8 +373,7 @@ public class AccountCommands extends BaseCommand {
 				public void click(MenuAction menuAction) {
 					Persona pers = Persona.getPersona(player);
 					if (pers != null) {
-						int personaID = pers.getPersonaID();
-						plugin.getPersonaHandler().updateActiveSkin(personaID, 0, menuAction.getPlayer());
+						pers.getPlayerInteraction().setSkin(0);
 						menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Persona skin reset!");
 					}
 				}
@@ -508,7 +507,7 @@ public class AccountCommands extends BaseCommand {
 
 							if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
 								menuAction.getPlayer().closeInventory();
-								plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
+								Persona.getPersona(personaID).loadPlayer(menuAction.getPlayer());
 								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + currentName + RPPersonas.PRIMARY_DARK + ".");
 
 							} else if (click.equals(ClickType.RIGHT) || click.equals(ClickType.SHIFT_RIGHT)) {
@@ -584,7 +583,7 @@ public class AccountCommands extends BaseCommand {
 						if (click.equals(ClickType.LEFT) || click.equals(ClickType.SHIFT_LEFT)) {
 							if (deadPersonas.get(personaID) == null) {
 								menuAction.getPlayer().closeInventory();
-								plugin.getPersonaHandler().swapToPersona(menuAction.getPlayer(), accountID, personaID, true);
+								Persona.getPersona(personaID).loadPlayer(menuAction.getPlayer());
 								menuAction.getPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "You are now playing as " + RPPersonas.SECONDARY_DARK + personaData.get(PersonasSQL.NAME) + RPPersonas.PRIMARY_DARK + ".");
 
 							} else if (!plugin.getRezAppSQL().hasApplied(personaID)) {
@@ -624,7 +623,7 @@ public class AccountCommands extends BaseCommand {
 					@Override
 					public void click(MenuAction menuAction) {
 						menuAction.getPlayer().closeInventory();
-						PersonaHandler.createPersona(menuAction.getPlayer(), accountID, false);
+						Persona.startCreationConvo(menuAction.getPlayer(), accountID, false);
 					}
 				});
 			}

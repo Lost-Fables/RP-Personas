@@ -165,6 +165,14 @@ public class SkinsSQL extends BaseSQL {
 		return replaceStatement;
 	}
 
+	public void deleteSkin(int skinID) {
+		try {
+			plugin.getSaveQueue().addToQueue(getDeleteStatement(skinID));
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		}
+	}
+
 	public PreparedStatement getDeleteStatement(int skinID) throws SQLException {
 		Connection conn = null;
 		PreparedStatement deleteStatement = null;

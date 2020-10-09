@@ -3,16 +3,19 @@ package net.korvic.rppersonas.players;
 import co.lotc.core.bukkit.book.BookStream;
 import co.lotc.core.bukkit.util.BookUtil;
 import co.lotc.core.bukkit.util.InventoryUtil;
+import com.destroystokyo.paper.Title;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.players.conversation.BaseConvo;
+import net.korvic.rppersonas.players.conversation.PersonaCreationConvo;
 import net.korvic.rppersonas.players.personas.PersonaEnderHolder;
 import net.korvic.rppersonas.players.personas.PersonaInventoryHolder;
 import net.korvic.rppersonas.players.personas.PersonaLanguage;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
+import net.korvic.rppersonas.players.statuses.DisabledStatus;
 import net.korvic.rppersonas.players.statuses.StatusEntry;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
@@ -27,6 +30,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,9 +46,10 @@ public class Persona {
 	//// STATIC ////
 	////////////////
 
-	private static Map<Integer, Persona> loadedPersonas = new HashMap<>();
-	private static Map<Player, Integer> playerPersonaMap = new HashMap<>();
-	private static List<Integer> loadBlocked = new ArrayList<>();
+	private static Map<Integer, Persona> loadedPersonas = new HashMap<>();  // Current PersonaID -> Personas List.
+	private static Map<Player, Integer> playerPersonaMap = new HashMap<>(); // Current Player -> PersonaID List.
+	private static List<Integer> loadBlocked = new ArrayList<>();           // Current list of PersonaIDs that are blocked from loading.
+	private static int highestPersonaID = 1;                                // Current highest known PersonaID.
 
 	/**
 	 * @param player The player you're searching for.
@@ -62,8 +67,9 @@ public class Persona {
 	/**
 	 * @param personaID The Lost Fables persona ID
 	 * @return A Persona object which represents the given Lost Fables persona ID.
+	 * @throws IllegalArgumentException When the Lost Fables persona ID does not return any data.
 	 */
-	public static Persona getPersona(int personaID) {
+	public static Persona getPersona(int personaID) throws IllegalArgumentException {
 		Persona persona = null;
 		if (personaID > 0) {
 			if (!loadBlocked.contains(personaID)) {
@@ -75,6 +81,89 @@ public class Persona {
 			}
 		}
 		return persona;
+	}
+
+	public static void startCreationConvo(Player player, int accountID, boolean first) {
+		new DisabledStatus(null).applyEffect(player, (byte) 0);
+
+		Persona pers = null;
+		String welcomeText = "";
+		if (first) {
+			welcomeText = RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Welcome!";
+		} else {
+			pers = Persona.getPersona(player);
+			if (pers != null) {
+				pers.save();
+				pers.loadLocked = true;
+			}
+		}
+		Title title = new Title(welcomeText,
+								RPPersonas.SECONDARY_LIGHT + "Type your Persona's name to continue.",
+								20, 60*20, 20);
+
+		Persona finalPers = pers;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				new DisabledStatus(title).applyEffect(player, (byte) 0);
+				if (RPPersonas.get().getSpawnLocation() != null) {
+					player.teleportAsync(RPPersonas.get().getSpawnLocation());
+				}
+				player.getInventory().clear();
+
+				Map<Object, Object> data = new HashMap<>();
+				data.put(PersonaAccountsMapSQL.ACCOUNTID, accountID);
+				data.put(PersonasSQL.ALIVE, true);
+				data.put(PersonasSQL.LIVES, RPPersonas.DEFAULT_LIVES);
+				data.put(PersonasSQL.PLAYTIME, 0L);
+				data.put(PersonasSQL.FRESH, new Object());
+				data.put(PersonasSQL.LOCATION, RPPersonas.get().getSpawnLocation());
+
+				if (finalPers != null) {
+					data.put("oldpersona", finalPers);
+				}
+
+				if (first) {
+					data.put(PersonasSQL.FIRST, new Object());
+				}
+
+				new PersonaCreationConvo(RPPersonas.get()).startConvo(player, data, !first);
+			}
+		}.runTask(RPPersonas.get());
+	}
+
+	public static Persona createPersona(DataMapFilter data) {
+		int personaID = 0;
+		if (data.containsKey(PersonasSQL.PERSONAID)) {
+			personaID = (int) data.get(PersonasSQL.PERSONAID);
+		}
+		if (personaID <= 0) {
+			personaID = getHighestPersonaID();
+		}
+
+		Persona persona = null;
+		try {
+			persona = getPersona(personaID);
+		} catch (IllegalArgumentException iae) {
+			data.put(PersonasSQL.PERSONAID, personaID);
+			RPPersonas.get().getPersonasSQL().registerOrUpdate(data);
+			RPPersonas.get().getPersonaAccountMapSQL().registerOrUpdate(data);
+			persona = getPersona(personaID);
+		}
+
+		return persona;
+	}
+
+	/**
+	 * @return Retrieves and returns the new highest persona ID including this one. Automatically checks
+	 * to see if the database has something higher than what's currently on record.
+	 */
+	public static int getHighestPersonaID() {
+		int newHighest = RPPersonas.get().getPersonaAccountMapSQL().getHighestPersonaID();
+		if (newHighest > highestPersonaID) {
+			highestPersonaID = newHighest;
+		}
+		return ++highestPersonaID;
 	}
 
 	/**
@@ -109,6 +198,15 @@ public class Persona {
 	public static void unloadAllPersonas() {
 		for (int personaID : loadedPersonas.keySet()) {
 			unloadPersona(personaID);
+		}
+	}
+
+	/**
+	 * Saves all currently loaded personas.
+	 */
+	public static void saveAllPersonas() {
+		for (Persona persona : loadedPersonas.values()) {
+			persona.save();
 		}
 	}
 
@@ -162,6 +260,10 @@ public class Persona {
 	private Persona(int personaID) {
 		DataMapFilter data = RPPersonas.get().getPersonasSQL().getBasicPersonaInfo(personaID);
 
+		if (data.isEmpty()) {
+			throw new IllegalArgumentException("Did not get proper info for Persona " + personaID);
+		}
+
 		if (data.containsKey(PersonasSQL.ALIVE)) {
 			this.alive = (boolean) data.get(PersonasSQL.ALIVE);
 		} else {
@@ -213,6 +315,15 @@ public class Persona {
 			this.altered = true;
 			this.playerInteraction = new PlayerInteraction(player);
 			playerPersonaMap.put(player, this.personaID);
+		}
+	}
+
+	/**
+	 * Reloads the player that's currently using this persona.
+	 */
+	public void reloadPlayer() {
+		if (playerInteraction != null && playerInteraction.getRpPlayer() != null) {
+			loadPlayer(playerInteraction.getRpPlayer().getPlayer());
 		}
 	}
 

@@ -4,6 +4,7 @@ import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.personas.PersonaSkin;
 import net.korvic.rppersonas.time.TimeManager;
 import org.bukkit.Bukkit;
@@ -36,16 +37,18 @@ public class CorpseHandler {
 		try {
 			ItemStack[] items = filterInventoryForCorpse(player);
 
-			PersonaSkin skin = plugin.getPersonaHandler().getLoadedPersona(player).getActiveSkin();
-			String texture;
-			if (skin != null && skin.getSkinID() > 0) {
-				texture = skin.getTextureValue();
-			} else {
-				texture = PlayerUtil.getPlayerTexture(player.getUniqueId());
-			}
+			Persona pers = Persona.getPersona(player);
+			if (pers != null) {
+				PersonaSkin skin = pers.getPlayerInteraction().getActiveSkin();
+				String texture;
+				if (skin != null && skin.getSkinID() > 0) {
+					texture = skin.getTexture();
+				} else {
+					texture = PlayerUtil.getPlayerTexture(player.getUniqueId());
+				}
 
-			OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(player);
-			output = createCorpse(RPPersonas.PRIMARY_DARK + pers.getNickName() + "'s Corpse", texture, items, pers.getPersonaID());
+				output = createCorpse(RPPersonas.PRIMARY_DARK + pers.getNickname() + "'s Corpse", texture, items, pers.getPersonaID());
+			}
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();

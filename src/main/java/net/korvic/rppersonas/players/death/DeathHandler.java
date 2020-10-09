@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.players.death;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.sql.KarmaSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.entity.Player;
@@ -25,8 +26,8 @@ public class DeathHandler {
 	}
 
 	public boolean acceptExecute(Player killer, Player victim) {
-		OldPersona killerPersona = plugin.getPersonaHandler().getLoadedPersona(killer);
-		OldPersona victimPersona = plugin.getPersonaHandler().getLoadedPersona(victim);
+		Persona killerPersona = Persona.getPersona(killer);
+		Persona victimPersona = Persona.getPersona(victim);
 
 		boolean output = false;
 		if (requestMap.containsKey(victim)) {

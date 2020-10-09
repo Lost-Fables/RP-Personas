@@ -2,6 +2,7 @@ package net.korvic.rppersonas.players.resurrection;
 
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.conversation.RezAppConvo.RezAppResponses;
 import net.korvic.rppersonas.players.death.Altar;
 import net.korvic.rppersonas.sql.PersonasSQL;
@@ -56,18 +57,19 @@ public class RezApp {
 		plugin.getPersonaAccountMapSQL().registerOrUpdate(personaData);
 		plugin.getCorpseSQL().deleteByPersonaID(personaID);
 
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(personaID);
-		if (pers != null && pers.getUsingPlayer().isOnline()) {
-			pers.getUsingPlayer().sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
+		Persona pers = Persona.getPersona(personaID);
+		if (pers != null && pers.getPlayerInteraction() != null && pers.getPlayerInteraction().getRpPlayer() != null && pers.getPlayerInteraction().getRpPlayer().getPlayer().isOnline()) {
+			Player p = pers.getPlayerInteraction().getRpPlayer().getPlayer();
+			p.sendMessage(RPPersonas.PRIMARY_DARK + "Your soul is being pulled back to it's body...");
 			new BukkitRunnable() {
 				private int passes = 0;
 
 				@Override
 				public void run() {
 					if (plugin.getSaveQueue().isEmpty() || passes > 3) {
-						if (pers.getUsingPlayer().isOnline()) {
-							plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), personaID, false); // Reload the force-saved data from above.
-							pers.getUsingPlayer().teleportAsync(altar.getTPLocation());
+						if (p.isOnline()) {
+							pers.reloadPlayer(); // Reload the force-saved data from above.
+							p.teleportAsync(altar.getTPLocation());
 						}
 						this.cancel();
 					} else {

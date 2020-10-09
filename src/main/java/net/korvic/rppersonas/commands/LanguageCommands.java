@@ -3,6 +3,7 @@ package net.korvic.rppersonas.commands;
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Range;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.personas.PersonaLanguage;
 import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
@@ -21,7 +22,7 @@ public class LanguageCommands extends BaseCommand {
 
 	@Cmd(value="Adjust the language level of a given player.")
 	public void update(CommandSender sender, Player p, PersonaLanguage lang, @Range(min=-255, max=255) int amount) {
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		Persona pers = Persona.getPersona(p);
 		if (pers != null) {
 			Map<String, Short> languages = plugin.getLanguageSQL().getLanguages(pers.getPersonaID());
 			int level = languages.get(lang.getName()) + amount;
@@ -43,7 +44,7 @@ public class LanguageCommands extends BaseCommand {
 
 	@Cmd(value="Manually set the language level of a given player.")
 	public void set(CommandSender sender, Player p, PersonaLanguage lang, @Range(min=0, max=255) int level) {
-		OldPersona pers = plugin.getPersonaHandler().getLoadedPersona(p);
+		Persona pers = Persona.getPersona(p);
 		if (pers != null) {
 			Map<String, Short> languages = plugin.getLanguageSQL().getLanguages(pers.getPersonaID());
 			DataMapFilter data = new DataMapFilter().put(LanguageSQL.PERSONAID, pers.getPersonaID())

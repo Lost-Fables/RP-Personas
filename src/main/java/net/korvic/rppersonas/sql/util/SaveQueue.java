@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.sql.util;
 
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.listeners.JoinQuitListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -124,9 +125,7 @@ public class SaveQueue {
 		if (plugin.getCorpseHandler() != null) {
 			plugin.getCorpseHandler().saveAllCorpses();
 		}
-		if (plugin.getPersonaHandler() != null) {
-			plugin.getPersonaHandler().queueSaveAllPersonas();
-		}
+		Persona.saveAllPersonas();
 		JoinQuitListener.refreshAllAccountPlaytime();
 
 		for (PreparedStatement ps : queue) {

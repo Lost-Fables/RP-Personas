@@ -3,6 +3,7 @@ package net.korvic.rppersonas.players.conversation;
 import co.lotc.core.util.MessageUtil;
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.death.Altar;
 import net.korvic.rppersonas.players.resurrection.RezApp;
 import net.korvic.rppersonas.sql.RezAppSQL;
@@ -377,15 +378,18 @@ public class RezAppConvo extends BaseConvo {
 		@Override
 		protected Prompt getNextPrompt(ConversationContext context) {
 			RPPersonas plugin = RPPersonas.get();
-			int personaID = plugin.getPersonaHandler().getLoadedPersona((Player) context.getForWhom()).getPersonaID();
-			DataMapFilter data = new DataMapFilter().put(RezAppSQL.PERSONAID, personaID)
-													.put(RezAppSQL.RESPONSES, responses)
-													.put(RezAppSQL.KARMA, plugin.getKarmaSQL().calculateKarma(personaID))
-													.put(RezAppSQL.KILLS, plugin.getDeathSQL().getKills(personaID))
-													.put(RezAppSQL.DEATHS, plugin.getDeathSQL().getDeaths(personaID))
-													.put(RezAppSQL.ALTAR, altar);
-			plugin.getRezAppSQL().registerOrUpdate(data);
-			plugin.getRezHandler().addApp(new RezApp(data));
+			Persona pers = Persona.getPersona((Player) context.getForWhom());
+			if (pers != null) {
+				int personaID = pers.getPersonaID();
+				DataMapFilter data = new DataMapFilter().put(RezAppSQL.PERSONAID, personaID)
+														.put(RezAppSQL.RESPONSES, responses)
+														.put(RezAppSQL.KARMA, plugin.getKarmaSQL().calculateKarma(personaID))
+														.put(RezAppSQL.KILLS, plugin.getDeathSQL().getKills(personaID))
+														.put(RezAppSQL.DEATHS, plugin.getDeathSQL().getDeaths(personaID))
+														.put(RezAppSQL.ALTAR, altar);
+				plugin.getRezAppSQL().registerOrUpdate(data);
+				plugin.getRezHandler().addApp(new RezApp(data));
+			}
 			return Prompt.END_OF_CONVERSATION;
 		}
 	}

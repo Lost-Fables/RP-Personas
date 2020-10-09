@@ -2,6 +2,7 @@ package net.korvic.rppersonas.players.conversation;
 
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.korvic.rppersonas.players.kits.Kit;
 import net.korvic.rppersonas.players.listeners.JoinQuitListener;
 import net.korvic.rppersonas.players.personas.*;
@@ -475,7 +476,7 @@ public class PersonaCreationConvo extends BaseConvo {
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, boolean input) {
 			if (input) {
-				return registerPersona(context);
+				return createPersona(context);
 			} else {
 				return new ReturnUpPrompt();
 			}
@@ -526,27 +527,27 @@ public class PersonaCreationConvo extends BaseConvo {
 			} else if (input.equalsIgnoreCase("Background")) {
 				return new PersonaBackgroundPrompt();
 			} else if (input.equalsIgnoreCase("Done")) {
-				return registerPersona(context);
+				return createPersona(context);
 			} else {
 				return new ReturnUpPrompt();
 			}
 		}
 	}
 
-	private static Prompt registerPersona(ConversationContext context) {
+	private static Prompt createPersona(ConversationContext context) {
 		Player p = (Player) context.getForWhom();
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registering your persona now..."));
 
-		OldPersona oldPers = null;
+		Persona oldPers = null;
 		if (context.getAllSessionData().containsKey("oldpersona")) {
-			oldPers = (OldPersona) context.getAllSessionData().get("oldpersona");
+			oldPers = (Persona) context.getAllSessionData().get("oldpersona");
 			context.getAllSessionData().remove("oldpersona");
 		}
 
 		DataMapFilter data = new DataMapFilter();
 		data.putAllObject(context.getAllSessionData());
 
-		OldPersona pers = PersonaHandler.registerPersona(data, p, false);
+		Persona pers = Persona.createPersona(data);
 
 		try {
 			for (PersonaLanguage language : ((PersonaSubRace) data.get(PersonasSQL.RACE)).getDefaultLanguages()) {
@@ -567,7 +568,6 @@ public class PersonaCreationConvo extends BaseConvo {
 			RPPersonas.get().getPersonaAccountMapSQL().registerOrUpdate(mapData);
 		}
 
-		PersonaHandler.stopSkipping(p);
 		new DisabledStatus(null).clearEffect(p);
 		p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "" + ChatColor.BOLD + "Registration complete."));
 
@@ -582,7 +582,6 @@ public class PersonaCreationConvo extends BaseConvo {
 				Player p = (Player) abandonedEvent.getContext().getForWhom();
 
 				p.hideTitle();
-				PersonaHandler.stopSkipping(p);
 				new DisabledStatus(null).clearEffect(p);
 				p.sendMessage("\n" + RPPersonas.PRIMARY_DARK + "Persona creation cancelled.");
 				JoinQuitListener.loadIntoPersona(p);

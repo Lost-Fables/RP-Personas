@@ -2,6 +2,7 @@ package net.korvic.rppersonas.players.conversation;
 
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.players.Persona;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -85,7 +86,17 @@ public class PersonaDeleteConvo extends BaseConvo {
 
 		@Override
 		public Prompt acceptValidatedInput(ConversationContext context, String input) {
-			RPPersonas.get().getPersonaHandler().deletePersona(personaID);
+			Persona.unloadPersona(personaID);
+			RPPersonas plugin = RPPersonas.get();
+			try {
+				plugin.getSaveQueue().addToQueue(plugin.getPersonasSQL().getDeleteStatement(personaID));
+				plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getDeleteStatement(personaID));
+				plugin.getSaveQueue().addToQueue(plugin.getLanguageSQL().getDeleteStatementByPersonaID(personaID));
+			} catch (Exception e) {
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
+			}
 			Player p = (Player) context.getForWhom();
 			p.spigot().sendMessage(new TextComponent(RPPersonas.PRIMARY_DARK + "Persona successfully deleted."));
 			return Prompt.END_OF_CONVERSATION;

@@ -223,7 +223,7 @@ public final class RPPersonas extends JavaPlugin {
 		deathSQL = new DeathSQL(this);
 		corpseSQL = new CorpseSQL(this);
 		altarsSQL = new AltarSQL(this);
-		statusSQL = new StatusSQL(this);
+		//statusSQL = new StatusSQL(this);
 		languageSQL = new LanguageSQL(this);
 		karmaSQL = new KarmaSQL(this);
 		rezAppSQL = new RezAppSQL(this);

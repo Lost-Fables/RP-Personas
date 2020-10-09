@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class StatusSQL extends BaseSQL {
-
+public class StatusSQL /*extends BaseSQL*/ {
+/*
 	private static final String SQL_TABLE_NAME = "rppersonas_statuses";
 
 	public static final String PERSONAID = "personaid";
@@ -141,5 +141,5 @@ public class StatusSQL extends BaseSQL {
 		}
 		return null;
 	}
-
+*/
 }
