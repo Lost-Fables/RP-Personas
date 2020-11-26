@@ -8,7 +8,7 @@ public enum PersonaRace {
 	DWARF(    "Dwarf",     new PersonaSubRace[] { PersonaSubRace.CAVE_DWARF, PersonaSubRace.HILL_DWARF, PersonaSubRace.DEEP_DWARF }),
 	REHK(     "Rehk",      new PersonaSubRace[] { PersonaSubRace.REHK_UR, PersonaSubRace.REHK_UG }),
 	ELF(      "Elf",       new PersonaSubRace[] { PersonaSubRace.SPRING_ELF, PersonaSubRace.SUMMER_ELF, PersonaSubRace.AUTUMN_ELF, PersonaSubRace.WINTER_ELF }),
-	BEASTFOLK("Beastfolk", new PersonaSubRace[] { PersonaSubRace.JAVALI, PersonaSubRace.VERIVAN, PersonaSubRace.MAKSHA, PersonaSubRace.GAHORI }),
+	BEASTFOLK("Beastfolk", new PersonaSubRace[] { PersonaSubRace.JAVALI, PersonaSubRace.VERIVAN, PersonaSubRace.MAKSHA, PersonaSubRace.GAHORI, PersonaSubRace.UVARI }),
 	OTHER(    "Other",     new PersonaSubRace[] { PersonaSubRace.EMPYREAN, PersonaSubRace.DEMONKIN, PersonaSubRace.GOLEM });
 
 	@Getter private String name;
