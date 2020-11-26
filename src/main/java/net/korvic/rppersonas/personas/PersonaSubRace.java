@@ -34,6 +34,7 @@ public enum PersonaSubRace {
 	VERIVAN("Verivan", 90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.VERIVAN }),
 	MAKSHA( "Maksha",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.MAKSHA }),
 	GAHORI( "Gahori",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GAHORIAN }),
+	UVARI( "Uvari",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.UVARI }),
 
 	// RACE APP
 	EMPYREAN("Empyrean", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CELESTIAL }),
