@@ -42,6 +42,7 @@ public enum PersonaLanguage {
 	MAKSHA("Maksha", "[MK]"),
 	GAHORIAN("Gahorian", "[GH]"),
 	VERIVAN("Verivan", "[VR]"),
+	UVARI("Uvari", "[UI]"),
 
 	DRAKAN("Drakan", "[DK]"),
 	FEY_SPEAK("Fey_Speak", "[FS]"),
