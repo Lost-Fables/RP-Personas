@@ -15,6 +15,9 @@ public enum PersonaLanguage {
 	ARMUSIAN("Armusian", "[MS]"),
 	CARRIB("Carrib", "[CB]"),
 	JOTUNNTUNGA( "Jötunntunga", "[JT]"),
+	TIANDIWEN( "Tiandiwen", "[TD]"),
+	AKAGIGO( "Akagigo", "[AG]"),
+	KALTESPRACH( "Kaltesprach", "[KS]"),
 
 	ANC_REHKISH("Ancient_Rehkish", "[AR]"),
 	REHKISH("Rehkish", "[R]"),
