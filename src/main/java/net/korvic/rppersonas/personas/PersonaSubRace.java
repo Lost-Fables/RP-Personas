@@ -2,6 +2,7 @@ package net.korvic.rppersonas.personas;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,6 +72,10 @@ public enum PersonaSubRace {
 	}
 
 	public static List<String> getNames() {
-		return Arrays.stream(values()).map(PersonaSubRace::getSafeName).collect(Collectors.toList());
+		List<String> names = new ArrayList<>();
+		for (PersonaSubRace subrace : values()) {
+			names.add(subrace.getName().replace(' ', '_'));
+		}
+		return names;
 	}
 }
