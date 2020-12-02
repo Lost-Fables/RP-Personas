@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public enum PersonaRace {
 
-	HUMAN(    "Human",     new PersonaSubRace[] { PersonaSubRace.ARMUSIAN, PersonaSubRace.CARRIBARD, PersonaSubRace.GRAVICAN, PersonaSubRace.GIANTBLOOD, PersonaSubRace.AKAGIJIN, PersonaSubRace.TIANDIREN, PersonaSubRace.KALTERMEN }),
+	HUMAN(    "Human",     new PersonaSubRace[] { PersonaSubRace.ARMUSIAN, PersonaSubRace.CARRIBARD, PersonaSubRace.GRAVICAN, PersonaSubRace.GIANTBLOOD, PersonaSubRace.AKAGIJIN }),
 	DWARF(    "Dwarf",     new PersonaSubRace[] { PersonaSubRace.CAVE_DWARF, PersonaSubRace.HILL_DWARF, PersonaSubRace.DEEP_DWARF }),
 	REHK(     "Rehk",      new PersonaSubRace[] { PersonaSubRace.REHK_UR, PersonaSubRace.REHK_UG }),
 	ELF(      "Elf",       new PersonaSubRace[] { PersonaSubRace.SPRING_ELF, PersonaSubRace.SUMMER_ELF, PersonaSubRace.AUTUMN_ELF, PersonaSubRace.WINTER_ELF }),

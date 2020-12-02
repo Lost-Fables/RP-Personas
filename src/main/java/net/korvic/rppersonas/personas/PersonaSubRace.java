@@ -13,9 +13,8 @@ public enum PersonaSubRace {
 	CARRIBARD( "Carribard",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CARRIB }),
 	GRAVICAN(  "Gravican",   90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GRAVICAN }),
 	GIANTBLOOD("Giantblood", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.JOTUNNTUNGA }),
-	TIANDIREN( "Tiandiren",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.TIANDIWEN }),
 	AKAGIJIN(  "Akagijin",   90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.AKAGIGO }),
-	KALTERMEN( "Kaltermen",  90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.KALTESPRACH }),
+
 	// DWARVES
 	CAVE_DWARF("Cave Dwarf", 90, PersonaRace.DWARF, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.YAZYK }),
 	HILL_DWARF("Hill Dwarf", 90, PersonaRace.DWARF, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.YAZYK }),
@@ -36,12 +35,14 @@ public enum PersonaSubRace {
 	VERIVAN("Verivan", 90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.VERIVAN }),
 	MAKSHA( "Maksha",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.MAKSHA }),
 	GAHORI( "Gahori",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.GAHORIAN }),
-	UVARI( "Uvari",  90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.UVARI }),
+	UVARI(  "Uvari",   90, PersonaRace.BEASTFOLK, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.UVARI }),
 
 	// RACE APP
-	EMPYREAN("Empyrean", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CELESTIAL }),
-	DEMONKIN("Demonkin", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.DEMONIC }),
-	GOLEM(   "Golem",    90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON });
+	EMPYREAN(  "Empyrean",  90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CELESTIAL }),
+	DEMONKIN(  "Demonkin",  90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.DEMONIC }),
+	GOLEM(     "Golem",     90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON }),
+	TIANDIREN( "Tiandiren", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.TIANDIWEN }),
+	KALTERMEN( "Kaltermen", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.KALTESPRACH });
 
 	@Getter private String name;
 	@Getter private int maxAge;
