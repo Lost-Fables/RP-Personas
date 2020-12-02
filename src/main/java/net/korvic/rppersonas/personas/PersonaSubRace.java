@@ -41,8 +41,8 @@ public enum PersonaSubRace {
 	EMPYREAN(  "Empyrean",  90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.CELESTIAL }),
 	DEMONKIN(  "Demonkin",  90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.DEMONIC }),
 	GOLEM(     "Golem",     90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON }),
-	TIANDIREN( "Tiandiren", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.TIANDIWEN }),
-	KALTERMEN( "Kaltermen", 90, PersonaRace.HUMAN, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.KALTESPRACH });
+	TIANDIREN( "Tiandiren", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.TIANDIWEN }),   // Human
+	KALTERMEN( "Kaltermen", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.KALTESPRACH }); // Human
 
 	@Getter private String name;
 	@Getter private int maxAge;
