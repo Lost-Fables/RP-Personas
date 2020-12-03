@@ -12,7 +12,7 @@ import net.korvic.rppersonas.sql.StatusSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
-import net.korvic.rppersonas.time.TimeManager;
+import net.lostfables.fabledprofessions.time.TimeManager;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
@@ -127,9 +127,15 @@ public class Persona {
 		if (data.containsKey(PersonasSQL.NICKNAME)) {
 			output.append(RPPersonas.PRIMARY_DARK).append("Nickname: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.NICKNAME)).append("\n");
 		}
-		output.append(RPPersonas.PRIMARY_DARK).append("Name: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.NAME)).append("\n")
-			  .append(RPPersonas.PRIMARY_DARK).append("Age: ").append(RPPersonas.SECONDARY_LIGHT).append(TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE))).append("\n")
-			  .append(RPPersonas.PRIMARY_DARK).append("Race: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.RACE)).append("\n")
+
+		String age = data.get(PersonasSQL.AGE).toString();
+		if (plugin.getServer().getPluginManager().isPluginEnabled("FabledProfessions")) {
+			age = TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE));
+		}
+
+		output.append(RPPersonas.PRIMARY_DARK).append("Name: ")  .append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.NAME))  .append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Age: ")   .append(RPPersonas.SECONDARY_LIGHT).append(age)                         .append("\n")
+			  .append(RPPersonas.PRIMARY_DARK).append("Race: ")  .append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.RACE))  .append("\n")
 			  .append(RPPersonas.PRIMARY_DARK).append("Gender: ").append(RPPersonas.SECONDARY_LIGHT).append(data.get(PersonasSQL.GENDER)).append("\n");
 
 		if (languages != null && languages.size() > 0) {

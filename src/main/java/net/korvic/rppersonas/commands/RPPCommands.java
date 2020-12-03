@@ -24,18 +24,16 @@ public class RPPCommands extends BaseCommand {
 	RPPersonas plugin;
 
 	AltarCommands altarCommands;
-	TimeCommands timeCommands;
 	KitCommands kitCommands;
 	LanguageCommands langaugeCommands;
 	KarmaCommands karmaCommands;
 	RezCommands rezCommands;
 	StaffPersonaCommands staffPersonaCommands;
 
-	public RPPCommands(RPPersonas plugin, TimeCommands timeCommands) {
+	public RPPCommands(RPPersonas plugin) {
 		this.plugin = plugin;
 
 		this.altarCommands = new AltarCommands(plugin);
-		this.timeCommands = timeCommands;
 		this.kitCommands = new KitCommands(plugin);
 		this.langaugeCommands = new LanguageCommands(plugin);
 		this.karmaCommands = new KarmaCommands(plugin);
@@ -46,11 +44,6 @@ public class RPPCommands extends BaseCommand {
 	@Cmd(value="Commands for modifying altars.", permission=RPPersonas.PERMISSION_START + ".altars")
 	public BaseCommand altar() {
 		return altarCommands;
-	}
-
-	@Cmd(value="Commands for adjusting the time.", permission=RPPersonas.PERMISSION_START + ".time")
-	public BaseCommand time() {
-		return timeCommands;
 	}
 
 	@Cmd(value="Commands for modifying kits.", permission=RPPersonas.PERMISSION_START + ".kits")

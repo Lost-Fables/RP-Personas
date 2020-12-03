@@ -25,7 +25,7 @@ import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.RezAppSQL;
 import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
-import net.korvic.rppersonas.time.TimeManager;
+import net.lostfables.fabledprofessions.time.TimeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -478,12 +478,17 @@ public class AccountCommands extends BaseCommand {
 							lore.add(RPPersonas.SECONDARY_LIGHT + "Left Click to use, Right Click to delete.");
 						}
 
+						String age = data.get(PersonasSQL.AGE).toString();
+						if (plugin.getServer().getPluginManager().isPluginEnabled("FabledProfessions")) {
+							age = TimeManager.getRelativeTimeString((long) data.get(PersonasSQL.AGE));
+						}
+
 						lore.add("");
 						lore.add(RPPersonas.SECONDARY_LIGHT + "Persona ID: " + RPPersonas.SECONDARY_DARK + String.format("%06d", personaID));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " + RPPersonas.SECONDARY_DARK + data.get("name"));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " + RPPersonas.SECONDARY_DARK + TimeManager.getRelativeTimeString((long) data.get("age")));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Race: " + RPPersonas.SECONDARY_DARK + data.get("race"));
-						lore.add(RPPersonas.SECONDARY_LIGHT + "Gender: " + RPPersonas.SECONDARY_DARK + data.get("gender"));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Name: " +       RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.NAME));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Age: " +        RPPersonas.SECONDARY_DARK + age);
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Race: " +       RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.RACE));
+						lore.add(RPPersonas.SECONDARY_LIGHT + "Gender: " +     RPPersonas.SECONDARY_DARK + data.get(PersonasSQL.GENDER));
 
 						meta.setLore(lore);
 						item.setItemMeta(meta);

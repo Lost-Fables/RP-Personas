@@ -10,7 +10,7 @@ import net.korvic.rppersonas.personas.PersonaSubRace;
 import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
-import net.korvic.rppersonas.time.TimeManager;
+import net.lostfables.fabledprofessions.time.TimeManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -6,7 +6,7 @@ import co.lotc.core.bukkit.util.PlayerUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaSkin;
-import net.korvic.rppersonas.time.TimeManager;
+import net.lostfables.fabledprofessions.time.TimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -74,7 +74,8 @@ public class CorpseHandler {
 	}
 
 	public Corpse loadCorpse(int id, String name, String texture, ItemStack[] inventory, long created, int personaID) {
-		if (System.currentTimeMillis() - created < TimeManager.MONTH_IN_MILLIS) {
+		if (!plugin.getServer().getPluginManager().isPluginEnabled("FabledProfessions") ||
+			System.currentTimeMillis() - created < (TimeManager.MILLIS_PER_DAY * TimeManager.DAYS_PER_AGE * 2)) {
 			Inventory inv = Bukkit.createInventory(holder, 9 * 5, ChatColor.stripColor(name));
 			if (inventory != null) {
 				inv.setContents(inventory);

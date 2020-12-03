@@ -24,8 +24,6 @@ import net.korvic.rppersonas.resurrection.RezHandler;
 import net.korvic.rppersonas.sql.*;
 import net.korvic.rppersonas.sql.util.SaveQueue;
 import net.korvic.rppersonas.statuses.*;
-import net.korvic.rppersonas.time.Season;
-import net.korvic.rppersonas.time.TimeManager;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.model.user.User;
@@ -187,26 +185,15 @@ public final class RPPersonas extends JavaPlugin {
 			}
 
 			// Build our commands
-			TimeCommands timeCommands = new TimeCommands(this);
 			Commands.build(getCommand("account"), () -> new AccountCommands(this));
 			Commands.build(getCommand("persona"), () -> new PersonaCommands(this));
-			Commands.build(getCommand("rpp"), () -> new RPPCommands(this, timeCommands));
-			Commands.build(getCommand("time"), () -> timeCommands);
-			Objects.requireNonNull(getCommand("date")).setExecutor(new DateAlias(timeCommands));
+			Commands.build(getCommand("rpp"), () -> new RPPCommands(this));
 
 			// Register statuses we want on the list of statuses
 			new SpeedStatus().registerStatus();
 			new SlowStatus().registerStatus();
 			new SickStatus().registerStatus();
 			new BlindStatus().registerStatus();
-
-			// Start auto-check for season updates every 5 mins.
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					TimeManager.updateSeasons();
-				}
-			}.runTaskTimerAsynchronously(this, 0, 6000);
 		}
 	}
 
@@ -295,27 +282,6 @@ public final class RPPersonas extends JavaPlugin {
 			}
 		}
 
-		// World Time
-		{
-			ConfigurationSection section = config.getConfigurationSection("worlds");
-			if (section != null) {
-				for (String worldName : section.getKeys(false)) {
-					World world = Bukkit.getWorld(worldName);
-
-					TimeManager manager = TimeManager.registerWorld(world, false);
-					manager.setLastKnownAges(config.getInt("worlds." + worldName + ".ages"), false);
-					manager.setTimeScale(config.getInt("worlds." + worldName + ".timescale"), false);
-					manager.setSeason(config.getString("worlds." + worldName + ".season"), false);
-
-					List<String> syncedWorlds = section.getStringList(worldName + ".synced");
-					for (String str : syncedWorlds) {
-						World syncedWorld = Bukkit.getWorld(str);
-						manager.addSyncedWorld(syncedWorld, false);
-					}
-				}
-			}
-		}
-
 		// Kits
 		{
 			ConfigurationSection section = config.getConfigurationSection("kits");
@@ -336,31 +302,6 @@ public final class RPPersonas extends JavaPlugin {
 				}
 			}
 		}
-	}
-
-	// TIME
-	public void updateConfigForWorld(String worldName, int lastKnownAges, int timeScale, Season season, List<String> syncedWorlds) {
-		String configPath = "worlds." + worldName;
-		config = getConfig();
-		if (lastKnownAges > 0) {
-			config.set(configPath + ".ages", lastKnownAges);
-		}
-		if (timeScale > 20) {
-			config.set(configPath + ".timescale", timeScale);
-		}
-		if (season != null) {
-			config.set(configPath + ".season", season.getName());
-		}
-		if (syncedWorlds != null) {
-			config.set(configPath + ".synced", syncedWorlds);
-		}
-		saveConfig();
-	}
-
-	public void deleteConfigForWorld(String worldName) {
-		config = getConfig();
-		config.set("worlds." + worldName, null);
-		saveConfig();
 	}
 
 	// KITS
@@ -413,12 +354,6 @@ public final class RPPersonas extends JavaPlugin {
 				.defaultError("Failed to find an altar by that name.")
 				.completer(() -> altarHandler.getAltarNameList())
 				.mapperWithSender((sender, name) -> altarHandler.getAltar(name))
-				.register();
-
-		Commands.defineArgumentType(Season.class)
-				.defaultName("Season")
-				.completer((s,$) -> Season.getAvailable(s))
-				.mapperWithSender((sender, season) -> Season.getByName(season))
 				.register();
 
 		Commands.defineArgumentType(Status.class)
