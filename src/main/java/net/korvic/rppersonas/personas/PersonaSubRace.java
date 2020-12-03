@@ -74,7 +74,7 @@ public enum PersonaSubRace {
 	public static List<String> getNames() {
 		List<String> names = new ArrayList<>();
 		for (PersonaSubRace subrace : values()) {
-			names.add(subrace.getName().replace(' ', '_'));
+			names.add(subrace.getSafeName());
 		}
 		return names;
 	}
