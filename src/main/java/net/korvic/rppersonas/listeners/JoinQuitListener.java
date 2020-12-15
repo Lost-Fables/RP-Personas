@@ -31,6 +31,10 @@ public class JoinQuitListener implements Listener {
 	@EventHandler(ignoreCancelled=false)
 	public void onJoin(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
+		try {
+			p.spigot().respawn();
+		} catch (Exception ignore) {}
+
 		if (p.hasPermission("rppersonas.link")) {
 			new BukkitRunnable() {
 				@Override
