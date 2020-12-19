@@ -7,10 +7,12 @@ import java.util.List;
 
 public enum PersonaLanguage {
 
+	// Common
 	ANC_COMMON("Ancient_Common", "[AC]"),
 	COMMON("Common", ""),
 	SIGN("Sign_Language", "[SL]"),
 
+	// Human
 	GRAVICAN("Gravican", "[GR]"),
 	ARMUSIAN("Armusian", "[MS]"),
 	CARRIB("Carrib", "[CB]"),
@@ -19,28 +21,34 @@ public enum PersonaLanguage {
 	AKAGIGO( "Akagigo", "[AG]"),
 	KALTESPRACH( "Kaltesprach", "[KS]"),
 
+	// Rehk
 	ANC_REHKISH("Ancient_Rehkish", "[AR]"),
 	REHKISH("Rehkish", "[R]"),
 
+	// Elf
 	ANC_ELVEN("Ancient_Elven", "[AE]"),
 	CLASS_ELVEN("Classical_Elven", "[E]"),
 	NEW_ELVEN("New_Elven", "[NE]"),
 
+	// Dwarf
 	ANC_YAZYK("Ancient_Yazyk", "[AY]"),
 	YAZYK("Yazyk", "[Y]"),
 
+	// Lost Languages
 	DEMONIC("Demonic", "[D]"),
 	PRIMORDIAL("Primordial", "[P]"),
 	CELESTIAL("Celestial", "[C]"),
 	DRUII_TONGUE("Druii_Tongue", "[DT]"),
 	HIEROPHANT("Hierophant", "[H]"),
 	TALIDURIAN("Talidurian", "[T]"),
+	PRAVUM("Pravum", "[PR]"),
 
 	PYRAN("Pyran", "[PY]"),
 	AQUAN("Aquan", "[AQ]"),
 	ILLUMAN("Illuman", "[IL]"),
 	STYGAN("Stygan", "[SY]"),
 
+	// Beastfolk
 	JAVALI("Javali", "[JV]"),
 	MAKSHA("Maksha", "[MK]"),
 	GAHORIAN("Gahorian", "[GH]"),
