@@ -45,10 +45,10 @@ public enum PersonaSubRace {
 	TIANDIREN( "Tiandiren", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.TIANDIWEN }),   // Human
 	KALTERMEN( "Kaltermen", 90, PersonaRace.OTHER, new PersonaLanguage[] { PersonaLanguage.COMMON, PersonaLanguage.KALTESPRACH }); // Human
 
-	@Getter private String name;
-	@Getter private int maxAge;
-	@Getter private PersonaRace parentRace;
-	@Getter private PersonaLanguage[] defaultLanguages;
+	@Getter private final String name;
+	@Getter private final int maxAge;
+	@Getter private final PersonaRace parentRace;
+	@Getter private final PersonaLanguage[] defaultLanguages;
 
 	PersonaSubRace(String name, int maxAge, PersonaRace parentRace, PersonaLanguage[] languages) {
 		this.name = name;
