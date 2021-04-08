@@ -11,8 +11,8 @@ public enum PersonaRace {
 	BEASTFOLK("Beastfolk", new PersonaSubRace[] { PersonaSubRace.JAVALI, PersonaSubRace.VERIVAN, PersonaSubRace.MAKSHA, PersonaSubRace.GAHORI, PersonaSubRace.UVARI }),
 	OTHER(    "Other",     new PersonaSubRace[] { PersonaSubRace.EMPYREAN, PersonaSubRace.DEMONKIN, PersonaSubRace.GOLEM, PersonaSubRace.KALTERMEN, PersonaSubRace.TIANDIREN });
 
-	@Getter private String name;
-	@Getter private PersonaSubRace[] subRaceList;
+	@Getter private final String name;
+	@Getter private final PersonaSubRace[] subRaceList;
 
 	PersonaRace(String name, PersonaSubRace[] subRaces) {
 		this.name = name;

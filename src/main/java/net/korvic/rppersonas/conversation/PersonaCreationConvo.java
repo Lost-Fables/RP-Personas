@@ -177,7 +177,7 @@ public class PersonaCreationConvo extends BaseConvo {
 
 		@Override
 		protected Prompt acceptValidatedInput(ConversationContext context, String input) {
-			return new PickSubracePrompt(input, returnToEnd);
+			return new PickSubracePrompt(PersonaRace.getByName(input), returnToEnd);
 		}
 	}
 
@@ -186,9 +186,9 @@ public class PersonaCreationConvo extends BaseConvo {
 		private PersonaRace race = null;
 		private boolean returnToEnd;
 
-		private PickSubracePrompt(String string, boolean returnToEnd){
+		private PickSubracePrompt(PersonaRace race, boolean returnToEnd){
 			try {
-				this.race = PersonaRace.getByName(string);
+				this.race = race;
 				this.returnToEnd = returnToEnd;
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
