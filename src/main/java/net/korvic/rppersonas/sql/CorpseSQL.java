@@ -22,10 +22,6 @@ public class CorpseSQL extends BaseSQL {
 	public static final String TEXTURE = "texture";
 
 	public CorpseSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    CorpseID INT NOT NULL PRIMARY KEY,\n" +
 						  "    Name TEXT NOT NULL,\n" +
@@ -34,12 +30,7 @@ public class CorpseSQL extends BaseSQL {
 						  "    PersonaID INT NOT NULL,\n" +
 						  "    Texture TEXT\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {
@@ -52,10 +43,10 @@ public class CorpseSQL extends BaseSQL {
 	}
 
 	public void loadCorpses() {
-		database = getSQLConnection();
+		Connection conn = getSQLConnection();
 		try {
 			String stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
-			PreparedStatement ps = database.prepareStatement(stmt);
+			PreparedStatement ps = conn.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {

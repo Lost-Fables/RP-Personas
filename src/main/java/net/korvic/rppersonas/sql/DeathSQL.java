@@ -34,10 +34,6 @@ public class DeathSQL extends BaseSQL {
 	private int highestDeathID = 1;
 
 	public DeathSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    DeathID INT NOT NULL PRIMARY KEY,\n" +
 						  "    VictimPersona INT NOT NULL,\n" +
@@ -54,16 +50,16 @@ public class DeathSQL extends BaseSQL {
 						  "    StaffInflicted BIT NOT NULL,\n" +
 						  "    Refunder TEXT\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
+		createTable(SQLTable);
+		updateData();
 	}
 
-	@Override
-	protected boolean customStatement() {
-		database = getSQLConnection();
+	protected void updateData() {
+		Connection conn = getSQLConnection();
 		try {
 			String stmt;
 			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE DeathID=(SELECT MAX(DeathID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = database.prepareStatement(stmt);
+			PreparedStatement ps = conn.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				updateHighestDeathID(rs.getInt("DeathID"));
@@ -72,8 +68,6 @@ public class DeathSQL extends BaseSQL {
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-
-		return true;
 	}
 
 	protected void addDataMappings() {

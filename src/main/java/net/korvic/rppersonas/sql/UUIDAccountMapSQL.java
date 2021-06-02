@@ -18,20 +18,11 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	public static final String ACCOUNTID = "accountid";
 
 	public UUIDAccountMapSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    UUID VARCHAR(255) NOT NULL PRIMARY KEY,\n" +
 						  "    AccountID INT NOT NULL\n" +
 						  ");";
-		this.load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {

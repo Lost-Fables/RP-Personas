@@ -21,21 +21,12 @@ public class LanguageSQL extends BaseSQL {
 	public static final String LEVEL = "level";
 
 	public LanguageSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL,\n" +
 						  "    Language TEXT NOT NULL,\n" +
 						  "    Level SMALLINT NOT NULL\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {
@@ -45,10 +36,10 @@ public class LanguageSQL extends BaseSQL {
 	}
 
 	public Map<String, Short> getLanguages(int personaID) {
-		database = getSQLConnection();
+		Connection conn = getSQLConnection();
 		try {
 			String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
-			PreparedStatement ps = database.prepareStatement(stmt);
+			PreparedStatement ps = conn.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 
 			Map<String, Short> languageLevelMap = new HashMap<>();

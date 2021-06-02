@@ -2,15 +2,15 @@ package net.korvic.rppersonas.sql;
 
 import co.lotc.core.util.HikariPool;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.util.Errors;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public abstract class BaseSQL {
 
 	protected final static String TABLE_PREFIX = "rpppersonas_";
 	protected static HikariPool database = null;
+	protected final static RPPersonas plugin = RPPersonas.getInstance();
 
 	public static void init(String host, int port, String databaseName, String flags, String username, String password) {
 		database = HikariPool.getHikariPool(host, port, databaseName, flags,
@@ -29,6 +29,27 @@ public abstract class BaseSQL {
 			}
 		} else {
 			RPPersonas.getInstance().getLogger().warning("Fatal Error: No valid database connection on table creation.");
+		}
+	}
+
+	protected static Connection getSQLConnection() {
+		try {
+			return database.getConnection();
+		} catch (Exception e) {
+			RPPersonas.getInstance().getLogger().warning("Failed to acquire database connection.");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	protected static void close(PreparedStatement ps, ResultSet rs) {
+		try {
+			if (ps != null)
+				ps.close();
+			if (rs != null)
+				rs.close();
+		} catch (SQLException ex) {
+			Errors.close(plugin, ex);
 		}
 	}
 
@@ -164,15 +185,6 @@ public abstract class BaseSQL {
 		}
 	}
 
-	protected static void close(PreparedStatement ps, ResultSet rs) {
-		try {
-			if (ps != null)
-				ps.close();
-			if (rs != null)
-				rs.close();
-		} catch (SQLException ex) {
-			Errors.close(plugin, ex);
-		}
-	}
+
     */
 }

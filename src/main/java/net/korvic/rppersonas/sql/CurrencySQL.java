@@ -18,21 +18,12 @@ public class CurrencySQL extends BaseSQL {
 	public static final String BANK = "bank";
 
 	public CurrencySQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 						  "    Money REAL NOT NULL,\n" +
 						  "    Bank REAL NOT NULL\n" +
 						  ");";
-		this.load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {

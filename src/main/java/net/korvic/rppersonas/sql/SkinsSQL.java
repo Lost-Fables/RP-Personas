@@ -22,10 +22,6 @@ public class SkinsSQL extends BaseSQL {
 	private int highestSkinID = 1;
 
 	public SkinsSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    SkinID INT NOT NULL PRIMARY KEY,\n" +
 						  "    AccountID INT NOT NULL,\n" +
@@ -33,16 +29,15 @@ public class SkinsSQL extends BaseSQL {
 						  "    Texture TEXT NOT NULL,\n" +
 						  "    Signature TEXT NOT NULL\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
+		createTable(SQLTable);
 	}
 
-	@Override
 	protected boolean customStatement() {
-		database = getSQLConnection();
+		Connection conn = getSQLConnection();
 		try {
 			String stmt;
 			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID=(SELECT MAX(SkinID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = database.prepareStatement(stmt);
+			PreparedStatement ps = conn.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				updateHighestSkinID(rs.getInt("SkinID"));

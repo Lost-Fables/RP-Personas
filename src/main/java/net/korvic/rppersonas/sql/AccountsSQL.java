@@ -20,22 +20,13 @@ public class AccountsSQL extends BaseSQL {
 	public static final String VOTES = "votes";
 
 	public AccountsSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    AccountID INT NOT NULL PRIMARY KEY,\n" +
 						  "    DiscordID TEXT,\n" +
 						  "    Playtime BIGINT NOT NULL,\n" +
 						  "    Votes SMALLINT NOT NULL\n" +
 						  ");";
-		this.load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {

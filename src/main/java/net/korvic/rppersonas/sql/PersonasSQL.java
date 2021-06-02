@@ -44,10 +44,6 @@ public class PersonasSQL extends BaseSQL {
 	public static final String BACKGROUND = "background";
 
 	public PersonasSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 						  "    Alive BIT NOT NULL,\n" +
@@ -77,12 +73,7 @@ public class PersonasSQL extends BaseSQL {
 
 						  "    RezToAltar INT\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {

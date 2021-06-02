@@ -23,22 +23,17 @@ public class StatusSQL extends BaseSQL {
 	public static final String EXPIRATION = "expiration";
 
 	public StatusSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL,\n" +
 						  "    Status TEXT NOT NULL,\n" +
 						  "    Severity TINYINT NOT NULL,\n" +
 						  "    Expiration BIGINT NOT NULL\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
+		createTable(SQLTable);
 	}
 
-	@Override
 	protected boolean customStatement() {
-		database = getSQLConnection();
+		Connection conn = getSQLConnection();
 		try {
 			if (database == null) {
 				throw new NullPointerException();
@@ -46,7 +41,7 @@ public class StatusSQL extends BaseSQL {
 			long currentTime = System.currentTimeMillis();
 			String stmt;
 			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE Expiration<='" + currentTime + "';";
-			PreparedStatement ps = database.prepareStatement(stmt);
+			PreparedStatement ps = conn.prepareStatement(stmt);
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception ex) {

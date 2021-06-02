@@ -26,10 +26,6 @@ public class RezAppSQL extends BaseSQL {
 	public static final String DENIED = "denied";
 
 	public RezAppSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 						  "    Why TEXT NOT NULL,\n" +
@@ -41,12 +37,7 @@ public class RezAppSQL extends BaseSQL {
 						  "    Altar TEXT NOT NULL,\n" +
 						  "    Denied BIT NOT NULL\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {
@@ -64,7 +55,7 @@ public class RezAppSQL extends BaseSQL {
 		try {
 			String stmt;
 			stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
-			PreparedStatement ps = database.prepareStatement(stmt);
+			PreparedStatement ps = conn.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				DataMapFilter data = grabDataFromResult(rs);

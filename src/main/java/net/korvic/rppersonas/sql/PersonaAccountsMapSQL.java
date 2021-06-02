@@ -19,26 +19,22 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	public static final String ACTIVEUUID = "active_uuid";
 
 	public PersonaAccountsMapSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    PersonaID INT NOT NULL PRIMARY KEY,\n" +
 						  "    AccountID INT NOT NULL,\n" +
 						  "    Alive BIT NOT NULL,\n" +
 						  "    ActiveUUID TEXT\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
+		createTable(SQLTable);
+		updateData();
 	}
 
-	@Override
-	protected boolean customStatement() {
-		database = getSQLConnection();
+	protected void updateData() {
+		Connection conn = getSQLConnection();
 		try {
 			String stmt;
 			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = database.prepareStatement(stmt);
+			PreparedStatement ps = conn.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				PersonaHandler.updateHighestPersonaID(rs.getInt("PersonaID"));
@@ -47,8 +43,6 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-
-		return true;
 	}
 
 	protected void addDataMappings() {

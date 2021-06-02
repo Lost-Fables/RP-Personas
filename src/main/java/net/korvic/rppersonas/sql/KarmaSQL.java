@@ -23,22 +23,13 @@ public class KarmaSQL extends BaseSQL {
 	public static final String MODIFIER = "modifier";
 
 	public KarmaSQL(RPPersonas plugin) {
-		if (BaseSQL.plugin == null) {
-			BaseSQL.plugin = plugin;
-		}
-
 		String SQLTable = "CREATE TABLE IF NOT EXISTS " + SQL_TABLE_NAME + " (\n" +
 						  "    KarmaID INT NOT NULL,\n" +
 						  "    PersonaID INT NOT NULL,\n" +
 						  "    Action TEXT NOT NULL,\n" +
 						  "    Modifier REAL NOT NULL\n" +
 						  ");";
-		load(SQLTable, SQL_TABLE_NAME);
-	}
-
-	@Override
-	protected boolean customStatement() {
-		return false;
+		createTable(SQLTable);
 	}
 
 	protected void addDataMappings() {
