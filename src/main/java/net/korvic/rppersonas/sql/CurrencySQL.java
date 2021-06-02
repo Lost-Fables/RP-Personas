@@ -24,6 +24,7 @@ public class CurrencySQL extends BaseSQL {
 						  "    Bank REAL NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {

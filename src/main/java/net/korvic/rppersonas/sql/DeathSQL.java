@@ -52,6 +52,7 @@ public class DeathSQL extends BaseSQL {
 						  ");";
 		createTable(SQLTable);
 		updateData();
+		addDataMappings();
 	}
 
 	protected void updateData() {

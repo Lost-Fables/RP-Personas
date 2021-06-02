@@ -23,6 +23,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 						  "    AccountID INT NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {
@@ -33,7 +34,6 @@ public class UUIDAccountMapSQL extends BaseSQL {
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PLAYER)) {
-			System.out.println("[RPP] Registering update via Player Object...");
 			Player p = (Player) data.get(PLAYER);
 			try (PreparedStatement stmt = getSaveStatement(data);){
 				plugin.getUnregisteredHandler().remove(p);

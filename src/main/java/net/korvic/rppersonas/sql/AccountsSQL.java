@@ -27,6 +27,7 @@ public class AccountsSQL extends BaseSQL {
 						  "    Votes SMALLINT NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {

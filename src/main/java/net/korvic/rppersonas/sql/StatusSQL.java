@@ -31,6 +31,7 @@ public class StatusSQL extends BaseSQL {
 						  ");";
 		createTable(SQLTable);
 		updateData();
+		addDataMappings();
 	}
 
 	protected void updateData() {

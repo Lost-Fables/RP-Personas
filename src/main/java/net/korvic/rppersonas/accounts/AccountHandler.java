@@ -72,7 +72,6 @@ public class AccountHandler {
 		DataMapFilter data = new DataMapFilter();
 		data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
 			.put(UUIDAccountMapSQL.PLAYER_UUID, uuid);
-		System.out.println("[RPP] Data created properly..." + data.containsKey(UUIDAccountMapSQL.ACCOUNTID) + "|" + data.containsKey(UUIDAccountMapSQL.PLAYER_UUID));
 		plugin.getUuidAccountMapSQL().registerOrUpdate(data);
 	}
 

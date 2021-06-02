@@ -74,6 +74,7 @@ public class PersonasSQL extends BaseSQL {
 						  "    RezToAltar INT\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {

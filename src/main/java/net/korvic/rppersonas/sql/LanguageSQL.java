@@ -27,6 +27,7 @@ public class LanguageSQL extends BaseSQL {
 						  "    Level SMALLINT NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {

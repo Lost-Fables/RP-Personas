@@ -31,6 +31,7 @@ public class AltarSQL extends BaseSQL {
 						  "    IconID TEXT\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {

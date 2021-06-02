@@ -30,6 +30,7 @@ public class SkinsSQL extends BaseSQL {
 						  "    Signature TEXT NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected boolean customStatement() {

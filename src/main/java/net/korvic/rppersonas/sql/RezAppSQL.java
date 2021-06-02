@@ -38,6 +38,7 @@ public class RezAppSQL extends BaseSQL {
 						  "    Denied BIT NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {

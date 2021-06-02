@@ -31,6 +31,7 @@ public class CorpseSQL extends BaseSQL {
 						  "    Texture TEXT\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {

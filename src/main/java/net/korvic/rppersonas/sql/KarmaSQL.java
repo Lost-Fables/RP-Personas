@@ -30,6 +30,7 @@ public class KarmaSQL extends BaseSQL {
 						  "    Modifier REAL NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		addDataMappings();
 	}
 
 	protected void addDataMappings() {
