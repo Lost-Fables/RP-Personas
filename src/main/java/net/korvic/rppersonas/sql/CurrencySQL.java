@@ -79,7 +79,7 @@ public class CurrencySQL extends BaseSQL {
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
 			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}

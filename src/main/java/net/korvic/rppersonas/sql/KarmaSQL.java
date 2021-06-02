@@ -54,7 +54,7 @@ public class KarmaSQL extends BaseSQL {
 				data.put(KARMAID, getMaxKarmaID((int) data.get(PERSONAID)) + 1);
 			}
 			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -104,7 +104,7 @@ public class KarmaSQL extends BaseSQL {
 			Connection conn = getSQLConnection();
 			try {
 				PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND KarmaID='" + data.get(KARMAID) + "'");
-				plugin.getSaveQueue().addToQueue(statement);
+				plugin.getSaveQueue().executeWithNotification(statement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}

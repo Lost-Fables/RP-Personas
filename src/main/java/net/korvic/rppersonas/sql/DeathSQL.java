@@ -106,7 +106,7 @@ public class DeathSQL extends BaseSQL {
 			updateHighestDeathID(highestDeathID);
 		}
 		try {
-			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}

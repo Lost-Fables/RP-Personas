@@ -117,12 +117,7 @@ public class PersonasSQL extends BaseSQL {
 			PreparedStatement ps = null;
 			try {
 				ps = getSaveStatement(data);
-				if (data.containsKey(PersonasSQL.FRESH)) {
-					ps.executeUpdate();
-					ps.close();
-				} else {
-					plugin.getSaveQueue().addToQueue(ps);
-				}
+				plugin.getSaveQueue().executeWithNotification(ps);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			} finally {

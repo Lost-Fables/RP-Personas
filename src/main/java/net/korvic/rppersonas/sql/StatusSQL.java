@@ -65,7 +65,7 @@ public class StatusSQL extends BaseSQL {
 	public void saveStatus(DataMapFilter data) {
 		if (data.containsKey(PERSONAID) && data.containsKey(STATUS)) {
 			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 			} catch (Exception ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -107,7 +107,7 @@ public class StatusSQL extends BaseSQL {
 				throw new NullPointerException();
 			}
 			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "' AND Status='" + entry.getStatus().getName() + "' AND Severity='" + entry.getSeverity() + "' AND Expiration='" + entry.getExpiration() + "'");
-			plugin.getSaveQueue().addToQueue(statement);
+			plugin.getSaveQueue().executeWithNotification(statement);
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

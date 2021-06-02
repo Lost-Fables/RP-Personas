@@ -61,7 +61,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	// Inserts a new mapping for a persona.
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
-			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 		}
 	}
 

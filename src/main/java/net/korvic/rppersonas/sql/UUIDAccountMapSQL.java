@@ -45,7 +45,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 			Player p = (Player) data.get(PLAYER);
 			try {
 				plugin.getUnregisteredHandler().remove(p);
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 				plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
@@ -54,7 +54,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 			}
 		} else if (data.containsKey(PLAYER_UUID)) {
 			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
 					e.printStackTrace();

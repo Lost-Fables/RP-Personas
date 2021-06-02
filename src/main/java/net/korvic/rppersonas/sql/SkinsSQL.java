@@ -7,7 +7,6 @@ import net.korvic.rppersonas.sql.util.Errors;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class SkinsSQL extends BaseSQL {
@@ -106,7 +105,7 @@ public class SkinsSQL extends BaseSQL {
 		data.put(SKINID, highestSkinID);
 		updateHighestSkinID(highestSkinID);
 		try {
-			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}

@@ -14,7 +14,6 @@ import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
-import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -27,9 +26,9 @@ import java.util.*;
 public class PersonaHandler {
 
 	private static RPPersonas plugin;
-	private Map<Integer, Persona> loadedPersonas = new HashMap<>(); // personaID, persona
-	private Map<Player, Integer> playerObjectToID = new HashMap<>(); // player, personaID
-	private static Map<Player, Persona> skipSave = new HashMap<>(); // List of personas to skip saving (i.e. disabled)
+	private final Map<Integer, Persona> loadedPersonas = new HashMap<>(); // personaID, persona
+	private final Map<Player, Integer> playerObjectToID = new HashMap<>(); // player, personaID
+	private static final Map<Player, Persona> skipSave = new HashMap<>(); // List of personas to skip saving (i.e. disabled)
 	private static int highestPersonaID = 1;
 
 	public PersonaHandler(RPPersonas plugin) {
@@ -403,9 +402,9 @@ public class PersonaHandler {
 	public void deletePersona(int personaID) {
 		unloadPersona(personaID, false);
 		try {
-			plugin.getSaveQueue().addToQueue(plugin.getPersonasSQL().getDeleteStatement(personaID));
-			plugin.getSaveQueue().addToQueue(plugin.getPersonaAccountMapSQL().getDeleteStatement(personaID));
-			plugin.getSaveQueue().addToQueue(plugin.getLanguageSQL().getDeleteStatementByPersonaID(personaID));
+			plugin.getSaveQueue().executeWithNotification(plugin.getPersonasSQL().getDeleteStatement(personaID));
+			plugin.getSaveQueue().executeWithNotification(plugin.getPersonaAccountMapSQL().getDeleteStatement(personaID));
+			plugin.getSaveQueue().executeWithNotification(plugin.getLanguageSQL().getDeleteStatementByPersonaID(personaID));
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
@@ -415,7 +414,7 @@ public class PersonaHandler {
 
 	public void deleteSkin(int skinID) {
 		try {
-			plugin.getSaveQueue().addToQueue(plugin.getSkinsSQL().getDeleteStatement(skinID));
+			plugin.getSaveQueue().executeWithNotification(plugin.getSkinsSQL().getDeleteStatement(skinID));
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();

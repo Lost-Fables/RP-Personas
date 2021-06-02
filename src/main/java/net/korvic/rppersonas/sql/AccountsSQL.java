@@ -116,7 +116,7 @@ public class AccountsSQL extends BaseSQL {
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(ACCOUNTID)) {
 			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -178,7 +178,7 @@ public class AccountsSQL extends BaseSQL {
 		data.putAll(getData(accountID))
 			.put(VOTES, ((short) data.get(VOTES)) + 1);
 		try {
-			plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();

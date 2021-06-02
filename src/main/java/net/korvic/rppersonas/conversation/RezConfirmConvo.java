@@ -61,7 +61,7 @@ public class RezConfirmConvo extends BaseConvo {
 			confirmation.addExtra(PersonaCreationConvo.BUTTON_SPACE);
 			confirmation.addExtra(MessageUtil.CommandButton("No", "No", "Click to select!", RPPersonas.SECONDARY_LIGHT, RPPersonas.PRIMARY_LIGHT));
 
-			p.spigot().sendMessage(confirmation);
+			p.sendMessage(confirmation);
 			return "";
 		}
 
@@ -100,7 +100,7 @@ public class RezConfirmConvo extends BaseConvo {
 
 					@Override
 					public void run() {
-						if (plugin.getSaveQueue().isEmpty() || passes > 3) {
+						if (passes > 3) {
 							if (pers.getUsingPlayer().isOnline()) {
 								plugin.getPersonaHandler().swapToPersona(pers.getUsingPlayer(), pers.getAccountID(), personaID, false); // Reload the force-saved data from above.
 								pers.getUsingPlayer().teleportAsync(altar.getTPLocation());

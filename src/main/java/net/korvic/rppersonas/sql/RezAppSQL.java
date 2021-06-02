@@ -79,7 +79,7 @@ public class RezAppSQL extends BaseSQL {
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
 			try {
-				plugin.getSaveQueue().addToQueue(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -166,7 +166,7 @@ public class RezAppSQL extends BaseSQL {
 		Connection conn = getSQLConnection();
 		try {
 			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
-			plugin.getSaveQueue().addToQueue(statement);
+			plugin.getSaveQueue().executeWithNotification(statement);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

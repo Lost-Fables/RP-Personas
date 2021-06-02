@@ -61,6 +61,7 @@ public final class RPPersonas extends JavaPlugin {
 	public static final long DAY_IN_MILLIS = 1000L * 60 * 60 * 24;
 
 	public static boolean DEBUGGING;
+	public static long AUTO_SAVE_MINS;
 	public static int DEFAULT_PERSONAS;
 	public static int DEFAULT_SKINS;
 	public static int DEFAULT_LIVES;
@@ -132,7 +133,7 @@ public final class RPPersonas extends JavaPlugin {
 			// Load data from our configs
 			loadFromConfig();
 
-			// Start Auto-Save every 30 mins
+			// Start Auto-Save every x mins
 			new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -140,7 +141,7 @@ public final class RPPersonas extends JavaPlugin {
 					corpseHandler.saveAllCorpses();
 					personaHandler.queueSaveAllPersonas();
 				}
-			}.runTaskTimerAsynchronously(this, 0, 36000);
+			}.runTaskTimerAsynchronously(this, 0, AUTO_SAVE_MINS * 60 * 20);
 
 			// Start auto-clean for nameplate scoreboards
 			BoardManager.toggleAutoClean();
@@ -199,14 +200,8 @@ public final class RPPersonas extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (saveQueue != null) {
-			saveQueue.stopSaving();
-		}
 		if (personaHandler != null) {
 			personaHandler.queueSaveAllPersonas();
-		}
-		if (saveQueue != null) {
-			saveQueue.completeAllSaves();
 		}
 		BaseSQL.cancelConnectionMaintainer();
 	}
@@ -252,6 +247,7 @@ public final class RPPersonas extends JavaPlugin {
 	private void loadFromConfig() {
 		// Default Values
 		DEBUGGING = config.getBoolean("debugging");
+		AUTO_SAVE_MINS = Math.max(config.getLong("saving.mins"), 1);
 		DEFAULT_PERSONAS = Math.max(config.getInt("defaults.personas-per-mc-account"), 1);
 		DEFAULT_LIVES = Math.max(config.getInt("defaults.lives-per-persona"), 1);
 		DEFAULT_REZ_LIVES = Math.max(config.getInt("defaults.lives-per-rez"), 1);
