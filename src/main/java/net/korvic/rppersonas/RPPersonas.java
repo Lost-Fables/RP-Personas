@@ -67,7 +67,7 @@ public final class RPPersonas extends JavaPlugin {
 	public static int DEFAULT_LIVES;
 	public static int DEFAULT_REZ_LIVES;
 
-	private static RPPersonas instance;
+	@Getter private static RPPersonas instance;
 	public static FileConfiguration config;
 	public static Date ANOMA_DATE = new Date();
 	static {
@@ -203,7 +203,6 @@ public final class RPPersonas extends JavaPlugin {
 		if (personaHandler != null) {
 			personaHandler.queueSaveAllPersonas();
 		}
-		BaseSQL.cancelConnectionMaintainer();
 	}
 
 	// Get Plugin Instance

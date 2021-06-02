@@ -59,11 +59,11 @@ public class DeathSQL extends BaseSQL {
 
 	@Override
 	protected boolean customStatement() {
-		connection = getSQLConnection();
+		database = getSQLConnection();
 		try {
 			String stmt;
 			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE DeathID=(SELECT MAX(DeathID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = connection.prepareStatement(stmt);
+			PreparedStatement ps = database.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				updateHighestDeathID(rs.getInt("DeathID"));

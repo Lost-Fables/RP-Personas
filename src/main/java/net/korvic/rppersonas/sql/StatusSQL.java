@@ -38,15 +38,15 @@ public class StatusSQL extends BaseSQL {
 
 	@Override
 	protected boolean customStatement() {
-		connection = getSQLConnection();
+		database = getSQLConnection();
 		try {
-			if (connection == null) {
+			if (database == null) {
 				throw new NullPointerException();
 			}
 			long currentTime = System.currentTimeMillis();
 			String stmt;
 			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE Expiration<='" + currentTime + "';";
-			PreparedStatement ps = connection.prepareStatement(stmt);
+			PreparedStatement ps = database.prepareStatement(stmt);
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception ex) {

@@ -38,11 +38,11 @@ public class SkinsSQL extends BaseSQL {
 
 	@Override
 	protected boolean customStatement() {
-		connection = getSQLConnection();
+		database = getSQLConnection();
 		try {
 			String stmt;
 			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID=(SELECT MAX(SkinID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = connection.prepareStatement(stmt);
+			PreparedStatement ps = database.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				updateHighestSkinID(rs.getInt("SkinID"));

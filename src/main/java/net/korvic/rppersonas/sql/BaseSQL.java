@@ -1,16 +1,40 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.HikariPool;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.Errors;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.*;
-import java.util.logging.Level;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public abstract class BaseSQL {
 
-	protected static RPPersonas plugin = null;
-	protected static Connection connection;
+	protected final static String TABLE_PREFIX = "rpppersonas_";
+	protected static HikariPool database = null;
+
+	public static void init(String host, int port, String databaseName, String flags, String username, String password) {
+		database = HikariPool.getHikariPool(host, port, databaseName, flags,
+											username, password);
+	}
+
+	protected static void createTable(String SQLTable) {
+		if (database != null) {
+			try {
+				Connection connection = database.getConnection();
+				Statement s = connection.createStatement();
+				s.execute(SQLTable);
+				s.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			RPPersonas.getInstance().getLogger().warning("Fatal Error: No valid database connection on table creation.");
+		}
+	}
+
+
+	/*protected static RPPersonas plugin = null;
+	protected static HikariPool database;
 
 	private static BukkitRunnable runnable = null;
 
@@ -24,9 +48,9 @@ public abstract class BaseSQL {
 
 	// INSTANCE //
 	protected void load(String SQLTable, String SQLTableName) {
-		connection = getSQLConnection();
+				database = getSQLConnection();
 		try {
-			Statement s = connection.createStatement();
+			Statement s = database.createStatement();
 			s.execute(SQLTable);
 			s.close();
 		} catch (SQLException e) {
@@ -40,11 +64,11 @@ public abstract class BaseSQL {
 
 	protected void initialize(String SQLTableName){
 		if (!customStatement()) {
-			connection = getSQLConnection();
+			database = getSQLConnection();
 			try {
 				String stmt;
 				stmt = "SELECT * FROM " + SQLTableName + ";";
-				PreparedStatement ps = connection.prepareStatement(stmt);
+				PreparedStatement ps = database.prepareStatement(stmt);
 				ResultSet rs = ps.executeQuery();
 				close(ps, rs);
 			} catch (SQLException ex) {
@@ -81,7 +105,7 @@ public abstract class BaseSQL {
 
 		if (output == null) {
 			if (MARIADB) {
-				plugin.getLogger().warning("Unable to connect with MariaDB for " + HOST + ":" + PORT + "/" + DATABASE + FLAGS/*+ " with information " + USER + ":" + PASSWORD*/ + " | Trying MySQL instead.");
+				plugin.getLogger().warning("Unable to connect with MariaDB for " + HOST + ":" + PORT + "/" + DATABASE + FLAGS+ " with information " + USER + ":" + PASSWORD + " | Trying MySQL instead.");
 			}
 
 			try {
@@ -150,5 +174,5 @@ public abstract class BaseSQL {
 			Errors.close(plugin, ex);
 		}
 	}
-
+    */
 }

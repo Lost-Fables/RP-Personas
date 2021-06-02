@@ -45,10 +45,10 @@ public class LanguageSQL extends BaseSQL {
 	}
 
 	public Map<String, Short> getLanguages(int personaID) {
-		connection = getSQLConnection();
+		database = getSQLConnection();
 		try {
 			String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
-			PreparedStatement ps = connection.prepareStatement(stmt);
+			PreparedStatement ps = database.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 
 			Map<String, Short> languageLevelMap = new HashMap<>();

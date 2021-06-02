@@ -50,10 +50,10 @@ public class AltarSQL extends BaseSQL {
 	}
 
 	public void loadAltars() {
-		connection = getSQLConnection();
+		database = getSQLConnection();
 		try {
 			String stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
-			PreparedStatement ps = connection.prepareStatement(stmt);
+			PreparedStatement ps = database.prepareStatement(stmt);
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
