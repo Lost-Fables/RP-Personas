@@ -19,11 +19,9 @@ public abstract class BaseSQL {
 
 	protected static void createTable(String SQLTable) {
 		if (database != null) {
-			try {
-				Connection connection = database.getConnection();
-				Statement s = connection.createStatement();
+			try (Connection connection = getSQLConnection();
+				 Statement s = connection.createStatement();) {
 				s.execute(SQLTable);
-				s.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -39,17 +37,6 @@ public abstract class BaseSQL {
 			RPPersonas.getInstance().getLogger().warning("Failed to acquire database connection.");
 			e.printStackTrace();
 			return null;
-		}
-	}
-
-	protected static void close(PreparedStatement ps, ResultSet rs) {
-		try {
-			if (ps != null)
-				ps.close();
-			if (rs != null)
-				rs.close();
-		} catch (SQLException ex) {
-			Errors.close(plugin, ex);
 		}
 	}
 
