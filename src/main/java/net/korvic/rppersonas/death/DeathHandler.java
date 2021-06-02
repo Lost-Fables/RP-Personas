@@ -1,9 +1,9 @@
 package net.korvic.rppersonas.death;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.KarmaSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

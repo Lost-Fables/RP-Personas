@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.*;
@@ -27,9 +27,9 @@ public class CurrencySQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(MONEY, MONEY, Float.class);
-		DataMapFilter.addFilter(BANK, BANK, Float.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(MONEY, Float.class);
+		DataMapFilter.addFilter(BANK, Float.class);
 	}
 
 	public Map<String, Object> getData(int personaID) {

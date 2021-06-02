@@ -1,8 +1,8 @@
 package net.korvic.rppersonas.death;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.AltarSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 

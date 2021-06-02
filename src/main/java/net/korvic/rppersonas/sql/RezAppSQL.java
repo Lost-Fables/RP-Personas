@@ -1,10 +1,10 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.RezAppConvo;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.resurrection.RezApp;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.Connection;
@@ -41,13 +41,13 @@ public class RezAppSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(RESPONSES, RESPONSES, RezAppConvo.RezAppResponses.class);
-		DataMapFilter.addFilter(KARMA, KARMA, Integer.class);
-		DataMapFilter.addFilter(KILLS, KILLS, Integer.class);
-		DataMapFilter.addFilter(DEATHS, DEATHS, Integer.class);
-		DataMapFilter.addFilter(ALTAR, ALTAR, Altar.class);
-		DataMapFilter.addFilter(DENIED, DENIED, Boolean.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(RESPONSES, RezAppConvo.RezAppResponses.class);
+		DataMapFilter.addFilter(KARMA, Integer.class);
+		DataMapFilter.addFilter(KILLS, Integer.class);
+		DataMapFilter.addFilter(DEATHS, Integer.class);
+		DataMapFilter.addFilter(ALTAR, Altar.class);
+		DataMapFilter.addFilter(DENIED, Boolean.class);
 	}
 
 	public void loadApps() {

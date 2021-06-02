@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.*;
@@ -47,11 +47,11 @@ public class SkinsSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(SKINID, SKINID, Integer.class);
-		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
-		DataMapFilter.addFilter(NAME, NAME, String.class);
-		DataMapFilter.addFilter(TEXTURE, TEXTURE, String.class);
-		DataMapFilter.addFilter(SIGNATURE, SIGNATURE, String.class);
+		DataMapFilter.addFilter(SKINID, Integer.class);
+		DataMapFilter.addFilter(ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(NAME, String.class);
+		DataMapFilter.addFilter(TEXTURE, String.class);
+		DataMapFilter.addFilter(SIGNATURE, String.class);
 	}
 
 	private void updateHighestSkinID(int skinID) {

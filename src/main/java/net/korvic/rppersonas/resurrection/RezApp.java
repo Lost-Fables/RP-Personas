@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.resurrection;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.util.DataMapFilter;
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.RezAppConvo.RezAppResponses;
@@ -8,7 +9,6 @@ import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.RezAppSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

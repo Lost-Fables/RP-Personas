@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.Connection;
@@ -30,9 +30,9 @@ public class LanguageSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(LANGUAGE, LANGUAGE, String.class);
-		DataMapFilter.addFilter(LEVEL, LEVEL, Short.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(LANGUAGE, String.class);
+		DataMapFilter.addFilter(LEVEL, Short.class);
 	}
 
 	public Map<String, Short> getLanguages(int personaID) {

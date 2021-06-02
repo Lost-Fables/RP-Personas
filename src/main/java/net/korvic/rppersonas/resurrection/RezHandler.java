@@ -1,9 +1,9 @@
 package net.korvic.rppersonas.resurrection;
 
+import co.lotc.core.util.DataMapFilter;
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.RezAppSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;

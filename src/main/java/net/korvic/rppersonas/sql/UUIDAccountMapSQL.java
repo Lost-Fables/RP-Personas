@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 import org.bukkit.entity.Player;
 
@@ -26,30 +26,28 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(PLAYER, PLAYER, Player.class);
-		DataMapFilter.addFilter(PLAYER_UUID, PLAYER_UUID, UUID.class);
-		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(PLAYER, Player.class);
+		DataMapFilter.addFilter(PLAYER_UUID, UUID.class);
+		DataMapFilter.addFilter(ACCOUNTID, Integer.class);
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PLAYER)) {
+			System.out.println("[RPP] Registering update via Player Object...");
 			Player p = (Player) data.get(PLAYER);
 			try (PreparedStatement stmt = getSaveStatement(data);){
 				plugin.getUnregisteredHandler().remove(p);
 				plugin.getSaveQueue().executeWithNotification(stmt);
 				plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
 			} catch (Exception e) {
-				if (RPPersonas.DEBUGGING) {
-					e.printStackTrace();
-				}
+				e.printStackTrace();
 			}
 		} else if (data.containsKey(PLAYER_UUID)) {
+			System.out.println("[RPP] Registering update via UUID...");
 			try (PreparedStatement stmt = getSaveStatement(data);) {
 				plugin.getSaveQueue().executeWithNotification(stmt);
 			} catch (Exception e) {
-				if (RPPersonas.DEBUGGING) {
-					e.printStackTrace();
-				}
+				e.printStackTrace();
 			}
 		}
 	}

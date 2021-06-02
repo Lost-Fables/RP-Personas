@@ -1,6 +1,7 @@
 package net.korvic.rppersonas.personas;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.util.DataMapFilter;
 import lombok.Getter;
 import lombok.Setter;
 import net.korvic.rppersonas.RPPersonas;
@@ -9,7 +10,6 @@ import net.korvic.rppersonas.conversation.BaseConvo;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
 import net.korvic.rppersonas.sql.StatusSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 import net.lostfables.fabledprofessions.time.TimeManager;

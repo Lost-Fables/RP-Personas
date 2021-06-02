@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
@@ -45,10 +45,10 @@ public class StatusSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(STATUS, STATUS, Status.class);
-		DataMapFilter.addFilter(SEVERITY, SEVERITY, Byte.class);
-		DataMapFilter.addFilter(EXPIRATION, EXPIRATION, Long.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(STATUS, Status.class);
+		DataMapFilter.addFilter(SEVERITY, Byte.class);
+		DataMapFilter.addFilter(EXPIRATION, Long.class);
 	}
 
 	public void saveStatus(DataMapFilter data) {

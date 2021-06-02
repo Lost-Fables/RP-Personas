@@ -1,8 +1,8 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.*;
@@ -44,10 +44,10 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
-		DataMapFilter.addFilter(ALIVE, ALIVE, Boolean.class);
-		DataMapFilter.addFilter(ACTIVEUUID, ACTIVEUUID, UUID.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(ALIVE, Boolean.class);
+		DataMapFilter.addFilter(ACTIVEUUID, UUID.class);
 	}
 
 	// Inserts a new mapping for a persona.

@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.Connection;
@@ -33,10 +33,10 @@ public class KarmaSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(KARMAID, KARMAID, Integer.class);
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(ACTION, ACTION, String.class);
-		DataMapFilter.addFilter(MODIFIER, MODIFIER, Float.class);
+		DataMapFilter.addFilter(KARMAID, Integer.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(ACTION, String.class);
+		DataMapFilter.addFilter(MODIFIER, Float.class);
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {

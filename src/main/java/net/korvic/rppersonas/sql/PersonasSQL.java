@@ -1,11 +1,11 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.kits.Kit;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaSubRace;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -77,29 +77,29 @@ public class PersonasSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(ALIVE, ALIVE, Boolean.class);
-		DataMapFilter.addFilter(NAME, NAME, String.class);
-		DataMapFilter.addFilter(GENDER, GENDER, PersonaGender.class);
-		DataMapFilter.addFilter(AGE, AGE, Long.class);
-		DataMapFilter.addFilter(RACE, RACE, PersonaSubRace.class);
-		DataMapFilter.addFilter(RAW_RACE, RAW_RACE, String.class);
-		DataMapFilter.addFilter(LIVES, LIVES, Integer.class);
-		DataMapFilter.addFilter(PLAYTIME, PLAYTIME, Long.class);
-		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);
-		DataMapFilter.addFilter(HEALTH, HEALTH, Double.class);
-		DataMapFilter.addFilter(HUNGER, HUNGER, Integer.class);
-		DataMapFilter.addFilter(INVENTORY, INVENTORY, String.class);
-		DataMapFilter.addFilter(ENDERCHEST, ENDERCHEST, String.class);
-		DataMapFilter.addFilter(NICKNAME, NICKNAME, String.class);
-		DataMapFilter.addFilter(PREFIX, PREFIX, String.class);
-		DataMapFilter.addFilter(SKINID, SKINID, Integer.class);
-		DataMapFilter.addFilter(DESCRIPTION, DESCRIPTION, String.class);
-		DataMapFilter.addFilter(FIRST, FIRST, Object.class);
-		DataMapFilter.addFilter(FRESH, FRESH, Object.class);
-		DataMapFilter.addFilter(ALTARID, ALTARID, Integer.class);
-		DataMapFilter.addFilter(CORPSEINV, CORPSEINV, String.class);
-		DataMapFilter.addFilter(BACKGROUND, BACKGROUND, Kit.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(ALIVE, Boolean.class);
+		DataMapFilter.addFilter(NAME, String.class);
+		DataMapFilter.addFilter(GENDER, PersonaGender.class);
+		DataMapFilter.addFilter(AGE, Long.class);
+		DataMapFilter.addFilter(RACE, PersonaSubRace.class);
+		DataMapFilter.addFilter(RAW_RACE, String.class);
+		DataMapFilter.addFilter(LIVES, Integer.class);
+		DataMapFilter.addFilter(PLAYTIME, Long.class);
+		DataMapFilter.addFilter(LOCATION, Location.class);
+		DataMapFilter.addFilter(HEALTH, Double.class);
+		DataMapFilter.addFilter(HUNGER, Integer.class);
+		DataMapFilter.addFilter(INVENTORY, String.class);
+		DataMapFilter.addFilter(ENDERCHEST, String.class);
+		DataMapFilter.addFilter(NICKNAME, String.class);
+		DataMapFilter.addFilter(PREFIX, String.class);
+		DataMapFilter.addFilter(SKINID, Integer.class);
+		DataMapFilter.addFilter(DESCRIPTION, String.class);
+		DataMapFilter.addFilter(FIRST, Object.class);
+		DataMapFilter.addFilter(FRESH, Object.class);
+		DataMapFilter.addFilter(ALTARID, Integer.class);
+		DataMapFilter.addFilter(CORPSEINV, String.class);
+		DataMapFilter.addFilter(BACKGROUND, Kit.class);
 	}
 
 	// Inserts a new mapping for a persona.

@@ -1,9 +1,9 @@
 package net.korvic.rppersonas.accounts;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.UUIDAccountMapSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -72,6 +72,7 @@ public class AccountHandler {
 		DataMapFilter data = new DataMapFilter();
 		data.put(UUIDAccountMapSQL.ACCOUNTID, forumID)
 			.put(UUIDAccountMapSQL.PLAYER_UUID, uuid);
+		System.out.println("[RPP] Data created properly..." + data.containsKey(UUIDAccountMapSQL.ACCOUNTID) + "|" + data.containsKey(UUIDAccountMapSQL.PLAYER_UUID));
 		plugin.getUuidAccountMapSQL().registerOrUpdate(data);
 	}
 

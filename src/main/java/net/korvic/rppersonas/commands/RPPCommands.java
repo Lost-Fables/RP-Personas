@@ -125,6 +125,8 @@ public class RPPCommands extends BaseCommand {
 				plugin.getAccountHandler().addLink(uuid, forumID);
 			}
 			msg(RPPersonas.PRIMARY_DARK + "Player successfully accepted.");
+		} else {
+			msg(RPPersonas.PRIMARY_DARK + "Unable to find a player by that name.");
 		}
 	}
 

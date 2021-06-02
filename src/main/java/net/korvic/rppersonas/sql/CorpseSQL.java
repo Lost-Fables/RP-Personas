@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.Connection;
@@ -34,12 +34,12 @@ public class CorpseSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(CORPSEID, CORPSEID, Integer.class);
-		DataMapFilter.addFilter(NAME, NAME, String.class);
-		DataMapFilter.addFilter(INVENTORY, INVENTORY, String.class);
-		DataMapFilter.addFilter(CREATED, CREATED, Long.class);
-		DataMapFilter.addFilter(PERSONAID, PERSONAID, Integer.class);
-		DataMapFilter.addFilter(TEXTURE, TEXTURE, String.class);
+		DataMapFilter.addFilter(CORPSEID, Integer.class);
+		DataMapFilter.addFilter(NAME, String.class);
+		DataMapFilter.addFilter(INVENTORY, String.class);
+		DataMapFilter.addFilter(CREATED, Long.class);
+		DataMapFilter.addFilter(PERSONAID, Integer.class);
+		DataMapFilter.addFilter(TEXTURE, String.class);
 	}
 
 	public void loadCorpses() {

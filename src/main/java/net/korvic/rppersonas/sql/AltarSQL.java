@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,10 +34,10 @@ public class AltarSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(ALTARID, ALTARID, Integer.class);
-		DataMapFilter.addFilter(NAME, NAME, String.class);
-		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);
-		DataMapFilter.addFilter(ICONID, ICONID, String.class);
+		DataMapFilter.addFilter(ALTARID, Integer.class);
+		DataMapFilter.addFilter(NAME, String.class);
+		DataMapFilter.addFilter(LOCATION, Location.class);
+		DataMapFilter.addFilter(ICONID, String.class);
 	}
 
 	public void loadAltars() {

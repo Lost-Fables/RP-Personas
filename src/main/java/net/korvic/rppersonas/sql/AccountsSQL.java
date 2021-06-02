@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.*;
@@ -30,11 +30,11 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(ACCOUNTID, ACCOUNTID, Integer.class);
-		DataMapFilter.addFilter(OLD_ACCOUNTID, OLD_ACCOUNTID, Integer.class);
-		DataMapFilter.addFilter(DISCORDID, DISCORDID, String.class);
-		DataMapFilter.addFilter(PLAYTIME, PLAYTIME, Long.class);
-		DataMapFilter.addFilter(VOTES, VOTES, Short.class);
+		DataMapFilter.addFilter(ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(OLD_ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(DISCORDID, String.class);
+		DataMapFilter.addFilter(PLAYTIME, Long.class);
+		DataMapFilter.addFilter(VOTES, Short.class);
 	}
 
 	// Checks if this account is already registered.

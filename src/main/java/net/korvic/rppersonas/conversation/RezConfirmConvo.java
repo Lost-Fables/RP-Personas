@@ -1,13 +1,13 @@
 package net.korvic.rppersonas.conversation;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.util.DataMapFilter;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.death.Corpse;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.PersonasSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;

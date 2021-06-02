@@ -1,11 +1,13 @@
 package net.korvic.rppersonas.listeners;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.BoardManager;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.AccountsSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +83,9 @@ public class JoinQuitListener implements Listener {
 			int personaID = plugin.getPersonaAccountMapSQL().getCurrentPersonaID(uuid);
 			plugin.getAccountHandler().loadAccount(p, accountID, personaID, false);
 		} else {
-			p.kickPlayer("You need to be whitelisted!");
+			TextComponent.Builder builder = Component.text();
+			builder.content("You need to be whitelisted!");
+			p.kick(builder.build());
 			//plugin.getUnregisteredHandler().add(p);
 		}
 	}

@@ -1,5 +1,6 @@
 package net.korvic.rppersonas.conversation;
 
+import co.lotc.core.util.DataMapFilter;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.kits.Kit;
@@ -8,7 +9,6 @@ import net.korvic.rppersonas.personas.*;
 import net.korvic.rppersonas.sql.LanguageSQL;
 import net.korvic.rppersonas.sql.PersonaAccountsMapSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.statuses.DisabledStatus;
 import net.lostfables.fabledprofessions.time.TimeManager;
 import net.md_5.bungee.api.chat.BaseComponent;

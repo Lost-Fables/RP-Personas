@@ -1,7 +1,7 @@
 package net.korvic.rppersonas.sql;
 
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.korvic.rppersonas.sql.util.Errors;
 import org.bukkit.Location;
 
@@ -68,20 +68,20 @@ public class DeathSQL extends BaseSQL {
 	}
 
 	protected void addDataMappings() {
-		DataMapFilter.addFilter(DEATHID, DEATHID, Integer.class);
+		DataMapFilter.addFilter(DEATHID, Integer.class);
 
-		DataMapFilter.addFilter(VICTIM_PERSONAID, VICTIM_PERSONAID, Integer.class);
-		DataMapFilter.addFilter(VICTIM_ACCOUNTID, VICTIM_ACCOUNTID, Integer.class);
-		DataMapFilter.addFilter(VICTIM_UUID, VICTIM_UUID, UUID.class);
+		DataMapFilter.addFilter(VICTIM_PERSONAID, Integer.class);
+		DataMapFilter.addFilter(VICTIM_ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(VICTIM_UUID, UUID.class);
 
-		DataMapFilter.addFilter(KILLER_PERSONAID, KILLER_PERSONAID, Integer.class);
-		DataMapFilter.addFilter(KILLER_ACCOUNTID, KILLER_ACCOUNTID, Integer.class);
-		DataMapFilter.addFilter(KILLER_UUID, KILLER_UUID, UUID.class);
+		DataMapFilter.addFilter(KILLER_PERSONAID, Integer.class);
+		DataMapFilter.addFilter(KILLER_ACCOUNTID, Integer.class);
+		DataMapFilter.addFilter(KILLER_UUID, UUID.class);
 
-		DataMapFilter.addFilter(LOCATION, LOCATION, Location.class);
-		DataMapFilter.addFilter(CREATED, CREATED, Long.class);
-		DataMapFilter.addFilter(STAFF, STAFF, Boolean.class);
-		DataMapFilter.addFilter(REFUNDER, REFUNDER, UUID.class);
+		DataMapFilter.addFilter(LOCATION, Location.class);
+		DataMapFilter.addFilter(CREATED, Long.class);
+		DataMapFilter.addFilter(STAFF, Boolean.class);
+		DataMapFilter.addFilter(REFUNDER, UUID.class);
 	}
 
 	private void updateHighestDeathID(int deathID) {

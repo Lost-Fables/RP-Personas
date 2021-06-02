@@ -2,10 +2,10 @@ package net.korvic.rppersonas.death;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
+import co.lotc.core.util.DataMapFilter;
 import lombok.Getter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.CorpseSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

@@ -2,11 +2,11 @@ package net.korvic.rppersonas.commands;
 
 import co.lotc.core.command.annotate.Cmd;
 import co.lotc.core.command.annotate.Range;
+import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaLanguage;
 import net.korvic.rppersonas.sql.LanguageSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

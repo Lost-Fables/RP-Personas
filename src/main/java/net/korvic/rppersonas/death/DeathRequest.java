@@ -1,12 +1,12 @@
 package net.korvic.rppersonas.death;
 
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.util.DataMapFilter;
 import co.lotc.core.util.MessageUtil;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.sql.DeathSQL;
 import net.korvic.rppersonas.sql.PersonasSQL;
-import net.korvic.rppersonas.sql.util.DataMapFilter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
