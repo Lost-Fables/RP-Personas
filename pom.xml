@@ -83,7 +83,7 @@
         <dependency>
             <groupId>co.lotc</groupId>
             <artifactId>tythan-bukkit</artifactId>
-            <version>1.16.5.4</version>
+            <version>1.16.5.5</version>
         </dependency>
         <dependency>
             <groupId>net.lostfables</groupId>
