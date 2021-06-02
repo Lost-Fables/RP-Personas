@@ -59,13 +59,7 @@ public abstract class BaseSQL {
 
 	private static BukkitRunnable runnable = null;
 
-	private static final String HOST = RPPersonas.config.getString("mysql.host");
-	private static final String PORT = RPPersonas.config.getString("mysql.port");
-	private static final String DATABASE = RPPersonas.config.getString("mysql.database");
-	private static final String USER = RPPersonas.config.getString("mysql.user");
-	private static final String PASSWORD = RPPersonas.config.getString("mysql.password");
-	private static final boolean MARIADB = RPPersonas.config.getBoolean("mysql.mariadb");
-	private static final String FLAGS = RPPersonas.config.getString("mysql.flags");
+
 
 	// INSTANCE //
 	protected void load(String SQLTable, String SQLTableName) {

@@ -212,6 +212,14 @@ public final class RPPersonas extends JavaPlugin {
 
 	// SQL //
 	private void setupDatabases() throws Exception {
+		String host = RPPersonas.config.getString("mysql.host");
+		int port = RPPersonas.config.getInt("mysql.port");
+		String database = RPPersonas.config.getString("mysql.database");
+		String user = RPPersonas.config.getString("mysql.user");
+		String password = RPPersonas.config.getString("mysql.password");
+		String flags = RPPersonas.config.getString("mysql.flags");
+		BaseSQL.init(host, port, database, flags, user, password);
+
 		uuidAccountMapSQL = new UUIDAccountMapSQL(this);
 		accountsSQL = new AccountsSQL(this);
 		personaAccountMapSQL = new PersonaAccountsMapSQL(this);
