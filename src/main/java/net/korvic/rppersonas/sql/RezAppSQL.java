@@ -51,17 +51,14 @@ public class RezAppSQL extends BaseSQL {
 	}
 
 	public void loadApps() {
-		Connection conn = getSQLConnection();
-		try {
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
-			PreparedStatement ps = conn.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 			while (rs.next()) {
 				DataMapFilter data = grabDataFromResult(rs);
 				plugin.getRezHandler().addApp(new RezApp(data));
 			}
-			close(ps, rs);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
@@ -69,8 +66,8 @@ public class RezAppSQL extends BaseSQL {
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
-			try {
-				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+			try (PreparedStatement stmt = getSaveStatement(data);){
+				plugin.getSaveQueue().executeWithNotification(stmt);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -78,85 +75,79 @@ public class RezAppSQL extends BaseSQL {
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
-		Connection conn = null;
-		PreparedStatement grabStatement = null;
-		PreparedStatement replaceStatement = null;
-		conn = getSQLConnection();
+		try (Connection conn2 = getSQLConnection();
+			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
-		ResultSet result = grabStatement.executeQuery();
-		boolean resultPresent = result.next();
+			boolean resultPresent = result.next();
 
-		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,Why,Honest,Meaning,Karma,Kills,Deaths,Altar,Denied) VALUES(?,?,?,?,?,?,?,?,?)");
+			try (Connection conn = getSQLConnection();) {
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,Why,Honest,Meaning,Karma,Kills,Deaths,Altar,Denied) VALUES(?,?,?,?,?,?,?,?,?)");
+				// Required
+				replaceStatement.setInt(1, (int) data.get(PERSONAID));
 
+				if (data.containsKey(RESPONSES)) {
+					RezAppConvo.RezAppResponses responses = (RezAppConvo.RezAppResponses) data.get(RESPONSES);
+					replaceStatement.setString(2, responses.getResponse(1));
+					replaceStatement.setString(3, responses.getResponse(2));
+					replaceStatement.setString(4, responses.getResponse(3));
+				} else if (resultPresent) {
+					replaceStatement.setString(2, result.getString("Why"));
+					replaceStatement.setString(3, result.getString("Honest"));
+					replaceStatement.setString(4, result.getString("Meaning"));
+				} else {
+					replaceStatement.setString(2, null);
+					replaceStatement.setString(3, null);
+					replaceStatement.setString(4, null);
+				}
 
-		// Required
-		replaceStatement.setInt(1, (int) data.get(PERSONAID));
+				if (data.containsKey(KARMA)) {
+					replaceStatement.setInt(5, (int) data.get(KARMA));
+				} else if (resultPresent) {
+					replaceStatement.setInt(5, result.getInt("Karma"));
+				} else {
+					replaceStatement.setInt(5, 0);
+				}
 
-		if (data.containsKey(RESPONSES)) {
-			RezAppConvo.RezAppResponses responses = (RezAppConvo.RezAppResponses) data.get(RESPONSES);
-			replaceStatement.setString(2, responses.getResponse(1));
-			replaceStatement.setString(3, responses.getResponse(2));
-			replaceStatement.setString(4, responses.getResponse(3));
-		} else if (resultPresent) {
-			replaceStatement.setString(2, result.getString("Why"));
-			replaceStatement.setString(3, result.getString("Honest"));
-			replaceStatement.setString(4, result.getString("Meaning"));
-		} else {
-			replaceStatement.setString(2, null);
-			replaceStatement.setString(3, null);
-			replaceStatement.setString(4, null);
+				if (data.containsKey(KILLS)) {
+					replaceStatement.setInt(6, (int) data.get(KILLS));
+				} else if (resultPresent) {
+					replaceStatement.setInt(6, result.getInt("Kills"));
+				} else {
+					replaceStatement.setInt(6, 0);
+				}
+
+				if (data.containsKey(DEATHS)) {
+					replaceStatement.setInt(7, (int) data.get(DEATHS));
+				} else if (resultPresent) {
+					replaceStatement.setInt(7, result.getInt("Deaths"));
+				} else {
+					replaceStatement.setInt(7, 0);
+				}
+
+				if (data.containsKey(ALTAR)) {
+					replaceStatement.setString(8, ((Altar) data.get(ALTAR)).getLabel());
+				} else if (resultPresent) {
+					replaceStatement.setString(8, result.getString("Altar"));
+				} else {
+					replaceStatement.setString(8, null);
+				}
+
+				if (data.containsKey(DENIED)) {
+					replaceStatement.setBoolean(9, (boolean) data.get(DENIED));
+				} else if (resultPresent) {
+					replaceStatement.setBoolean(9, result.getBoolean("Denied"));
+				} else {
+					replaceStatement.setBoolean(9, false);
+				}
+				return replaceStatement;
+			}
 		}
-
-		if (data.containsKey(KARMA)) {
-			replaceStatement.setInt(5, (int) data.get(KARMA));
-		} else if (resultPresent) {
-			replaceStatement.setInt(5, result.getInt("Karma"));
-		} else {
-			replaceStatement.setInt(5, 0);
-		}
-
-		if (data.containsKey(KILLS)) {
-			replaceStatement.setInt(6, (int) data.get(KILLS));
-		} else if (resultPresent) {
-			replaceStatement.setInt(6, result.getInt("Kills"));
-		} else {
-			replaceStatement.setInt(6, 0);
-		}
-
-		if (data.containsKey(DEATHS)) {
-			replaceStatement.setInt(7, (int) data.get(DEATHS));
-		} else if (resultPresent) {
-			replaceStatement.setInt(7, result.getInt("Deaths"));
-		} else {
-			replaceStatement.setInt(7, 0);
-		}
-
-		if (data.containsKey(ALTAR)) {
-			replaceStatement.setString(8, ((Altar) data.get(ALTAR)).getLabel());
-		} else if (resultPresent) {
-			replaceStatement.setString(8, result.getString("Altar"));
-		} else {
-			replaceStatement.setString(8, null);
-		}
-
-		if (data.containsKey(DENIED)) {
-			replaceStatement.setBoolean(9, (boolean) data.get(DENIED));
-		} else if (resultPresent) {
-			replaceStatement.setBoolean(9, result.getBoolean("Denied"));
-		} else {
-			replaceStatement.setBoolean(9, false);
-		}
-
-		grabStatement.close();
-		return replaceStatement;
 	}
 
 	public void deleteByID(int personaID) {
-		Connection conn = getSQLConnection();
-		try {
-			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
 			plugin.getSaveQueue().executeWithNotification(statement);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
@@ -165,16 +156,12 @@ public class RezAppSQL extends BaseSQL {
 
 	public DataMapFilter getData(int personaID) {
 		DataMapFilter data = null;
-		Connection conn = getSQLConnection();
-		try {
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
-			ResultSet rs = statement.executeQuery();
-
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			 ResultSet rs = statement.executeQuery();) {
 			if (rs.next()) {
 				data = grabDataFromResult(rs);
 			}
-
-			rs.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
@@ -206,14 +193,12 @@ public class RezAppSQL extends BaseSQL {
 	}
 
 	public boolean hasApplied(int personaID) {
-		Connection conn = getSQLConnection();
-		try {
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
-			ResultSet rs = statement.executeQuery();
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			 ResultSet rs = statement.executeQuery();) {
 			if (rs.next()) {
 				return true;
 			}
-			rs.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

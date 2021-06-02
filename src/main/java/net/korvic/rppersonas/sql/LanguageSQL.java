@@ -36,61 +36,68 @@ public class LanguageSQL extends BaseSQL {
 	}
 
 	public Map<String, Short> getLanguages(int personaID) {
-		Connection conn = getSQLConnection();
-		try {
-			String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
-			PreparedStatement ps = conn.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
+		Map<String, Short> languageLevelMap = new HashMap<>();
 
-			Map<String, Short> languageLevelMap = new HashMap<>();
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 
 			while (rs.next()) {
 				languageLevelMap.put(rs.getString("Language"), rs.getShort("Level"));
 			}
 
-			close(ps, rs);
-			return languageLevelMap;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-		return null;
+
+		return languageLevelMap;
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
 		unregister(data);
-		try {
-			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+		try (PreparedStatement stmt = getSaveStatement(data);) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
 	}
 
 	public void unregister(DataMapFilter data) {
-		plugin.getSaveQueue().executeWithNotification(getDeleteLanguageStatement(data));
+		try (PreparedStatement stmt = getDeleteLanguageStatement(data);) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		}
 	}
 
 	public void purgeAll(int personaID) {
-		plugin.getSaveQueue().executeWithNotification(getDeleteStatementByPersonaID(personaID));
+		try (PreparedStatement stmt = getDeleteStatementByPersonaID(personaID);) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+		}
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
 		if (data.containsKey(PERSONAID) && data.containsKey(LANGUAGE) && data.containsKey(LEVEL)) {
-			Connection conn = getSQLConnection();
-			PreparedStatement replaceStatement = null;
-			replaceStatement = conn.prepareStatement("INSERT INTO " + SQL_TABLE_NAME + " (PersonaID,Language,Level) VALUES(?,?,?)");
+			try (Connection conn = getSQLConnection();) {
+				PreparedStatement replaceStatement = conn.prepareStatement("INSERT INTO " + SQL_TABLE_NAME + " (PersonaID,Language,Level) VALUES(?,?,?)");
 
-			replaceStatement.setInt(1, (int) data.get(PERSONAID));
-			replaceStatement.setString(2, (String) data.get(LANGUAGE));
-			replaceStatement.setShort(3, (short) data.get(LEVEL));
-			return replaceStatement;
+				replaceStatement.setInt(1, (int) data.get(PERSONAID));
+				replaceStatement.setString(2, (String) data.get(LANGUAGE));
+				replaceStatement.setShort(3, (short) data.get(LEVEL));
+				return replaceStatement;
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+			}
 		}
 		return null;
 	}
 
 	public PreparedStatement getDeleteLanguageStatement(DataMapFilter data) {
 		if (data.containsKey(PERSONAID) && data.containsKey(LANGUAGE)) {
-			Connection conn = getSQLConnection();
-			try {
+			try (Connection conn = getSQLConnection();) {
 				return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND Language='" + data.get(LANGUAGE) + "'");
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
@@ -100,8 +107,7 @@ public class LanguageSQL extends BaseSQL {
 	}
 
 	public PreparedStatement getDeleteStatementByPersonaID(int personaID) {
-		Connection conn = getSQLConnection();
-		try {
+		try (Connection conn = getSQLConnection();) {
 			return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);

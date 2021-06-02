@@ -30,16 +30,14 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	}
 
 	protected void updateData() {
-		Connection conn = getSQLConnection();
-		try {
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = conn.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID=(SELECT MAX(PersonaID) FROM " + SQL_TABLE_NAME + ");";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
+
 			if (rs.next()) {
 				PersonaHandler.updateHighestPersonaID(rs.getInt("PersonaID"));
 			}
-			close(ps, rs);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
@@ -55,136 +53,113 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	// Inserts a new mapping for a persona.
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
-			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+			try (PreparedStatement stmt = getSaveStatement(data);) {
+				plugin.getSaveQueue().executeWithNotification(stmt);
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+			}
 		}
 	}
 
 	private PreparedStatement getSaveStatement(DataMapFilter data) {
-		PreparedStatement replaceStatement = null;
-		try {
-			PreparedStatement grabStatement = null;
-			Connection conn = null;
-			conn = getSQLConnection();
+		try (Connection conn2 = getSQLConnection();
+			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
-			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
-			ResultSet result = grabStatement.executeQuery();
 			boolean resultPresent = result.next();
 
-			conn = getSQLConnection();
-			replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,AccountID,Alive,ActiveUUID) VALUES(?,?,?,?)");
+			try (Connection conn = getSQLConnection();) {
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,AccountID,Alive,ActiveUUID) VALUES(?,?,?,?)");
+				// Required
+				replaceStatement.setInt(1, (int) data.get(PERSONAID));
 
+				if (data.containsKey(ACCOUNTID)) {
+					replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
+				} else if (resultPresent) {
+					replaceStatement.setInt(2, result.getInt("AccountID"));
+				} else {
+					replaceStatement.setInt(2, 0);
+				}
 
-			// Required
-			replaceStatement.setInt(1, (int) data.get(PERSONAID));
+				if (data.containsKey(ALIVE)) {
+					replaceStatement.setBoolean(3, (boolean) data.get(ALIVE));
+				} else if (resultPresent) {
+					replaceStatement.setBoolean(3, result.getBoolean("Alive"));
+				} else {
+					replaceStatement.setBoolean(3, true);
+				}
 
-			if (data.containsKey(ACCOUNTID)) {
-				replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
-			} else if (resultPresent) {
-				replaceStatement.setInt(2, result.getInt("AccountID"));
-			} else {
-				replaceStatement.setInt(2, 0);
-			}
-
-			if (data.containsKey(ALIVE)) {
-				replaceStatement.setBoolean(3, (boolean) data.get(ALIVE));
-			} else if (resultPresent) {
-				replaceStatement.setBoolean(3, result.getBoolean("Alive"));
-			} else {
-				replaceStatement.setBoolean(3, true);
-			}
-
-			if (data.containsKey(ACTIVEUUID)) {
-				if (data.get(ACTIVEUUID) != null) {
-					replaceStatement.setString(4, ((UUID) data.get(ACTIVEUUID)).toString());
+				if (data.containsKey(ACTIVEUUID)) {
+					if (data.get(ACTIVEUUID) != null) {
+						replaceStatement.setString(4, ((UUID) data.get(ACTIVEUUID)).toString());
+					} else {
+						replaceStatement.setString(4, null);
+					}
+				} else if (resultPresent) {
+					replaceStatement.setString(4, result.getString("ActiveUUID"));
 				} else {
 					replaceStatement.setString(4, null);
 				}
-			} else if (resultPresent) {
-				replaceStatement.setString(4, result.getString("ActiveUUID"));
-			} else {
-				replaceStatement.setString(4, null);
-			}
 
-			grabStatement.close();
+				return replaceStatement;
+			} catch (Exception e) {
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
+			}
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
 			}
 		}
-		return replaceStatement;
+		return null;
 	}
 
 	public PreparedStatement getDeleteStatement(int personaID) throws SQLException {
-		Connection conn = null;
-		PreparedStatement deleteStatement = null;
-		conn = getSQLConnection();
-		deleteStatement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
-		return deleteStatement;
+		try (Connection conn = getSQLConnection();) {
+			return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	// Removes a persona mapping.
 	public void removePersona(int personaID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
-			ps = conn.prepareStatement(stmt);
+		String stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);) {
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 	}
 
 	// Removes all persona mappings for an account.
 	public void removeAccount(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
-			ps = conn.prepareStatement(stmt);
+		String stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);) {
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 	}
 
 	// Retrieves a list of persona IDs for a given account.
 	public Map<Integer, UUID> getPersonasOf(int accountID, boolean alive) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		String stmt;
+		byte aliveBoolean = (byte) 0;
+		if (alive) {
+			aliveBoolean = (byte) 1;
+		}
+		stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "' AND Alive='" + aliveBoolean + "';";
 
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			byte aliveBoolean = (byte) 0;
-			if (alive) {
-				aliveBoolean = (byte) 1;
-			}
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "' AND Alive='" + aliveBoolean + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 
 			Map<Integer, UUID> result = new HashMap<>();
 			while (rs.next()) {
@@ -198,30 +173,16 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 			return result;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return null;
 	}
 
 	public int getCurrentPersonaID(UUID uuid) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE ActiveUUID='" + uuid.toString() + "';";
 
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE ActiveUUID='" + uuid.toString() + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 			int result = 0;
 			while (rs.next()) {
 				if (result <= 0) {
@@ -240,30 +201,15 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 			return result;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return 0;
 	}
 
 	public int getAccountOf(int personaID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 			int result = 0;
 			if (rs.next()) {
 				result = rs.getInt("AccountID");
@@ -271,42 +217,22 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 			return result;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return 0;
 	}
 
 	public void moveAllAccounts(int from, int to) {
-		Connection conn = getSQLConnection();
-		PreparedStatement grabStatement = null;
-		try {
-			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
-
-			ResultSet result = grabStatement.executeQuery();
-
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
 				data.put(PERSONAID, result.getInt("PersonaID"))
 					.put(ACCOUNTID, to);
 				registerOrUpdate(data);
 			}
-
-			result.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (grabStatement != null)
-					grabStatement.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 	}
 }

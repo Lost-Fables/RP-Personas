@@ -43,11 +43,10 @@ public class CorpseSQL extends BaseSQL {
 	}
 
 	public void loadCorpses() {
-		Connection conn = getSQLConnection();
-		try {
-			String stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
-			PreparedStatement ps = conn.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + ";";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 
 			while (rs.next()) {
 				plugin.getCorpseHandler().loadCorpse(rs.getInt("CorpseID"),
@@ -57,8 +56,6 @@ public class CorpseSQL extends BaseSQL {
 													 rs.getLong("Created"),
 													 rs.getInt("PersonaID"));
 			}
-
-			close(ps, rs);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
@@ -66,8 +63,8 @@ public class CorpseSQL extends BaseSQL {
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(CORPSEID)) {
-			try {
-				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+			try (PreparedStatement stmt = getSaveStatement(data);) {
+				plugin.getSaveQueue().executeWithNotification(stmt);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -75,70 +72,74 @@ public class CorpseSQL extends BaseSQL {
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
-		Connection conn = null;
-		PreparedStatement grabStatement = null;
-		PreparedStatement replaceStatement = null;
-		conn = getSQLConnection();
+		try (Connection conn2 = getSQLConnection();
+			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE CorpseID='" + data.get(CORPSEID) + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE CorpseID='" + data.get(CORPSEID) + "'");
-		ResultSet result = grabStatement.executeQuery();
-		boolean resultPresent = result.next();
+			boolean resultPresent = result.next();
 
-		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (CorpseID,Name,Inventory,Created,PersonaID,Texture) VALUES(?,?,?,?,?,?)");
+			try (Connection conn = getSQLConnection();) {
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (CorpseID,Name,Inventory,Created,PersonaID,Texture) VALUES(?,?,?,?,?,?)");
+				// Required
+				replaceStatement.setInt(1, (int) data.get(CORPSEID));
 
+				if (data.containsKey(NAME)) {
+					replaceStatement.setString(2, (String) data.get(NAME));
+				} else if (resultPresent) {
+					replaceStatement.setString(2, result.getString("Name"));
+				} else {
+					replaceStatement.setString(2, null);
+				}
 
-		// Required
-		replaceStatement.setInt(1, (int) data.get(CORPSEID));
+				if (data.containsKey(INVENTORY)) {
+					replaceStatement.setString(3, (String) data.get(INVENTORY));
+				} else if (resultPresent) {
+					replaceStatement.setString(3, result.getString("Inventory"));
+				} else {
+					replaceStatement.setString(3, null);
+				}
 
-		if (data.containsKey(NAME)) {
-			replaceStatement.setString(2, (String) data.get(NAME));
-		} else if (resultPresent) {
-			replaceStatement.setString(2, result.getString("Name"));
-		} else {
-			replaceStatement.setString(2, null);
+				if (data.containsKey(CREATED)) {
+					replaceStatement.setLong(4, (long) data.get(CREATED));
+				} else if (resultPresent) {
+					replaceStatement.setLong(4, result.getLong("Created"));
+				} else {
+					replaceStatement.setLong(4, System.currentTimeMillis());
+				}
+
+				if (data.containsKey(PERSONAID)) {
+					replaceStatement.setInt(5, (int) data.get(PERSONAID));
+				} else if (resultPresent) {
+					replaceStatement.setInt(5, result.getInt("PersonaID"));
+				} else {
+					replaceStatement.setInt(5, 0);
+				}
+
+				if (data.containsKey(TEXTURE)) {
+					replaceStatement.setString(6, (String) data.get(TEXTURE));
+				} else if (resultPresent) {
+					replaceStatement.setString(6, result.getString("Texture"));
+				} else {
+					replaceStatement.setString(6, null);
+				}
+
+				return replaceStatement;
+			} catch (Exception e) {
+				if (RPPersonas.DEBUGGING) {
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
 		}
-
-		if (data.containsKey(INVENTORY)) {
-			replaceStatement.setString(3, (String) data.get(INVENTORY));
-		} else if (resultPresent) {
-			replaceStatement.setString(3, result.getString("Inventory"));
-		} else {
-			replaceStatement.setString(3, null);
-		}
-
-		if (data.containsKey(CREATED)) {
-			replaceStatement.setLong(4, (long) data.get(CREATED));
-		} else if (resultPresent) {
-			replaceStatement.setLong(4, result.getLong("Created"));
-		} else {
-			replaceStatement.setLong(4, System.currentTimeMillis());
-		}
-
-		if (data.containsKey(PERSONAID)) {
-			replaceStatement.setInt(5, (int) data.get(PERSONAID));
-		} else if (resultPresent) {
-			replaceStatement.setInt(5, result.getInt("PersonaID"));
-		} else {
-			replaceStatement.setInt(5, 0);
-		}
-
-		if (data.containsKey(TEXTURE)) {
-			replaceStatement.setString(6, (String) data.get(TEXTURE));
-		} else if (resultPresent) {
-			replaceStatement.setString(6, result.getString("Texture"));
-		} else {
-			replaceStatement.setString(6, null);
-		}
-
-		grabStatement.close();
-		return replaceStatement;
+		return null;
 	}
 
 	public void deleteByCorpseID(int corpseID) {
-		Connection conn = getSQLConnection();
-		try {
-			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE CorpseID='" + corpseID + "'");
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE CorpseID='" + corpseID + "'");) {
 			statement.executeUpdate();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
@@ -146,9 +147,8 @@ public class CorpseSQL extends BaseSQL {
 	}
 
 	public void deleteByPersonaID(int personaID) {
-		Connection conn = getSQLConnection();
-		try {
-			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
 			statement.executeUpdate();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);

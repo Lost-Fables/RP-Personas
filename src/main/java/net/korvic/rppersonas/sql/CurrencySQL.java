@@ -33,17 +33,10 @@ public class CurrencySQL extends BaseSQL {
 	}
 
 	public Map<String, Object> getData(int personaID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 
 			Map<String, Object> output = new HashMap<>();
 
@@ -56,21 +49,14 @@ public class CurrencySQL extends BaseSQL {
 			return output;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return null;
 	}
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
-			try {
-				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+			try (PreparedStatement stmt = getSaveStatement(data);) {
+				plugin.getSaveQueue().executeWithNotification(stmt);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -78,40 +64,36 @@ public class CurrencySQL extends BaseSQL {
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
-		Connection conn = null;
-		PreparedStatement grabStatement = null;
-		PreparedStatement replaceStatement = null;
-		conn = getSQLConnection();
+		try (Connection conn2 = getSQLConnection();
+			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
-		ResultSet result = grabStatement.executeQuery();
-		boolean resultPresent = result.next();
+			boolean resultPresent = result.next();
 
-		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,Money,Bank) VALUES(?,?,?)");
+			try (Connection conn = getSQLConnection();) {
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,Money,Bank) VALUES(?,?,?)");
 
+				// Required
+				replaceStatement.setInt(1, (int) data.get(PERSONAID));
 
-		// Required
-		replaceStatement.setInt(1, (int) data.get(PERSONAID));
+				if (data.containsKey(MONEY)) {
+					replaceStatement.setFloat(2, (float) data.get(MONEY));
+				} else if (resultPresent) {
+					replaceStatement.setFloat(2, result.getFloat("Money"));
+				} else {
+					replaceStatement.setFloat(2, 0);
+				}
 
-		if (data.containsKey(MONEY)) {
-			replaceStatement.setFloat(2, (float) data.get(MONEY));
-		} else if (resultPresent) {
-			replaceStatement.setFloat(2, result.getFloat("Money"));
-		} else {
-			replaceStatement.setFloat(2, 0);
+				if (data.containsKey(BANK)) {
+					replaceStatement.setFloat(3, (float) data.get(BANK));
+				} else if (resultPresent) {
+					replaceStatement.setFloat(3, result.getFloat("Bank"));
+				} else {
+					replaceStatement.setFloat(3, 0);
+				}
+				return replaceStatement;
+			}
 		}
-
-		if (data.containsKey(BANK)) {
-			replaceStatement.setFloat(3, (float) data.get(BANK));
-		} else if (resultPresent) {
-			replaceStatement.setFloat(3, result.getFloat("Bank"));
-		} else {
-			replaceStatement.setFloat(3, 0);
-		}
-
-		grabStatement.close();
-		return replaceStatement;
 	}
 
 }

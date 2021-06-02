@@ -34,9 +34,9 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PLAYER)) {
 			Player p = (Player) data.get(PLAYER);
-			try {
+			try (PreparedStatement stmt = getSaveStatement(data);){
 				plugin.getUnregisteredHandler().remove(p);
-				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+				plugin.getSaveQueue().executeWithNotification(stmt);
 				plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
@@ -44,8 +44,8 @@ public class UUIDAccountMapSQL extends BaseSQL {
 				}
 			}
 		} else if (data.containsKey(PLAYER_UUID)) {
-			try {
-				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+			try (PreparedStatement stmt = getSaveStatement(data);) {
+				plugin.getSaveQueue().executeWithNotification(stmt);
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
 					e.printStackTrace();
@@ -55,25 +55,29 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	}
 
 	private PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
-		Connection conn = null;
-		PreparedStatement replaceStatement = null;
-		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (UUID,AccountID) VALUES(?,?)");
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (UUID,AccountID) VALUES(?,?)");) {
 
-		// Required
-		if (data.containsKey(PLAYER)) {
-			replaceStatement.setString(1, ((Player) data.get(PLAYER)).getUniqueId().toString());
-		} else if (data.containsKey(PLAYER_UUID)) {
-			replaceStatement.setString(1, ((UUID) data.get(PLAYER_UUID)).toString());
+			// Required
+			if (data.containsKey(PLAYER)) {
+				replaceStatement.setString(1, ((Player) data.get(PLAYER)).getUniqueId().toString());
+			} else if (data.containsKey(PLAYER_UUID)) {
+				replaceStatement.setString(1, ((UUID) data.get(PLAYER_UUID)).toString());
+			}
+
+			if (data.containsKey(ACCOUNTID)) {
+				replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
+			} else {
+				replaceStatement.setInt(2, 0);
+			}
+
+			return replaceStatement;
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
 		}
-
-		if (data.containsKey(ACCOUNTID)) {
-			replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
-		} else {
-			replaceStatement.setInt(2, 0);
-		}
-
-		return replaceStatement;
+		return null;
 	}
 
 	public List<UUID> getUUIDsOf(Player player) {
@@ -82,18 +86,10 @@ public class UUIDAccountMapSQL extends BaseSQL {
 
 	// Retrieves the amount of tokens a player has, as per our database.
 	public List<UUID> getUUIDsOf(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 			List<UUID> result = new ArrayList<>();
 			while (rs.next()) {
 				result.add(UUID.fromString(rs.getString("UUID")));
@@ -101,30 +97,15 @@ public class UUIDAccountMapSQL extends BaseSQL {
 			return result;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return null;
 	}
 
 	public int getAccountID(UUID uuid) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE UUID='" + uuid.toString() + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE UUID='" + uuid.toString() + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 			int result = 0;
 			if (rs.next()) {
 				result = rs.getInt("AccountID");
@@ -135,24 +116,15 @@ public class UUIDAccountMapSQL extends BaseSQL {
 			return result;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return 0;
 	}
 
 	public void moveAllAccounts(int from, int to) {
-		Connection conn = getSQLConnection();
-		PreparedStatement grabStatement = null;
-		try {
-			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
 
-			ResultSet result = grabStatement.executeQuery();
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
 			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
@@ -160,17 +132,8 @@ public class UUIDAccountMapSQL extends BaseSQL {
 					.put(ACCOUNTID, to);
 				registerOrUpdate(data);
 			}
-
-			result.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (grabStatement != null)
-					grabStatement.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 	}
 }

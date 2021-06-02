@@ -26,16 +26,6 @@ public class SaveQueue {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
 			}
-		} finally {
-			try {
-				if (statement != null) {
-					statement.close();
-				}
-			} catch (Exception e) {
-				if (RPPersonas.DEBUGGING) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 }

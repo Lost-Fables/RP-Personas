@@ -39,45 +39,25 @@ public class AccountsSQL extends BaseSQL {
 
 	// Checks if this account is already registered.
 	public boolean isRegistered(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
+		try (Connection conn =  getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
-			boolean result = false;
-			if (rs.next()) {
-				result = true;
-			}
-			return result;
+			return rs.next();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return false;
 	}
 
 	// Gets our stored data for this account.
 	public Map<String, Object> getData(int accountid) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		conn = getSQLConnection();
 
-		try {
-			ps = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountid + "'");
-			ResultSet rs = ps.executeQuery();
+
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountid + "'");
+			 ResultSet rs = ps.executeQuery();) {
 
 			Map<String, Object> data = new HashMap<>();
 
@@ -91,13 +71,6 @@ public class AccountsSQL extends BaseSQL {
 			return data;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 
 		return null;
@@ -106,8 +79,8 @@ public class AccountsSQL extends BaseSQL {
 	// Updates or Inserts a new mapping for an account.
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(ACCOUNTID)) {
-			try {
-				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+			try (PreparedStatement stmt = getSaveStatement(data);) {
+				plugin.getSaveQueue().executeWithNotification(stmt);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -115,61 +88,57 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
-		Connection conn = null;
-		PreparedStatement grabStatement = null;
-		PreparedStatement replaceStatement = null;
-		conn = getSQLConnection();
-
 		int currentAccount = (int) ((data.containsKey(OLD_ACCOUNTID)) ? data.get(OLD_ACCOUNTID) : data.get(ACCOUNTID));
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + currentAccount + "'");
-		ResultSet result = grabStatement.executeQuery();
-		boolean resultPresent = result.next();
+		try (Connection conn2 = getSQLConnection();
+			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + currentAccount + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
-		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (AccountID,DiscordID,Playtime,Votes) VALUES(?,?,?,?)");
+			boolean resultPresent = result.next();
 
+			try (Connection conn = getSQLConnection();) {
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (AccountID,DiscordID,Playtime,Votes) VALUES(?,?,?,?)");
 
-		// Required
-		replaceStatement.setInt(1, (int) data.get(ACCOUNTID));
+				// Required
+				replaceStatement.setInt(1, (int) data.get(ACCOUNTID));
 
-		if (data.containsKey(DISCORDID)) {
-			replaceStatement.setString(2, (String) data.get(DISCORDID));
-		} else if (resultPresent) {
-			replaceStatement.setString(2, result.getString("DiscordID"));
-		} else {
-			replaceStatement.setString(2, null);
-		}
+				if (data.containsKey(DISCORDID)) {
+					replaceStatement.setString(2, (String) data.get(DISCORDID));
+				} else if (resultPresent) {
+					replaceStatement.setString(2, result.getString("DiscordID"));
+				} else {
+					replaceStatement.setString(2, null);
+				}
 
-		if (data.containsKey(PLAYTIME)) {
-			long playtime = (long) data.get(PLAYTIME);
-			if (resultPresent) {
-				playtime += result.getLong("Playtime");
+				if (data.containsKey(PLAYTIME)) {
+					long playtime = (long) data.get(PLAYTIME);
+					if (resultPresent) {
+						playtime += result.getLong("Playtime");
+					}
+					replaceStatement.setLong(3, playtime);
+				} else if (resultPresent) {
+					replaceStatement.setLong(3, result.getLong("Playtime"));
+				} else {
+					replaceStatement.setLong(3, 0);
+				}
+
+				if (data.containsKey(VOTES)) {
+					replaceStatement.setShort(4, (short) data.get(VOTES));
+				} else if (resultPresent) {
+					replaceStatement.setShort(4, result.getShort("Votes"));
+				} else {
+					replaceStatement.setShort(4, (short) 0);
+				}
+				return replaceStatement;
 			}
-			replaceStatement.setLong(3, playtime);
-		} else if (resultPresent) {
-			replaceStatement.setLong(3, result.getLong("Playtime"));
-		} else {
-			replaceStatement.setLong(3, 0);
 		}
-
-		if (data.containsKey(VOTES)) {
-			replaceStatement.setShort(4, (short) data.get(VOTES));
-		} else if (resultPresent) {
-			replaceStatement.setShort(4, result.getShort("Votes"));
-		} else {
-			replaceStatement.setShort(4, (short) 0);
-		}
-
-		grabStatement.close();
-		return replaceStatement;
 	}
 
 	public void incrementVotes(int accountID) {
 		DataMapFilter data = new DataMapFilter();
 		data.putAll(getData(accountID))
 			.put(VOTES, ((short) data.get(VOTES)) + 1);
-		try {
-			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+		try (PreparedStatement stmt = getSaveStatement(data);) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
@@ -178,13 +147,9 @@ public class AccountsSQL extends BaseSQL {
 	}
 
 	public void moveAllAccounts(int from, int to) {
-		Connection conn = getSQLConnection();
-		PreparedStatement grabStatement = null;
-		PreparedStatement deleteStatement = null;
-		try {
-			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
-
-			ResultSet result = grabStatement.executeQuery();
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
 			if (result.next()) {
 				DataMapFilter data = new DataMapFilter();
@@ -192,24 +157,13 @@ public class AccountsSQL extends BaseSQL {
 					.put(OLD_ACCOUNTID, from);
 				getSaveStatement(data).executeUpdate();
 
-				conn = getSQLConnection();
-				deleteStatement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
-				deleteStatement.executeUpdate();
+				try (Connection conn2 = getSQLConnection();
+					 PreparedStatement deleteStatement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");) {
+					deleteStatement.executeUpdate();
+				}
 			}
-
-			result.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (grabStatement != null)
-					grabStatement.close();
-				if (deleteStatement != null) {
-					deleteStatement.close();
-				}
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 	}
 }

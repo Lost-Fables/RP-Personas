@@ -30,24 +30,18 @@ public class StatusSQL extends BaseSQL {
 						  "    Expiration BIGINT NOT NULL\n" +
 						  ");";
 		createTable(SQLTable);
+		updateData();
 	}
 
-	protected boolean customStatement() {
-		Connection conn = getSQLConnection();
-		try {
-			if (database == null) {
-				throw new NullPointerException();
-			}
-			long currentTime = System.currentTimeMillis();
-			String stmt;
-			stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE Expiration<='" + currentTime + "';";
-			PreparedStatement ps = conn.prepareStatement(stmt);
+	protected void updateData() {
+		long currentTime = System.currentTimeMillis();
+		String stmt = "DELETE FROM " + SQL_TABLE_NAME + " WHERE Expiration<='" + currentTime + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);) {
 			ps.executeUpdate();
-			ps.close();
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-		return true;
 	}
 
 	protected void addDataMappings() {
@@ -59,49 +53,46 @@ public class StatusSQL extends BaseSQL {
 
 	public void saveStatus(DataMapFilter data) {
 		if (data.containsKey(PERSONAID) && data.containsKey(STATUS)) {
-			try {
-				plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+			try (PreparedStatement stmt = getSaveStatement(data);){
+				plugin.getSaveQueue().executeWithNotification(stmt);
 			} catch (Exception ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
 		}
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) throws Exception {
-		Connection conn = getSQLConnection();
-		if (conn == null) {
-			throw new NullPointerException();
+	public PreparedStatement getSaveStatement(DataMapFilter data) {
+		try (Connection conn = getSQLConnection();) {
+			PreparedStatement insertStatement = conn.prepareStatement("INSERT INTO " + SQL_TABLE_NAME + " (PersonaID,Status,Severity,Expiration) VALUES(?,?,?,?)");
+
+			// Required
+			insertStatement.setInt(1, (int) data.get(PERSONAID));
+			insertStatement.setString(2, ((Status) data.get(STATUS)).getName());
+
+			// If not specified defaults to 1, ranges up to 255
+			if (data.containsKey(EXPIRATION)) {
+				insertStatement.setByte(3, (byte) data.get(SEVERITY));
+			} else {
+				insertStatement.setByte(3, (byte) 1);
+			}
+
+			// If not specified will be deleted on next pass
+			if (data.containsKey(EXPIRATION)) {
+				insertStatement.setLong(4, (long) data.get(EXPIRATION));
+			} else {
+				insertStatement.setLong(4, 0);
+			}
+
+			return insertStatement;
+		} catch (Exception ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
-		PreparedStatement insertStatement = conn.prepareStatement("INSERT INTO " + SQL_TABLE_NAME + " (PersonaID,Status,Severity,Expiration) VALUES(?,?,?,?)");
-
-		// Required
-		insertStatement.setInt(1, (int) data.get(PERSONAID));
-		insertStatement.setString(2, ((Status) data.get(STATUS)).getName());
-
-		// If not specified defaults to 1, ranges up to 255
-		if (data.containsKey(EXPIRATION)) {
-			insertStatement.setByte(3, (byte) data.get(SEVERITY));
-		} else {
-			insertStatement.setByte(3, (byte) 1);
-		}
-
-		// If not specified will be deleted on next pass
-		if (data.containsKey(EXPIRATION)) {
-			insertStatement.setLong(4, (long) data.get(EXPIRATION));
-		} else {
-			insertStatement.setLong(4, 0);
-		}
-
-		return insertStatement;
+		return null;
 	}
 
 	public void deleteStatus(int personaID, StatusEntry entry) {
-		Connection conn = getSQLConnection();
-		try {
-			if (conn == null) {
-				throw new NullPointerException();
-			}
-			PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "' AND Status='" + entry.getStatus().getName() + "' AND Severity='" + entry.getSeverity() + "' AND Expiration='" + entry.getExpiration() + "'");
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "' AND Status='" + entry.getStatus().getName() + "' AND Severity='" + entry.getSeverity() + "' AND Expiration='" + entry.getExpiration() + "'");) {
 			plugin.getSaveQueue().executeWithNotification(statement);
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
@@ -109,14 +100,9 @@ public class StatusSQL extends BaseSQL {
 	}
 
 	public List<StatusEntry> getPersonaStatuses(int personaID) {
-		Connection conn = getSQLConnection();
-		try {
-			if (conn == null) {
-				throw new NullPointerException();
-			}
-
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
-			ResultSet rs = statement.executeQuery();
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+			 ResultSet rs = statement.executeQuery();) {
 
 			List<StatusEntry> output = new ArrayList<>();
 			while(rs.next()) {

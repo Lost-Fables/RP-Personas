@@ -33,20 +33,16 @@ public class SkinsSQL extends BaseSQL {
 	}
 
 	protected boolean customStatement() {
-		Connection conn = getSQLConnection();
-		try {
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID=(SELECT MAX(SkinID) FROM " + SQL_TABLE_NAME + ");";
-			PreparedStatement ps = conn.prepareStatement(stmt);
-			ResultSet rs = ps.executeQuery();
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID=(SELECT MAX(SkinID) FROM " + SQL_TABLE_NAME + ");";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 			if (rs.next()) {
 				updateHighestSkinID(rs.getInt("SkinID"));
 			}
-			close(ps, rs);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-
 		return true;
 	}
 
@@ -66,18 +62,10 @@ public class SkinsSQL extends BaseSQL {
 
 	// Retrieves the amount of tokens a player has, as per our database.
 	public Map<Integer, String> getSkinNames(int accountID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
-
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + accountID + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 			Map<Integer, String> result = new HashMap<>();
 			while (rs.next()) {
 				result.put(rs.getInt("SkinID"), rs.getString("Name"));
@@ -85,13 +73,6 @@ public class SkinsSQL extends BaseSQL {
 			return result;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return null;
 	}
@@ -99,86 +80,77 @@ public class SkinsSQL extends BaseSQL {
 	public void registerOrUpdate(DataMapFilter data) {
 		data.put(SKINID, highestSkinID);
 		updateHighestSkinID(highestSkinID);
-		try {
-			plugin.getSaveQueue().executeWithNotification(getSaveStatement(data));
+		try (PreparedStatement stmt = getSaveStatement(data);) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
 	}
 
 	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
-		Connection conn = null;
-		PreparedStatement grabStatement = null;
-		PreparedStatement replaceStatement = null;
-		conn = getSQLConnection();
+		try (Connection conn2 = getSQLConnection();
+			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + data.get(SKINID) + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
-		grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + data.get(SKINID) + "'");
-		ResultSet result = grabStatement.executeQuery();
-		boolean resultPresent = result.next();
+			boolean resultPresent = result.next();
 
-		conn = getSQLConnection();
-		replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (SkinID,AccountID,Name,Texture,Signature) VALUES(?,?,?,?,?)");
+			try (Connection conn = getSQLConnection();) {
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (SkinID,AccountID,Name,Texture,Signature) VALUES(?,?,?,?,?)");
+				// Required
+				replaceStatement.setInt(1, (int) data.get(SKINID));
 
+				if (data.containsKey(ACCOUNTID)) {
+					replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
+				} else if (resultPresent) {
+					replaceStatement.setInt(2, result.getInt("AccountID"));
+				} else {
+					replaceStatement.setInt(2, 0);
+				}
 
-		// Required
-		replaceStatement.setInt(1, (int) data.get(SKINID));
+				if (data.containsKey(NAME)) {
+					replaceStatement.setString(3, (String) data.get(NAME));
+				} else if (resultPresent) {
+					replaceStatement.setString(3, result.getString("Name"));
+				} else {
+					replaceStatement.setString(3, null);
+				}
 
-		if (data.containsKey(ACCOUNTID)) {
-			replaceStatement.setInt(2, (int) data.get(ACCOUNTID));
-		} else if (resultPresent) {
-			replaceStatement.setInt(2, result.getInt("AccountID"));
-		} else {
-			replaceStatement.setInt(2, 0);
+				if (data.containsKey(TEXTURE)) {
+					replaceStatement.setString(4, (String) data.get(TEXTURE));
+				} else if (resultPresent) {
+					replaceStatement.setString(4, result.getString("Texture"));
+				} else {
+					replaceStatement.setString(4, null);
+				}
+
+				if (data.containsKey(SIGNATURE)) {
+					replaceStatement.setString(5, (String) data.get(SIGNATURE));
+				} else if (resultPresent) {
+					replaceStatement.setString(5, result.getString("Signature"));
+				} else {
+					replaceStatement.setString(5, null);
+				}
+				return replaceStatement;
+			}
 		}
-
-		if (data.containsKey(NAME)) {
-			replaceStatement.setString(3, (String) data.get(NAME));
-		} else if (resultPresent) {
-			replaceStatement.setString(3, result.getString("Name"));
-		} else {
-			replaceStatement.setString(3, null);
-		}
-
-		if (data.containsKey(TEXTURE)) {
-			replaceStatement.setString(4, (String) data.get(TEXTURE));
-		} else if (resultPresent) {
-			replaceStatement.setString(4, result.getString("Texture"));
-		} else {
-			replaceStatement.setString(4, null);
-		}
-
-		if (data.containsKey(SIGNATURE)) {
-			replaceStatement.setString(5, (String) data.get(SIGNATURE));
-		} else if (resultPresent) {
-			replaceStatement.setString(5, result.getString("Signature"));
-		} else {
-			replaceStatement.setString(5, null);
-		}
-
-		grabStatement.close();
-		return replaceStatement;
 	}
 
 	public PreparedStatement getDeleteStatement(int skinID) throws SQLException {
-		Connection conn = null;
-		PreparedStatement deleteStatement = null;
-		conn = getSQLConnection();
-		deleteStatement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "'");
-		return deleteStatement;
+		try (Connection conn = getSQLConnection();) {
+			return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "'");
+		} catch (Exception e) {
+			if (RPPersonas.DEBUGGING) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	public Map<Object, Object> getData(int skinID) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getSQLConnection();
-			String stmt;
-			stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "';";
-
-			ps = conn.prepareStatement(stmt);
-			rs = ps.executeQuery();
+		String stmt = "SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "';";
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement ps = conn.prepareStatement(stmt);
+			 ResultSet rs = ps.executeQuery();) {
 
 			Map<Object, Object> output = new HashMap<>();
 			if (rs.next()) {
@@ -192,24 +164,14 @@ public class SkinsSQL extends BaseSQL {
 			return output;
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 		return null;
 	}
 
 	public void moveAllAccounts(int from, int to) {
-		Connection conn = getSQLConnection();
-		PreparedStatement grabStatement = null;
-		try {
-			grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
-
-			ResultSet result = grabStatement.executeQuery();
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement grabStatement = conn.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AccountID='" + from + "'");
+			 ResultSet result = grabStatement.executeQuery();) {
 
 			while (result.next()) {
 				DataMapFilter data = new DataMapFilter();
@@ -221,13 +183,6 @@ public class SkinsSQL extends BaseSQL {
 			result.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		} finally {
-			try {
-				if (grabStatement != null)
-					grabStatement.close();
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionClose(), ex);
-			}
 		}
 	}
 }
