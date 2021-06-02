@@ -67,9 +67,9 @@ public class PersonasSQL extends BaseSQL {
 						  "    Health DOUBLE NOT NULL,\n" +
 						  "    Hunger INTEGER NOT NULL,\n" +
 
-						  "    Inventory TEXT,\n" +
-						  "    EnderChest TEXT,\n" +
-						  "    CorpseInv TEXT,\n" +
+						  "    Inventory MEDIUMTEXT,\n" +
+						  "    EnderChest MEDIUMTEXT,\n" +
+						  "    CorpseInv MEDIUMTEXT,\n" +
 
 						  "    RezToAltar INT\n" +
 						  ");";
