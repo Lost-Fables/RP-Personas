@@ -35,24 +35,15 @@ public class UUIDAccountMapSQL extends BaseSQL {
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PLAYER)) {
 			Player p = (Player) data.get(PLAYER);
-			try (PreparedStatement stmt = getSaveStatement(data);){
-				plugin.getUnregisteredHandler().remove(p);
-				plugin.getSaveQueue().executeWithNotification(stmt);
-				plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			plugin.getUnregisteredHandler().remove(p);
+			saveData(data);
+			plugin.getAccountHandler().loadAccount(p, (int) data.get(ACCOUNTID), 0, true);
 		} else if (data.containsKey(PLAYER_UUID)) {
-			System.out.println("[RPP] Registering update via UUID...");
-			try (PreparedStatement stmt = getSaveStatement(data);) {
-				plugin.getSaveQueue().executeWithNotification(stmt);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			saveData(data);
 		}
 	}
 
-	private PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
+	private void saveData(DataMapFilter data) {
 		try (Connection conn = getSQLConnection();
 			 PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (UUID,AccountID) VALUES(?,?)");) {
 
@@ -69,13 +60,10 @@ public class UUIDAccountMapSQL extends BaseSQL {
 				replaceStatement.setInt(2, 0);
 			}
 
-			return replaceStatement;
+			plugin.getSaveQueue().executeWithNotification(replaceStatement);
 		} catch (Exception e) {
-			if (RPPersonas.DEBUGGING) {
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
-		return null;
 	}
 
 	public List<UUID> getUUIDsOf(Player player) {

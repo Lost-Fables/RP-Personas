@@ -81,22 +81,18 @@ public class SkinsSQL extends BaseSQL {
 	public void registerOrUpdate(DataMapFilter data) {
 		data.put(SKINID, highestSkinID);
 		updateHighestSkinID(highestSkinID);
-		try (PreparedStatement stmt = getSaveStatement(data);) {
-			plugin.getSaveQueue().executeWithNotification(stmt);
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		}
+		saveData(data);
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
+	public void saveData(DataMapFilter data) {
 		try (Connection conn2 = getSQLConnection();
 			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + data.get(SKINID) + "'");
 			 ResultSet result = grabStatement.executeQuery();) {
 
 			boolean resultPresent = result.next();
 
-			try (Connection conn = getSQLConnection();) {
-				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (SkinID,AccountID,Name,Texture,Signature) VALUES(?,?,?,?,?)");
+			try (Connection conn = getSQLConnection();
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (SkinID,AccountID,Name,Texture,Signature) VALUES(?,?,?,?,?)");) {
 				// Required
 				replaceStatement.setInt(1, (int) data.get(SKINID));
 
@@ -131,20 +127,22 @@ public class SkinsSQL extends BaseSQL {
 				} else {
 					replaceStatement.setString(5, null);
 				}
-				return replaceStatement;
+				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
 	}
 
-	public PreparedStatement getDeleteStatement(int skinID) throws SQLException {
-		try (Connection conn = getSQLConnection();) {
-			return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "'");
+	public void deleteSkin(int skinID) throws SQLException {
+		try (Connection conn = getSQLConnection();
+		PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "'");) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
 		} catch (Exception e) {
-			if (RPPersonas.DEBUGGING) {
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
-		return null;
 	}
 
 	public Map<Object, Object> getData(int skinID) {
@@ -180,8 +178,6 @@ public class SkinsSQL extends BaseSQL {
 					.put(ACCOUNTID, to);
 				registerOrUpdate(data);
 			}
-
-			result.close();
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}

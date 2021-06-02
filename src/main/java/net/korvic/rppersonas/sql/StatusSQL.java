@@ -54,17 +54,13 @@ public class StatusSQL extends BaseSQL {
 
 	public void saveStatus(DataMapFilter data) {
 		if (data.containsKey(PERSONAID) && data.containsKey(STATUS)) {
-			try (PreparedStatement stmt = getSaveStatement(data);){
-				plugin.getSaveQueue().executeWithNotification(stmt);
-			} catch (Exception ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			}
+			saveData(data);
 		}
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) {
-		try (Connection conn = getSQLConnection();) {
-			PreparedStatement insertStatement = conn.prepareStatement("INSERT INTO " + SQL_TABLE_NAME + " (PersonaID,Status,Severity,Expiration) VALUES(?,?,?,?)");
+	public void saveData(DataMapFilter data) {
+		try (Connection conn = getSQLConnection();
+			PreparedStatement insertStatement = conn.prepareStatement("INSERT INTO " + SQL_TABLE_NAME + " (PersonaID,Status,Severity,Expiration) VALUES(?,?,?,?)");) {
 
 			// Required
 			insertStatement.setInt(1, (int) data.get(PERSONAID));
@@ -84,11 +80,10 @@ public class StatusSQL extends BaseSQL {
 				insertStatement.setLong(4, 0);
 			}
 
-			return insertStatement;
+			plugin.getSaveQueue().executeWithNotification(insertStatement);
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
-		return null;
 	}
 
 	public void deleteStatus(int personaID, StatusEntry entry) {

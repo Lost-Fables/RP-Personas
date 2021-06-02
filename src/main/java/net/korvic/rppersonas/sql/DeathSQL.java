@@ -97,14 +97,10 @@ public class DeathSQL extends BaseSQL {
 			data.put(DEATHID, highestDeathID);
 			updateHighestDeathID(highestDeathID);
 		}
-		try (PreparedStatement stmt = getSaveStatement(data);) {
-			plugin.getSaveQueue().executeWithNotification(stmt);
-		} catch (SQLException ex) {
-			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-		}
+		saveData(data);
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
+	public void saveData(DataMapFilter data) {
 		try (Connection conn2 = getSQLConnection();
 			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(DEATHID) + "'");
 			 ResultSet result = grabStatement.executeQuery();) {
@@ -208,8 +204,12 @@ public class DeathSQL extends BaseSQL {
 					replaceStatement.setString(14, null);
 				}
 
-				return replaceStatement;
+				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class DeathSQL extends BaseSQL {
 				DataMapFilter data = new DataMapFilter();
 				data.put(DEATHID, result.getInt("DeathID"))
 					.put(VICTIM_ACCOUNTID, to);
-				getSaveStatement(data).executeUpdate();
+				saveData(data);
 			}
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
@@ -273,7 +273,7 @@ public class DeathSQL extends BaseSQL {
 				DataMapFilter data = new DataMapFilter();
 				data.put(DEATHID, result.getInt("DeathID"))
 					.put(KILLER_ACCOUNTID, to);
-				getSaveStatement(data).executeUpdate();
+				saveData(data);
 			}
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);

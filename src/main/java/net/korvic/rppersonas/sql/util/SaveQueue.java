@@ -23,9 +23,7 @@ public class SaveQueue {
 			statement.executeUpdate();
 			plugin.getLogger().info(RPPersonas.PRIMARY_DARK + "Saved " + RPPersonas.SECONDARY_LIGHT + " row(s) " + RPPersonas.PRIMARY_DARK + "in " + RPPersonas.SECONDARY_LIGHT + (System.currentTimeMillis() - startMillis) + "ms");
 		} catch (Exception e) {
-			if (RPPersonas.DEBUGGING) {
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 	}
 }

@@ -2,7 +2,6 @@ package net.korvic.rppersonas.sql;
 
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
-import net.korvic.rppersonas.sql.util.Errors;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -64,23 +63,19 @@ public class CorpseSQL extends BaseSQL {
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(CORPSEID)) {
-			try (PreparedStatement stmt = getSaveStatement(data);) {
-				plugin.getSaveQueue().executeWithNotification(stmt);
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			}
+			saveData(data);
 		}
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
+	public void saveData(DataMapFilter data) {
 		try (Connection conn2 = getSQLConnection();
 			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE CorpseID='" + data.get(CORPSEID) + "'");
 			 ResultSet result = grabStatement.executeQuery();) {
 
 			boolean resultPresent = result.next();
 
-			try (Connection conn = getSQLConnection();) {
-				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (CorpseID,Name,Inventory,Created,PersonaID,Texture) VALUES(?,?,?,?,?,?)");
+			try (Connection conn = getSQLConnection();
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (CorpseID,Name,Inventory,Created,PersonaID,Texture) VALUES(?,?,?,?,?,?)");) {
 				// Required
 				replaceStatement.setInt(1, (int) data.get(CORPSEID));
 
@@ -124,7 +119,7 @@ public class CorpseSQL extends BaseSQL {
 					replaceStatement.setString(6, null);
 				}
 
-				return replaceStatement;
+				plugin.getSaveQueue().executeWithNotification(replaceStatement);
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
 					e.printStackTrace();
@@ -135,7 +130,6 @@ public class CorpseSQL extends BaseSQL {
 				e.printStackTrace();
 			}
 		}
-		return null;
 	}
 
 	public void deleteByCorpseID(int corpseID) {

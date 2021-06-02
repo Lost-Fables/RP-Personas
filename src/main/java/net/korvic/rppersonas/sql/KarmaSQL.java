@@ -45,23 +45,19 @@ public class KarmaSQL extends BaseSQL {
 			if (!data.containsKey(KARMAID)) {
 				data.put(KARMAID, getMaxKarmaID((int) data.get(PERSONAID)) + 1);
 			}
-			try (PreparedStatement stmt = getSaveStatement(data);) {
-				plugin.getSaveQueue().executeWithNotification(stmt);
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			}
+			saveData(data);
 		}
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
+	public void saveData(DataMapFilter data) {
 		try (Connection conn2 = getSQLConnection();
 			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND KarmaID='" + data.get(KARMAID) + "'");
 			 ResultSet result = grabStatement.executeQuery();) {
 
 			boolean resultPresent = result.next();
 
-			try (Connection conn = getSQLConnection();) {
-				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,KarmaID,Action,Modifier) VALUES(?,?,?,?)");
+			try (Connection conn = getSQLConnection();
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,KarmaID,Action,Modifier) VALUES(?,?,?,?)");) {
 				// Required
 				replaceStatement.setInt(1, (int) data.get(PERSONAID));
 				replaceStatement.setInt(2, (int) data.get(KARMAID));
@@ -81,8 +77,12 @@ public class KarmaSQL extends BaseSQL {
 				} else {
 					replaceStatement.setFloat(4, 0);
 				}
-				return replaceStatement;
+				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
 	}
 

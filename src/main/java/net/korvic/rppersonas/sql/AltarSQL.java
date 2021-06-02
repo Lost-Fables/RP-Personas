@@ -59,23 +59,19 @@ public class AltarSQL extends BaseSQL {
 
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(ALTARID)) {
-			try (PreparedStatement stmt = getSaveStatement(data);) {
-				plugin.getSaveQueue().executeWithNotification(stmt);
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			}
+			getSaveStatement(data);
 		}
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
+	public void getSaveStatement(DataMapFilter data) {
 		try (Connection conn2 = getSQLConnection();
 			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE AltarID='" + data.get(ALTARID) + "'");
 			 ResultSet result = grabStatement.executeQuery();) {
 
 			boolean resultPresent = result.next();
 
-			try (Connection conn = getSQLConnection();) {
-				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (AltarID,Name,World,LocationX,LocationY,LocationZ,LocationYaw,IconID) VALUES(?,?,?,?,?,?,?,?)");
+			try (Connection conn = getSQLConnection();
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (AltarID,Name,World,LocationX,LocationY,LocationZ,LocationYaw,IconID) VALUES(?,?,?,?,?,?,?,?)");) {
 
 				// Required
 				replaceStatement.setInt(1, (int) data.get(ALTARID));
@@ -116,8 +112,12 @@ public class AltarSQL extends BaseSQL {
 				} else {
 					replaceStatement.setString(8, null);
 				}
-				return replaceStatement;
+				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
 	}
 

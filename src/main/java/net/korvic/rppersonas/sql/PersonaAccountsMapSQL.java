@@ -54,23 +54,19 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	// Inserts a new mapping for a persona.
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
-			try (PreparedStatement stmt = getSaveStatement(data);) {
-				plugin.getSaveQueue().executeWithNotification(stmt);
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			}
+			saveData(data);
 		}
 	}
 
-	private PreparedStatement getSaveStatement(DataMapFilter data) {
+	private void saveData(DataMapFilter data) {
 		try (Connection conn2 = getSQLConnection();
 			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
 			 ResultSet result = grabStatement.executeQuery();) {
 
 			boolean resultPresent = result.next();
 
-			try (Connection conn = getSQLConnection();) {
-				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,AccountID,Alive,ActiveUUID) VALUES(?,?,?,?)");
+			try (Connection conn = getSQLConnection();
+				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME + " (PersonaID,AccountID,Alive,ActiveUUID) VALUES(?,?,?,?)");) {
 				// Required
 				replaceStatement.setInt(1, (int) data.get(PERSONAID));
 
@@ -102,7 +98,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 					replaceStatement.setString(4, null);
 				}
 
-				return replaceStatement;
+				plugin.getSaveQueue().executeWithNotification(replaceStatement);
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
 					e.printStackTrace();
@@ -113,18 +109,17 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 				e.printStackTrace();
 			}
 		}
-		return null;
 	}
 
-	public PreparedStatement getDeleteStatement(int personaID) throws SQLException {
-		try (Connection conn = getSQLConnection();) {
-			return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
+	public void deleteEntry(int personaID) {
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
 			}
 		}
-		return null;
 	}
 
 	// Removes a persona mapping.

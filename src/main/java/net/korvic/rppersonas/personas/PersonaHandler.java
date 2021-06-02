@@ -402,9 +402,9 @@ public class PersonaHandler {
 	public void deletePersona(int personaID) {
 		unloadPersona(personaID, false);
 		try {
-			plugin.getSaveQueue().executeWithNotification(plugin.getPersonasSQL().getDeleteStatement(personaID));
-			plugin.getSaveQueue().executeWithNotification(plugin.getPersonaAccountMapSQL().getDeleteStatement(personaID));
-			plugin.getSaveQueue().executeWithNotification(plugin.getLanguageSQL().getDeleteStatementByPersonaID(personaID));
+			plugin.getPersonasSQL().deletePersona(personaID);
+			plugin.getPersonaAccountMapSQL().deleteEntry(personaID);
+			plugin.getLanguageSQL().purgeAll(personaID);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();
@@ -414,7 +414,7 @@ public class PersonaHandler {
 
 	public void deleteSkin(int skinID) {
 		try {
-			plugin.getSaveQueue().executeWithNotification(plugin.getSkinsSQL().getDeleteStatement(skinID));
+			plugin.getSkinsSQL().deleteSkin(skinID);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();

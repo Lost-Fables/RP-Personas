@@ -106,25 +106,21 @@ public class PersonasSQL extends BaseSQL {
 	// Inserts a new mapping for a persona.
 	public void registerOrUpdate(DataMapFilter data) {
 		if (data.containsKey(PERSONAID)) {
-			try (PreparedStatement ps = getSaveStatement(data);) {
-				plugin.getSaveQueue().executeWithNotification(ps);
-			} catch (SQLException ex) {
-				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
-			}
+			saveData(data);
 		}
 	}
 
-	public PreparedStatement getSaveStatement(DataMapFilter data) throws SQLException {
+	public void saveData(DataMapFilter data) {
 		try (Connection conn2 = getSQLConnection();
 			 PreparedStatement grabStatement = conn2.prepareStatement("SELECT * FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "'");
 			 ResultSet result = grabStatement.executeQuery();) {
 
 			boolean resultPresent = result.next();
 
-			try (Connection conn = getSQLConnection();) {
+			try (Connection conn = getSQLConnection();
 				PreparedStatement replaceStatement = conn.prepareStatement("REPLACE INTO " + SQL_TABLE_NAME +
 																		   " (PersonaID,Alive,Name,Gender,Age,Race,Lives,Playtime,LocationWorld,LocationX,LocationY,LocationZ,Health,Hunger,Inventory,EnderChest,NickName,Prefix,ActiveSkinID,Description,RezToAltar,CorpseInv)" +
-																		   " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+																		   " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");) {
 				// Required
 				replaceStatement.setInt(1, (int) data.get(PERSONAID));
 
@@ -298,18 +294,22 @@ public class PersonasSQL extends BaseSQL {
 				} else {
 					replaceStatement.setString(22, null);
 				}
-				return replaceStatement;
+				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+			} catch (SQLException ex) {
+				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
-		}
-	}
-
-	public PreparedStatement getDeleteStatement(int personaID) throws SQLException {
-		try (Connection conn = getSQLConnection();) {
-			return conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}
-		return null;
+	}
+
+	public void deletePersona(int personaID) {
+		try (Connection conn = getSQLConnection();
+			 PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
+			plugin.getSaveQueue().executeWithNotification(stmt);
+		} catch (SQLException ex) {
+			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
+		}
 	}
 
 	public void unlinkSkin(int skinID) {
