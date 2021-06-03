@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,7 +70,7 @@ public class LanguageSQL extends BaseSQL {
 				replaceStatement.setString(2, (String) data.get(LANGUAGE));
 				replaceStatement.setShort(3, (short) data.get(LEVEL));
 
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -80,7 +81,7 @@ public class LanguageSQL extends BaseSQL {
 		if (data.containsKey(PERSONAID) && data.containsKey(LANGUAGE)) {
 			try (Connection conn = getSQLConnection();
 				 PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND Language='" + data.get(LANGUAGE) + "'");) {
-				plugin.getSaveQueue().executeWithNotification(stmt);
+				SaveTracker.executeWithTracker(stmt);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
@@ -90,7 +91,7 @@ public class LanguageSQL extends BaseSQL {
 	public void purgeAll(int personaID) {
 		try (Connection conn = getSQLConnection();
 			 PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
-			plugin.getSaveQueue().executeWithNotification(stmt);
+			SaveTracker.executeWithTracker(stmt);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

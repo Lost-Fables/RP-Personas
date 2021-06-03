@@ -2,6 +2,7 @@ package net.korvic.rppersonas.sql;
 
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -119,7 +120,7 @@ public class CorpseSQL extends BaseSQL {
 					replaceStatement.setString(6, null);
 				}
 
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
 					e.printStackTrace();

@@ -4,6 +4,7 @@ import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.personas.PersonaHandler;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 
 import java.sql.*;
 import java.util.*;
@@ -98,7 +99,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 					replaceStatement.setString(4, null);
 				}
 
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (Exception e) {
 				if (RPPersonas.DEBUGGING) {
 					e.printStackTrace();
@@ -114,7 +115,7 @@ public class PersonaAccountsMapSQL extends BaseSQL {
 	public void deleteEntry(int personaID) {
 		try (Connection conn = getSQLConnection();
 			 PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
-			plugin.getSaveQueue().executeWithNotification(stmt);
+			SaveTracker.executeWithTracker(stmt);
 		} catch (Exception e) {
 			if (RPPersonas.DEBUGGING) {
 				e.printStackTrace();

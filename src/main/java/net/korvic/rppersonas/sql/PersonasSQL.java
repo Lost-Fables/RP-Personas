@@ -7,6 +7,7 @@ import net.korvic.rppersonas.personas.Persona;
 import net.korvic.rppersonas.personas.PersonaGender;
 import net.korvic.rppersonas.personas.PersonaSubRace;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -294,7 +295,7 @@ public class PersonasSQL extends BaseSQL {
 				} else {
 					replaceStatement.setString(22, null);
 				}
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
@@ -306,7 +307,7 @@ public class PersonasSQL extends BaseSQL {
 	public void deletePersona(int personaID) {
 		try (Connection conn = getSQLConnection();
 			 PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
-			plugin.getSaveQueue().executeWithNotification(stmt);
+			SaveTracker.executeWithTracker(stmt);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

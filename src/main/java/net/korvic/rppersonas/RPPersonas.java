@@ -22,19 +22,11 @@ import net.korvic.rppersonas.personas.PersonaLanguage;
 import net.korvic.rppersonas.personas.PersonaSubRace;
 import net.korvic.rppersonas.resurrection.RezHandler;
 import net.korvic.rppersonas.sql.*;
-import net.korvic.rppersonas.sql.util.SaveQueue;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 import net.korvic.rppersonas.statuses.*;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.context.ImmutableContextSet;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
-import net.luckperms.api.node.NodeType;
-import net.luckperms.api.node.types.PrefixNode;
-import net.luckperms.api.query.QueryOptions;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -92,7 +84,6 @@ public final class RPPersonas extends JavaPlugin {
 	@Getter private RezHandler rezHandler;
 
 	// SQL
-	@Getter private SaveQueue saveQueue;
 	@Getter private UUIDAccountMapSQL uuidAccountMapSQL;
 	@Getter private AccountsSQL accountsSQL;
 	@Getter private PersonaAccountsMapSQL personaAccountMapSQL;
@@ -260,8 +251,8 @@ public final class RPPersonas extends JavaPlugin {
 		DEFAULT_REZ_LIVES = Math.max(config.getInt("defaults.lives-per-rez"), 1);
 		DEFAULT_SKINS = Math.max(config.getInt("defaults.skins-per-account"), 0);
 
-		// Save Queue
-		saveQueue = new SaveQueue(this, config.getInt("saving.ticks"), config.getInt("saving.amount"), config.getInt("saving.percent"));
+		// Save Tracker
+		SaveTracker.setPlugin(this);
 
 		// Spawn
 		{

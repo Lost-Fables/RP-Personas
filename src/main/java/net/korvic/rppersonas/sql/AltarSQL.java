@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -112,7 +113,7 @@ public class AltarSQL extends BaseSQL {
 				} else {
 					replaceStatement.setString(8, null);
 				}
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}

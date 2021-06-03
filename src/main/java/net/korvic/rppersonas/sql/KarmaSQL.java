@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -77,7 +78,7 @@ public class KarmaSQL extends BaseSQL {
 				} else {
 					replaceStatement.setFloat(4, 0);
 				}
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -90,7 +91,7 @@ public class KarmaSQL extends BaseSQL {
 		if (data.containsKey(PERSONAID) && data.containsKey(KARMAID)) {
 			try (Connection conn = getSQLConnection();
 				 PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + data.get(PERSONAID) + "' AND KarmaID='" + data.get(KARMAID) + "'");) {
-				plugin.getSaveQueue().executeWithNotification(statement);
+				SaveTracker.executeWithTracker(statement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}

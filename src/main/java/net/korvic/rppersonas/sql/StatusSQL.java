@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 import net.korvic.rppersonas.statuses.Status;
 import net.korvic.rppersonas.statuses.StatusEntry;
 
@@ -80,7 +81,7 @@ public class StatusSQL extends BaseSQL {
 				insertStatement.setLong(4, 0);
 			}
 
-			plugin.getSaveQueue().executeWithNotification(insertStatement);
+			SaveTracker.executeWithTracker(insertStatement);
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 		}
@@ -89,7 +90,7 @@ public class StatusSQL extends BaseSQL {
 	public void deleteStatus(int personaID, StatusEntry entry) {
 		try (Connection conn = getSQLConnection();
 			 PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "' AND Status='" + entry.getStatus().getName() + "' AND Severity='" + entry.getSeverity() + "' AND Expiration='" + entry.getExpiration() + "'");) {
-			plugin.getSaveQueue().executeWithNotification(statement);
+			SaveTracker.executeWithTracker(statement);
 		} catch (Exception ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

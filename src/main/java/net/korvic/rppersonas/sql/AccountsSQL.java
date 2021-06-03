@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -123,7 +124,7 @@ public class AccountsSQL extends BaseSQL {
 				} else {
 					replaceStatement.setShort(4, (short) 0);
 				}
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}

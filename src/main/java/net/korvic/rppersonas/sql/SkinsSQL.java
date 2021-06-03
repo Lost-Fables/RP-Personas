@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -127,7 +128,7 @@ public class SkinsSQL extends BaseSQL {
 				} else {
 					replaceStatement.setString(5, null);
 				}
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
 			}
@@ -139,7 +140,7 @@ public class SkinsSQL extends BaseSQL {
 	public void deleteSkin(int skinID) throws SQLException {
 		try (Connection conn = getSQLConnection();
 		PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE SkinID='" + skinID + "'");) {
-			plugin.getSaveQueue().executeWithNotification(stmt);
+			SaveTracker.executeWithTracker(stmt);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

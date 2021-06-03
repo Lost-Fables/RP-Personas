@@ -5,6 +5,7 @@ import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.conversation.RezAppConvo;
 import net.korvic.rppersonas.death.Altar;
 import net.korvic.rppersonas.resurrection.RezApp;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -136,7 +137,7 @@ public class RezAppSQL extends BaseSQL {
 				} else {
 					replaceStatement.setBoolean(9, false);
 				}
-				plugin.getSaveQueue().executeWithNotification(replaceStatement);
+				SaveTracker.executeWithTracker(replaceStatement);
 			} catch (SQLException ex) {
 				plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 			}
@@ -148,7 +149,7 @@ public class RezAppSQL extends BaseSQL {
 	public void deleteByID(int personaID) {
 		try (Connection conn = getSQLConnection();
 			 PreparedStatement statement = conn.prepareStatement("DELETE FROM " + SQL_TABLE_NAME + " WHERE PersonaID='" + personaID + "'");) {
-			plugin.getSaveQueue().executeWithNotification(statement);
+			SaveTracker.executeWithTracker(statement);
 		} catch (SQLException ex) {
 			plugin.getLogger().log(Level.SEVERE, "Unable to retreive connection", ex);
 		}

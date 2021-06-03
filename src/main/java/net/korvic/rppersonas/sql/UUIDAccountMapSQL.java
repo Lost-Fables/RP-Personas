@@ -3,6 +3,7 @@ package net.korvic.rppersonas.sql;
 import co.lotc.core.util.DataMapFilter;
 import net.korvic.rppersonas.RPPersonas;
 import net.korvic.rppersonas.sql.util.Errors;
+import net.korvic.rppersonas.sql.util.SaveTracker;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
@@ -60,7 +61,7 @@ public class UUIDAccountMapSQL extends BaseSQL {
 				replaceStatement.setInt(2, 0);
 			}
 
-			plugin.getSaveQueue().executeWithNotification(replaceStatement);
+			SaveTracker.executeWithTracker(replaceStatement);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
