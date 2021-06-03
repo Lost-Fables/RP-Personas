@@ -135,7 +135,7 @@ public class AccountsSQL extends BaseSQL {
 	public void incrementVotes(int accountID) {
 		DataMapFilter data = new DataMapFilter();
 		data.putAll(getData(accountID))
-			.put(VOTES, ((short) data.get(VOTES)) + 1);
+			.put(VOTES, ((int) data.get(VOTES)) + 1);
 		saveData(data);
 	}
 
