@@ -20,7 +20,7 @@ public class SaveTracker {
 				SaveTracker.printSavedRows();
 			}
 		};
-		runnable.runTaskTimerAsynchronously(plugin, 0, (5 * 60 * 1000));
+		runnable.runTaskTimerAsynchronously(plugin, 0, (5 * 60 * 20));
 	}
 
 	public static void printSavedRows() {
